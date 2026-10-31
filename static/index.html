@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LigaFutbol</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f2f2f7; }
+        .hide { display: none !important; }
+        .tab-active { color: #007aff; border-bottom: 2px solid #007aff; }
+        .card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #007aff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="pb-20">
+
+    <!-- PANTALLA 1: MIS EQUIPOS -->
+    <div id="screen-equipos" class="p-4 max-w-md mx-auto">
+        <div class="flex justify-between items-center mb-6 mt-4">
+            <h1 class="text-3xl font-bold text-gray-800">Mis Equipos</h1>
+            <button onclick="mostrarFormulario()" class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg text-xl">+</button>
+        </div>
+        <div id="lista-equipos" class="space-y-4"></div>
+    </div>
+
+    <!-- PANTALLA 2: AÑADIR EQUIPO -->
+    <div id="screen-formulario" class="hide p-4 max-w-md mx-auto">
+        <div class="flex items-center mb-6 mt-4">
+            <button onclick="volverInicio()" class="text-blue-500 text-lg mr-4"><i class="fas fa-chevron-left"></i> Atrás</button>
+            <h1 class="text-xl font-bold text-gray-800">Nuevo Equipo</h1>
+        </div>
+        <div class="card p-5 space-y-4">
+            <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Nombre del Equipo</label>
+                <input type="text" id="input-nombre" placeholder="Ej: Benjamín de Pablo" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Deporte</label>
+                <select id="select-deporte" onchange="cambiarDeporte()" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                    <option value="1">Baloncesto</option>
+                    <option value="2" selected>Fútbol Sala</option>
+                    <option value="3">Voleibol</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Competición</label>
+                <select id="select-competicion" onchange="cambiarCompeticion()" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                    <option value="">Cargando...</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-gray-600 mb-1">Grupo</label>
+                <select id="select-grupo" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
+                    <option value="">Selecciona grupo...</option>
+                </select>
+            </div>
+            <button onclick="guardarEquipo()" id="btn-guardar" class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg mt-4 disabled:opacity-50">Guardar Equipo</button>
+        </div>
+    </div>
+
+    <!-- PANTALLA 3: DETALLE DEL EQUIPO (TABS) -->
+    <div id="screen-detalle" class="hide max-w-md mx-auto">
+        <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10">
+            <button onclick="volverInicio()" class="text-blue-500 mr-4"><i class="fas fa-chevron-left text-lg"></i></button>
+            <h2 id="titulo-detalle" class="text-lg font-bold text-gray-800 truncate">Mi Equipo</h2>
+        </div>
+
+        <div id="tab-calendario" class="p-4 space-y-4">
+            <select id="select-jornada" onchange="cargarCalendario()" class="w-full p-3 border border-gray-300 rounded-lg bg-white shadow-sm mb-4"></select>
+            <div id="lista-calendario" class="space-y-4"></div>
+        </div>
+
+        <div id="tab-resultados" class="hide p-4 space-y-4">
+            <div id="lista-resultados" class="space-y-4"></div>
+        </div>
+
+        <div id="tab-clasificacion" class="hide p-4">
+            <div class="card overflow-hidden">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-gray-100 text-gray-600 text-xs font-bold uppercase">
+                        <tr>
+                            <th class="p-3">Pos</th>
+                            <th class="p-3">Equipo</th>
+                            <th class="p-3 text-center">PJ</th>
+                            <th class="p-3 text-right">PTS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-clasificacion" class="divide-y divide-gray-100 text-sm"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 flex justify-around py-3 text-gray-500 text-xs font-medium pb-6">
+            <button onclick="cambiarTab('calendario')" id="btn-tab-calendario" class="flex flex-col items-center tab-active">
+                <i class="fas fa-calendar text-lg mb-1"></i> Calendario
+            </button>
+            <button onclick="cambiarTab('resultados')" id="btn-tab-resultados" class="flex flex-col items-center">
+                <i class="fas fa-futbol text-lg mb-1"></i> Resultados
+            </button>
+            <button onclick="cambiarTab('clasificacion')" id="btn-tab-clasificacion" class="flex flex-col items-center">
+                <i class="fas fa-list-ol text-lg mb-1"></i> Clasificación
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let equipos = JSON.parse(localStorage.getItem('equipos_liga')) || [];
+        let equipoActual = null;
+        let jornadasData = [];
+
+        // FUNCIÓN PARA ACORTAR LOS NOMBRES EN EL MÓVIL
+        function acortarNombre(nombre) {
+            if (!nombre) return "";
+            return nombre.length > 20 ? nombre.substring(0, 20) + "..." : nombre;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarEquipos();
+            cargarCompeticiones(2); 
+        });
+
+        function mostrarFormulario() {
+            document.getElementById('screen-equipos').classList.add('hide');
+            document.getElementById('screen-detalle').classList.add('hide');
+            document.getElementById('screen-formulario').classList.remove('hide');
+        }
+
+        function volverInicio() {
+            document.getElementById('screen-formulario').classList.add('hide');
+            document.getElementById('screen-detalle').classList.add('hide');
+            document.getElementById('screen-equipos').classList.remove('hide');
+            renderizarEquipos();
+        }
+
+        function renderizarEquipos() {
+            const contenedor = document.getElementById('lista-equipos');
+            contenedor.innerHTML = '';
+            
+            if (equipos.length === 0) {
+                contenedor.innerHTML = `<div class="text-center text-gray-500 mt-10">
+                    <i class="fas fa-shield-alt text-6xl mb-4 text-gray-300"></i>
+                    <p>No tienes equipos guardados.</p>
+                    <p class="text-sm">Pulsa el botón '+' para añadir uno.</p>
+                </div>`;
+                return;
+            }
+
+            equipos.forEach((eq, index) => {
+                const div = document.createElement('div');
+                div.className = 'card p-4 flex items-center justify-between hover:bg-gray-50 transition';
+                
+                const areaClick = document.createElement('div');
+                areaClick.className = 'flex items-center flex-1 cursor-pointer';
+                areaClick.onclick = () => abrirEquipo(index);
+                areaClick.innerHTML = `
+                    <div class="bg-blue-100 text-blue-500 rounded-xl p-3 mr-4 shrink-0">
+                        <i class="fas fa-shield-alt text-2xl"></i>
+                    </div>
+                    <div class="flex-1">
+                        <h3 class="font-bold text-gray-800">${eq.nombre}</h3>
+                        <p class="text-sm text-gray-500">${eq.nombreCompeticion} · ${eq.nombreGrupo}</p>
+                    </div>
+                `;
+                
+                const btnBorrar = document.createElement('button');
+                btnBorrar.className = 'text-red-500 hover:text-red-700 p-2 ml-2 transition shrink-0';
+                btnBorrar.innerHTML = '<i class="fas fa-trash-alt text-lg"></i>';
+                btnBorrar.onclick = (e) => {
+                    e.stopPropagation();
+                    borrarEquipo(index);
+                };
+
+                div.appendChild(areaClick);
+                div.appendChild(btnBorrar);
+                contenedor.appendChild(div);
+            });
+        }
+
+        function borrarEquipo(index) {
+            if (confirm('¿Estás seguro de que quieres borrar este equipo?')) {
+                equipos.splice(index, 1);
+                localStorage.setItem('equipos_liga', JSON.stringify(equipos));
+                renderizarEquipos();
+            }
+        }
+
+        async function cargarCompeticiones(idDeporte) {
+            const select = document.getElementById('select-competicion');
+            select.innerHTML = '<option value="">Cargando...</option>';
+            try {
+                const res = await fetch(`/api/competiciones/${idDeporte}`);
+                const data = await res.json();
+                select.innerHTML = '<option value="">Selecciona...</option>';
+                if(Array.isArray(data)) {
+                    data.forEach(comp => {
+                        select.innerHTML += `<option value="${comp.Id}" data-cat="${comp.IdCategoria}">${comp.Nombre}</option>`;
+                    });
+                }
+            } catch (e) { select.innerHTML = '<option value="">Error de conexión</option>'; }
+        }
+
+        function cambiarDeporte() {
+            const idDeporte = document.getElementById('select-deporte').value;
+            document.getElementById('select-grupo').innerHTML = '<option value="">Selecciona grupo...</option>';
+            cargarCompeticiones(idDeporte);
+        }
+
+        async function cambiarCompeticion() {
+            const select = document.getElementById('select-competicion');
+            const idComp = select.value;
+            const idCat = select.options[select.selectedIndex].getAttribute('data-cat');
+            const selectGrupo = document.getElementById('select-grupo');
+            
+            if (!idComp) return;
+            selectGrupo.innerHTML = '<option value="">Cargando...</option>';
+            
+            try {
+                const res = await fetch(`/api/grupos/${idCat}/${idComp}`);
+                const data = await res.json();
+                selectGrupo.innerHTML = '<option value="">Selecciona grupo...</option>';
+                if(Array.isArray(data)) {
+                    data.forEach(g => {
+                        selectGrupo.innerHTML += `<option value="${g.Id}">${g.Nombre}</option>`;
+                    });
+                }
+            } catch (e) { selectGrupo.innerHTML = '<option value="">Error</option>'; }
+        }
+
+        function guardarEquipo() {
+            const nombre = document.getElementById('input-nombre').value || 'Mi Equipo';
+            const selDep = document.getElementById('select-deporte');
+            const selComp = document.getElementById('select-competicion');
+            const selGrupo = document.getElementById('select-grupo');
+            
+            if (!selComp.value || !selGrupo.value) return alert('Selecciona competición y grupo');
+
+            const nuevoEquipo = {
+                id: Date.now(),
+                nombre: nombre,
+                idDeporte: selDep.value,
+                nombreDeporte: selDep.options[selDep.selectedIndex].text,
+                idCompeticion: selComp.value,
+                nombreCompeticion: selComp.options[selComp.selectedIndex].text,
+                idCategoria: selComp.options[selComp.selectedIndex].getAttribute('data-cat'),
+                idGrupo: selGrupo.value,
+                nombreGrupo: selGrupo.options[selGrupo.selectedIndex].text
+            };
+            
+            equipos.push(nuevoEquipo);
+            localStorage.setItem('equipos_liga', JSON.stringify(equipos));
+            volverInicio();
+        }
+
+        function abrirEquipo(index) {
+            equipoActual = equipos[index];
+            document.getElementById('titulo-detalle').innerText = equipoActual.nombre;
+            document.getElementById('screen-equipos').classList.add('hide');
+            document.getElementById('screen-detalle').classList.remove('hide');
+            cambiarTab('calendario');
+        }
+
+        function cambiarTab(tab) {
+            document.getElementById('tab-calendario').classList.add('hide');
+            document.getElementById('tab-resultados').classList.add('hide');
+            document.getElementById('tab-clasificacion').classList.add('hide');
+            
+            document.getElementById('btn-tab-calendario').classList.remove('tab-active');
+            document.getElementById('btn-tab-resultados').classList.remove('tab-active');
+            document.getElementById('btn-tab-clasificacion').classList.remove('tab-active');
+
+            document.getElementById(`tab-${tab}`).classList.remove('hide');
+            document.getElementById(`btn-tab-${tab}`).classList.add('tab-active');
+
+            if (tab === 'calendario') cargarJornadas();
+            if (tab === 'resultados') cargarResultados();
+            if (tab === 'clasificacion') cargarClasificacion();
+        }
+
+        async function cargarJornadas() {
+            const url = `/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}/0`;
+            const res = await fetch(url);
+            const data = await res.json();
+            
+            jornadasData = data.jornadas || [];
+            const select = document.getElementById('select-jornada');
+            select.innerHTML = '';
+            
+            if (jornadasData.length > 0) {
+                jornadasData.forEach(j => {
+                    select.innerHTML += `<option value="${j.Id}">Jornada ${j.NumeroJornada}</option>`;
+                });
+            }
+            cargarCalendario();
+        }
+
+        async function cargarCalendario() {
+            const idJornada = document.getElementById('select-jornada').value;
+            const contenedor = document.getElementById('lista-calendario');
+            contenedor.innerHTML = '<div class="flex justify-center mt-10"><div class="loader"></div></div>';
+            
+            const url = `/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}/${idJornada}`;
+            const res = await fetch(url);
+            const data = await res.json();
+            const partidos = data.jornada?.Enfrentamientos || [];
+            
+            contenedor.innerHTML = '';
+            if (partidos.length === 0) contenedor.innerHTML = '<p class="text-center text-gray-500 mt-5">No hay partidos.</p>';
+
+            partidos.forEach(p => {
+                const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
+                const hora = p.FechaHora ? p.FechaHora.split('T')[1].substring(0,5) : '';
+                const escLocal = p.URLEscudoEquipoLocal ? `https://juegosdeportivos.ecmadrid.org${p.URLEscudoEquipoLocal}` : '';
+                const escVis = p.URLEscudoEquipoVisitante ? `https://juegosdeportivos.ecmadrid.org${p.URLEscudoEquipoVisitante}` : '';
+                
+                let htmlMapa = `<span>${p.CampoJuego?.Direccion || 'Campo por confirmar'}</span>`;
+                if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
+                    htmlMapa = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${p.CampoJuego?.Direccion || 'Ver en Mapa'}</a>`;
+                }
+                
+                contenedor.innerHTML += `
+                    <div class="card p-4">
+                        <div class="text-blue-500 font-bold text-xs mb-4 text-center"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
+                        
+                        <div class="flex justify-between items-start w-full">
+                            <div class="flex-1 flex flex-col items-center">
+                                ${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain mb-2">` : '<i class="fas fa-shield-alt text-gray-300 text-3xl mb-2"></i>'}
+                                <div class="text-xs font-bold text-center leading-tight w-full px-1">${acortarNombre(p.EquipoLocal)}</div>
+                            </div>
+                            
+                            <div class="px-2 flex flex-col items-center justify-center h-16">
+                                <span class="text-gray-400 text-sm font-bold bg-gray-100 px-3 py-1 rounded-full">vs</span>
+                            </div>
+
+                            <div class="flex-1 flex flex-col items-center">
+                                ${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain mb-2">` : '<i class="fas fa-shield-alt text-gray-300 text-3xl mb-2"></i>'}
+                                <div class="text-xs font-bold text-center leading-tight w-full px-1">${acortarNombre(p.EquipoVisitante)}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="text-xs text-gray-500 flex justify-center items-start mt-4 pt-3 border-t border-gray-100">
+                            <i class="fas fa-map-marker-alt text-red-500 mt-0.5 mr-2 shrink-0"></i>
+                            ${htmlMapa}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        async function cargarResultados() {
+            const contenedor = document.getElementById('lista-resultados');
+            contenedor.innerHTML = '<div class="flex justify-center mt-10"><div class="loader"></div></div>';
+            
+            const url = `/api/resultados/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`;
+            const res = await fetch(url);
+            const partidos = await res.json();
+            
+            contenedor.innerHTML = '';
+            if (!Array.isArray(partidos) || partidos.length === 0) contenedor.innerHTML = '<p class="text-center text-gray-500 mt-5">No hay resultados.</p>';
+
+            const agrupados = {};
+            partidos.forEach(p => {
+                const j = p.NumeroJornada || 0;
+                if(!agrupados[j]) agrupados[j] = [];
+                agrupados[j].push(p);
+            });
+
+            for (const j in agrupados) {
+                contenedor.innerHTML += `<h3 class="font-bold text-gray-500 text-sm mt-4 mb-2">Jornada ${j}</h3>`;
+                agrupados[j].forEach(p => {
+                    const escLocal = p.URLEscudoEquipoLocal ? `https://juegosdeportivos.ecmadrid.org${p.URLEscudoEquipoLocal}` : '';
+                    const escVis = p.URLEscudoEquipoVisitante ? `https://juegosdeportivos.ecmadrid.org${p.URLEscudoEquipoVisitante}` : '';
+                    
+                    contenedor.innerHTML += `
+                        <div class="card p-3 mb-2">
+                            <div class="flex justify-between items-center w-full">
+                                <!-- Local -->
+                                <div class="flex-1 flex flex-col items-center">
+                                    ${escLocal ? `<img src="${escLocal}" class="w-8 h-8 object-contain mb-1">` : '<i class="fas fa-shield-alt text-gray-300 text-2xl mb-1"></i>'}
+                                    <div class="text-[11px] font-bold text-center leading-tight w-full px-1">${acortarNombre(p.EquipoLocal)}</div>
+                                </div>
+                                
+                                <!-- Marcador -->
+                                <div class="px-2 flex flex-col items-center justify-center">
+                                    <span class="text-xl font-extrabold ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'text-gray-400' : 'text-gray-800'}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>
+                                </div>
+
+                                <!-- Visitante -->
+                                <div class="flex-1 flex flex-col items-center">
+                                    ${escVis ? `<img src="${escVis}" class="w-8 h-8 object-contain mb-1">` : '<i class="fas fa-shield-alt text-gray-300 text-2xl mb-1"></i>'}
+                                    <div class="text-[11px] font-bold text-center leading-tight w-full px-1">${acortarNombre(p.EquipoVisitante)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        async function cargarClasificacion() {
+            const tbody = document.getElementById('tabla-clasificacion');
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4"><div class="loader mx-auto"></div></td></tr>';
+            
+            const url = `/api/clasificacion/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`;
+            const res = await fetch(url);
+            const filas = await res.json();
+            
+            tbody.innerHTML = '';
+            if (!Array.isArray(filas) || filas.length === 0) tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-500">No hay clasificación</td></tr>';
+
+            filas.forEach(f => {
+                const esc = f.URLEscudo ? `https://juegosdeportivos.ecmadrid.org${f.URLEscudo}` : '';
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3 font-bold ${f.Posicion <= 3 ? 'text-blue-600' : 'text-gray-600'} align-top">${f.Posicion}</td>
+                        <td class="p-3 font-medium flex items-center">
+                            ${esc ? `<img src="${esc}" class="w-6 h-6 object-contain mr-2 shrink-0">` : ''}
+                            <span class="leading-tight pr-2">${f.NombreEquipo}</span>
+                        </td>
+                        <td class="p-3 text-center text-gray-500 align-top">${f.Jugados}</td>
+                        <td class="p-3 text-right font-bold text-blue-600 align-top">${f.Puntos}</td>
+                    </tr>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
