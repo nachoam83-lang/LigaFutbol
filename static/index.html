@@ -113,7 +113,6 @@
         let equipoActual = null;
         let jornadasData = [];
 
-        // AQUÍ HEMOS CAMBIADO EL LÍMITE A 30 CARACTERES
         function acortarNombre(nombre) {
             if (!nombre) return "";
             return nombre.length > 30 ? nombre.substring(0, 30) + "..." : nombre;
@@ -378,11 +377,11 @@
                     contenedor.innerHTML += `
                         <div class="card p-4 mb-2 flex flex-col w-full">
                             
-                            <!-- Fila 1: Nombres (Hasta 30 caracteres) -->
+                            <!-- Fila 1: Nombres CENTRADOS -->
                             <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-4">
-                                <div class="text-sm font-bold text-right pr-2 leading-tight">${acortarNombre(p.EquipoLocal)}</div>
+                                <div class="text-sm font-bold text-center px-1 leading-tight">${acortarNombre(p.EquipoLocal)}</div>
                                 <div class="text-gray-400 font-bold text-xs px-2">-</div>
-                                <div class="text-sm font-bold text-left pl-2 leading-tight">${acortarNombre(p.EquipoVisitante)}</div>
+                                <div class="text-sm font-bold text-center px-1 leading-tight">${acortarNombre(p.EquipoVisitante)}</div>
                             </div>
                             
                             <!-- Fila 2: Escudos grandes y Resultado -->
