@@ -113,9 +113,10 @@
         let equipoActual = null;
         let jornadasData = [];
 
+        // AQUÍ HEMOS CAMBIADO EL LÍMITE A 30 CARACTERES
         function acortarNombre(nombre) {
             if (!nombre) return "";
-            return nombre.length > 20 ? nombre.substring(0, 20) + "..." : nombre;
+            return nombre.length > 30 ? nombre.substring(0, 30) + "..." : nombre;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -327,7 +328,7 @@
                         
                         <div class="flex justify-between items-start w-full">
                             <div class="flex-1 flex flex-col items-center">
-                                ${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain mb-2">` : '<i class="fas fa-shield-alt text-gray-300 text-3xl mb-2"></i>'}
+                                ${escLocal ? `<img src="${escLocal}" class="w-12 h-12 object-contain mb-2">` : '<i class="fas fa-shield-alt text-gray-300 text-4xl mb-2"></i>'}
                                 <div class="text-xs font-bold text-center leading-tight w-full px-1">${acortarNombre(p.EquipoLocal)}</div>
                             </div>
                             
@@ -336,7 +337,7 @@
                             </div>
 
                             <div class="flex-1 flex flex-col items-center">
-                                ${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain mb-2">` : '<i class="fas fa-shield-alt text-gray-300 text-3xl mb-2"></i>'}
+                                ${escVis ? `<img src="${escVis}" class="w-12 h-12 object-contain mb-2">` : '<i class="fas fa-shield-alt text-gray-300 text-4xl mb-2"></i>'}
                                 <div class="text-xs font-bold text-center leading-tight w-full px-1">${acortarNombre(p.EquipoVisitante)}</div>
                             </div>
                         </div>
@@ -374,29 +375,28 @@
                     const escLocal = p.URLEscudoEquipoLocal ? `https://juegosdeportivos.ecmadrid.org${p.URLEscudoEquipoLocal}` : '';
                     const escVis = p.URLEscudoEquipoVisitante ? `https://juegosdeportivos.ecmadrid.org${p.URLEscudoEquipoVisitante}` : '';
                     
-                    // NUEVO DISEÑO: Nombres arriba, Escudos y resultado abajo
                     contenedor.innerHTML += `
                         <div class="card p-4 mb-2 flex flex-col w-full">
                             
-                            <!-- Fila 1: Nombres -->
-                            <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-3">
-                                <div class="text-sm font-bold text-right truncate pr-2">${acortarNombre(p.EquipoLocal)}</div>
+                            <!-- Fila 1: Nombres (Hasta 30 caracteres) -->
+                            <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-4">
+                                <div class="text-sm font-bold text-right pr-2 leading-tight">${acortarNombre(p.EquipoLocal)}</div>
                                 <div class="text-gray-400 font-bold text-xs px-2">-</div>
-                                <div class="text-sm font-bold text-left truncate pl-2">${acortarNombre(p.EquipoVisitante)}</div>
+                                <div class="text-sm font-bold text-left pl-2 leading-tight">${acortarNombre(p.EquipoVisitante)}</div>
                             </div>
                             
-                            <!-- Fila 2: Escudos y Resultado -->
+                            <!-- Fila 2: Escudos grandes y Resultado -->
                             <div class="flex justify-center items-center gap-4 w-full">
-                                <div class="w-12 flex justify-end">
-                                    ${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain">` : '<i class="fas fa-shield-alt text-gray-300 text-3xl"></i>'}
+                                <div class="w-16 flex justify-end">
+                                    ${escLocal ? `<img src="${escLocal}" class="w-14 h-14 object-contain">` : '<i class="fas fa-shield-alt text-gray-300 text-5xl"></i>'}
                                 </div>
                                 <div class="px-2">
-                                    <span class="text-2xl font-extrabold ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'text-gray-400' : 'text-gray-800'}">
+                                    <span class="text-3xl font-extrabold ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'text-gray-400' : 'text-gray-800'}">
                                         ${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}
                                     </span>
                                 </div>
-                                <div class="w-12 flex justify-start">
-                                    ${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain">` : '<i class="fas fa-shield-alt text-gray-300 text-3xl"></i>'}
+                                <div class="w-16 flex justify-start">
+                                    ${escVis ? `<img src="${escVis}" class="w-14 h-14 object-contain">` : '<i class="fas fa-shield-alt text-gray-300 text-5xl"></i>'}
                                 </div>
                             </div>
 
