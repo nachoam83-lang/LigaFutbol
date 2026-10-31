@@ -4,7 +4,6 @@ import time
 import urllib3
 import subprocess
 
-# Ocultar los avisos de SSL de versiones antiguas de Mac
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 HEADERS = {
@@ -25,20 +24,13 @@ def get_json(url):
 
 def extraer_todo():
     print("🚀 Iniciando extracción masiva de datos. Esto puede tardar unos minutos...")
-    datos_finales = {
-        "competiciones": {},
-        "calendario": {},
-        "resultados": {},
-        "clasificacion": {}
-    }
-    
+    datos_finales = {"competiciones": {}, "calendario": {}, "resultados": {}, "clasificacion": {}}
     deportes = {1: "Baloncesto", 2: "Fútbol Sala", 3: "Voleibol"}
     
     for id_deporte, nombre_deporte in deportes.items():
         print(f"\n⚽ Analizando Deporte: {nombre_deporte} (ID: {id_deporte})")
         datos_finales["competiciones"][str(id_deporte)] = []
         
-        # 1. Competiciones
         url_comp = f"https://juegosdeportivos.ecmadrid.org/api/CompeticionesPorDeporte?action=ObtenerCompeticionesDeporteListado&IdDeporte={id_deporte}&IdTemporada=12&elementoTodas=false&soloActivas=true&_={int(time.time()*1000)}"
         data_comp = get_json(url_comp)
         
@@ -47,9 +39,7 @@ def extraer_todo():
             continue
             
         items_comp = data_comp.get("data", data_comp.get("Data", [])) if isinstance(data_comp, dict) else data_comp
-        if not isinstance(items_comp, list) or len(items_comp) == 0:
-            print("  ❌ No se encontraron competiciones.")
-            continue
+        if not isinstance(items_comp, list) or len(items_comp) == 0: continue
             
         for comp in items_comp:
             id_comp = comp.get("Id")
@@ -58,7 +48,6 @@ def extraer_todo():
             
             print(f"  🏆 Competición: {nombre_comp} (ID: {id_comp})")
             
-            # 2. Categorías
             id_cat_real = id_comp
             if comp.get("IdCompeticionPadre") and comp.get("IdCompeticionPadre") > 0:
                 id_cat_real = comp.get("IdCompeticionPadre")
@@ -69,7 +58,6 @@ def extraer_todo():
                 if items_cat and isinstance(items_cat, list) and len(items_cat) > 0:
                     id_cat_real = items_cat[0].get("Id", id_comp)
 
-            # 3. Grupos
             url_grupos = f"https://juegosdeportivos.ecmadrid.org/api/GruposPorCategoria?action=ObtenerGruposCategoriaListado&IdCategoria={id_cat_real}&IdCompeticion={id_comp}&elementoTodas=false&_={int(time.time()*1000)}"
             data_grupos = get_json(url_grupos)
             items_grupos = data_grupos.get("data", data_grupos.get("Data", [])) if isinstance(data_grupos, dict) else data_grupos
@@ -83,24 +71,18 @@ def extraer_todo():
                     
                     print(f"    👥 Grupo: {nombre_grupo}")
                     lista_grupos.append({"Id": id_grupo, "Nombre": nombre_grupo})
-                    
                     key_grupo = f"{id_deporte}_{id_comp}_{id_cat_real}_{id_grupo}"
                     
-                    # 4. Calendario
                     url_cal = f"https://juegosdeportivos.ecmadrid.org/Calendarios/ObtenerDatosJornadaGrupo?IdDeporte={id_deporte}&IdCompeticion={id_comp}&IdCategoria={id_cat_real}&IdGrupo={id_grupo}&IdJornada=0&IdEquipo=0"
                     cal = get_json(url_cal)
                     if cal:
                         datos_finales["calendario"][key_grupo] = cal
-                        
-                        # 5. Resultados y Clasificación
                         todos_los_partidos = []
-                        jornadas = cal.get("jornadas", [])
-                        for j in jornadas:
+                        for j in cal.get("jornadas", []):
                             url_j = f"https://juegosdeportivos.ecmadrid.org/Calendarios/ObtenerDatosJornadaGrupo?IdDeporte={id_deporte}&IdCompeticion={id_comp}&IdCategoria={id_cat_real}&IdGrupo={id_grupo}&IdJornada={j['Id']}&IdEquipo=0"
                             cal_j = get_json(url_j)
                             if cal_j and "jornada" in cal_j:
-                                enf = cal_j["jornada"].get("Enfrentamientos", [])
-                                for e in enf:
+                                for e in cal_j["jornada"].get("Enfrentamientos", []):
                                     e["NumeroJornada"] = j["NumeroJornada"]
                                     todos_los_partidos.append(e)
                                     
@@ -128,27 +110,21 @@ def extraer_todo():
                         datos_finales["clasificacion"][key_grupo] = lista_tabla
 
             datos_finales["competiciones"][str(id_deporte)].append({
-                "Id": id_comp,
-                "IdCategoria": id_cat_real,
-                "Nombre": nombre_comp,
-                "Grupos": lista_grupos
+                "Id": id_comp, "IdCategoria": id_cat_real, "Nombre": nombre_comp, "Grupos": lista_grupos
             })
 
     with open("datos_liga.json", "w", encoding="utf-8") as f:
         json.dump(datos_finales, f, ensure_ascii=False, indent=2)
         
     print("\n✅ ¡Extracción completada! Archivo 'datos_liga.json' creado con éxito.")
-    
-    # --- SUBIR A GITHUB AUTOMÁTICAMENTE ---
     print("🚀 Subiendo datos a GitHub...")
     try:
         subprocess.run(["git", "add", "datos_liga.json"], check=True)
-        subprocess.run(["git", "commit", "-m", "Actualización automática de datos de la liga"], check=True)
+        subprocess.run(["git", "commit", "-m", "Actualización automática de datos"], check=True)
         subprocess.run(["git", "push", "origin", "main"], check=True)
-        print("✅ ¡Datos subidos a GitHub! Render se actualizará en un minuto.")
+        print("✅ ¡Datos subidos a GitHub!")
     except Exception as e:
         print(f"❌ Error al subir a GitHub: {e}")
-        print("Nota: Si es la primera vez, asegúrate de tener configurado el Token de GitHub.")
 
 if __name__ == "__main__":
     extraer_todo()
