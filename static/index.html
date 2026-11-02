@@ -48,7 +48,7 @@
             transform: scale(1.05);
         }
         .team-select-card img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 6px; }
-        .team-select-card span { font-size: 10px; text-align: center; font-weight: 700; color: #374151; line-height: 1.1; }
+        .team-select-card span { font-size: 11px; text-align: center; font-weight: 700; color: #374151; line-height: 1.1; }
     </style>
 </head>
 <body class="pb-20">
@@ -98,7 +98,6 @@
                 </div>
             </div>
 
-            <!-- PANEL DE SELECCIÓN VISUAL DE EQUIPO -->
             <div id="panel-seleccion-equipo" class="hide card p-4 border-2 border-[#D6B25A]">
                 <label class="block text-xs font-bold text-[#D6B25A] uppercase mb-3 text-center">👇 Toca el escudo de tu equipo</label>
                 <div id="grid-equipos" class="grid grid-cols-3 gap-2"></div>
@@ -138,7 +137,7 @@
                             <th class="p-3 text-right">PTS</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-clasificacion" class="divide-y divide-gray-100 text-sm"></tbody>
+                    <tbody id="tabla-clasificacion" class="divide-y divide-gray-100 text-[13px]"></tbody>
                 </table>
             </div>
         </div>
@@ -187,7 +186,6 @@
             renderizarEquipos();
         }
 
-        // --- PANTALLA MIS EQUIPOS (Estilo BeSoccer) ---
         function renderizarEquipos() {
             const contenedor = document.getElementById('lista-equipos');
             contenedor.innerHTML = '';
@@ -232,7 +230,6 @@
             }
         }
 
-        // --- FORMULARIO ---
         async function cargarCompeticiones(idDeporte) {
             const select = document.getElementById('select-competicion');
             select.innerHTML = '<option value="">Cargando...</option>';
@@ -282,7 +279,6 @@
             } catch (e) { selectGrupo.innerHTML = '<option value="">Error</option>'; }
         }
 
-        // Carga los equipos de ese grupo para mostrarlos visualmente
         async function cargarEquiposParaSeleccion() {
             const selectGrupo = document.getElementById('select-grupo');
             const idGrupo = selectGrupo.value;
@@ -389,7 +385,6 @@
             volverInicio();
         }
 
-        // --- DETALLE DEL EQUIPO (TABS) ---
         function abrirEquipo(index) {
             equipoActual = equipos[index];
             document.getElementById('titulo-detalle').innerText = equipoActual.nombre;
@@ -449,14 +444,12 @@
                 const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
                 const hora = p.FechaHora ? p.FechaHora.split('T')[1].substring(0,5) : '';
                 
-                // Arreglo del bug: Si no hay equipo, no mostramos escudo
                 const escLocal = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : '';
                 const escVis = p.EquipoVisitante ? (p.URLEscudoEquipoVisitante || '/static/logo.png') : '';
                 
                 const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
                 const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
                 
-                // Comprobar si es el partido del equipo favorito
                 const esFavorito = esLocalFav || esVisFav;
                 const claseTarjeta = esFavorito ? 'card p-3 card-favorito' : 'card p-3';
 
@@ -467,12 +460,13 @@
                 
                 contenedor.innerHTML += `
                     <div class="${claseTarjeta}">
-                        <div class="text-[#006D6F] font-bold text-[10px] mb-2 text-center uppercase tracking-wider"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
+                        <!-- FECHA Y HORA MÁS GRANDES -->
+                        <div class="text-[#006D6F] font-extrabold text-sm mb-2 text-center uppercase tracking-wider"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
                         
-                        <div class="flex justify-between items-center w-full">
+                        <div class="flex justify-between items-center w-full my-2">
                             <div class="flex-1 flex flex-col items-center">
-                                ${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain mb-1">` : '<div class="h-10 mb-1"></div>'}
-                                <div class="text-[11px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-700'}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
+                                ${escLocal ? `<img src="${escLocal}" class="w-12 h-12 object-contain mb-1">` : '<div class="h-12 mb-1"></div>'}
+                                <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-700'}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
                             </div>
                             
                             <div class="px-2 flex flex-col items-center justify-center h-10">
@@ -480,12 +474,13 @@
                             </div>
 
                             <div class="flex-1 flex flex-col items-center">
-                                ${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain mb-1">` : '<div class="h-10 mb-1"></div>'}
-                                <div class="text-[11px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-700'}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
+                                ${escVis ? `<img src="${escVis}" class="w-12 h-12 object-contain mb-1">` : '<div class="h-12 mb-1"></div>'}
+                                <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-700'}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
                             </div>
                         </div>
                         
-                        <div class="text-[10px] text-gray-500 flex justify-center items-start mt-3 pt-2 border-t border-[#006D6F]/10">
+                        <!-- DIRECCIÓN MÁS GRANDE -->
+                        <div class="text-xs text-gray-600 flex justify-center items-start mt-3 pt-2 border-t border-[#006D6F]/10">
                             <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
                             ${htmlMapa}
                         </div>
@@ -513,35 +508,36 @@
             });
 
             for (const j in agrupados) {
-                contenedor.innerHTML += `<h3 class="font-bold text-gray-400 text-xs mt-4 mb-2 uppercase tracking-wide">Jornada ${j}</h3>`;
+                // JORNADA MÁS GRANDE Y MÁS OSCURA
+                contenedor.innerHTML += `<h3 class="font-extrabold text-gray-700 text-base mt-5 mb-2 uppercase tracking-wide border-l-4 border-[#006D6F] pl-2">Jornada ${j}</h3>`;
+                
                 agrupados[j].forEach(p => {
-                    // Arreglo del bug: Si no hay equipo, no mostramos escudo
                     const escLocal = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : '';
                     const escVis = p.EquipoVisitante ? (p.URLEscudoEquipoVisitante || '/static/logo.png') : '';
                     
                     const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
                     const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
                     
-                    // Comprobar si es el partido del equipo favorito
                     const esFavorito = esLocalFav || esVisFav;
                     const claseTarjeta = esFavorito ? 'card p-3 mb-2 flex flex-col w-full card-favorito' : 'card p-3 mb-2 flex flex-col w-full';
 
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
+                            <!-- NOMBRES MÁS GRANDES -->
                             <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
-                                <div class="text-[11px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
+                                <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
                                 <div class="text-gray-400 font-bold text-xs px-1">-</div>
-                                <div class="text-[11px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
+                                <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
                             </div>
                             
-                            <div class="flex justify-center items-center gap-3 w-full mt-1">
-                                <div class="w-10 flex justify-end">${escLocal ? `<img src="${escLocal}" class="w-8 h-8 object-contain">` : ''}</div>
-                                <div class="px-1">
-                                    <span class="text-lg font-black ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'text-gray-300' : 'text-[#006D6F]'}">
+                            <div class="flex justify-center items-center gap-4 w-full mt-1">
+                                <div class="w-12 flex justify-end">${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain">` : ''}</div>
+                                <div class="px-2">
+                                    <span class="text-xl font-black ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'text-gray-300' : 'text-[#006D6F]'}">
                                         ${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}
                                     </span>
                                 </div>
-                                <div class="w-10 flex justify-start">${escVis ? `<img src="${escVis}" class="w-8 h-8 object-contain">` : ''}</div>
+                                <div class="w-12 flex justify-start">${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain">` : ''}</div>
                             </div>
                         </div>
                     `;
@@ -573,7 +569,7 @@
                             <span class="leading-tight pr-2 font-bold ${esFavorito ? 'text-[#D6B25A]' : 'text-gray-800'}">${f.NombreEquipo}</span>
                         </td>
                         <td class="p-3 text-center text-gray-500 align-middle">${f.Jugados}</td>
-                        <td class="p-3 text-right font-black ${colorPuntos} align-middle">${f.Puntos}</td>
+                        <td class="p-3 text-right font-black ${colorPuntos} align-middle text-base">${f.Puntos}</td>
                     </tr>
                 `;
             });
