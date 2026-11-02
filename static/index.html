@@ -17,18 +17,42 @@
             --primary-color: #006D6F; /* Verde azulado del colegio */
             --secondary-color: #D6B25A; /* Dorado del colegio */
             --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-main: #1f2937;
+            --text-sec: #6b7280;
+            --border-color: #e5e7eb;
         }
+
+        /* MODO OSCURO AUTOMÁTICO */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #121212;
+                --card-bg: #1e1e1e;
+                --text-main: #f3f4f6;
+                --text-sec: #9ca3af;
+                --border-color: #374151;
+            }
+            .card { background: var(--card-bg); border-color: var(--border-color); }
+            .text-gray-800, .text-gray-700 { color: var(--text-main) !important; }
+            .text-gray-500, .text-gray-600 { color: var(--text-sec) !important; }
+            .bg-gray-50, .bg-gray-100 { background-color: #2d3748 !important; }
+            .card-favorito { background-color: rgba(0, 109, 111, 0.2) !important; border-color: rgba(0, 109, 111, 0.5) !important; }
+            .border-gray-100, .border-gray-200 { border-color: var(--border-color) !important; }
+        }
+
         /* BLOQUEO DEL SCROLL DOWN (Rebote en iOS) */
         html, body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: var(--bg-color);
             overscroll-behavior-y: none; 
             overflow-x: hidden;
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         
         .hide { display: none !important; }
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
-        .card { background: white; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; transition: all 0.2s; }
+        .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
         .card-favorito { 
             background-color: #e6f2f2 !important; 
@@ -36,7 +60,7 @@
             box-shadow: 0 4px 6px -1px rgba(0, 109, 111, 0.1) !important;
         }
 
-        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+        .loader { border: 3px solid var(--border-color); border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         .btn-primary { background-color: var(--primary-color); color: white; }
@@ -44,17 +68,23 @@
         
         .team-select-card {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 10px 5px; border-radius: 10px; background: white; border: 2px solid #e5e7eb;
+            padding: 10px 5px; border-radius: 10px; background: var(--card-bg); border: 2px solid var(--border-color);
             cursor: pointer; transition: all 0.2s;
         }
         .team-select-card.selected {
             border-color: var(--secondary-color);
-            background-color: #fffbeb;
+            background-color: rgba(214, 178, 90, 0.1);
             box-shadow: 0 0 10px rgba(214, 178, 90, 0.4);
             transform: scale(1.05);
         }
         .team-select-card img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 6px; }
-        .team-select-card span { font-size: 11px; text-align: center; font-weight: 700; color: #374151; line-height: 1.1; }
+        .team-select-card span { font-size: 11px; text-align: center; font-weight: 700; color: var(--text-main); line-height: 1.1; }
+
+        /* Bolitas de racha */
+        .streak-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin: 0 1px; }
+        .streak-v { background-color: #10b981; } /* Verde victoria */
+        .streak-e { background-color: #9ca3af; } /* Gris empate */
+        .streak-d { background-color: #ef4444; } /* Rojo derrota */
     </style>
 </head>
 <body class="pb-20">
@@ -65,11 +95,11 @@
             <h1 class="text-xl font-bold tracking-wide">Mis Equipos</h1>
             <button onclick="mostrarFormulario()" class="bg-white text-[#006D6F] rounded-full w-8 h-8 flex items-center justify-center shadow-sm text-lg font-bold">+</button>
         </div>
-        <div id="lista-equipos" class="p-4 space-y-3"></div>
+        <div id="lista-equipos" class="p-4 space-y-4"></div>
     </div>
 
     <!-- PANTALLA 2: AÑADIR EQUIPO -->
-    <div id="screen-formulario" class="hide max-w-md mx-auto bg-gray-50 min-h-screen">
+    <div id="screen-formulario" class="hide max-w-md mx-auto min-h-screen" style="background-color: var(--bg-color);">
         <div class="text-white p-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left"></i></button>
             <h1 class="text-lg font-bold">Añadir Jugador</h1>
@@ -77,28 +107,28 @@
         
         <div class="p-4 space-y-4">
             <div class="card p-4">
-                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre del Jugador</label>
-                <input type="text" id="input-nombre" placeholder="Ej: Mateo" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-[#006D6F] text-sm font-medium">
+                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Nombre del Jugador</label>
+                <input type="text" id="input-nombre" placeholder="Ej: Mateo" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
             </div>
             
             <div class="card p-4 space-y-3">
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Deporte</label>
-                    <select id="select-deporte" onchange="cambiarDeporte()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Deporte</label>
+                    <select id="select-deporte" onchange="cambiarDeporte()" class="w-full p-3 rounded-lg text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
                         <option value="1">Baloncesto</option>
                         <option value="2" selected>Fútbol Sala</option>
                         <option value="3">Voleibol</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Competición</label>
-                    <select id="select-competicion" onchange="cambiarCompeticion()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Competición</label>
+                    <select id="select-competicion" onchange="cambiarCompeticion()" class="w-full p-3 rounded-lg text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
                         <option value="">Cargando...</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Grupo</label>
-                    <select id="select-grupo" onchange="cargarEquiposParaSeleccion()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Grupo</label>
+                    <select id="select-grupo" onchange="cargarEquiposParaSeleccion()" class="w-full p-3 rounded-lg text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
                         <option value="">Selecciona grupo...</option>
                     </select>
                 </div>
@@ -116,12 +146,10 @@
     <!-- PANTALLA 3: DETALLE DEL EQUIPO (TABS) -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
         
-        <!-- CABECERA MINIMALISTA HORIZONTAL (Calendario, Resultados, Clasificación) -->
+        <!-- CABECERA MINIMALISTA -->
         <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <div class="flex items-center p-4">
                 <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
-                
-                <!-- Escudo a la izquierda, Nombre y Categoría a la derecha -->
                 <div class="flex items-center flex-1">
                     <div class="w-14 h-14 bg-white rounded-full p-1 shadow-sm mr-4 flex-shrink-0 flex items-center justify-center">
                         <img id="titulo-detalle-escudo" src="/static/logo.png" class="w-10 h-10 object-contain">
@@ -136,7 +164,7 @@
 
         <!-- Calendario -->
         <div id="tab-calendario" class="p-4 space-y-4">
-            <select id="select-jornada" onchange="cargarCalendario()" class="w-full p-3 bg-white border border-gray-200 rounded-lg shadow-sm mb-2 text-sm font-bold text-[#006D6F]"></select>
+            <select id="select-jornada" onchange="cargarCalendario()" class="w-full p-3 rounded-lg shadow-sm mb-2 text-sm font-bold" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--primary-color);"></select>
             <div id="lista-calendario" class="space-y-3"></div>
         </div>
 
@@ -149,21 +177,22 @@
         <div id="tab-clasificacion" class="hide p-4">
             <div class="card overflow-hidden">
                 <table class="w-full text-left border-collapse">
-                    <thead class="text-xs text-gray-500 font-bold uppercase border-b border-gray-200" style="background-color: #f9fafb;">
+                    <thead class="text-xs font-bold uppercase border-b" style="background-color: var(--bg-color); color: var(--text-sec); border-color: var(--border-color);">
                         <tr>
                             <th class="p-3">Pos</th>
                             <th class="p-3">Equipo</th>
                             <th class="p-3 text-center">PJ</th>
+                            <th class="p-3 text-center hidden sm:table-cell">Racha</th>
                             <th class="p-3 text-right">PTS</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-clasificacion" class="divide-y divide-gray-100 text-[13px]"></tbody>
+                    <tbody id="tabla-clasificacion" class="divide-y text-[13px]" style="border-color: var(--border-color);"></tbody>
                 </table>
             </div>
         </div>
 
         <!-- Bottom Tab Bar -->
-        <div class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 flex justify-around pt-2 pb-6 text-xs font-bold text-gray-400">
+        <div class="fixed bottom-0 w-full max-w-md border-t flex justify-around pt-2 pb-6 text-xs font-bold" style="background-color: var(--card-bg); border-color: var(--border-color); color: var(--text-sec);">
             <button onclick="cambiarTab('calendario')" id="btn-tab-calendario" class="flex flex-col items-center tab-active w-1/3">
                 <i class="fas fa-calendar text-lg mb-1"></i> Calendario
             </button>
@@ -180,7 +209,6 @@
         let equipos = JSON.parse(localStorage.getItem('equipos_liga')) || [];
         let equipoActual = null;
         let jornadasData = [];
-        
         let equipoSeleccionadoVisual = null; 
 
         function acortarNombre(nombre) {
@@ -206,8 +234,8 @@
             renderizarEquipos();
         }
 
-        // --- DISEÑO DE LA LISTA DE EQUIPOS (Añadido el equipo en dorado) ---
-        function renderizarEquipos() {
+        // --- PANTALLA 1: MIS EQUIPOS CON PRÓXIMO PARTIDO ---
+        async function renderizarEquipos() {
             const contenedor = document.getElementById('lista-equipos');
             contenedor.innerHTML = '';
             
@@ -220,30 +248,64 @@
                 return;
             }
 
-            equipos.forEach((eq, index) => {
+            for (let index = 0; index < equipos.length; index++) {
+                const eq = equipos[index];
                 const div = document.createElement('div');
-                div.className = 'text-white p-4 rounded-xl shadow-md flex items-center justify-between cursor-pointer';
+                div.className = 'text-white p-4 rounded-xl shadow-md flex flex-col cursor-pointer transition hover:opacity-90';
                 div.style.backgroundColor = 'var(--primary-color)';
                 div.onclick = () => abrirEquipo(index);
                 
-                // Añadimos el nombre del equipo en color dorado y con el límite de 30 caracteres
                 div.innerHTML = `
-                    <div class="flex items-center flex-1">
-                        <div class="w-14 h-14 mr-4 flex items-center justify-center bg-white rounded-full p-1 shadow-sm flex-shrink-0">
-                            ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="w-10 h-10 object-contain">` : '<i class="fas fa-shield-alt text-[#006D6F] text-2xl"></i>'}
+                    <div class="flex items-center justify-between w-full">
+                        <div class="flex items-center flex-1">
+                            <div class="w-14 h-14 mr-4 flex items-center justify-center bg-white rounded-full p-1 shadow-sm flex-shrink-0">
+                                ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="w-10 h-10 object-contain">` : '<i class="fas fa-shield-alt text-[#006D6F] text-2xl"></i>'}
+                            </div>
+                            <div class="flex flex-col">
+                                <h3 class="font-black text-xl leading-tight">${eq.nombre}</h3>
+                                <p class="text-xs text-white/80 font-semibold uppercase tracking-wider mt-1">${eq.nombreCompeticion}</p>
+                                <p class="text-[12px] font-bold text-[#D6B25A] tracking-wide mt-0.5 truncate" style="max-width: 200px;">${acortarNombre(eq.equipoFavorito)}</p>
+                            </div>
                         </div>
-                        <div class="flex flex-col">
-                            <h3 class="font-black text-xl leading-tight">${eq.nombre}</h3>
-                            <p class="text-xs text-white/80 font-semibold uppercase tracking-wider mt-1">${eq.nombreCompeticion}</p>
-                            <p class="text-[12px] font-bold text-[#D6B25A] tracking-wide mt-0.5 truncate" style="max-width: 220px;">${acortarNombre(eq.equipoFavorito)}</p>
-                        </div>
+                        <button class="text-white/50 hover:text-white p-2" onclick="event.stopPropagation(); borrarEquipo(${index})">
+                            <i class="fas fa-trash-alt text-lg"></i>
+                        </button>
                     </div>
-                    <button class="text-white/50 hover:text-white p-2" onclick="event.stopPropagation(); borrarEquipo(${index})">
-                        <i class="fas fa-trash-alt text-lg"></i>
-                    </button>
+                    <!-- Próximo Partido (Se carga dinámicamente) -->
+                    <div id="proximo-partido-${eq.id}" class="mt-3 pt-3 border-t border-white/20 w-full text-xs text-white/90"></div>
                 `;
                 contenedor.appendChild(div);
-            });
+
+                // Cargar Próximo Partido Asíncronamente
+                cargarProximoPartido(eq, `proximo-partido-${eq.id}`);
+            }
+        }
+
+        async function cargarProximoPartido(eq, elementId) {
+            const contenedor = document.getElementById(elementId);
+            if (!contenedor) return;
+            contenedor.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Buscando partido...';
+            
+            try {
+                const url = `/api/calendario/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}/0`;
+                const res = await fetch(url);
+                const data = await res.json();
+                const partidos = data.jornada?.Enfrentamientos || [];
+                
+                const partido = partidos.find(p => p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito);
+                
+                if (partido) {
+                    const fecha = partido.FechaHora ? partido.FechaHora.split('T')[0].split('-').reverse().join('/') : '';
+                    const hora = partido.FechaHora ? partido.FechaHora.split('T')[1].substring(0,5) : '';
+                    const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
+                    
+                    contenedor.innerHTML = `<i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h <span class="mx-2">|</span> vs. ${acortarNombre(rival)}`;
+                } else {
+                    contenedor.innerHTML = `<i class="far fa-calendar-alt mr-1"></i> Jornada ${data.jornada?.NumeroJornada || ''} (Descansa)`;
+                }
+            } catch (e) {
+                contenedor.innerHTML = `No se pudo cargar el próximo partido`;
+            }
         }
 
         function borrarEquipo(index) {
@@ -352,7 +414,7 @@
 
                 grid.innerHTML = '';
                 if (equiposLista.length === 0) {
-                    grid.innerHTML = '<p class="col-span-3 text-center text-gray-400 text-xs">No se pudieron cargar los equipos</p>';
+                    grid.innerHTML = '<p class="col-span-3 text-center text-xs" style="color: var(--text-sec);">No se pudieron cargar los equipos</p>';
                 }
 
                 equiposLista.forEach(eq => {
@@ -369,14 +431,13 @@
                 });
 
             } catch (e) {
-                grid.innerHTML = '<p class="col-span-3 text-red-500 text-center text-xs">Error al cargar equipos</p>';
+                grid.innerHTML = '<p class="col-span-3 text-center text-red-500 text-xs">Error al cargar equipos</p>';
             }
         }
 
         function seleccionarEquipoVisual(elementoHTML, datosEquipo) {
             document.querySelectorAll('.team-select-card').forEach(el => el.classList.remove('selected'));
             elementoHTML.classList.add('selected');
-            
             equipoSeleccionadoVisual = datosEquipo;
             document.getElementById('btn-guardar').disabled = false;
         }
@@ -399,7 +460,6 @@
                 idCategoria: selComp.options[selComp.selectedIndex].getAttribute('data-cat'),
                 idGrupo: selGrupo.value,
                 nombreGrupo: selGrupo.options[selGrupo.selectedIndex].text,
-                
                 equipoFavorito: equipoSeleccionadoVisual.nombre,
                 escudoFavorito: equipoSeleccionadoVisual.escudo
             };
@@ -409,11 +469,8 @@
             volverInicio();
         }
 
-        // --- ABRIR EQUIPO Y CARGAR CABECERA MINIMALISTA ---
         function abrirEquipo(index) {
             equipoActual = equipos[index];
-            
-            // Rellenamos la cabecera interior (escudo, nombre y categoría)
             document.getElementById('titulo-detalle-nombre').innerText = equipoActual.nombre;
             document.getElementById('titulo-detalle-categoria').innerText = equipoActual.nombreCompeticion;
             
@@ -452,7 +509,6 @@
             const data = await res.json();
             
             jornadasData = data.jornadas || [];
-            
             let indiceSeleccionado = 0; 
             if (jornadasData.length > 0) {
                 const hoy = new Date();
@@ -465,7 +521,6 @@
                     if (j.Fecha) {
                         const fechaJornada = new Date(j.Fecha);
                         fechaJornada.setHours(0,0,0,0);
-                        
                         if (fechaJornada >= ayer) {
                             indiceSeleccionado = i;
                             break;
@@ -476,16 +531,12 @@
 
             const select = document.getElementById('select-jornada');
             select.innerHTML = '';
-            
             jornadasData.forEach((j, i) => {
                 const selected = (i === indiceSeleccionado) ? 'selected' : '';
                 select.innerHTML += `<option value="${j.Id}" ${selected}>Jornada ${j.NumeroJornada}</option>`;
             });
 
-            if(jornadasData.length > 0) {
-                select.value = jornadasData[indiceSeleccionado].Id;
-            }
-
+            if(jornadasData.length > 0) select.value = jornadasData[indiceSeleccionado].Id;
             cargarCalendario();
         }
 
@@ -500,7 +551,7 @@
             const partidos = data.jornada?.Enfrentamientos || [];
             
             contenedor.innerHTML = '';
-            if (partidos.length === 0) contenedor.innerHTML = '<p class="text-center text-gray-500 mt-5">No hay partidos.</p>';
+            if (partidos.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay partidos.</p>';
 
             partidos.forEach(p => {
                 const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
@@ -511,7 +562,6 @@
                 
                 const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
                 const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
-                
                 const esFavorito = esLocalFav || esVisFav;
                 const claseTarjeta = esFavorito ? 'card p-3 card-favorito' : 'card p-3';
 
@@ -519,31 +569,45 @@
                 if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
                     htmlMapa = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${p.CampoJuego?.Direccion || 'Ver en Mapa'}</a>`;
                 }
+
+                // BOTÓN DE WHATSAPP (Solo si es el equipo favorito)
+                let botonWhatsapp = '';
+                if (esFavorito) {
+                    const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
+                    const texto = `¡Oye! El próximo partido de ${equipoActual.nombre} es el ${fecha} a las ${hora}h en ${p.CampoJuego?.Direccion || 'el campo'}. ¡Allí nos vemos!`;
+                    const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+                    botonWhatsapp = `
+                        <a href="${urlWp}" target="_blank" class="mt-2 w-full flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold py-2 rounded-lg shadow-sm hover:bg-[#1ebe5d] transition">
+                            <i class="fab fa-whatsapp text-lg"></i> Compartir Partido
+                        </a>
+                    `;
+                }
                 
                 contenedor.innerHTML += `
                     <div class="${claseTarjeta}">
-                        <div class="text-[#006D6F] font-extrabold text-sm mb-2 text-center uppercase tracking-wider"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
+                        <div class="font-extrabold text-sm mb-2 text-center uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
                         
                         <div class="flex justify-between items-center w-full my-2">
                             <div class="flex-1 flex flex-col items-center">
                                 ${escLocal ? `<img src="${escLocal}" class="w-12 h-12 object-contain mb-1">` : '<div class="h-12 mb-1"></div>'}
-                                <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-700'}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
+                                <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : ''}" style="${!esLocalFav ? 'color: var(--text-main);' : ''}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
                             </div>
                             
                             <div class="px-2 flex flex-col items-center justify-center h-10">
-                                <span class="text-gray-400 text-xs font-bold bg-white/50 px-2 py-1 rounded border border-gray-200">vs</span>
+                                <span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>
                             </div>
 
                             <div class="flex-1 flex flex-col items-center">
                                 ${escVis ? `<img src="${escVis}" class="w-12 h-12 object-contain mb-1">` : '<div class="h-12 mb-1"></div>'}
-                                <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-700'}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
+                                <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : ''}" style="${!esVisFav ? 'color: var(--text-main);' : ''}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
                             </div>
                         </div>
                         
-                        <div class="text-xs text-gray-600 flex justify-center items-start mt-3 pt-2 border-t border-[#006D6F]/10">
+                        <div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);">
                             <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
                             ${htmlMapa}
                         </div>
+                        ${botonWhatsapp}
                     </div>
                 `;
             });
@@ -558,7 +622,7 @@
             const partidos = await res.json();
             
             contenedor.innerHTML = '';
-            if (!Array.isArray(partidos) || partidos.length === 0) contenedor.innerHTML = '<p class="text-center text-gray-500 mt-5">No hay resultados.</p>';
+            if (!Array.isArray(partidos) || partidos.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay resultados.</p>';
 
             const agrupados = {};
             partidos.forEach(p => {
@@ -568,7 +632,7 @@
             });
 
             for (const j in agrupados) {
-                contenedor.innerHTML += `<h3 class="font-extrabold text-gray-700 text-base mt-5 mb-2 uppercase tracking-wide border-l-4 border-[#006D6F] pl-2">Jornada ${j}</h3>`;
+                contenedor.innerHTML += `<h3 class="font-extrabold text-base mt-5 mb-2 uppercase tracking-wide border-l-4 border-[#006D6F] pl-2" style="color: var(--text-main);">Jornada ${j}</h3>`;
                 
                 agrupados[j].forEach(p => {
                     const escLocal = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : '';
@@ -583,15 +647,15 @@
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
                             <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
-                                <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
-                                <div class="text-gray-400 font-bold text-xs px-1">-</div>
-                                <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
+                                <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : ''}" style="${!esLocalFav ? 'color: var(--text-main);' : ''}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
+                                <div class="text-xs px-1" style="color: var(--text-sec);">-</div>
+                                <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : ''}" style="${!esVisFav ? 'color: var(--text-main);' : ''}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
                             </div>
                             
                             <div class="flex justify-center items-center gap-4 w-full mt-1">
                                 <div class="w-12 flex justify-end">${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain">` : ''}</div>
                                 <div class="px-2">
-                                    <span class="text-xl font-black ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'text-gray-300' : 'text-[#006D6F]'}">
+                                    <span class="text-xl font-black ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'opacity-30' : ''}" style="color: var(--primary-color);">
                                         ${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}
                                     </span>
                                 </div>
@@ -603,31 +667,63 @@
             }
         }
 
+        // --- CLASIFICACIÓN CON RACHA ---
         async function cargarClasificacion() {
             const tbody = document.getElementById('tabla-clasificacion');
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4"><div class="loader mx-auto"></div></td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4"><div class="loader mx-auto"></div></td></tr>';
             
-            const url = `/api/clasificacion/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`;
-            const res = await fetch(url);
-            const filas = await res.json();
+            // 1. Cargar clasificación y resultados en paralelo
+            const [resClasif, resResultados] = await Promise.all([
+                fetch(`/api/clasificacion/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`),
+                fetch(`/api/resultados/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`)
+            ]);
+            
+            const filas = await resClasif.json();
+            const todosLosPartidos = await resResultados.json();
             
             tbody.innerHTML = '';
-            if (!Array.isArray(filas) || filas.length === 0) tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-500">No hay clasificación</td></tr>';
+            if (!Array.isArray(filas) || filas.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>';
+                return;
+            }
+
+            // 2. Función para calcular la racha de un equipo
+            function calcularRacha(nombreEquipo) {
+                const partidosEquipo = todosLosPartidos.filter(p => 
+                    (p.EquipoLocal === nombreEquipo || p.EquipoVisitante === nombreEquipo) && 
+                    (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0)
+                ).sort((a, b) => a.NumeroJornada - b.NumeroJornada); // Ordenar por jornada
+
+                const ultimos5 = partidosEquipo.slice(-5);
+                if (ultimos5.length === 0) return '<span class="text-xs" style="color:var(--text-sec)">-</span>';
+
+                return ultimos5.map(p => {
+                    const isLocal = p.EquipoLocal === nombreEquipo;
+                    const golesFavor = isLocal ? p.ResultadoEquipoLocal : p.ResultadoEquipoVisitante;
+                    const golesContra = isLocal ? p.ResultadoEquipoVisitante : p.ResultadoEquipoLocal;
+
+                    if (golesFavor > golesContra) return '<span class="streak-dot streak-v" title="Victoria"></span>';
+                    if (golesFavor < golesContra) return '<span class="streak-dot streak-d" title="Derrota"></span>';
+                    return '<span class="streak-dot streak-e" title="Empate"></span>';
+                }).join('');
+            }
 
             filas.forEach(f => {
                 const esc = f.URLEscudo || '/static/logo.png';
                 const esFavorito = f.NombreEquipo === equipoActual.equipoFavorito;
-                const colorPuntos = esFavorito ? 'text-[#D6B25A]' : 'text-[#006D6F]';
+                const colorPuntos = esFavorito ? 'text-[#D6B25A]' : '';
+                const rachaHTML = calcularRacha(f.NombreEquipo);
                 
                 tbody.innerHTML += `
-                    <tr class="${esFavorito ? 'bg-[#e6f2f2]' : 'hover:bg-gray-50'}">
-                        <td class="p-3 font-bold ${f.Posicion <= 3 ? 'text-[#006D6F]' : 'text-gray-600'} align-middle">${f.Posicion}</td>
+                    <tr class="${esFavorito ? 'bg-[#e6f2f2]/20' : ''}" style="border-color: var(--border-color);">
+                        <td class="p-3 font-bold ${f.Posicion <= 3 ? 'text-[#006D6F]' : ''} align-middle" style="${f.Posicion > 3 ? 'color: var(--text-main);' : ''}">${f.Posicion}</td>
                         <td class="p-3 font-medium flex items-center">
                             <img src="${esc}" class="w-6 h-6 object-contain mr-2 shrink-0">
-                            <span class="leading-tight pr-2 font-bold ${esFavorito ? 'text-[#D6B25A]' : 'text-gray-800'}">${f.NombreEquipo}</span>
+                            <span class="leading-tight pr-2 font-bold ${esFavorito ? 'text-[#D6B25A]' : ''}" style="${!esFavorito ? 'color: var(--text-main);' : ''}">${f.NombreEquipo}</span>
                         </td>
-                        <td class="p-3 text-center text-gray-500 align-middle">${f.Jugados}</td>
-                        <td class="p-3 text-right font-black ${colorPuntos} align-middle text-base">${f.Puntos}</td>
+                        <td class="p-3 text-center align-middle" style="color: var(--text-sec);">${f.Jugados}</td>
+                        <td class="p-3 text-center align-middle hidden sm:table-cell">${rachaHTML}</td>
+                        <td class="p-3 text-right font-black align-middle text-base ${colorPuntos}" style="${!esFavorito ? 'color: var(--primary-color);' : ''}">${f.Puntos}</td>
                     </tr>
                 `;
             });
