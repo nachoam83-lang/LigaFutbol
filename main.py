@@ -83,34 +83,35 @@ def get_clasificacion(id_deporte: int, id_competicion: int, id_categoria: int, i
 @app.get("/api/ics")
 def get_ics(titulo: str, fecha: str, lugar: str):
     try:
-        # 1. Parsear la fecha original del partido
         fecha_dt = datetime.fromisoformat(fecha)
         
-        # 2. Restar 30 minutos para la convocatoria (Hora de inicio del evento)
+        # El evento empieza 30 mins antes (Convocatoria)
         hora_inicio_evento = fecha_dt - timedelta(minutes=30)
-        
-        # 3. Calcular el fin (30 mins convocatoria + 75 mins partido = 105 mins desde el inicio)
+        # Dura 105 mins en total (30 + 75)
         hora_fin_evento = hora_inicio_evento + timedelta(minutes=105)
         
         dtstart = hora_inicio_evento.strftime("%Y%m%dT%H%M%S")
         dtend = hora_fin_evento.strftime("%Y%m%dT%H%M%S")
-        
-        # Formatear la hora real del partido para la descripción
         hora_partido_str = fecha_dt.strftime("%H:%M")
     except Exception as e:
-        print(f"Error con la fecha: {e}")
         return Response(status_code=400, content="Fecha inválida")
 
-    # 4. Limpiar textos y añadir la nota de la hora
+    # Detectar si es exterior o pabellón para las notas
+    lugar_upper = lugar.upper()
+    tipo_campo = "Exterior"
+    if "CUBIERTO" in lugar_upper or "CUBIERTA" in lugar_upper or "PABELLON" in lugar_upper:
+        tipo_campo = "Pabellón / Cubierto"
+        
     lugar_limpio = lugar.replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
     titulo_limpio = titulo.replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
-    descripcion = f"Convocatoria y Partido.\\nEl partido comienza a las {hora_partido_str}h."
+    
+    # Notas: Aviso de convocatoria y el tipo de campo
+    descripcion = f"Convocatoria 30 min antes.\\nEl partido comienza a las {hora_partido_str}h.\\nCampo: {tipo_campo}."
 
-    # 5. Generar el formato ICS
     ics_content = f"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//LigaFutbol//ES\r\nBEGIN:VEVENT\r\nSUMMARY:{titulo_limpio}\r\nDTSTART:{dtstart}\r\nDTEND:{dtend}\r\nLOCATION:{lugar_limpio}\r\nDESCRIPTION:{descripcion}\r\nEND:VEVENT\r\nEND:VCALENDAR"
 
     return Response(
         content=ics_content, 
         media_type="text/calendar", 
-        headers={"Content-Disposition": "attachment; filename=convocatoria.ics"}
+        headers={"Content-Disposition": "attachment; filename=partido.ics"}
     )
