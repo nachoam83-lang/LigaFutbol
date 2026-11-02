@@ -18,12 +18,18 @@
             --secondary-color: #D6B25A; /* Dorado del colegio */
             --bg-color: #f0f2f5;
         }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); }
+        /* BLOQUEO DEL SCROLL DOWN (Rebote en iOS) */
+        html, body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
+            background-color: var(--bg-color);
+            overscroll-behavior-y: none; /* Evita el efecto de rebote */
+            overflow-x: hidden;
+        }
+        
         .hide { display: none !important; }
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: white; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; transition: all 0.2s; }
         
-        /* Fondo verde clarito para el equipo seleccionado */
         .card-favorito { 
             background-color: #e6f2f2 !important; 
             border-color: rgba(0, 109, 111, 0.3) !important;
@@ -109,9 +115,30 @@
 
     <!-- PANTALLA 3: DETALLE DEL EQUIPO (TABS) -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
-        <div class="text-white p-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
-            <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left"></i></button>
-            <h2 id="titulo-detalle" class="text-lg font-bold truncate">Mi Equipo</h2>
+        
+        <!-- NUEVA CABECERA TIPO PERFIL DE JUGADOR -->
+        <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
+            <!-- Barra superior con botón atrás -->
+            <div class="flex items-center justify-between p-4 pb-2">
+                <button onclick="volverInicio()" class="w-8"><i class="fas fa-chevron-left text-lg"></i></button>
+                <span class="text-[10px] font-bold tracking-widest opacity-70 uppercase">Ficha del Jugador</span>
+                <div class="w-8"></div>
+            </div>
+            
+            <!-- Datos del Jugador -->
+            <div class="flex flex-col items-center pb-5 px-4">
+                <!-- Linea 1: NOMBRE -->
+                <h2 id="titulo-detalle-nombre" class="text-2xl font-black tracking-wide text-white text-center leading-none mb-1"></h2>
+                
+                <!-- Linea 2: CATEGORIA -->
+                <p id="titulo-detalle-categoria" class="text-[11px] font-semibold text-white/80 uppercase tracking-widest mb-4 text-center"></p>
+                
+                <!-- Linea 3: ESCUDO GRANDE Y EQUIPO -->
+                <div class="flex items-center gap-3 bg-white/15 px-5 py-2.5 rounded-full backdrop-blur-md border border-white/20 shadow-inner">
+                    <img id="titulo-detalle-escudo" src="/static/logo.png" class="w-12 h-12 object-contain bg-white rounded-full p-1 shadow-sm">
+                    <span id="titulo-detalle-equipo" class="text-[15px] font-bold text-white truncate max-w-[200px]"></span>
+                </div>
+            </div>
         </div>
 
         <!-- Calendario -->
@@ -163,9 +190,9 @@
         
         let equipoSeleccionadoVisual = null; 
 
-        // AQUÍ ESTÁ EL CAMBIO: Vuelve a estar en 30
         function acortarNombre(nombre) {
             if (!nombre) return "";
+            // Límite de 30 caracteres
             return nombre.length > 30 ? nombre.substring(0, 30) + "..." : nombre;
         }
 
@@ -386,9 +413,24 @@
             volverInicio();
         }
 
+        // --- ACTUALIZACIÓN DE LA FICHA DEL JUGADOR ---
         function abrirEquipo(index) {
             equipoActual = equipos[index];
-            document.getElementById('titulo-detalle').innerText = equipoActual.nombre;
+            
+            // Rellenamos la nueva cabecera
+            document.getElementById('titulo-detalle-nombre').innerText = equipoActual.nombre;
+            document.getElementById('titulo-detalle-categoria').innerText = equipoActual.nombreCompeticion;
+            
+            if (equipoActual.escudoFavorito) {
+                document.getElementById('titulo-detalle-escudo').src = equipoActual.escudoFavorito;
+                document.getElementById('titulo-detalle-escudo').classList.remove('hide');
+            } else {
+                document.getElementById('titulo-detalle-escudo').classList.add('hide');
+            }
+            
+            document.getElementById('titulo-detalle-equipo').innerText = acortarNombre(equipoActual.equipoFavorito);
+
+            // Cambiamos de pantalla
             document.getElementById('screen-equipos').classList.add('hide');
             document.getElementById('screen-detalle').classList.remove('hide');
             cambiarTab('calendario');
@@ -417,14 +459,41 @@
             const data = await res.json();
             
             jornadasData = data.jornadas || [];
+            
+            // Lógica para seleccionar la próxima jornada
+            let indiceSeleccionado = 0; 
+            if (jornadasData.length > 0) {
+                const hoy = new Date();
+                hoy.setHours(0,0,0,0);
+                const ayer = new Date(hoy);
+                ayer.setDate(ayer.getDate() - 1); 
+
+                for (let i = 0; i < jornadasData.length; i++) {
+                    const j = jornadasData[i];
+                    if (j.Fecha) {
+                        const fechaJornada = new Date(j.Fecha);
+                        fechaJornada.setHours(0,0,0,0);
+                        
+                        if (fechaJornada >= ayer) {
+                            indiceSeleccionado = i;
+                            break;
+                        }
+                    }
+                }
+            }
+
             const select = document.getElementById('select-jornada');
             select.innerHTML = '';
             
-            if (jornadasData.length > 0) {
-                jornadasData.forEach(j => {
-                    select.innerHTML += `<option value="${j.Id}">Jornada ${j.NumeroJornada}</option>`;
-                });
+            jornadasData.forEach((j, i) => {
+                const selected = (i === indiceSeleccionado) ? 'selected' : '';
+                select.innerHTML += `<option value="${j.Id}" ${selected}>Jornada ${j.NumeroJornada}</option>`;
+            });
+
+            if(jornadasData.length > 0) {
+                select.value = jornadasData[indiceSeleccionado].Id;
             }
+
             cargarCalendario();
         }
 
