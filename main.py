@@ -80,34 +80,27 @@ def get_clasificacion(id_deporte: int, id_competicion: int, id_categoria: int, i
     key = f"{id_deporte}_{id_competicion}_{id_categoria}_{id_grupo}"
     return datos["clasificacion"].get(key, [])
 
-# --- NUEVA RUTA PARA GENERAR EL ARCHIVO DE CALENDARIO ---
 @app.get("/api/ics")
 def get_ics(titulo: str, fecha: str, lugar: str):
     try:
-        # Convertimos la fecha que viene como texto a formato datetime
+        # 1. Parsear la fecha (formato ISO: 2026-11-14T10:00:00)
         fecha_dt = datetime.fromisoformat(fecha)
-        fecha_fin = fecha_dt + timedelta(hours=1, minutes=30) # Añadimos 1h y 30m de duración
         
+        # 2. Calcular hora de inicio y fin (duración 1h 30m)
         dtstart = fecha_dt.strftime("%Y%m%dT%H%M%S")
+        fecha_fin = fecha_dt + timedelta(hours=1, minutes=30)
         dtend = fecha_fin.strftime("%Y%m%dT%H%M%S")
     except Exception as e:
         print(f"Error con la fecha: {e}")
         return Response(status_code=400, content="Fecha inválida")
 
-    # Generamos el archivo .ics con el formato estándar
-    ics_content = f"""BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//LigaFutbol//ES
-BEGIN:VEVENT
-SUMMARY:{titulo}
-DTSTART:{dtstart}
-DTEND:{dtend}
-LOCATION:{lugar}
-DESCRIPTION:Partido de liga
-END:VEVENT
-END:VCALENDAR"""
+    # 3. Limpiar y escapar los textos para evitar que iOS se rompa
+    lugar_limpio = lugar.replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
+    titulo_limpio = titulo.replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
 
-    # Lo devolvemos como archivo descargable
+    # 4. Generar el formato estándar ICS con retorno de carro (\r\n)
+    ics_content = f"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//LigaFutbol//ES\r\nBEGIN:VEVENT\r\nSUMMARY:{titulo_limpio}\r\nDTSTART:{dtstart}\r\nDTEND:{dtend}\r\nLOCATION:{lugar_limpio}\r\nDESCRIPTION:Partido de liga\r\nEND:VEVENT\r\nEND:VCALENDAR"
+
     return Response(
         content=ics_content, 
         media_type="text/calendar", 
