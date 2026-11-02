@@ -83,26 +83,34 @@ def get_clasificacion(id_deporte: int, id_competicion: int, id_categoria: int, i
 @app.get("/api/ics")
 def get_ics(titulo: str, fecha: str, lugar: str):
     try:
-        # 1. Parsear la fecha (formato ISO: 2026-11-14T10:00:00)
+        # 1. Parsear la fecha original del partido
         fecha_dt = datetime.fromisoformat(fecha)
         
-        # 2. Calcular hora de inicio y fin (duración 1h 30m)
-        dtstart = fecha_dt.strftime("%Y%m%dT%H%M%S")
-        fecha_fin = fecha_dt + timedelta(hours=1, minutes=30)
-        dtend = fecha_fin.strftime("%Y%m%dT%H%M%S")
+        # 2. Restar 30 minutos para la convocatoria (Hora de inicio del evento)
+        hora_inicio_evento = fecha_dt - timedelta(minutes=30)
+        
+        # 3. Calcular el fin (30 mins convocatoria + 75 mins partido = 105 mins desde el inicio)
+        hora_fin_evento = hora_inicio_evento + timedelta(minutes=105)
+        
+        dtstart = hora_inicio_evento.strftime("%Y%m%dT%H%M%S")
+        dtend = hora_fin_evento.strftime("%Y%m%dT%H%M%S")
+        
+        # Formatear la hora real del partido para la descripción
+        hora_partido_str = fecha_dt.strftime("%H:%M")
     except Exception as e:
         print(f"Error con la fecha: {e}")
         return Response(status_code=400, content="Fecha inválida")
 
-    # 3. Limpiar y escapar los textos para evitar que iOS se rompa
+    # 4. Limpiar textos y añadir la nota de la hora
     lugar_limpio = lugar.replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
     titulo_limpio = titulo.replace(",", "\\,").replace(";", "\\;").replace("\n", "\\n")
+    descripcion = f"Convocatoria y Partido.\\nEl partido comienza a las {hora_partido_str}h."
 
-    # 4. Generar el formato estándar ICS con retorno de carro (\r\n)
-    ics_content = f"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//LigaFutbol//ES\r\nBEGIN:VEVENT\r\nSUMMARY:{titulo_limpio}\r\nDTSTART:{dtstart}\r\nDTEND:{dtend}\r\nLOCATION:{lugar_limpio}\r\nDESCRIPTION:Partido de liga\r\nEND:VEVENT\r\nEND:VCALENDAR"
+    # 5. Generar el formato ICS
+    ics_content = f"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//LigaFutbol//ES\r\nBEGIN:VEVENT\r\nSUMMARY:{titulo_limpio}\r\nDTSTART:{dtstart}\r\nDTEND:{dtend}\r\nLOCATION:{lugar_limpio}\r\nDESCRIPTION:{descripcion}\r\nEND:VEVENT\r\nEND:VCALENDAR"
 
     return Response(
         content=ics_content, 
         media_type="text/calendar", 
-        headers={"Content-Disposition": "attachment; filename=partido.ics"}
+        headers={"Content-Disposition": "attachment; filename=convocatoria.ics"}
     )
