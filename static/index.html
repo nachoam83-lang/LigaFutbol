@@ -26,20 +26,20 @@
         @media (prefers-color-scheme: dark) {
             :root {
                 --bg-color: #121212;
-                --card-bg: #1e1e1e;
+                --card-bg: #2a2a2a; /* Fondo más claro para las tarjetas en modo oscuro */
                 --text-main: #f3f4f6;
                 --text-sec: #9ca3af;
-                --border-color: #374151;
+                --border-color: #444444;
             }
             .card { background: var(--card-bg); border-color: var(--border-color); }
             .text-gray-800, .text-gray-700 { color: var(--text-main) !important; }
             .text-gray-500, .text-gray-600 { color: var(--text-sec) !important; }
-            .bg-gray-50, .bg-gray-100 { background-color: #2d3748 !important; }
+            .bg-gray-50, .bg-gray-100 { background-color: #3a3a3a !important; }
             
-            /* ARREGLO DEL MODO OSCURO: Verde más oscuro para que resalte el texto blanco */
+            /* Color del partido favorito en modo oscuro (más claro para contrastar) */
             .card-favorito { 
-                background-color: #0d2e2f !important; 
-                border-color: #1a5d5f !important; 
+                background-color: #144e4a !important; 
+                border-color: #2a7d78 !important; 
                 box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
             }
             .border-gray-100, .border-gray-200 { border-color: var(--border-color) !important; }
@@ -58,7 +58,7 @@
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
-        /* MODO CLARO: Verde suave */
+        /* Modo claro: Verde suave */
         .card-favorito { 
             background-color: rgba(0, 109, 111, 0.15) !important; 
             border-color: rgba(0, 109, 111, 0.4) !important;
@@ -528,31 +528,20 @@
             cargarCalendario();
         }
 
-        function descargarICS(titulo, fechaHoraStr, ubicacion) {
-            const fechaLimpia = fechaHoraStr.replace(/-/g, '').replace(/:/g, '').replace('T', 'T');
+        // --- NUEVA FORMA DE ABRIR EL CALENDARIO (Compatible con iOS) ---
+        function abrirCalendario(titulo, fechaHoraStr, ubicacion) {
+            if (!fechaHoraStr) return;
+            
+            // Limpiamos la fecha al formato 20261114T000000
+            const fechaLimpia = fechaHoraStr.replace(/-/g, '').replace(/:/g, '');
             const dtStart = fechaLimpia.substring(0, 15);
             
-            const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//LigaFutbol//ES
-BEGIN:VEVENT
-SUMMARY:${titulo}
-DTSTART:${dtStart}
-DTEND:${dtStart}
-LOCATION:${ubicacion}
-DESCRIPTION:Partido de liga
-END:VEVENT
-END:VCALENDAR`;
-
-            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'partido.ics';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
+            // Generamos el contenido del archivo .ics
+            const icsContent = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//LigaFutbol//ES\nBEGIN:VEVENT\nSUMMARY:${titulo}\nDTSTART:${dtStart}\nDTEND:${dtStart}\nLOCATION:${ubicacion}\nDESCRIPTION:Partido de liga\nEND:VEVENT\nEND:VCALENDAR`;
+            
+            // Creamos un enlace "data" que iOS abre directamente en la app de Calendario
+            const dataUri = `data:text/calendar;charset=utf-8,${encodeURIComponent(icsContent)}`;
+            window.location.href = dataUri;
         }
 
         async function cargarCalendario() {
@@ -596,12 +585,15 @@ END:VCALENDAR`;
                     const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
                     const tituloIcs = `Partido ${equipoActual.equipoFavorito} vs ${rival}`;
                     
+                    // Usamos una función que abre el calendario directamente
+                    const funcionCalendario = `abrirCalendario('${tituloIcs.replace(/'/g, "\\'")}', '${p.FechaHora}', '${(p.CampoJuego?.Direccion || '').replace(/'/g, "\\'")}')`;
+
                     botonesExtra = `
                         <div class="flex gap-2 mt-3">
                             <a href="${urlWp}" target="_blank" class="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold py-2 rounded-lg shadow-sm hover:bg-[#1ebe5d] transition text-xs">
                                 <i class="fab fa-whatsapp text-base"></i> Compartir
                             </a>
-                            <button onclick="descargarICS('${tituloIcs}', '${p.FechaHora}', '${p.CampoJuego?.Direccion || ''}')" class="flex-1 flex items-center justify-center gap-2 bg-[#006D6F] text-white font-bold py-2 rounded-lg shadow-sm hover:opacity-90 transition text-xs">
+                            <button onclick="${funcionCalendario}" class="flex-1 flex items-center justify-center gap-2 bg-[#006D6F] text-white font-bold py-2 rounded-lg shadow-sm hover:opacity-90 transition text-xs">
                                 <i class="far fa-calendar-plus text-base"></i> Al Calendario
                             </button>
                         </div>
@@ -666,11 +658,14 @@ END:VCALENDAR`;
                     const esFavorito = esLocalFav || esVisFav;
                     const claseTarjeta = esFavorito ? 'card p-3 mb-2 flex flex-col w-full card-favorito' : 'card p-3 mb-2 flex flex-col w-full';
                     
-                    // Añadimos el mapa también en Resultados
                     let htmlMapaRes = `<span>${p.CampoJuego?.Direccion || 'Campo por confirmar'}</span>`;
                     if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
                         htmlMapaRes = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${p.CampoJuego?.Direccion || 'Ver en Mapa'}</a>`;
                     }
+
+                    // Color del resultado (gris claro si es 0-0 en modo oscuro)
+                    const isZeroZero = p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0;
+                    const styleScore = isZeroZero ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);';
 
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
@@ -682,7 +677,7 @@ END:VCALENDAR`;
                             <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
                                 <div class="w-12 flex justify-end">${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain">` : ''}</div>
                                 <div class="px-2">
-                                    <span class="text-xl font-black ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'opacity-30' : ''}" style="color: var(--primary-color);">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>
+                                    <span class="text-xl font-black" style="${styleScore}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>
                                 </div>
                                 <div class="w-12 flex justify-start">${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain">` : ''}</div>
                             </div>
@@ -732,7 +727,7 @@ END:VCALENDAR`;
                 const rachaHTML = calcularRacha(f.NombreEquipo);
                 
                 tbody.innerHTML += `
-                    <tr class="${esFavorito ? 'bg-[#e6f2f2]/20' : ''}" style="border-color: var(--border-color);">
+                    <tr class="${esFavorito ? 'bg-[#144e4a]/20' : ''}" style="border-color: var(--border-color);">
                         <td class="p-3 font-bold ${f.Posicion <= 3 ? 'text-[#006D6F]' : ''} align-middle" style="${f.Posicion > 3 ? 'color: var(--text-main);' : ''}">${f.Posicion}</td>
                         <td class="p-3 font-medium flex items-center">
                             <img src="${esc}" class="w-6 h-6 object-contain mr-2 shrink-0">
