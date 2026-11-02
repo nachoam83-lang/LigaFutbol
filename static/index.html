@@ -11,81 +11,119 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
+    
     <style>
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f2f2f7; }
+        :root {
+            --primary-color: #006D6F; /* Verde azulado del colegio */
+            --secondary-color: #D6B25A; /* Dorado del colegio */
+            --bg-color: #f0f2f5;
+        }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); }
         .hide { display: none !important; }
-        .tab-active { color: #007aff; border-bottom: 2px solid #007aff; }
-        .card { background: white; border-radius: 16px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); }
-        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #007aff; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; }
+        .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
+        .card { background: white; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid #e5e7eb; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        .btn-primary { background-color: var(--primary-color); color: white; }
+        .btn-primary:active { background-color: #005a5c; }
+        
+        /* Estilo para la selección de equipos visual */
+        .team-select-card {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 10px 5px; border-radius: 10px; background: white; border: 2px solid #e5e7eb;
+            cursor: pointer; transition: all 0.2s;
+        }
+        .team-select-card.selected {
+            border-color: var(--secondary-color);
+            background-color: #fffbeb;
+            box-shadow: 0 0 10px rgba(214, 178, 90, 0.4);
+            transform: scale(1.05);
+        }
+        .team-select-card img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 6px; }
+        .team-select-card span { font-size: 10px; text-align: center; font-weight: 700; color: #374151; line-height: 1.1; }
     </style>
 </head>
 <body class="pb-20">
 
     <!-- PANTALLA 1: MIS EQUIPOS -->
-    <div id="screen-equipos" class="p-4 max-w-md mx-auto">
-        <div class="flex justify-between items-center mb-6 mt-4">
-            <h1 class="text-3xl font-bold text-gray-800">Mis Equipos</h1>
-            <button onclick="mostrarFormulario()" class="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg text-xl">+</button>
+    <div id="screen-equipos" class="max-w-md mx-auto min-h-screen">
+        <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
+            <h1 class="text-xl font-bold tracking-wide">Mis Equipos</h1>
+            <button onclick="mostrarFormulario()" class="bg-white text-[#006D6F] rounded-full w-8 h-8 flex items-center justify-center shadow-sm text-lg font-bold">+</button>
         </div>
-        <div id="lista-equipos" class="space-y-4"></div>
+        <div id="lista-equipos" class="p-4 space-y-3"></div>
     </div>
 
     <!-- PANTALLA 2: AÑADIR EQUIPO -->
-    <div id="screen-formulario" class="hide p-4 max-w-md mx-auto">
-        <div class="flex items-center mb-6 mt-4">
-            <button onclick="volverInicio()" class="text-blue-500 text-lg mr-4"><i class="fas fa-chevron-left"></i> Atrás</button>
-            <h1 class="text-xl font-bold text-gray-800">Nuevo Equipo</h1>
+    <div id="screen-formulario" class="hide max-w-md mx-auto bg-gray-50 min-h-screen">
+        <div class="text-white p-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
+            <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left"></i></button>
+            <h1 class="text-lg font-bold">Añadir Jugador</h1>
         </div>
-        <div class="card p-5 space-y-4">
-            <div>
-                <label class="block text-sm font-semibold text-gray-600 mb-1">Nombre del Equipo</label>
-                <input type="text" id="input-nombre" placeholder="Ej: Benjamín de Pablo" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500">
+        
+        <div class="p-4 space-y-4">
+            <div class="card p-4">
+                <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Nombre del Jugador</label>
+                <input type="text" id="input-nombre" placeholder="Ej: Mateo" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:border-[#006D6F] text-sm font-medium">
             </div>
-            <div>
-                <label class="block text-sm font-semibold text-gray-600 mb-1">Deporte</label>
-                <select id="select-deporte" onchange="cambiarDeporte()" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
-                    <option value="1">Baloncesto</option>
-                    <option value="2" selected>Fútbol Sala</option>
-                    <option value="3">Voleibol</option>
-                </select>
+            
+            <div class="card p-4 space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Deporte</label>
+                    <select id="select-deporte" onchange="cambiarDeporte()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium">
+                        <option value="1">Baloncesto</option>
+                        <option value="2" selected>Fútbol Sala</option>
+                        <option value="3">Voleibol</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Competición</label>
+                    <select id="select-competicion" onchange="cambiarCompeticion()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium">
+                        <option value="">Cargando...</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-gray-500 uppercase mb-1">Grupo</label>
+                    <select id="select-grupo" onchange="cargarEquiposParaSeleccion()" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm font-medium">
+                        <option value="">Selecciona grupo...</option>
+                    </select>
+                </div>
             </div>
-            <div>
-                <label class="block text-sm font-semibold text-gray-600 mb-1">Competición</label>
-                <select id="select-competicion" onchange="cambiarCompeticion()" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
-                    <option value="">Cargando...</option>
-                </select>
+
+            <!-- PANEL DE SELECCIÓN VISUAL DE EQUIPO -->
+            <div id="panel-seleccion-equipo" class="hide card p-4 border-2 border-[#D6B25A]">
+                <label class="block text-xs font-bold text-[#D6B25A] uppercase mb-3 text-center">👇 Toca el escudo de tu equipo</label>
+                <div id="grid-equipos" class="grid grid-cols-3 gap-2"></div>
             </div>
-            <div>
-                <label class="block text-sm font-semibold text-gray-600 mb-1">Grupo</label>
-                <select id="select-grupo" class="w-full p-3 border border-gray-300 rounded-lg bg-white">
-                    <option value="">Selecciona grupo...</option>
-                </select>
-            </div>
-            <button onclick="guardarEquipo()" id="btn-guardar" class="w-full bg-blue-500 text-white font-bold py-3 rounded-lg mt-4 disabled:opacity-50">Guardar Equipo</button>
+
+            <button onclick="guardarEquipo()" id="btn-guardar" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition disabled:opacity-50 disabled:bg-gray-400 text-sm" disabled>Guardar Equipo</button>
         </div>
     </div>
 
     <!-- PANTALLA 3: DETALLE DEL EQUIPO (TABS) -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
-        <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10">
-            <button onclick="volverInicio()" class="text-blue-500 mr-4"><i class="fas fa-chevron-left text-lg"></i></button>
-            <h2 id="titulo-detalle" class="text-lg font-bold text-gray-800 truncate">Mi Equipo</h2>
+        <div class="text-white p-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
+            <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left"></i></button>
+            <h2 id="titulo-detalle" class="text-lg font-bold truncate">Mi Equipo</h2>
         </div>
 
+        <!-- Calendario -->
         <div id="tab-calendario" class="p-4 space-y-4">
-            <select id="select-jornada" onchange="cargarCalendario()" class="w-full p-3 border border-gray-300 rounded-lg bg-white shadow-sm mb-4"></select>
-            <div id="lista-calendario" class="space-y-4"></div>
+            <select id="select-jornada" onchange="cargarCalendario()" class="w-full p-3 bg-white border border-gray-200 rounded-lg shadow-sm mb-2 text-sm font-bold text-[#006D6F]"></select>
+            <div id="lista-calendario" class="space-y-3"></div>
         </div>
 
+        <!-- Resultados -->
         <div id="tab-resultados" class="hide p-4 space-y-4">
             <div id="lista-resultados" class="space-y-4"></div>
         </div>
 
+        <!-- Clasificación -->
         <div id="tab-clasificacion" class="hide p-4">
             <div class="card overflow-hidden">
                 <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-100 text-gray-600 text-xs font-bold uppercase">
+                    <thead class="text-xs text-gray-500 font-bold uppercase border-b border-gray-200" style="background-color: #f9fafb;">
                         <tr>
                             <th class="p-3">Pos</th>
                             <th class="p-3">Equipo</th>
@@ -98,14 +136,15 @@
             </div>
         </div>
 
-        <div class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 flex justify-around py-3 text-gray-500 text-xs font-medium pb-6">
-            <button onclick="cambiarTab('calendario')" id="btn-tab-calendario" class="flex flex-col items-center tab-active">
+        <!-- Bottom Tab Bar -->
+        <div class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 flex justify-around pt-2 pb-6 text-xs font-bold text-gray-400">
+            <button onclick="cambiarTab('calendario')" id="btn-tab-calendario" class="flex flex-col items-center tab-active w-1/3">
                 <i class="fas fa-calendar text-lg mb-1"></i> Calendario
             </button>
-            <button onclick="cambiarTab('resultados')" id="btn-tab-resultados" class="flex flex-col items-center">
+            <button onclick="cambiarTab('resultados')" id="btn-tab-resultados" class="flex flex-col items-center w-1/3">
                 <i class="fas fa-futbol text-lg mb-1"></i> Resultados
             </button>
-            <button onclick="cambiarTab('clasificacion')" id="btn-tab-clasificacion" class="flex flex-col items-center">
+            <button onclick="cambiarTab('clasificacion')" id="btn-tab-clasificacion" class="flex flex-col items-center w-1/3">
                 <i class="fas fa-list-ol text-lg mb-1"></i> Clasificación
             </button>
         </div>
@@ -115,10 +154,12 @@
         let equipos = JSON.parse(localStorage.getItem('equipos_liga')) || [];
         let equipoActual = null;
         let jornadasData = [];
+        
+        let equipoSeleccionadoVisual = null; 
 
         function acortarNombre(nombre) {
             if (!nombre) return "";
-            return nombre.length > 30 ? nombre.substring(0, 30) + "..." : nombre;
+            return nombre.length > 20 ? nombre.substring(0, 20) + "..." : nombre;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -139,14 +180,15 @@
             renderizarEquipos();
         }
 
+        // --- PANTALLA MIS EQUIPOS (Estilo BeSoccer) ---
         function renderizarEquipos() {
             const contenedor = document.getElementById('lista-equipos');
             contenedor.innerHTML = '';
             
             if (equipos.length === 0) {
-                contenedor.innerHTML = `<div class="text-center text-gray-500 mt-10">
-                    <i class="fas fa-shield-alt text-6xl mb-4 text-gray-300"></i>
-                    <p>No tienes equipos guardados.</p>
+                contenedor.innerHTML = `<div class="text-center text-gray-400 mt-16">
+                    <i class="fas fa-shield-alt text-6xl mb-4 text-gray-200"></i>
+                    <p class="font-medium">No tienes equipos guardados.</p>
                     <p class="text-sm">Pulsa el botón '+' para añadir uno.</p>
                 </div>`;
                 return;
@@ -154,43 +196,36 @@
 
             equipos.forEach((eq, index) => {
                 const div = document.createElement('div');
-                div.className = 'card p-4 flex items-center justify-between hover:bg-gray-50 transition';
+                div.className = 'card p-3 flex items-center justify-between cursor-pointer';
+                div.onclick = () => abrirEquipo(index);
                 
-                const areaClick = document.createElement('div');
-                areaClick.className = 'flex items-center flex-1 cursor-pointer';
-                areaClick.onclick = () => abrirEquipo(index);
-                areaClick.innerHTML = `
-                    <div class="bg-blue-100 text-blue-500 rounded-xl p-3 mr-4 shrink-0">
-                        <i class="fas fa-shield-alt text-2xl"></i>
+                div.innerHTML = `
+                    <div class="flex items-center flex-1">
+                        <div class="w-12 h-12 mr-3 flex items-center justify-center bg-white rounded-full border border-gray-100 shadow-sm">
+                            ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="w-8 h-8 object-contain">` : '<i class="fas fa-shield-alt text-gray-400 text-xl"></i>'}
+                        </div>
+                        <div>
+                            <h3 class="font-black text-gray-800 text-sm">${eq.nombre}</h3>
+                            <p class="text-xs text-gray-500 font-medium">${eq.nombreCompeticion}</p>
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <h3 class="font-bold text-gray-800">${eq.nombre}</h3>
-                        <p class="text-sm text-gray-500">${eq.nombreCompeticion} · ${eq.nombreGrupo}</p>
-                    </div>
+                    <button class="text-gray-300 hover:text-red-500 p-2" onclick="event.stopPropagation(); borrarEquipo(${index})">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 `;
-                
-                const btnBorrar = document.createElement('button');
-                btnBorrar.className = 'text-red-500 hover:text-red-700 p-2 ml-2 transition shrink-0';
-                btnBorrar.innerHTML = '<i class="fas fa-trash-alt text-lg"></i>';
-                btnBorrar.onclick = (e) => {
-                    e.stopPropagation();
-                    borrarEquipo(index);
-                };
-
-                div.appendChild(areaClick);
-                div.appendChild(btnBorrar);
                 contenedor.appendChild(div);
             });
         }
 
         function borrarEquipo(index) {
-            if (confirm('¿Estás seguro de que quieres borrar este equipo?')) {
+            if (confirm('¿Borrar este equipo?')) {
                 equipos.splice(index, 1);
                 localStorage.setItem('equipos_liga', JSON.stringify(equipos));
                 renderizarEquipos();
             }
         }
 
+        // --- FORMULARIO ---
         async function cargarCompeticiones(idDeporte) {
             const select = document.getElementById('select-competicion');
             select.innerHTML = '<option value="">Cargando...</option>';
@@ -203,12 +238,15 @@
                         select.innerHTML += `<option value="${comp.Id}" data-cat="${comp.IdCategoria}">${comp.Nombre}</option>`;
                     });
                 }
-            } catch (e) { select.innerHTML = '<option value="">Error de conexión</option>'; }
+            } catch (e) { select.innerHTML = '<option value="">Error</option>'; }
         }
 
         function cambiarDeporte() {
             const idDeporte = document.getElementById('select-deporte').value;
             document.getElementById('select-grupo').innerHTML = '<option value="">Selecciona grupo...</option>';
+            document.getElementById('panel-seleccion-equipo').classList.add('hide');
+            document.getElementById('btn-guardar').disabled = true;
+            equipoSeleccionadoVisual = null;
             cargarCompeticiones(idDeporte);
         }
 
@@ -218,6 +256,10 @@
             const idCat = select.options[select.selectedIndex].getAttribute('data-cat');
             const selectGrupo = document.getElementById('select-grupo');
             
+            document.getElementById('panel-seleccion-equipo').classList.add('hide');
+            document.getElementById('btn-guardar').disabled = true;
+            equipoSeleccionadoVisual = null;
+
             if (!idComp) return;
             selectGrupo.innerHTML = '<option value="">Cargando...</option>';
             
@@ -233,13 +275,94 @@
             } catch (e) { selectGrupo.innerHTML = '<option value="">Error</option>'; }
         }
 
+        // Carga los equipos de ese grupo para mostrarlos visualmente
+        async function cargarEquiposParaSeleccion() {
+            const selectGrupo = document.getElementById('select-grupo');
+            const idGrupo = selectGrupo.value;
+            const idComp = document.getElementById('select-competicion').value;
+            const idCat = document.getElementById('select-competicion').options[document.getElementById('select-competicion').selectedIndex].getAttribute('data-cat');
+            const idDep = document.getElementById('select-deporte').value;
+            
+            const panel = document.getElementById('panel-seleccion-equipo');
+            const grid = document.getElementById('grid-equipos');
+            
+            document.getElementById('btn-guardar').disabled = true;
+            equipoSeleccionadoVisual = null;
+
+            if (!idGrupo) {
+                panel.classList.add('hide');
+                return;
+            }
+
+            grid.innerHTML = '<div class="col-span-3 text-center py-4"><div class="loader mx-auto"></div></div>';
+            panel.classList.remove('hide');
+
+            try {
+                // Obtenemos los equipos desde los resultados o el calendario
+                const res = await fetch(`/api/resultados/${idDep}/${idComp}/${idCat}/${idGrupo}`);
+                const partidos = await res.json();
+                
+                let equiposMap = {};
+                if(Array.isArray(partidos) && partidos.length > 0) {
+                    partidos.forEach(p => {
+                        if (p.EquipoLocal) equiposMap[p.EquipoLocal] = p.URLEscudoEquipoLocal;
+                        if (p.EquipoVisitante) equiposMap[p.EquipoVisitante] = p.URLEscudoEquipoVisitante;
+                    });
+                } else {
+                     // Si falla resultados, tiramos de calendario
+                     const res2 = await fetch(`/api/calendario/${idDep}/${idComp}/${idCat}/${idGrupo}/0`);
+                     const data2 = await res2.json();
+                     if(data2 && data2.jornada && data2.jornada.Enfrentamientos) {
+                         data2.jornada.Enfrentamientos.forEach(p => {
+                            if (p.EquipoLocal) equiposMap[p.EquipoLocal] = p.URLEscudoEquipoLocal;
+                            if (p.EquipoVisitante) equiposMap[p.EquipoVisitante] = p.URLEscudoEquipoVisitante;
+                        });
+                     }
+                }
+
+                let equiposLista = Object.keys(equiposMap).map(nombre => ({
+                    nombre: nombre,
+                    escudo: equiposMap[nombre]
+                })).sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+                grid.innerHTML = '';
+                if (equiposLista.length === 0) {
+                    grid.innerHTML = '<p class="col-span-3 text-center text-gray-400 text-xs">No se pudieron cargar los equipos</p>';
+                }
+
+                equiposLista.forEach(eq => {
+                    const div = document.createElement('div');
+                    div.className = 'team-select-card';
+                    div.onclick = () => seleccionarEquipoVisual(div, eq);
+                    
+                    const esc = eq.escudo ? eq.escudo : '/static/logo.png';
+                    div.innerHTML = `
+                        <img src="${esc}" onerror="this.src='/static/logo.png'">
+                        <span>${acortarNombre(eq.nombre)}</span>
+                    `;
+                    grid.appendChild(div);
+                });
+
+            } catch (e) {
+                grid.innerHTML = '<p class="col-span-3 text-red-500 text-center text-xs">Error al cargar equipos</p>';
+            }
+        }
+
+        function seleccionarEquipoVisual(elementoHTML, datosEquipo) {
+            document.querySelectorAll('.team-select-card').forEach(el => el.classList.remove('selected'));
+            elementoHTML.classList.add('selected');
+            
+            equipoSeleccionadoVisual = datosEquipo;
+            document.getElementById('btn-guardar').disabled = false;
+        }
+
         function guardarEquipo() {
-            const nombre = document.getElementById('input-nombre').value || 'Mi Equipo';
+            const nombre = document.getElementById('input-nombre').value || 'Mi Jugador';
             const selDep = document.getElementById('select-deporte');
             const selComp = document.getElementById('select-competicion');
             const selGrupo = document.getElementById('select-grupo');
             
-            if (!selComp.value || !selGrupo.value) return alert('Selecciona competición y grupo');
+            if (!selComp.value || !selGrupo.value || !equipoSeleccionadoVisual) return;
 
             const nuevoEquipo = {
                 id: Date.now(),
@@ -250,7 +373,11 @@
                 nombreCompeticion: selComp.options[selComp.selectedIndex].text,
                 idCategoria: selComp.options[selComp.selectedIndex].getAttribute('data-cat'),
                 idGrupo: selGrupo.value,
-                nombreGrupo: selGrupo.options[selGrupo.selectedIndex].text
+                nombreGrupo: selGrupo.options[selGrupo.selectedIndex].text,
+                
+                // GUARDAMOS EL EQUIPO FAVORITO
+                equipoFavorito: equipoSeleccionadoVisual.nombre,
+                escudoFavorito: equipoSeleccionadoVisual.escudo
             };
             
             equipos.push(nuevoEquipo);
@@ -258,6 +385,7 @@
             volverInicio();
         }
 
+        // --- DETALLE DEL EQUIPO (TABS) ---
         function abrirEquipo(index) {
             equipoActual = equipos[index];
             document.getElementById('titulo-detalle').innerText = equipoActual.nombre;
@@ -316,38 +444,40 @@
             partidos.forEach(p => {
                 const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
                 const hora = p.FechaHora ? p.FechaHora.split('T')[1].substring(0,5) : '';
-                
-                // AHORA LAS RUTAS SON LOCALES
-                const escLocal = p.URLEscudoEquipoLocal || '';
-                const escVis = p.URLEscudoEquipoVisitante || '';
+                const escLocal = p.URLEscudoEquipoLocal || '/static/logo.png';
+                const escVis = p.URLEscudoEquipoVisitante || '/static/logo.png';
                 
                 let htmlMapa = `<span>${p.CampoJuego?.Direccion || 'Campo por confirmar'}</span>`;
                 if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
                     htmlMapa = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${p.CampoJuego?.Direccion || 'Ver en Mapa'}</a>`;
                 }
                 
+                // Resaltar si es el equipo favorito
+                const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
+                const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
+
                 contenedor.innerHTML += `
-                    <div class="card p-4">
-                        <div class="text-blue-500 font-bold text-xs mb-4 text-center"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
+                    <div class="card p-3">
+                        <div class="text-[#006D6F] font-bold text-[10px] mb-2 text-center uppercase tracking-wider"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
                         
-                        <div class="flex justify-between items-start w-full">
+                        <div class="flex justify-between items-center w-full">
                             <div class="flex-1 flex flex-col items-center">
-                                ${escLocal ? `<img src="${escLocal}" class="w-12 h-12 object-contain mb-2" onerror="this.src='/static/logo.png'">` : '<i class="fas fa-shield-alt text-gray-300 text-4xl mb-2"></i>'}
-                                <div class="text-xs font-bold text-center leading-tight w-full px-1">${acortarNombre(p.EquipoLocal)}</div>
+                                <img src="${escLocal}" class="w-10 h-10 object-contain mb-1">
+                                <div class="text-[11px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-700'}">${acortarNombre(p.EquipoLocal)}</div>
                             </div>
                             
-                            <div class="px-2 flex flex-col items-center justify-center h-16">
-                                <span class="text-gray-400 text-sm font-bold bg-gray-100 px-3 py-1 rounded-full">vs</span>
+                            <div class="px-2 flex flex-col items-center justify-center h-10">
+                                <span class="text-gray-400 text-xs font-bold bg-gray-100 px-2 py-1 rounded">vs</span>
                             </div>
 
                             <div class="flex-1 flex flex-col items-center">
-                                ${escVis ? `<img src="${escVis}" class="w-12 h-12 object-contain mb-2" onerror="this.src='/static/logo.png'">` : '<i class="fas fa-shield-alt text-gray-300 text-4xl mb-2"></i>'}
-                                <div class="text-xs font-bold text-center leading-tight w-full px-1">${acortarNombre(p.EquipoVisitante)}</div>
+                                <img src="${escVis}" class="w-10 h-10 object-contain mb-1">
+                                <div class="text-[11px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-700'}">${acortarNombre(p.EquipoVisitante)}</div>
                             </div>
                         </div>
                         
-                        <div class="text-xs text-gray-500 flex justify-center items-start mt-4 pt-3 border-t border-gray-100">
-                            <i class="fas fa-map-marker-alt text-red-500 mt-0.5 mr-2 shrink-0"></i>
+                        <div class="text-[10px] text-gray-500 flex justify-center items-start mt-3 pt-2 border-t border-gray-100">
+                            <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
                             ${htmlMapa}
                         </div>
                     </div>
@@ -374,35 +504,31 @@
             });
 
             for (const j in agrupados) {
-                contenedor.innerHTML += `<h3 class="font-bold text-gray-500 text-sm mt-4 mb-2">Jornada ${j}</h3>`;
+                contenedor.innerHTML += `<h3 class="font-bold text-gray-400 text-xs mt-4 mb-2 uppercase tracking-wide">Jornada ${j}</h3>`;
                 agrupados[j].forEach(p => {
-                    // RUTAS LOCALES
-                    const escLocal = p.URLEscudoEquipoLocal || '';
-                    const escVis = p.URLEscudoEquipoVisitante || '';
+                    const escLocal = p.URLEscudoEquipoLocal || '/static/logo.png';
+                    const escVis = p.URLEscudoEquipoVisitante || '/static/logo.png';
                     
+                    const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
+                    const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
+
                     contenedor.innerHTML += `
-                        <div class="card p-4 mb-2 flex flex-col w-full">
-                            
-                            <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-4">
-                                <div class="text-sm font-bold text-center px-1 leading-tight">${acortarNombre(p.EquipoLocal)}</div>
-                                <div class="text-gray-400 font-bold text-xs px-2">-</div>
-                                <div class="text-sm font-bold text-center px-1 leading-tight">${acortarNombre(p.EquipoVisitante)}</div>
+                        <div class="card p-3 mb-2 flex flex-col w-full">
+                            <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
+                                <div class="text-[11px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${acortarNombre(p.EquipoLocal)}</div>
+                                <div class="text-gray-300 font-bold text-xs px-1">-</div>
+                                <div class="text-[11px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${acortarNombre(p.EquipoVisitante)}</div>
                             </div>
                             
-                            <div class="flex justify-center items-center gap-4 w-full">
-                                <div class="w-16 flex justify-end">
-                                    ${escLocal ? `<img src="${escLocal}" class="w-14 h-14 object-contain" onerror="this.src='/static/logo.png'">` : '<i class="fas fa-shield-alt text-gray-300 text-5xl"></i>'}
-                                </div>
-                                <div class="px-2">
-                                    <span class="text-3xl font-extrabold ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'text-gray-400' : 'text-gray-800'}">
+                            <div class="flex justify-center items-center gap-3 w-full mt-1">
+                                <div class="w-10 flex justify-end"><img src="${escLocal}" class="w-8 h-8 object-contain"></div>
+                                <div class="px-1">
+                                    <span class="text-lg font-black ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'text-gray-300' : 'text-[#006D6F]'}">
                                         ${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}
                                     </span>
                                 </div>
-                                <div class="w-16 flex justify-start">
-                                    ${escVis ? `<img src="${escVis}" class="w-14 h-14 object-contain" onerror="this.src='/static/logo.png'">` : '<i class="fas fa-shield-alt text-gray-300 text-5xl"></i>'}
-                                </div>
+                                <div class="w-10 flex justify-start"><img src="${escVis}" class="w-8 h-8 object-contain"></div>
                             </div>
-
                         </div>
                     `;
                 });
@@ -421,17 +547,19 @@
             if (!Array.isArray(filas) || filas.length === 0) tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4 text-gray-500">No hay clasificación</td></tr>';
 
             filas.forEach(f => {
-                // RUTA LOCAL
-                const esc = f.URLEscudo || '';
+                const esc = f.URLEscudo || '/static/logo.png';
+                const esFavorito = f.NombreEquipo === equipoActual.equipoFavorito;
+                const colorPuntos = esFavorito ? 'text-[#D6B25A]' : 'text-[#006D6F]';
+                
                 tbody.innerHTML += `
-                    <tr class="hover:bg-gray-50">
-                        <td class="p-3 font-bold ${f.Posicion <= 3 ? 'text-blue-600' : 'text-gray-600'} align-top">${f.Posicion}</td>
+                    <tr class="${esFavorito ? 'bg-yellow-50' : 'hover:bg-gray-50'}">
+                        <td class="p-3 font-bold ${f.Posicion <= 3 ? 'text-[#006D6F]' : 'text-gray-600'} align-middle">${f.Posicion}</td>
                         <td class="p-3 font-medium flex items-center">
-                            ${esc ? `<img src="${esc}" class="w-6 h-6 object-contain mr-2 shrink-0" onerror="this.src='/static/logo.png'">` : ''}
-                            <span class="leading-tight pr-2">${f.NombreEquipo}</span>
+                            <img src="${esc}" class="w-6 h-6 object-contain mr-2 shrink-0">
+                            <span class="leading-tight pr-2 font-bold ${esFavorito ? 'text-[#D6B25A]' : 'text-gray-800'}">${f.NombreEquipo}</span>
                         </td>
-                        <td class="p-3 text-center text-gray-500 align-top">${f.Jugados}</td>
-                        <td class="p-3 text-right font-bold text-blue-600 align-top">${f.Puntos}</td>
+                        <td class="p-3 text-center text-gray-500 align-middle">${f.Jugados}</td>
+                        <td class="p-3 text-right font-black ${colorPuntos} align-middle">${f.Puntos}</td>
                     </tr>
                 `;
             });
