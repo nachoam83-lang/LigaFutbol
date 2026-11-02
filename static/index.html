@@ -200,23 +200,23 @@
             return nombre.length > 30 ? nombre.substring(0, 30) + "..." : nombre;
         }
 
-        // NUEVA FUNCIÓN PARA CONSTRUIR LA DIRECCIÓN COMPLETA Y LIMPIA
         function construirDireccion(p) {
-            let dir = p.CampoJuego?.Direccion || '';
-            // Si el campo "Campo" tiene la dirección con número y tipo de pista ("CALLE X, 1 - PISTA"), nos quedamos con la calle y el número
-            if (p.Campo && p.Campo.includes(' - ')) {
-                dir = p.Campo.split(' - ')[0];
-            } else if (p.Campo) {
-                dir = p.Campo;
+            let dir = "";
+            if (p.Campo) {
+                dir = p.Campo.split(' - ')[0]; 
+            } else if (p.CampoJuego && p.CampoJuego.Direccion) {
+                dir = p.CampoJuego.Direccion;
             }
-            if (!dir) dir = 'Campo por confirmar';
             
-            // Añadimos el CP y el Municipio si existen
-            if (p.CampoJuego?.CP || p.CampoJuego?.Municipio) {
-                dir += `, ${p.CampoJuego?.CP || ''} ${p.CampoJuego?.Municipio || ''}`;
+            if (p.CampoJuego) {
+                if (p.CampoJuego.CP && !dir.includes(p.CampoJuego.CP)) {
+                    dir += `, ${p.CampoJuego.CP}`;
+                }
+                if (p.CampoJuego.Municipio && !dir.includes(p.CampoJuego.Municipio)) {
+                    dir += ` ${p.CampoJuego.Municipio}`;
+                }
             }
-            // Limpiamos comas dobles o espacios extra
-            return dir.replace(/,\s*,/g, ',').replace(/\s+/g, ' ').trim();
+            return dir.replace(/,\s*,/g, ',').trim();
         }
 
         function refrescarApp() {
@@ -648,8 +648,8 @@
                 if (esFavorito && p.FechaHora) {
                     const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
                     
-                    // NUEVO MENSAJE DE WHATSAPP
-                    const texto = `"${equipoActual.nombre}" tiene partido el ${fecha} a las ${hora}h contra "${rival}" en "${dirCompleta}". Nos vemos allí!`;
+                    // MENSAJE DE WHATSAPP SIN COMILLAS
+                    const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}. Nos vemos allí!`;
                     const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
                     
                     const tituloIcs = `Partido ${equipoActual.equipoFavorito} vs ${rival}`;
@@ -726,7 +726,6 @@
                     const esFavorito = esLocalFav || esVisFav;
                     const claseTarjeta = esFavorito ? 'card p-3 mb-2 flex flex-col w-full card-favorito' : 'card p-3 mb-2 flex flex-col w-full';
                     
-                    // Usamos la misma función para la dirección en resultados
                     const dirCompletaRes = construirDireccion(p);
 
                     let htmlMapaRes = `<span>${dirCompletaRes}</span>`;
