@@ -36,10 +36,11 @@
             .text-gray-500, .text-gray-600 { color: var(--text-sec) !important; }
             .bg-gray-50, .bg-gray-100 { background-color: #2d3748 !important; }
             
-            /* Resalte más oscuro en modo noche */
+            /* ARREGLO DEL MODO OSCURO: Verde más oscuro para que resalte el texto blanco */
             .card-favorito { 
-                background-color: rgba(0, 109, 111, 0.4) !important; 
-                border-color: rgba(0, 109, 111, 0.6) !important; 
+                background-color: #0d2e2f !important; 
+                border-color: #1a5d5f !important; 
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3) !important;
             }
             .border-gray-100, .border-gray-200 { border-color: var(--border-color) !important; }
         }
@@ -57,7 +58,7 @@
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
-        /* NUEVO RESALTE: Más oscuro (15% de opacidad) */
+        /* MODO CLARO: Verde suave */
         .card-favorito { 
             background-color: rgba(0, 109, 111, 0.15) !important; 
             border-color: rgba(0, 109, 111, 0.4) !important;
@@ -297,7 +298,7 @@
                     
                     let mapLink = '';
                     if (lat && lon && lat !== 0) {
-                        mapLink = `<a href="http://maps.apple.com/?daddr=${lat},${lon}" target="_blank" class="ml-2 bg-white/20 hover:bg-white/40 px-2 py-1 rounded text-white"><i class="fas fa-map-marker-alt text-red-300 mr-1"></i> Ir</a>`;
+                        mapLink = `<a href="http://maps.apple.com/?daddr=${lat},${lon}" target="_blank" class="ml-2 bg-white/20 hover:bg-white/40 px-2 py-1 rounded text-white font-bold"><i class="fas fa-map-marker-alt text-red-300 mr-1"></i> Ir</a>`;
                     }
 
                     contenedor.innerHTML = `
@@ -664,6 +665,12 @@ END:VCALENDAR`;
                     const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
                     const esFavorito = esLocalFav || esVisFav;
                     const claseTarjeta = esFavorito ? 'card p-3 mb-2 flex flex-col w-full card-favorito' : 'card p-3 mb-2 flex flex-col w-full';
+                    
+                    // Añadimos el mapa también en Resultados
+                    let htmlMapaRes = `<span>${p.CampoJuego?.Direccion || 'Campo por confirmar'}</span>`;
+                    if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
+                        htmlMapaRes = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${p.CampoJuego?.Direccion || 'Ver en Mapa'}</a>`;
+                    }
 
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
@@ -672,12 +679,16 @@ END:VCALENDAR`;
                                 <div class="text-xs px-1" style="color: var(--text-sec);">-</div>
                                 <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : ''}" style="${!esVisFav ? 'color: var(--text-main);' : ''}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
                             </div>
-                            <div class="flex justify-center items-center gap-4 w-full mt-1">
+                            <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
                                 <div class="w-12 flex justify-end">${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain">` : ''}</div>
                                 <div class="px-2">
                                     <span class="text-xl font-black ${p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'opacity-30' : ''}" style="color: var(--primary-color);">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>
                                 </div>
                                 <div class="w-12 flex justify-start">${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain">` : ''}</div>
+                            </div>
+                            <div class="text-[11px] flex justify-center items-start mt-1 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);">
+                                <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
+                                ${htmlMapaRes}
                             </div>
                         </div>
                     `;
