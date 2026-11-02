@@ -350,7 +350,8 @@
                 
                 let statsHTML = '';
                 if (stats) {
-                    statsHTML = `<div class="mt-2 text-[11px] font-bold bg-black/10 px-2 py-1 rounded inline-block"><i class="fas fa-trophy text-[#D6B25A] mr-1"></i> Pos: ${stats.Posicion} · ${stats.Puntos} puntos</div>`;
+                    // AQUÍ HEMOS CAMBIADO "Pos:" POR "Posición:"
+                    statsHTML = `<div class="mt-2 text-[11px] font-bold bg-black/10 px-2 py-1 rounded inline-block"><i class="fas fa-trophy text-[#D6B25A] mr-1"></i> Posición: ${stats.Posicion} · ${stats.Puntos} puntos</div>`;
                 }
 
                 if (partido) {
@@ -648,11 +649,11 @@
                 if (esFavorito && p.FechaHora) {
                     const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
                     
-                    // MENSAJE DE WHATSAPP SIN COMILLAS
                     const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}. Nos vemos allí!`;
                     const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
                     
-                    const tituloIcs = `Partido ${equipoActual.equipoFavorito} vs ${rival}`;
+                    // Añadimos "Convocatoria + " al título que se envía a Python
+                    const tituloIcs = `Convocatoria + Partido: ${equipoActual.equipoFavorito} vs ${rival}`;
                     const urlIcs = `/api/ics?titulo=${encodeURIComponent(tituloIcs)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dirCompleta)}`;
 
                     botonesExtra = `
