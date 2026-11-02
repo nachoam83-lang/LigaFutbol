@@ -163,9 +163,10 @@
         
         let equipoSeleccionadoVisual = null; 
 
+        // AQUÍ ESTÁ EL CAMBIO: Vuelve a estar en 30
         function acortarNombre(nombre) {
             if (!nombre) return "";
-            return nombre.length > 20 ? nombre.substring(0, 20) + "..." : nombre;
+            return nombre.length > 30 ? nombre.substring(0, 30) + "..." : nombre;
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -460,7 +461,6 @@
                 
                 contenedor.innerHTML += `
                     <div class="${claseTarjeta}">
-                        <!-- FECHA Y HORA MÁS GRANDES -->
                         <div class="text-[#006D6F] font-extrabold text-sm mb-2 text-center uppercase tracking-wider"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
                         
                         <div class="flex justify-between items-center w-full my-2">
@@ -479,7 +479,6 @@
                             </div>
                         </div>
                         
-                        <!-- DIRECCIÓN MÁS GRANDE -->
                         <div class="text-xs text-gray-600 flex justify-center items-start mt-3 pt-2 border-t border-[#006D6F]/10">
                             <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
                             ${htmlMapa}
@@ -508,7 +507,6 @@
             });
 
             for (const j in agrupados) {
-                // JORNADA MÁS GRANDE Y MÁS OSCURA
                 contenedor.innerHTML += `<h3 class="font-extrabold text-gray-700 text-base mt-5 mb-2 uppercase tracking-wide border-l-4 border-[#006D6F] pl-2">Jornada ${j}</h3>`;
                 
                 agrupados[j].forEach(p => {
@@ -523,7 +521,6 @@
 
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
-                            <!-- NOMBRES MÁS GRANDES -->
                             <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
                                 <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
                                 <div class="text-gray-400 font-bold text-xs px-1">-</div>
