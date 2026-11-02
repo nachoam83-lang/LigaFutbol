@@ -219,6 +219,13 @@
             return dir.replace(/,\s*,/g, ',').trim();
         }
 
+        // NUEVA FUNCIÓN PARA DETECTAR SI ES EXTERIOR O PABELLÓN
+        function esCampoExterior(p) {
+            const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase();
+            if (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')) return true;
+            return false;
+        }
+
         function refrescarApp() {
             const icono = document.querySelector('#btn-refresh i');
             icono.classList.add('spin-anim');
@@ -350,7 +357,6 @@
                 
                 let statsHTML = '';
                 if (stats) {
-                    // AQUÍ HEMOS CAMBIADO "Pos:" POR "Posición:"
                     statsHTML = `<div class="mt-2 text-[11px] font-bold bg-black/10 px-2 py-1 rounded inline-block"><i class="fas fa-trophy text-[#D6B25A] mr-1"></i> Posición: ${stats.Posicion} · ${stats.Puntos} puntos</div>`;
                 }
 
@@ -639,6 +645,11 @@
                 }
 
                 const dirCompleta = construirDireccion(p);
+                const esExterior = esCampoExterior(p);
+                
+                let htmlCampo = esExterior 
+                    ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
+                    : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-building mr-1"></i> Pabellón</span>`;
 
                 let htmlMapa = `<span>${dirCompleta}</span>`;
                 if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
@@ -652,8 +663,7 @@
                     const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}. Nos vemos allí!`;
                     const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
                     
-                    // Añadimos "Convocatoria + " al título que se envía a Python
-                    const tituloIcs = `Convocatoria + Partido: ${equipoActual.equipoFavorito} vs ${rival}`;
+                    const tituloIcs = `Partido: ${equipoActual.equipoFavorito} vs ${rival}`;
                     const urlIcs = `/api/ics?titulo=${encodeURIComponent(tituloIcs)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dirCompleta)}`;
 
                     botonesExtra = `
@@ -670,7 +680,10 @@
                 
                 contenedor.innerHTML += `
                     <div class="${claseTarjeta}">
-                        <div class="font-extrabold text-sm mb-2 text-center uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="font-extrabold text-[11px] uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
+                            ${htmlCampo}
+                        </div>
                         ${alertaCambio}
                         
                         <div class="flex justify-between items-center w-full my-2">
@@ -728,6 +741,11 @@
                     const claseTarjeta = esFavorito ? 'card p-3 mb-2 flex flex-col w-full card-favorito' : 'card p-3 mb-2 flex flex-col w-full';
                     
                     const dirCompletaRes = construirDireccion(p);
+                    const esExterior = esCampoExterior(p);
+                    
+                    let htmlCampoRes = esExterior 
+                        ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
+                        : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-building mr-1"></i> Pabellón</span>`;
 
                     let htmlMapaRes = `<span>${dirCompletaRes}</span>`;
                     if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
@@ -751,9 +769,12 @@
                                 </div>
                                 <div class="w-12 flex justify-start">${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain">` : ''}</div>
                             </div>
-                            <div class="text-[11px] flex justify-center items-start mt-1 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);">
-                                <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
-                                ${htmlMapaRes}
+                            <div class="text-[11px] flex flex-col items-center mt-1 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);">
+                                ${htmlCampoRes}
+                                <div class="mt-1 flex items-start">
+                                    <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
+                                    ${htmlMapaRes}
+                                </div>
                             </div>
                         </div>
                     `;
