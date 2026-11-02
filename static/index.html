@@ -200,6 +200,25 @@
             return nombre.length > 30 ? nombre.substring(0, 30) + "..." : nombre;
         }
 
+        // NUEVA FUNCIÓN PARA CONSTRUIR LA DIRECCIÓN COMPLETA Y LIMPIA
+        function construirDireccion(p) {
+            let dir = p.CampoJuego?.Direccion || '';
+            // Si el campo "Campo" tiene la dirección con número y tipo de pista ("CALLE X, 1 - PISTA"), nos quedamos con la calle y el número
+            if (p.Campo && p.Campo.includes(' - ')) {
+                dir = p.Campo.split(' - ')[0];
+            } else if (p.Campo) {
+                dir = p.Campo;
+            }
+            if (!dir) dir = 'Campo por confirmar';
+            
+            // Añadimos el CP y el Municipio si existen
+            if (p.CampoJuego?.CP || p.CampoJuego?.Municipio) {
+                dir += `, ${p.CampoJuego?.CP || ''} ${p.CampoJuego?.Municipio || ''}`;
+            }
+            // Limpiamos comas dobles o espacios extra
+            return dir.replace(/,\s*,/g, ',').replace(/\s+/g, ' ').trim();
+        }
+
         function refrescarApp() {
             const icono = document.querySelector('#btn-refresh i');
             icono.classList.add('spin-anim');
@@ -338,7 +357,7 @@
                     const fecha = partido.FechaHora ? partido.FechaHora.split('T')[0].split('-').reverse().join('/') : '';
                     const hora = partido.FechaHora ? partido.FechaHora.split('T')[1].substring(0,5) : '';
                     const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
-                    const dir = partido.CampoJuego?.Direccion || '';
+                    const dirCompleta = construirDireccion(partido);
                     const lat = partido.CampoJuego?.Latitud;
                     const lon = partido.CampoJuego?.Longitud;
                     
@@ -352,7 +371,7 @@
                             <div><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div>
                             <div class="font-bold">vs. ${acortarNombre(rival)}</div>
                             <div class="flex items-center text-[11px] text-white/70 mt-1">
-                                <i class="fas fa-map-marker-alt mr-1"></i> <span class="truncate">${dir}</span> ${mapLink}
+                                <i class="fas fa-map-marker-alt mr-1"></i> <span class="truncate">${dirCompleta}</span> ${mapLink}
                             </div>
                             ${statsHTML}
                         </div>
@@ -618,12 +637,7 @@
                     alertaCambio = `<div class="mt-2 text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded inline-block"><i class="fas fa-exclamation-triangle mr-1"></i> Cambio de Horario/Campo</div>`;
                 }
 
-                // --- DIRECCIÓN COMPLETA PARA EL MAPA Y EL ICS ---
-                let dirCompleta = p.CampoJuego?.Direccion || 'Campo por confirmar';
-                if (p.CampoJuego?.CP || p.CampoJuego?.Municipio) {
-                    dirCompleta += `, ${p.CampoJuego?.CP || ''} ${p.CampoJuego?.Municipio || ''}`;
-                }
-                dirCompleta = dirCompleta.replace(/,\s*,/g, ',').replace(/\s+/g, ' ').trim(); // Limpiar comas dobles o espacios
+                const dirCompleta = construirDireccion(p);
 
                 let htmlMapa = `<span>${dirCompleta}</span>`;
                 if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
@@ -633,11 +647,12 @@
                 let botonesExtra = '';
                 if (esFavorito && p.FechaHora) {
                     const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
-                    const texto = `¡Oye! El próximo partido de ${equipoActual.nombre} es el ${fecha} a las ${hora}h en ${dirCompleta}. ¡Allí nos vemos!`;
-                    const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-                    const tituloIcs = `Partido ${equipoActual.equipoFavorito} vs ${rival}`;
                     
-                    // Aquí pasamos la dirección completa a Python para el archivo .ics
+                    // NUEVO MENSAJE DE WHATSAPP
+                    const texto = `"${equipoActual.nombre}" tiene partido el ${fecha} a las ${hora}h contra "${rival}" en "${dirCompleta}". Nos vemos allí!`;
+                    const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+                    
+                    const tituloIcs = `Partido ${equipoActual.equipoFavorito} vs ${rival}`;
                     const urlIcs = `/api/ics?titulo=${encodeURIComponent(tituloIcs)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dirCompleta)}`;
 
                     botonesExtra = `
@@ -711,12 +726,8 @@
                     const esFavorito = esLocalFav || esVisFav;
                     const claseTarjeta = esFavorito ? 'card p-3 mb-2 flex flex-col w-full card-favorito' : 'card p-3 mb-2 flex flex-col w-full';
                     
-                    // --- DIRECCIÓN COMPLETA TAMBIÉN EN RESULTADOS ---
-                    let dirCompletaRes = p.CampoJuego?.Direccion || 'Campo por confirmar';
-                    if (p.CampoJuego?.CP || p.CampoJuego?.Municipio) {
-                        dirCompletaRes += `, ${p.CampoJuego?.CP || ''} ${p.CampoJuego?.Municipio || ''}`;
-                    }
-                    dirCompletaRes = dirCompletaRes.replace(/,\s*,/g, ',').replace(/\s+/g, ' ').trim();
+                    // Usamos la misma función para la dirección en resultados
+                    const dirCompletaRes = construirDireccion(p);
 
                     let htmlMapaRes = `<span>${dirCompletaRes}</span>`;
                     if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
