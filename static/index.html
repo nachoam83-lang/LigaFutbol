@@ -64,7 +64,6 @@
         .streak-e { background-color: #9ca3af; }
         .streak-d { background-color: #ef4444; }
         
-        /* Animación para el botón de refrescar */
         .spin-anim { animation: spin 1s linear infinite; }
     </style>
 </head>
@@ -194,7 +193,7 @@
         let jornadasData = [];
         let equipoSeleccionadoVisual = null; 
         let soloMiEquipo = false;
-        let editandoEquipoId = null; // Variable para saber si estamos editando
+        let editandoEquipoId = null; 
 
         function acortarNombre(nombre) {
             if (!nombre) return "";
@@ -231,14 +230,12 @@
             document.getElementById('titulo-formulario').innerText = "Editar Jugador";
             document.getElementById('input-nombre').value = eq.nombre;
             
-            // Rellenar los selects (esto es visual, el usuario puede cambiar si quiere)
             document.getElementById('select-deporte').value = eq.idDeporte;
             cargarCompeticiones(eq.idDeporte).then(() => {
                 document.getElementById('select-competicion').value = eq.idCompeticion;
                 cambiarCompeticion().then(() => {
                     document.getElementById('select-grupo').value = eq.idGrupo;
                     cargarEquiposParaSeleccion().then(() => {
-                        // Marcar el equipo visualmente si está en la lista
                         const cards = document.querySelectorAll('.team-select-card');
                         cards.forEach(c => {
                             if(c.querySelector('span').innerText === acortarNombre(eq.equipoFavorito)) {
@@ -321,14 +318,12 @@
             contenedor.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Buscando datos...';
             
             try {
-                // 1. Fetch Próximo Partido
                 const urlCal = `/api/calendario/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}/0`;
                 const resCal = await fetch(urlCal);
                 const dataCal = await resCal.json();
                 const partidos = dataCal.jornada?.Enfrentamientos || [];
                 const partido = partidos.find(p => p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito);
                 
-                // 2. Fetch Clasificación para Mini-Stats
                 const urlClasif = `/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`;
                 const resClasif = await fetch(urlClasif);
                 const clasif = await resClasif.json();
@@ -494,7 +489,7 @@
             if (!selComp.value || !selGrupo.value || !equipoSeleccionadoVisual) return;
 
             const equipoData = {
-                id: editandoEquipoId ? editandoEquipoId : Date.now(), // Si editamos, conservamos el ID
+                id: editandoEquipoId ? editandoEquipoId : Date.now(),
                 nombre: nombre, 
                 idDeporte: selDep.value, nombreDeporte: selDep.options[selDep.selectedIndex].text,
                 idCompeticion: selComp.value, nombreCompeticion: selComp.options[selComp.selectedIndex].text,
@@ -504,7 +499,6 @@
             };
             
             if (editandoEquipoId) {
-                // Buscar el índice y reemplazar
                 const index = equipos.findIndex(e => e.id === editandoEquipoId);
                 if (index !== -1) equipos[index] = equipoData;
             } else {
@@ -512,7 +506,7 @@
             }
             
             localStorage.setItem('equipos_liga', JSON.stringify(equipos));
-            editandoEquipoId = null; // Reseteamos
+            editandoEquipoId = null; 
             volverInicio();
         }
 
@@ -619,25 +613,32 @@
                 const esFavorito = esLocalFav || esVisFav;
                 const claseTarjeta = esFavorito ? 'card p-3 card-favorito' : 'card p-3';
 
-                // ALERTA DE CAMBIO (Si el extractor lo marca)
                 let alertaCambio = '';
                 if (p.Cambio) {
                     alertaCambio = `<div class="mt-2 text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded inline-block"><i class="fas fa-exclamation-triangle mr-1"></i> Cambio de Horario/Campo</div>`;
                 }
 
-                let htmlMapa = `<span>${p.CampoJuego?.Direccion || 'Campo por confirmar'}</span>`;
+                // --- DIRECCIÓN COMPLETA PARA EL MAPA Y EL ICS ---
+                let dirCompleta = p.CampoJuego?.Direccion || 'Campo por confirmar';
+                if (p.CampoJuego?.CP || p.CampoJuego?.Municipio) {
+                    dirCompleta += `, ${p.CampoJuego?.CP || ''} ${p.CampoJuego?.Municipio || ''}`;
+                }
+                dirCompleta = dirCompleta.replace(/,\s*,/g, ',').replace(/\s+/g, ' ').trim(); // Limpiar comas dobles o espacios
+
+                let htmlMapa = `<span>${dirCompleta}</span>`;
                 if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
-                    htmlMapa = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${p.CampoJuego?.Direccion || 'Ver en Mapa'}</a>`;
+                    htmlMapa = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${dirCompleta}</a>`;
                 }
 
                 let botonesExtra = '';
                 if (esFavorito && p.FechaHora) {
                     const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
-                    const texto = `¡Oye! El próximo partido de ${equipoActual.nombre} es el ${fecha} a las ${hora}h en ${p.CampoJuego?.Direccion || 'el campo'}. ¡Allí nos vemos!`;
+                    const texto = `¡Oye! El próximo partido de ${equipoActual.nombre} es el ${fecha} a las ${hora}h en ${dirCompleta}. ¡Allí nos vemos!`;
                     const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
                     const tituloIcs = `Partido ${equipoActual.equipoFavorito} vs ${rival}`;
                     
-                    const urlIcs = `/api/ics?titulo=${encodeURIComponent(tituloIcs)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(p.CampoJuego?.Direccion || '')}`;
+                    // Aquí pasamos la dirección completa a Python para el archivo .ics
+                    const urlIcs = `/api/ics?titulo=${encodeURIComponent(tituloIcs)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dirCompleta)}`;
 
                     botonesExtra = `
                         <div class="flex gap-2 mt-3">
@@ -710,9 +711,16 @@
                     const esFavorito = esLocalFav || esVisFav;
                     const claseTarjeta = esFavorito ? 'card p-3 mb-2 flex flex-col w-full card-favorito' : 'card p-3 mb-2 flex flex-col w-full';
                     
-                    let htmlMapaRes = `<span>${p.CampoJuego?.Direccion || 'Campo por confirmar'}</span>`;
+                    // --- DIRECCIÓN COMPLETA TAMBIÉN EN RESULTADOS ---
+                    let dirCompletaRes = p.CampoJuego?.Direccion || 'Campo por confirmar';
+                    if (p.CampoJuego?.CP || p.CampoJuego?.Municipio) {
+                        dirCompletaRes += `, ${p.CampoJuego?.CP || ''} ${p.CampoJuego?.Municipio || ''}`;
+                    }
+                    dirCompletaRes = dirCompletaRes.replace(/,\s*,/g, ',').replace(/\s+/g, ' ').trim();
+
+                    let htmlMapaRes = `<span>${dirCompletaRes}</span>`;
                     if (p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
-                        htmlMapaRes = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${p.CampoJuego?.Direccion || 'Ver en Mapa'}</a>`;
+                        htmlMapaRes = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${dirCompletaRes}</a>`;
                     }
 
                     const isZeroZero = p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0;
@@ -776,7 +784,6 @@
                 const esFavorito = f.NombreEquipo === equipoActual.equipoFavorito;
                 const rachaHTML = calcularRacha(f.NombreEquipo);
                 
-                // SOLO EL PRIMERO EN DORADO
                 let clasePos = 'text-gray-600'; 
                 let clasePts = 'text-[#006D6F]';
                 if (f.Posicion === 1) {
@@ -784,7 +791,6 @@
                     clasePts = 'text-[#D6B25A]';
                 }
                 
-                // Resalte de fondo si es tu equipo
                 let bgFav = esFavorito ? 'bg-[#e6f2f2]' : '';
 
                 tbody.innerHTML += `
