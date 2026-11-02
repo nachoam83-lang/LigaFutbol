@@ -22,7 +22,7 @@
         html, body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
             background-color: var(--bg-color);
-            overscroll-behavior-y: none; /* Evita el efecto de rebote */
+            overscroll-behavior-y: none; 
             overflow-x: hidden;
         }
         
@@ -116,27 +116,20 @@
     <!-- PANTALLA 3: DETALLE DEL EQUIPO (TABS) -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
         
-        <!-- NUEVA CABECERA TIPO PERFIL DE JUGADOR -->
+        <!-- CABECERA MINIMALISTA HORIZONTAL (Calendario, Resultados, Clasificación) -->
         <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
-            <!-- Barra superior con botón atrás -->
-            <div class="flex items-center justify-between p-4 pb-2">
-                <button onclick="volverInicio()" class="w-8"><i class="fas fa-chevron-left text-lg"></i></button>
-                <span class="text-[10px] font-bold tracking-widest opacity-70 uppercase">Ficha del Jugador</span>
-                <div class="w-8"></div>
-            </div>
-            
-            <!-- Datos del Jugador -->
-            <div class="flex flex-col items-center pb-5 px-4">
-                <!-- Linea 1: NOMBRE -->
-                <h2 id="titulo-detalle-nombre" class="text-2xl font-black tracking-wide text-white text-center leading-none mb-1"></h2>
+            <div class="flex items-center p-4">
+                <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
                 
-                <!-- Linea 2: CATEGORIA -->
-                <p id="titulo-detalle-categoria" class="text-[11px] font-semibold text-white/80 uppercase tracking-widest mb-4 text-center"></p>
-                
-                <!-- Linea 3: ESCUDO GRANDE Y EQUIPO -->
-                <div class="flex items-center gap-3 bg-white/15 px-5 py-2.5 rounded-full backdrop-blur-md border border-white/20 shadow-inner">
-                    <img id="titulo-detalle-escudo" src="/static/logo.png" class="w-12 h-12 object-contain bg-white rounded-full p-1 shadow-sm">
-                    <span id="titulo-detalle-equipo" class="text-[15px] font-bold text-white truncate max-w-[200px]"></span>
+                <!-- Escudo a la izquierda, Nombre y Categoría a la derecha -->
+                <div class="flex items-center flex-1">
+                    <div class="w-14 h-14 bg-white rounded-full p-1 shadow-sm mr-4 flex-shrink-0 flex items-center justify-center">
+                        <img id="titulo-detalle-escudo" src="/static/logo.png" class="w-10 h-10 object-contain">
+                    </div>
+                    <div class="flex flex-col">
+                        <h2 id="titulo-detalle-nombre" class="text-2xl font-black text-white leading-tight"></h2>
+                        <p id="titulo-detalle-categoria" class="text-sm font-semibold text-white/80 uppercase tracking-widest"></p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -192,7 +185,6 @@
 
         function acortarNombre(nombre) {
             if (!nombre) return "";
-            // Límite de 30 caracteres
             return nombre.length > 30 ? nombre.substring(0, 30) + "..." : nombre;
         }
 
@@ -214,6 +206,7 @@
             renderizarEquipos();
         }
 
+        // --- DISEÑO DE LA LISTA DE EQUIPOS (Añadido el equipo en dorado) ---
         function renderizarEquipos() {
             const contenedor = document.getElementById('lista-equipos');
             contenedor.innerHTML = '';
@@ -229,21 +222,24 @@
 
             equipos.forEach((eq, index) => {
                 const div = document.createElement('div');
-                div.className = 'card p-3 flex items-center justify-between cursor-pointer';
+                div.className = 'text-white p-4 rounded-xl shadow-md flex items-center justify-between cursor-pointer';
+                div.style.backgroundColor = 'var(--primary-color)';
                 div.onclick = () => abrirEquipo(index);
                 
+                // Añadimos el nombre del equipo en color dorado y con el límite de 30 caracteres
                 div.innerHTML = `
                     <div class="flex items-center flex-1">
-                        <div class="w-12 h-12 mr-3 flex items-center justify-center bg-white rounded-full border border-gray-100 shadow-sm">
-                            ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="w-8 h-8 object-contain">` : '<i class="fas fa-shield-alt text-gray-400 text-xl"></i>'}
+                        <div class="w-14 h-14 mr-4 flex items-center justify-center bg-white rounded-full p-1 shadow-sm flex-shrink-0">
+                            ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="w-10 h-10 object-contain">` : '<i class="fas fa-shield-alt text-[#006D6F] text-2xl"></i>'}
                         </div>
-                        <div>
-                            <h3 class="font-black text-gray-800 text-sm">${eq.nombre}</h3>
-                            <p class="text-xs text-gray-500 font-medium">${eq.nombreCompeticion}</p>
+                        <div class="flex flex-col">
+                            <h3 class="font-black text-xl leading-tight">${eq.nombre}</h3>
+                            <p class="text-xs text-white/80 font-semibold uppercase tracking-wider mt-1">${eq.nombreCompeticion}</p>
+                            <p class="text-[12px] font-bold text-[#D6B25A] tracking-wide mt-0.5 truncate" style="max-width: 220px;">${acortarNombre(eq.equipoFavorito)}</p>
                         </div>
                     </div>
-                    <button class="text-gray-300 hover:text-red-500 p-2" onclick="event.stopPropagation(); borrarEquipo(${index})">
-                        <i class="fas fa-trash-alt"></i>
+                    <button class="text-white/50 hover:text-white p-2" onclick="event.stopPropagation(); borrarEquipo(${index})">
+                        <i class="fas fa-trash-alt text-lg"></i>
                     </button>
                 `;
                 contenedor.appendChild(div);
@@ -413,11 +409,11 @@
             volverInicio();
         }
 
-        // --- ACTUALIZACIÓN DE LA FICHA DEL JUGADOR ---
+        // --- ABRIR EQUIPO Y CARGAR CABECERA MINIMALISTA ---
         function abrirEquipo(index) {
             equipoActual = equipos[index];
             
-            // Rellenamos la nueva cabecera
+            // Rellenamos la cabecera interior (escudo, nombre y categoría)
             document.getElementById('titulo-detalle-nombre').innerText = equipoActual.nombre;
             document.getElementById('titulo-detalle-categoria').innerText = equipoActual.nombreCompeticion;
             
@@ -427,10 +423,7 @@
             } else {
                 document.getElementById('titulo-detalle-escudo').classList.add('hide');
             }
-            
-            document.getElementById('titulo-detalle-equipo').innerText = acortarNombre(equipoActual.equipoFavorito);
 
-            // Cambiamos de pantalla
             document.getElementById('screen-equipos').classList.add('hide');
             document.getElementById('screen-detalle').classList.remove('hide');
             cambiarTab('calendario');
@@ -460,7 +453,6 @@
             
             jornadasData = data.jornadas || [];
             
-            // Lógica para seleccionar la próxima jornada
             let indiceSeleccionado = 0; 
             if (jornadasData.length > 0) {
                 const hoy = new Date();
