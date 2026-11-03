@@ -14,6 +14,7 @@
     
     <style>
         :root {
+            /* Variables por defecto (ECM) */
             --primary-color: #006D6F;
             --secondary-color: #D6B25A;
             --bg-color: #f0f2f5;
@@ -21,18 +22,13 @@
             --text-main: #1f2937;
             --text-sec: #6b7280;
             --border-color: #e5e7eb;
-            --header-bg: #2F3640; /* Gris antracita para la pantalla principal */
+            --header-bg: #2F3640; /* Gris antracita */
         }
 
-        /* Tema específico para Escuela Canal */
+        /* Tema para Escuela Canal */
         .theme-canal {
             --primary-color: #00509E; /* Azul oscuro */
-            --secondary-color: #E0F0FF; /* Azul claro para resaltar */
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-main: #1f2937;
-            --text-sec: #6b7280;
-            --border-color: #e5e7eb;
+            --secondary-color: #E0F0FF; /* Azul claro */
         }
 
         html, body { 
@@ -47,6 +43,7 @@
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
+        /* --- CONTRASTES RECUPERADOS PARA ECM --- */
         .card-favorito { 
             background-color: rgba(0, 109, 111, 0.6) !important; 
             border-color: rgba(0, 109, 111, 0.8) !important;
@@ -63,6 +60,12 @@
         
         .card-favorito .border-t { border-color: rgba(255,255,255,0.3) !important; }
         .card-favorito a.text-blue-500 { color: #ffffff !important; text-decoration: underline; }
+
+        /* Estilo para tarjeta favorita de Canal */
+        .card-favorito-canal {
+            background-color: var(--secondary-color) !important;
+            border-color: var(--primary-color) !important;
+        }
 
         /* --- ESTILOS DE LA PANTALLA DE CARGA --- */
         #pantalla-carga {
@@ -99,7 +102,6 @@
         
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.8; } }
 
-        /* Resto de estilos */
         .loader-sm { border: 3px solid var(--border-color); border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
@@ -125,6 +127,7 @@
         
         .spin-anim { animation: spin 1s linear infinite; }
 
+        /* --- ESCUDOS CIRCULARES (CALENDARIO Y RESULTADOS) --- */
         .escudo-circulo {
             width: 56px; height: 56px; background-color: white; border-radius: 50%; padding: 6px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center;
@@ -157,7 +160,6 @@
     </div>
 
     <div id="screen-equipos" class="max-w-md mx-auto min-h-screen">
-        <!-- Cabecera gris antracita -->
         <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <h1 class="text-xl font-bold tracking-wide">Mis Equipos</h1>
             <div class="flex gap-3">
@@ -300,7 +302,7 @@
             return nombre.length > 35 ? nombre.substring(0, 35) + "..." : nombre;
         }
 
-        // ¡AQUÍ ESTÁN LAS FUNCIONES QUE FALTABAN!
+        // FUNCIONES RECUPERADAS PARA EL CALENDARIO DE ECM
         function construirDireccion(p) {
             let dir = "";
             if (p.Campo) {
@@ -319,7 +321,6 @@
             const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase();
             return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE'));
         }
-        // ----------------------------------------
 
         function isCanal() {
             return equipoActual && equipoActual.idDeporte === "4";
@@ -723,7 +724,6 @@
         async function abrirEquipo(index) {
             equipoActual = equipos[index];
             
-            // Aplicar tema
             if (equipoActual.idDeporte === "4") {
                 document.body.classList.add('theme-canal');
             } else {
@@ -918,9 +918,8 @@
                 const esFavorito = esLocalFav || esVisFav;
                 
                 const claseTarjeta = esFavorito 
-                    ? (esCanal ? 'card p-3' : 'card p-3 card-favorito') 
+                    ? (esCanal ? 'card p-3 card-favorito-canal' : 'card p-3 card-favorito') 
                     : 'card p-3';
-                const styleTarjeta = (esCanal && esFavorito) ? 'background-color: var(--secondary-color); border-color: var(--primary-color);' : '';
 
                 const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
                 const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
@@ -961,11 +960,12 @@
 
                 if (esDescanso) {
                     contenedor.innerHTML += `
-                        <div class="${claseTarjeta}" style="${styleTarjeta}">
+                        <div class="${claseTarjeta}">
                             <div class="flex justify-between items-center mb-2">
                                 <div class="font-extrabold text-[11px] uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha}</div>
                             </div>
                             <div class="flex justify-center items-center text-sm font-bold py-4 flex-col" style="color: var(--primary-color);">
+                                ${!esCanal && p.EquipoLocal ? `<div class="escudo-circulo mb-2"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>` : ''}
                                 <div><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div>
                             </div>
                         </div>
@@ -984,13 +984,14 @@
                         htmlEscVis = escVis ? `<div class="escudo-circulo"><img src="${escVis}"></div>` : '<div class="h-12 mb-1"></div>';
                     }
 
-                    const colorNombreLocal = esLocalFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)';
-                    const colorNombreVis = esVisFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)';
+                    const colorNombreLocal = esLocalFav ? (esCanal ? '#000' : '#D6B25A') : 'var(--text-main)';
+                    const colorNombreVis = esVisFav ? (esCanal ? '#000' : '#D6B25A') : 'var(--text-main)';
+                    const claseVs = esFavorito && !esCanal ? 'vs-badge' : '';
 
                     contenedor.innerHTML += `
-                        <div class="${claseTarjeta}" style="${styleTarjeta}">
+                        <div class="${claseTarjeta}">
                             <div class="flex justify-between items-center mb-2">
-                                <div class="font-extrabold text-[11px] uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div>
+                                <div class="font-extrabold text-[11px] uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
                                 ${htmlCampo}
                             </div>
                             
@@ -1000,7 +1001,7 @@
                                     <div class="text-[13px] font-bold text-center leading-tight" style="color: ${colorNombreLocal};">${acortarNombre(p.EquipoLocal)}</div>
                                 </div>
                                 <div class="px-2 flex flex-col items-center justify-center h-10">
-                                    <span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>
+                                    <span class="text-xs font-bold px-2 py-1 rounded border ${claseVs}" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>
                                 </div>
                                 <div class="flex-1 flex flex-col items-center">
                                     ${htmlEscVis}
@@ -1019,9 +1020,11 @@
             });
         }
 
+        // --- RESULTADOS CON ESCUDOS Y CONTRASTES RECUPERADOS ---
         function renderizarResultadosUI() {
             const contenedor = document.getElementById('lista-resultados');
             const partidos = cacheResultados;
+            const esCanal = isCanal();
             
             contenedor.innerHTML = '';
             if (!Array.isArray(partidos) || partidos.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay resultados.</p>';
@@ -1037,32 +1040,66 @@
                 contenedor.innerHTML += `<h3 class="font-extrabold text-base mt-5 mb-2 uppercase tracking-wide border-l-4 pl-2" style="color: var(--text-main); border-color: var(--primary-color);">Jornada ${j}</h3>`;
                 
                 agrupados[j].forEach(p => {
+                    const escLocal = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : '';
+                    const escVis = p.EquipoVisitante ? (p.URLEscudoEquipoVisitante || '/static/logo.png') : '';
+                    
                     const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
                     const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
                     const esFavorito = esLocalFav || esVisFav;
                     
                     const claseTarjeta = esFavorito 
-                        ? (isCanal() ? 'card p-3 mb-2 flex flex-col w-full' : 'card p-3 mb-2 flex flex-col w-full card-favorito') 
+                        ? (esCanal ? 'card p-3 mb-2 flex flex-col w-full card-favorito-canal' : 'card p-3 mb-2 flex flex-col w-full card-favorito') 
                         : 'card p-3 mb-2 flex flex-col w-full';
-                    const styleTarjeta = (isCanal() && esFavorito) ? 'background-color: var(--secondary-color); border-color: var(--primary-color);' : '';
-
-                    const colorNombreLocal = esLocalFav ? (isCanal() ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)';
-                    const colorNombreVis = esVisFav ? (isCanal() ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)';
                     
-                    const styleScore = esFavorito ? (isCanal() ? 'color: var(--primary-color);' : 'color: var(--secondary-color);') : 'color: var(--primary-color);';
+                    const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
+                    const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
 
-                    contenedor.innerHTML += `
-                        <div class="${claseTarjeta}" style="${styleTarjeta}">
-                            <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
-                                <div class="text-[13px] font-bold text-center leading-tight" style="color: ${colorNombreLocal};">${acortarNombre(p.EquipoLocal)}</div>
-                                <div class="text-xs px-1" style="color: var(--text-sec);">-</div>
-                                <div class="text-[13px] font-bold text-center leading-tight" style="color: ${colorNombreVis};">${acortarNombre(p.EquipoVisitante)}</div>
+                    const isZeroZero = p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0;
+                    const styleScore = esFavorito 
+                        ? (esCanal ? 'color: #000;' : 'color: var(--secondary-color);') 
+                        : (isZeroZero ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);');
+
+                    if (esDescanso) {
+                        contenedor.innerHTML += `
+                            <div class="${claseTarjeta}">
+                                <div class="flex justify-center items-center py-2 flex-col" style="color: var(--primary-color);">
+                                    ${!esCanal && escLocal ? `<div class="escudo-circulo mb-2"><img src="${escLocal}"></div>` : ''}
+                                    <div class="text-sm font-bold"><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div>
+                                </div>
                             </div>
-                            <div class="flex justify-center items-center gap-4 w-full mt-1">
-                                <span class="text-xl font-black" style="${styleScore}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>
+                        `;
+                    } else {
+                        let htmlEscLocal = '';
+                        let htmlEscVis = '';
+
+                        if (esCanal) {
+                            htmlEscLocal = `<div class="w-14 h-14 rounded-full bg-white border border-gray-300 mb-2 shadow-sm"></div>`;
+                            htmlEscVis = `<div class="w-14 h-14 rounded-full bg-[#00509E] mb-2 shadow-sm"></div>`;
+                        } else {
+                            htmlEscLocal = escLocal ? `<div class="escudo-circulo"><img src="${escLocal}"></div>` : '';
+                            htmlEscVis = escVis ? `<div class="escudo-circulo"><img src="${escVis}"></div>` : '';
+                        }
+
+                        const colorNombreLocal = esLocalFav ? (esCanal ? '#000' : '#D6B25A') : 'var(--text-main)';
+                        const colorNombreVis = esVisFav ? (esCanal ? '#000' : '#D6B25A') : 'var(--text-main)';
+
+                        contenedor.innerHTML += `
+                            <div class="${claseTarjeta}">
+                                <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
+                                    <div class="text-[13px] font-bold text-center leading-tight" style="color: ${colorNombreLocal};">${acortarNombre(p.EquipoLocal)}</div>
+                                    <div class="text-xs px-1" style="color: var(--text-sec);">-</div>
+                                    <div class="text-[13px] font-bold text-center leading-tight" style="color: ${colorNombreVis};">${acortarNombre(p.EquipoVisitante)}</div>
+                                </div>
+                                <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
+                                    <div class="w-12 flex justify-end">${htmlEscLocal}</div>
+                                    <div class="px-2">
+                                        <span class="text-xl font-black" style="${styleScore}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>
+                                    </div>
+                                    <div class="w-12 flex justify-start">${htmlEscVis}</div>
+                                </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    }
                 });
             }
         }
