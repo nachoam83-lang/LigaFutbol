@@ -23,44 +23,22 @@
             --border-color: #e5e7eb;
             --header-bg: #2F3640; 
         }
-        .theme-canal { 
-            --primary-color: #00509E; 
-            --secondary-color: #E0F0FF; 
-        }
+        .theme-canal { --primary-color: #00509E; --secondary-color: #E0F0FF; }
         
-        html, body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
-            background-color: var(--bg-color); 
-            overscroll-behavior-y: none; 
-            overflow-x: hidden; 
-            color: var(--text-main); 
-        }
-        
+        html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); overscroll-behavior-y: none; overflow-x: hidden; color: var(--text-main); }
         .hide { display: none !important; }
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
-        /* CONTRASTES ECM */
-        .card-favorito { 
-            background-color: rgba(0, 109, 111, 0.85) !important; 
-            border-color: rgba(0, 109, 111, 1) !important; 
-        }
+        /* --- ARREGLO DE CONTRASTES ECM --- */
+        .card-favorito { background-color: rgba(0, 109, 111, 0.9) !important; border-color: rgba(0, 109, 111, 1) !important; }
         .card-favorito .text-main, .card-favorito .text-sec { color: #ffffff !important; }
+        .card-favorito a { color: #ffffff !important; text-decoration: underline; }
         
-        /* CONTRASTE CANAL */
-        .card-favorito-canal { 
-            background-color: #E0F0FF !important; 
-            border-color: #00509E !important; 
-        }
+        .card-favorito-canal { background-color: #E0F0FF !important; border-color: #00509E !important; }
 
-        #pantalla-carga { 
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; 
-            background-color: var(--primary-color); 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; 
-            color: white; transition: opacity 0.4s; 
-        }
+        #pantalla-carga { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; background-color: var(--primary-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.4s; }
         #pantalla-carga.oculto { opacity: 0; visibility: hidden; }
-        
         .loader-juego { position: relative; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; }
         .loader-juego::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--secondary-color); border-radius: 50%; animation: spin 1s linear infinite; }
         .loader-juego .escudo-wrapper { width: 75px; height: 75px; background-color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; z-index: 10; animation: pulse 1.5s ease-in-out infinite; }
@@ -613,18 +591,25 @@
         }
 
         function actualizarUIJornadas() {
-            if (!cacheCalendarioGlobal) return;
+            if (!cacheCalendarioGlobal || !cacheResultados) return;
             let jornadasData = cacheCalendarioGlobal.jornadas || [];
             let hayCambios = cacheResultados ? cacheResultados.some(p => p.Cambio) : false;
             document.getElementById('banner-alerta').classList.toggle('hide', !hayCambios);
 
+            // --- ARREGLO: Buscar la próxima jornada basándonos en la fecha de los partidos ---
             let indiceSeleccionado = 0; 
-            if (jornadasData.length > 0) {
-                const hoy = new Date(); hoy.setHours(0,0,0,0); const ayer = new Date(hoy); ayer.setDate(ayer.getDate() - 1); 
-                for (let i = 0; i < jornadasData.length; i++) {
-                    if (jornadasData[i].Fecha && new Date(jornadasData[i].Fecha) >= ayer) { indiceSeleccionado = i; break; }
-                }
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            
+            // Buscamos el primer partido de este equipo que sea hoy o en el futuro
+            const proximoPartido = cacheResultados
+                .filter(p => p.FechaHora && new Date(p.FechaHora) >= hoy && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito))
+                .sort((a,b) => new Date(a.FechaHora) - new Date(b.FechaHora))[0];
+
+            if (proximoPartido && proximoPartido.NumeroJornada) {
+                const idx = jornadasData.findIndex(j => j.NumeroJornada == proximoPartido.NumeroJornada);
+                if (idx !== -1) indiceSeleccionado = idx;
             }
+
             const select = document.getElementById('select-jornada');
             select.innerHTML = '';
             jornadasData.forEach((j, i) => select.innerHTML += `<option value="${j.NumeroJornada}" ${i === indiceSeleccionado ? 'selected' : ''}>Jornada ${j.NumeroJornada}</option>`);
@@ -659,7 +644,6 @@
                 const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
                 const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
 
-                // ARREGLO: Recuperar siempre el escudo del que descansa
                 const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
 
                 const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
@@ -668,7 +652,10 @@
                     : (esCampoExterior(p) ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
                                           : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-building mr-1"></i> Pabellón</span>`);
                 
-                let htmlMapa = `<a href="http://maps.apple.com/?q=${encodeURIComponent(dirCompleta)}" target="_blank" class="text-blue-500 hover:underline">${dirCompleta}</a>`;
+                // --- ARREGLO: Color de la dirección para que se lea sobre fondo verde ---
+                let colorMapa = (esFavorito && !esCanal) ? 'text-white underline' : 'text-blue-500 hover:underline';
+                let htmlMapa = `<a href="http://maps.apple.com/?q=${encodeURIComponent(dirCompleta)}" target="_blank" class="${colorMapa}">${dirCompleta}</a>`;
+
                 let botonesExtra = '';
                 if (esFavorito && p.FechaHora && !esDescanso) {
                     const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
@@ -681,7 +668,6 @@
                 }
 
                 if (esDescanso) {
-                    // ARREGLO: Texto centrado y escudo
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
                             <div class="flex flex-col items-center justify-center w-full py-2" style="color: var(--primary-color);">
@@ -730,13 +716,11 @@
                     const claseTarjeta = esFavorito ? (esCanal ? 'card p-3 mb-2 flex flex-col w-full card-favorito-canal' : 'card p-3 mb-2 flex flex-col w-full card-favorito') : 'card p-3 mb-2 flex flex-col w-full';
                     const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
                     
-                    // ARREGLO: Recuperar escudo para el que descansa
                     const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
                     
                     const styleScore = esFavorito ? (esCanal ? 'color: var(--primary-color);' : 'color: var(--secondary-color);') : (p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);');
 
                     if (esDescanso) {
-                        // ARREGLO: Texto centrado y escudo
                         contenedor.innerHTML += `
                             <div class="${claseTarjeta}">
                                 <div class="flex flex-col items-center justify-center py-2 w-full" style="color: var(--primary-color);">
@@ -790,7 +774,6 @@
                 const esFavorito = f.NombreEquipo === equipoActual.equipoFavorito;
                 const clasePos = f.Posicion === 1 ? 'text-[#D6B25A]' : 'text-gray-600'; const clasePts = f.Posicion === 1 ? 'text-[#D6B25A]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
                 
-                // ARREGLO: Comprobar si es 'Jugados' (ECM) o 'PJ' (Canal) para evitar el 'undefined'
                 const partidosJugados = f.Jugados !== undefined ? f.Jugados : (f.PJ !== undefined ? f.PJ : 0);
 
                 tbody.innerHTML += `
