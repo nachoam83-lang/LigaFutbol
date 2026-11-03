@@ -35,23 +35,21 @@
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
-        /* TARJETA DESTACADA: Fondo verde oscuro */
         .card-favorito { 
-            background-color: #005a5c !important; 
-            border-color: #004749 !important;
-            box-shadow: 0 6px 12px -2px rgba(0, 90, 92, 0.4) !important;
+            background-color: rgba(0, 109, 111, 0.6) !important; 
+            border-color: rgba(0, 109, 111, 0.8) !important;
+            box-shadow: 0 4px 10px -1px rgba(0, 109, 111, 0.3) !important;
         }
         
-        /* Ajustes de texto para que se lea bien sobre el fondo oscuro */
         .card-favorito .text-gray-700, 
         .card-favorito .text-gray-800, 
-        .card-favorito .text-gray-600 { color: #f3f4f6 !important; }
+        .card-favorito .text-gray-600 { color: #ffffff !important; }
         
         .card-favorito .text-xs, 
         .card-favorito .text-\[13px\], 
-        .card-favorito .text-\[11px\] { color: rgba(255,255,255,0.8) !important; }
-
-        .card-favorito .border-t { border-color: rgba(255,255,255,0.2) !important; }
+        .card-favorito .text-\[11px\] { color: rgba(255,255,255,0.9) !important; }
+        
+        .card-favorito .border-t { border-color: rgba(255,255,255,0.3) !important; }
 
         .loader { border: 3px solid var(--border-color); border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -78,24 +76,29 @@
         
         .spin-anim { animation: spin 1s linear infinite; }
 
-        /* Clase para el círculo blanco de los escudos en el calendario */
+        /* Círculo perfecto para los escudos */
         .escudo-circulo {
-            width: 48px; height: 48px;
+            width: 56px; 
+            height: 56px;
             background-color: white;
             border-radius: 50%;
-            padding: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 4px auto;
+            padding: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            margin: 0 auto 6px auto;
+            overflow: hidden;
         }
         .escudo-circulo img {
-            width: 100%; height: 100%; object-fit: contain;
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain;
         }
     </style>
 </head>
 <body class="pb-20">
 
-    <!-- PANTALLA 1: MIS EQUIPOS -->
     <div id="screen-equipos" class="max-w-md mx-auto min-h-screen">
         <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <h1 class="text-xl font-bold tracking-wide">Mis Equipos</h1>
@@ -107,7 +110,6 @@
         <div id="lista-equipos" class="p-4 space-y-4"></div>
     </div>
 
-    <!-- PANTALLA 2: AÑADIR/EDITAR EQUIPO -->
     <div id="screen-formulario" class="hide max-w-md mx-auto min-h-screen" style="background-color: var(--bg-color);">
         <div class="text-white p-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left"></i></button>
@@ -152,7 +154,6 @@
         </div>
     </div>
 
-    <!-- PANTALLA 3: DETALLE DEL EQUIPO (TABS) -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
         <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <div class="flex items-center p-4">
@@ -223,7 +224,7 @@
 
         function acortarNombre(nombre) {
             if (!nombre) return "";
-            return nombre.length > 30 ? nombre.substring(0, 30) + "..." : nombre;
+            return nombre.length > 35 ? nombre.substring(0, 35) + "..." : nombre;
         }
 
         function construirDireccion(p) {
@@ -664,8 +665,9 @@
                 const esFavorito = esLocalFav || esVisFav;
                 const claseTarjeta = esFavorito ? 'card p-3 card-favorito' : 'card p-3';
 
-                // COMPROBACIÓN DE "DESCANSA"
                 const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
+                const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
+                const escudoDescansa = p.EquipoLocal ? escLocal : escVis;
 
                 let alertaCambio = '';
                 if (p.Cambio && !esDescanso) {
@@ -706,18 +708,19 @@
                     `;
                 }
 
-                // DISEÑO DE LA TARJETA (Condicional para descanso)
                 if (esDescanso) {
-                    // Tarjeta simplificada para descanso
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
-                            <div class="flex justify-center items-center text-sm font-bold py-4" style="color: var(--primary-color);">
-                                <i class="fas fa-bed mr-2"></i> Descansa (Jornada ${data.jornada?.NumeroJornada || ''})
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="font-extrabold text-[11px] uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha}</div>
+                            </div>
+                            <div class="flex justify-center items-center text-sm font-bold py-4 flex-col" style="color: var(--primary-color);">
+                                ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
+                                <div><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div>
                             </div>
                         </div>
                     `;
                 } else {
-                    // Tarjeta normal de partido
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
                             <div class="flex justify-between items-center mb-2">
@@ -782,6 +785,9 @@
                     const claseTarjeta = esFavorito ? 'card p-3 mb-2 flex flex-col w-full card-favorito' : 'card p-3 mb-2 flex flex-col w-full';
                     
                     const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
+                    const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
+                    const escudoDescansa = p.EquipoLocal ? escLocal : escVis;
+
                     const dirCompletaRes = construirDireccion(p);
                     const esExterior = esCampoExterior(p);
                     
@@ -797,12 +803,12 @@
                     const isZeroZero = p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0;
                     const styleScore = isZeroZero ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);';
 
-                    // DISEÑO DE LA TARJETA (Condicional para descanso)
                     if (esDescanso) {
                         contenedor.innerHTML += `
                             <div class="${claseTarjeta}">
-                                <div class="flex justify-center items-center text-sm font-bold py-2" style="color: var(--primary-color);">
-                                    <i class="fas fa-bed mr-2"></i> Descansa
+                                <div class="flex justify-center items-center py-2 flex-col" style="color: var(--primary-color);">
+                                    ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
+                                    <div class="text-sm font-bold"><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div>
                                 </div>
                             </div>
                         `;
