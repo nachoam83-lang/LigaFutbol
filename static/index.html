@@ -77,7 +77,7 @@
         
         .spin-anim { animation: spin 1s linear infinite; }
 
-        /* Círculo perfecto para los escudos */
+        /* Círculo perfecto para los escudos en calendario/resultados */
         .escudo-circulo {
             width: 56px; 
             height: 56px;
@@ -97,19 +97,20 @@
             object-fit: contain;
         }
 
-        /* Círculo pequeño para la tabla de clasificación */
+        /* Círculo para la tabla de clasificación (CORREGIDO) */
         .escudo-circulo-sm {
             width: 32px; 
             height: 32px;
             background-color: white;
             border-radius: 50%;
-            padding: 3px;
+            padding: 6px; /* Más padding para que no se salgan las esquinas */
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             display: flex; 
             align-items: center; 
             justify-content: center;
             margin-right: 8px;
             flex-shrink: 0;
+            overflow: hidden;
         }
         .escudo-circulo-sm img {
             width: 100%; 
@@ -121,12 +122,6 @@
             background-color: #ffffff !important;
             color: var(--primary-color) !important;
             border-color: #ffffff !important;
-        }
-        
-        /* Puntito rojo de notificación en pestaña */
-        .badge-alerta {
-            position: absolute; top: 2px; right: 10px;
-            width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%;
         }
     </style>
 </head>
@@ -143,7 +138,6 @@
         <div id="lista-equipos" class="p-4 space-y-4"></div>
     </div>
 
-    <!-- FORMULARIO -->
     <div id="screen-formulario" class="hide max-w-md mx-auto min-h-screen" style="background-color: var(--bg-color);">
         <div class="text-white p-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left"></i></button>
@@ -184,7 +178,6 @@
         </div>
     </div>
 
-    <!-- DETALLE -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
         <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <div class="flex items-center p-4">
@@ -221,7 +214,6 @@
         </div>
 
         <div id="tab-clasificacion" class="hide p-4">
-            <!-- Botón de compartir clasificación -->
             <div class="flex justify-end mb-2">
                 <button onclick="compartirClasificacion()" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm border text-xs font-bold" style="border-color: var(--border-color); color: var(--primary-color);">
                     <i class="fas fa-share-alt"></i> Compartir Clasificación
@@ -263,10 +255,11 @@
         let equipoSeleccionadoVisual = null; 
         let soloMiEquipo = false;
         let editandoEquipoId = null; 
-        let datosClasificacionActual = []; // Para el botón de compartir
+        let datosClasificacionActual = [];
 
         function acortarNombre(nombre) {
             if (!nombre) return "";
+            // 35 caracteres como pediste
             return nombre.length > 35 ? nombre.substring(0, 35) + "..." : nombre;
         }
 
@@ -377,13 +370,13 @@
                             <div class="w-14 h-14 mr-4 flex items-center justify-center bg-white rounded-full p-1 shadow-sm flex-shrink-0">
                                 ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="w-10 h-10 object-contain">` : '<i class="fas fa-shield-alt text-[#006D6F] text-2xl"></i>'}
                             </div>
-                            <div class="flex flex-col">
+                            <div class="flex flex-col flex-1 min-w-0">
                                 <h3 class="font-black text-xl leading-tight">${eq.nombre}</h3>
                                 <p class="text-xs text-white/80 font-semibold uppercase tracking-wider mt-1">${eq.nombreCompeticion}</p>
-                                <p class="text-[12px] font-bold text-[#D6B25A] tracking-wide mt-0.5 truncate" style="max-width: 180px;">${acortarNombre(eq.equipoFavorito)}</p>
+                                <p class="text-[12px] font-bold text-[#D6B25A] tracking-wide mt-0.5 pr-2">${acortarNombre(eq.equipoFavorito)}</p>
                             </div>
                         </div>
-                        <div class="flex flex-col gap-3">
+                        <div class="flex flex-col gap-3 ml-2 flex-shrink-0">
                             <button class="text-white/60 hover:text-white" onclick="event.stopPropagation(); editarEquipo(${index})">
                                 <i class="fas fa-pen text-sm"></i>
                             </button>
@@ -646,7 +639,6 @@
             const data = await res.json();
             jornadasData = data.jornadas || [];
             
-            // --- LÓGICA DE NOTIFICACIÓN DE CAMBIOS ---
             let hayCambios = false;
             const todosLosPartidos = data.resultados || [];
             todosLosPartidos.forEach(p => {
@@ -659,7 +651,6 @@
             } else {
                 banner.classList.add('hide');
             }
-            // -----------------------------------------
 
             let indiceSeleccionado = 0; 
             if (jornadasData.length > 0) {
@@ -739,10 +730,8 @@
                 let botonesExtra = '';
                 if (esFavorito && p.FechaHora && !esDescanso) {
                     const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
-                    
                     const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}. Nos vemos allí!`;
                     const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-                    
                     const tituloIcs = `Partido: ${equipoActual.equipoFavorito} vs ${rival}`;
                     const urlIcs = `/api/ics?titulo=${encodeURIComponent(tituloIcs)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dirCompleta)}`;
 
@@ -901,7 +890,7 @@
             
             const filas = await resClasif.json();
             const todosLosPartidos = await resResultados.json();
-            datosClasificacionActual = filas; // Guardamos para compartir
+            datosClasificacionActual = filas; 
             
             tbody.innerHTML = '';
             if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
@@ -949,18 +938,13 @@
             });
         }
 
-        // --- FUNCIÓN PARA COMPARTIR LA CLASIFICACIÓN ---
         function compartirClasificacion() {
             if (!datosClasificacionActual || datosClasificacionActual.length === 0) return;
-
             let texto = `🏆 Clasificación - ${equipoActual.nombre} (${equipoActual.nombreCompeticion})\n\n`;
-            
             datosClasificacionActual.forEach(f => {
                 texto += `${f.Posicion}. ${f.NombreEquipo} - ${f.Puntos} pts (${f.Jugados} PJ)\n`;
             });
-            
-            const textoCodificado = encodeURIComponent(texto);
-            window.location.href = `https://wa.me/?text=${textoCodificado}`;
+            window.location.href = `https://wa.me/?text=${encodeURIComponent(texto)}`;
         }
     </script>
 </body>
