@@ -4,6 +4,9 @@ import time
 import urllib3
 import subprocess
 import os
+import io
+import re
+import pdfplumber
 
 # Ocultar avisos de SSL (vital para saltarse el certificado de ECMADRID)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -46,6 +49,108 @@ def get_json(url):
     except Exception as e:
         print(f"Error en la URL: {e}")
         return None
+
+# --- NUEVA FUNCIÓN: EXTRACCIÓN DE ESCUELA CANAL ---
+def extraer_canal():
+    print("\n🚀 Iniciando extracción de Escuela Canal (Liga Interna)...")
+    url = "https://32760c338621fc279e50-75ecfd1a96ffdf4c500d931ef477c188.ssl.cf3.rackcdn.com/56/6e/4e/43/f4/63/74/f2/f2/a7/f9/c4/6a/3d/56/24/6ae9bd2dec243.pdf"
+    
+    categorias = {
+        "PB": "Prebenjamín", "B": "Benjamín", "A": "Alevín", 
+        "I": "Infantil", "CJ": "Cadete/Juvenil", "C": "Cadete", "J": "Juvenil"
+    }
+
+    def traducir_equipo(codigo):
+        if not codigo: return ""
+        codigo = str(codigo).replace('\n', ' ').strip()
+        match = re.match(r"^([A-Z]{1,2})(\d+)$", codigo)
+        if match:
+            prefijo = match.group(1)
+            numero = match.group(2)
+            nombre_cat = categorias.get(prefijo, prefijo)
+            return f"{nombre_cat} {numero}"
+        return codigo
+
+    def parsear_fecha(fecha_str):
+        meses = {"ENERO":"01", "FEBRERO":"02", "MARZO":"03", "ABRIL":"04", "MAYO":"05", "JUNIO":"06", "JULIO":"07", "AGOSTO":"08", "SEPTIEMBRE":"09", "OCTUBRE":"10", "NOVIEMBRE":"11", "DICIEMBRE":"12"}
+        match = re.search(r"(\d+)\s+DE\s+([A-Z]+)", fecha_str.upper())
+        if match:
+            dia = match.group(1).zfill(2)
+            mes = meses.get(match.group(2), "01")
+            return f"2026-{mes}-{dia}"
+        return "2026-01-01"
+
+    try:
+        response = requests.get(url, verify=False, timeout=15)
+        response.raise_for_status()
+        
+        partidos = []
+        equipos_set = set()
+
+        with pdfplumber.open(io.BytesIO(response.content)) as pdf:
+            for i, page in enumerate(pdf.pages[1:], start=2):
+                tables = page.extract_tables()
+                if not tables:
+                    table_settings = {"vertical_strategy": "text", "horizontal_strategy": "text"}
+                    tables = page.extract_tables(table_settings)
+                    if tables and len(tables[0][0]) <= 1:
+                        tables = []
+
+                if not tables: continue
+
+                for tabla in tables:
+                    if len(tabla) < 5: continue
+                    
+                    es_liga = any("LIGA INTERNA" in str(c) for fila in tabla[:4] for c in fila if c)
+                    if not es_liga: continue
+
+                    fecha_cruda = next((str(c).replace('\n', ' ') for c in tabla[0] if c), "")
+                    jornada_cruda = next((str(c).replace('\n', ' ') for c in tabla[2] if c), "")
+                    
+                    if "CLASIFICATORIA" not in jornada_cruda: continue
+
+                    match_jornada = re.search(r"(\d+)", jornada_cruda)
+                    num_jornada = match_jornada.group(1) if match_jornada else "0"
+                    fecha_iso = parsear_fecha(fecha_cruda)
+
+                    campos_indices = [(1, 2), (4, 6), (7, 8), (9, 10), (11, 12)]
+
+                    for fila in tabla:
+                        if not fila[0] or "-" not in str(fila[0]): continue
+                        hora = str(fila[0]).split('-')[0].strip()
+                        
+                        for num_campo, (idx_loc, idx_vis) in enumerate(campos_indices):
+                            if idx_loc < len(fila) and idx_vis < len(fila):
+                                local_cod = fila[idx_loc]
+                                visitante_cod = fila[idx_vis]
+                                
+                                if local_cod and re.match(r"^[A-Z]{1,2}\d+$", str(local_cod).strip()):
+                                    loc_traducido = traducir_equipo(local_cod)
+                                    vis_traducido = traducir_equipo(visitante_cod)
+                                    
+                                    equipos_set.add(loc_traducido)
+                                    if vis_traducido: equipos_set.add(vis_traducido)
+
+                                    partidos.append({
+                                        "NumeroJornada": int(num_jornada),
+                                        "FechaHora": f"{fecha_iso}T{hora}:00",
+                                        "Campo": f"Campo {num_campo + 1}",
+                                        "EquipoLocal": loc_traducido,
+                                        "EquipoVisitante": vis_traducido,
+                                        "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+                                        "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+                                    })
+
+        lista_equipos = sorted(list(equipos_set))
+        datos_canal = {"equipos": lista_equipos, "partidos": partidos}
+        
+        with open("datos_canal.json", "w", encoding="utf-8") as f:
+            json.dump(datos_canal, f, ensure_ascii=False, indent=2)
+            
+        print(f"✅ Escuela Canal extraída: {len(partidos)} partidos y {len(lista_equipos)} equipos.")
+    except Exception as e:
+        print(f"❌ Error extrayendo Canal: {e}")
+# --------------------------------------------------
 
 def extraer_todo():
     print("🚀 Iniciando extracción. Descargando datos y escudos...")
@@ -153,7 +258,10 @@ def extraer_todo():
     with open("datos_liga.json", "w", encoding="utf-8") as f:
         json.dump(datos_finales, f, ensure_ascii=False, indent=2)
         
-    print("\n✅ ¡Extracción completada! Archivo 'datos_liga.json' y escudos creados.")
+    print("\n✅ ¡Extracción ECM completada! Archivo 'datos_liga.json' y escudos creados.")
+    
+    # --- EXTRAER CANAL ---
+    extraer_canal()
     
     # --- SUBIR A GITHUB ---
     print("🚀 Comprobando cambios para subir a GitHub...")
@@ -165,7 +273,9 @@ def extraer_todo():
         # Nos aseguramos de tener la última versión de GitHub
         subprocess.run(["git", "pull", "origin", "main", "--no-rebase"], check=False)
         
+        # AÑADIMOS TAMBIÉN EL ARCHIVO DE CANAL
         subprocess.run(["git", "add", "datos_liga.json"], check=True)
+        subprocess.run(["git", "add", "datos_canal.json"], check=True)
         subprocess.run(["git", "add", "static/escudos"], check=True)
         
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
