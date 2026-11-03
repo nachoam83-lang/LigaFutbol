@@ -53,10 +53,11 @@ def get_equipos_canal():
 def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_grupo: str, id_jornada: str):
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
-        partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal") == id_grupo or p.get("EquipoVisitante") == id_grupo]
+        
+        # --- ARREGLO: Devolvemos TODOS los partidos de la categoría, no solo del equipo ---
+        partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
         partidos.sort(key=lambda x: x["FechaHora"])
         
-        # --- ARREGLO: Calculamos la jornada dinámicamente según la fecha ---
         fechas_unicas = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos)))
         for p in partidos:
             fecha = p["FechaHora"].split("T")[0]
@@ -96,10 +97,10 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
 def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_grupo: str):
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
-        partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal") == id_grupo or p.get("EquipoVisitante") == id_grupo]
+        # --- ARREGLO: Devolvemos TODOS los partidos de la categoría ---
+        partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
         partidos.sort(key=lambda x: x["FechaHora"])
         
-        # --- ARREGLO: Calculamos la jornada dinámicamente según la fecha ---
         fechas_unicas = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos)))
         for p in partidos:
             fecha = p["FechaHora"].split("T")[0]
