@@ -26,6 +26,14 @@ def cargar_datos_canal():
     with open("datos_canal.json", "r", encoding="utf-8") as f:
         return json.load(f)
 
+def corregir_anio(fecha_str):
+    if not fecha_str or len(fecha_str) < 7: return fecha_str
+    try:
+        mes = int(fecha_str[5:7])
+        if mes <= 7: return "2027" + fecha_str[4:]
+        else: return "2026" + fecha_str[4:]
+    except: return fecha_str
+
 @app.get("/api/competiciones/{id_deporte}")
 def get_competiciones(id_deporte: str):
     if id_deporte == "4": return []
@@ -54,29 +62,47 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
         
-        # --- ARREGLO: Devolvemos TODOS los partidos de la categoría, no solo del equipo ---
-        partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
-        partidos.sort(key=lambda x: x["FechaHora"])
+        # 1. Fechas únicas SOLO del equipo seleccionado (ej. B6)
+        partidos_equipo = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal") == id_grupo or p.get("EquipoVisitante") == id_grupo]
+        for p in partidos_equipo: p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
+        partidos_equipo.sort(key=lambda x: x["FechaHora"])
         
-        fechas_unicas = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos)))
-        for p in partidos:
-            fecha = p["FechaHora"].split("T")[0]
-            p["NumeroJornada"] = fechas_unicas.index(fecha) + 1
+        fechas_equipo = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos_equipo)))
+        mapa_fechas = {fecha: i+1 for i, fecha in enumerate(fechas_equipo)}
+        
+        # 2. Asignar esa numeración a TODOS los partidos de la categoría
+        partidos_categoria = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
+        
+        for p in partidos_categoria:
+            p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
+            fecha_str = p["FechaHora"].split("T")[0]
             
-        jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos)))
+            if fecha_str in mapa_fechas:
+                p["NumeroJornada"] = mapa_fechas[fecha_str]
+            else:
+                # Si el partido es de otra fecha (ej. 23 oct), le asignamos la jornada más cercana
+                try:
+                    fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d")
+                    fecha_cercana = min(fechas_equipo, key=lambda x: abs((datetime.strptime(x, "%Y-%m-%d") - fecha_dt).days))
+                    p["NumeroJornada"] = mapa_fechas[fecha_cercana]
+                except:
+                    p["NumeroJornada"] = 1
+                    
+        partidos_categoria.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
+
+        jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos_categoria)))
         lista_jornadas = [{"NumeroJornada": j, "Id": j} for j in jornadas_nums]
-        
+
         return {
             "jornadas": lista_jornadas,
             "jornada": {
                 "NumeroJornada": int(id_jornada) if id_jornada != "0" and jornadas_nums else (jornadas_nums[0] if jornadas_nums else 0),
-                "Enfrentamientos": partidos
+                "Enfrentamientos": partidos_categoria
             }
         }
 
     datos = cargar_datos()
     if not datos: raise HTTPException(status_code=500, detail="No hay datos")
-    
     key = f"{id_deporte}_{id_competicion}_{id_categoria}_{id_grupo}"
     calendario_guardado = datos["calendario"].get(key)
     if not calendario_guardado: return {"jornada": {"Enfrentamientos": []}, "jornadas": []}
@@ -97,16 +123,30 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
 def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_grupo: str):
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
-        # --- ARREGLO: Devolvemos TODOS los partidos de la categoría ---
-        partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
-        partidos.sort(key=lambda x: x["FechaHora"])
         
-        fechas_unicas = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos)))
-        for p in partidos:
-            fecha = p["FechaHora"].split("T")[0]
-            p["NumeroJornada"] = fechas_unicas.index(fecha) + 1
+        partidos_equipo = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal") == id_grupo or p.get("EquipoVisitante") == id_grupo]
+        for p in partidos_equipo: p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
+        partidos_equipo.sort(key=lambda x: x["FechaHora"])
+        
+        fechas_equipo = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos_equipo)))
+        mapa_fechas = {fecha: i+1 for i, fecha in enumerate(fechas_equipo)}
+        
+        partidos_categoria = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
+        for p in partidos_categoria:
+            p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
+            fecha_str = p["FechaHora"].split("T")[0]
             
-        return partidos
+            if fecha_str in mapa_fechas:
+                p["NumeroJornada"] = mapa_fechas[fecha_str]
+            else:
+                try:
+                    fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d")
+                    fecha_cercana = min(fechas_equipo, key=lambda x: abs((datetime.strptime(x, "%Y-%m-%d") - fecha_dt).days))
+                    p["NumeroJornada"] = mapa_fechas[fecha_cercana]
+                except:
+                    p["NumeroJornada"] = 1
+                    
+        return sorted(partidos_categoria, key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
 
     datos = cargar_datos()
     if not datos: return []
