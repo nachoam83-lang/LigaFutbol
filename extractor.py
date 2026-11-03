@@ -5,7 +5,7 @@ import urllib3
 import subprocess
 import os
 
-# Ocultar avisos de SSL (vital para saltarse el certificado roto de ECMADRID)
+# Ocultar avisos de SSL (vital para saltarse el certificado de ECMADRID)
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 HEADERS = {
@@ -18,18 +18,13 @@ HEADERS = {
 os.makedirs("static/escudos", exist_ok=True)
 
 def descargar_escudo(url_escudo):
-    """Descarga el escudo de ECMADRID y lo guarda en local. Devuelve la ruta local."""
+    """Descarga el escudo de ECMADRID y lo guarda en local."""
     if not url_escudo: return ""
-    
-    # Si ya empieza por http, es una URL completa, si no, le añadimos el dominio
     url_completa = f"https://juegosdeportivos.ecmadrid.org{url_escudo}" if url_escudo.startswith("/") else url_escudo
-    
-    # Sacamos el nombre del archivo (ej: Emblema_0039.jpg)
     nombre_archivo = url_completa.split("/")[-1]
     ruta_local = f"/static/escudos/{nombre_archivo}"
     ruta_fisica = f"static/escudos/{nombre_archivo}"
     
-    # Si ya lo tenemos descargado, no lo volvemos a descargar
     if not os.path.exists(ruta_fisica):
         try:
             r = requests.get(url_completa, headers=HEADERS, verify=False, timeout=10)
@@ -38,7 +33,7 @@ def descargar_escudo(url_escudo):
                     f.write(r.content)
         except Exception as e:
             print(f"  ⚠️ No se pudo descargar el escudo {nombre_archivo}")
-            return url_escudo # Si falla, dejamos la url original
+            return url_escudo
             
     return ruta_local
 
@@ -56,6 +51,7 @@ def extraer_todo():
     print("🚀 Iniciando extracción. Descargando datos y escudos...")
     datos_finales = {"competiciones": {}, "calendario": {}, "resultados": {}, "clasificacion": {}}
     deportes = {1: "Baloncesto", 2: "Fútbol Sala", 3: "Voleibol"}
+    exito = False
     
     for id_deporte, nombre_deporte in deportes.items():
         print(f"\n⚽ Analizando Deporte: {nombre_deporte} (ID: {id_deporte})")
@@ -65,6 +61,7 @@ def extraer_todo():
         data_comp = get_json(url_comp)
         
         if not data_comp: continue
+        exito = True 
             
         items_comp = data_comp.get("data", data_comp.get("Data", [])) if isinstance(data_comp, dict) else data_comp
         if not isinstance(items_comp, list) or len(items_comp) == 0: continue
@@ -107,7 +104,6 @@ def extraer_todo():
                         datos_finales["calendario"][key_grupo] = cal
                         todos_los_partidos = []
                         
-                        # Descargamos escudos de los partidos del calendario
                         for e in cal.get("jornada", {}).get("Enfrentamientos", []):
                             e["URLEscudoEquipoLocal"] = descargar_escudo(e.get("URLEscudoEquipoLocal"))
                             e["URLEscudoEquipoVisitante"] = descargar_escudo(e.get("URLEscudoEquipoVisitante"))
@@ -149,39 +145,44 @@ def extraer_todo():
                 "Id": id_comp, "IdCategoria": id_cat_real, "Nombre": nombre_comp, "Grupos": lista_grupos
             })
 
+    # BARRERA DE SEGURIDAD: Si no se pudo conectar a la web, no sobrescribas los datos
+    if not exito:
+        print("\n❌ ERROR FATAL: No se pudo conectar con ECMADRID. Se aborta para proteger los datos actuales.")
+        return
+
     with open("datos_liga.json", "w", encoding="utf-8") as f:
         json.dump(datos_finales, f, ensure_ascii=False, indent=2)
         
     print("\n✅ ¡Extracción completada! Archivo 'datos_liga.json' y escudos creados.")
     
     # --- SUBIR A GITHUB ---
-    print("🚀 Subiendo datos y escudos a GitHub...")
-    mensaje_alerta = "✅ Proceso finalizado.\n\nLos datos y los escudos se han actualizado correctamente."
+    print("🚀 Comprobando cambios para subir a GitHub...")
     
     try:
         subprocess.run(["git", "config", "user.email", "bot@ligafutbol.com"], check=True)
         subprocess.run(["git", "config", "user.name", "LigaFutbol Bot"], check=True)
-
+        
+        # Nos aseguramos de tener la última versión de GitHub
+        subprocess.run(["git", "pull", "origin", "main", "--no-rebase"], check=False)
+        
         subprocess.run(["git", "add", "datos_liga.json"], check=True)
-        subprocess.run(["git", "add", "static/escudos"], check=True) # Añadimos la carpeta de escudos
+        subprocess.run(["git", "add", "static/escudos"], check=True)
         
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+        
         if status.stdout.strip():
+            # HAY CAMBIOS REALES
             subprocess.run(["git", "commit", "-m", "Actualización de datos y escudos"], check=True)
             subprocess.run(["git", "push", "origin", "main"], check=True)
             print("✅ ¡Todo subido a GitHub! Render se actualizará.")
-            mensaje_alerta = "✅ Actualización realizada con éxito.\n\nDatos y escudos subidos a la nube."
         else:
-            print("ℹ️ No hay cambios nuevos.")
-            mensaje_alerta = "ℹ️ Los datos ya estaban actualizados."
+            # NO HAY CAMBIOS: Hacemos un commit vacío para dejar constancia en GitHub
+            print("ℹ️ No hay cambios en los datos. Creando registro de comprobación...")
+            subprocess.run(["git", "commit", "--allow-empty", "-m", "Comprobación diaria: Sin cambios"], check=True)
+            subprocess.run(["git", "push", "origin", "main"], check=True)
             
     except Exception as e:
         print(f"❌ Error inesperado al subir a GitHub: {e}")
-        mensaje_alerta = f"❌ Hubo un problema al subir a GitHub.\n\n{e}"
-
-    # --- MOSTRAR CUADRO DE DIÁLOGO FINAL ---
-    script_osascript = f'display alert "LigaFutbol" message "{mensaje_alerta}" as informational buttons {{"Aceptar"}} default button "Aceptar"'
-    subprocess.run(["osascript", "-e", script_osascript])
 
 if __name__ == "__main__":
     extraer_todo()
