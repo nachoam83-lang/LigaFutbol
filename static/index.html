@@ -23,21 +23,44 @@
             --border-color: #e5e7eb;
             --header-bg: #2F3640; 
         }
-        .theme-canal { --primary-color: #00509E; --secondary-color: #E0F0FF; }
-        html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); overscroll-behavior-y: none; overflow-x: hidden; color: var(--text-main); }
+        .theme-canal { 
+            --primary-color: #00509E; 
+            --secondary-color: #E0F0FF; 
+        }
+        
+        html, body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background-color: var(--bg-color); 
+            overscroll-behavior-y: none; 
+            overflow-x: hidden; 
+            color: var(--text-main); 
+        }
+        
         .hide { display: none !important; }
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
-        .card-favorito { background-color: rgba(0, 109, 111, 0.6) !important; border-color: rgba(0, 109, 111, 0.8) !important; }
-        .card-favorito .text-gray-700, .card-favorito .text-gray-800, .card-favorito .text-gray-600 { color: #ffffff !important; }
-        .card-favorito .text-xs, .card-favorito .text-\[13px\], .card-favorito .text-\[11px\] { color: rgba(255,255,255,0.9) !important; }
-        .card-favorito .border-t { border-color: rgba(255,255,255,0.3) !important; }
-        .card-favorito a.text-blue-500 { color: #ffffff !important; text-decoration: underline; }
-        .card-favorito-canal { background-color: var(--secondary-color) !important; border-color: var(--primary-color) !important; }
+        /* CONTRASTES ECM */
+        .card-favorito { 
+            background-color: rgba(0, 109, 111, 0.85) !important; 
+            border-color: rgba(0, 109, 111, 1) !important; 
+        }
+        .card-favorito .text-main, .card-favorito .text-sec { color: #ffffff !important; }
+        
+        /* CONTRASTE CANAL */
+        .card-favorito-canal { 
+            background-color: #E0F0FF !important; 
+            border-color: #00509E !important; 
+        }
 
-        #pantalla-carga { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; background-color: var(--primary-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.4s; }
+        #pantalla-carga { 
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; 
+            background-color: var(--primary-color); 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            color: white; transition: opacity 0.4s; 
+        }
         #pantalla-carga.oculto { opacity: 0; visibility: hidden; }
+        
         .loader-juego { position: relative; width: 110px; height: 110px; display: flex; align-items: center; justify-content: center; }
         .loader-juego::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--secondary-color); border-radius: 50%; animation: spin 1s linear infinite; }
         .loader-juego .escudo-wrapper { width: 75px; height: 75px; background-color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden; z-index: 10; animation: pulse 1.5s ease-in-out infinite; }
@@ -65,7 +88,6 @@
         .escudo-circulo img { width: 100%; height: 100%; object-fit: contain; }
         .escudo-circulo-sm { width: 32px; height: 32px; background-color: white; border-radius: 50%; padding: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; margin-right: 8px; flex-shrink: 0; overflow: hidden; }
         .escudo-circulo-sm img { width: 100%; height: 100%; object-fit: contain; }
-        .card-favorito .vs-badge { background-color: #ffffff !important; color: var(--primary-color) !important; border-color: #ffffff !important; }
         .escudo-main-img { border-radius: 50%; object-fit: cover; width: 100%; height: 100%; }
     </style>
 </head>
@@ -203,6 +225,7 @@
         let cacheCanal = {}; 
 
         function acortarNombre(nombre) { return !nombre ? "" : (nombre.length > 35 ? nombre.substring(0, 35) + "..." : nombre); }
+        
         function construirDireccion(p) {
             let dir = "";
             if (p.Campo) dir = p.Campo.split(' - ')[0]; 
@@ -213,10 +236,12 @@
             }
             return dir.replace(/,\s*,/g, ',').trim();
         }
+        
         function esCampoExterior(p) { const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase(); return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')); }
         function isCanal() { return equipoActual && equipoActual.idDeporte === "4"; }
 
         function refrescarApp() { const icono = document.querySelector('#btn-refresh i'); icono.classList.add('spin-anim'); cacheProximoPartido = {}; setTimeout(() => { renderizarEquipos(); icono.classList.remove('spin-anim'); }, 500); }
+        
         document.addEventListener('DOMContentLoaded', () => { renderizarEquipos(); cargarCompeticiones(2); });
 
         function prepararNuevoEquipo() {
@@ -634,8 +659,10 @@
                 const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
                 const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
 
-                const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
+                // ARREGLO: Recuperar siempre el escudo del que descansa
                 const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
+
+                const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
                 
                 let htmlCampo = esCanal ? `<span class="inline-flex items-center text-white font-bold bg-[#00509E] px-2 py-0.5 rounded text-[10px]">${p.Campo || 'Campo'}</span>` 
                     : (esCampoExterior(p) ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
@@ -654,20 +681,30 @@
                 }
 
                 if (esDescanso) {
-                    contenedor.innerHTML += `<div class="${claseTarjeta}"><div class="flex justify-center items-center text-sm font-bold py-4 flex-col" style="color: var(--primary-color);">${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}<div><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div></div></div>`;
+                    // ARREGLO: Texto centrado y escudo
+                    contenedor.innerHTML += `
+                        <div class="${claseTarjeta}">
+                            <div class="flex flex-col items-center justify-center w-full py-2" style="color: var(--primary-color);">
+                                ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
+                                <div class="text-sm font-bold text-center"><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div>
+                            </div>
+                        </div>`;
                 } else {
                     let htmlEscLocal = esCanal ? `<div class="w-14 h-14 rounded-full bg-white border border-gray-300 mb-2 shadow-sm"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
                     let htmlEscVis = esCanal ? `<div class="w-14 h-14 rounded-full bg-[#00509E] mb-2 shadow-sm"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                     
+                    const colorNombreLocal = esLocalFav ? (esCanal ? 'var(--primary-color)' : '#ffffff') : (esFavorito ? '#ffffff' : 'var(--text-main)');
+                    const colorNombreVis = esVisFav ? (esCanal ? 'var(--primary-color)' : '#ffffff') : (esFavorito ? '#ffffff' : 'var(--text-main)');
+                    
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
-                            <div class="flex justify-between items-center mb-2"><div class="font-extrabold text-[11px] uppercase" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>${htmlCampo}</div>
+                            <div class="flex justify-between items-center mb-2"><div class="font-extrabold text-[11px] uppercase" style="color: ${esFavorito && !esCanal ? '#ffffff' : 'var(--primary-color)'};"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>${htmlCampo}</div>
                             <div class="flex justify-between items-center w-full my-2">
-                                <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] font-bold text-center leading-tight" style="color: ${esLocalFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)'};">${acortarNombre(p.EquipoLocal)}</div></div>
+                                <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] font-bold text-center leading-tight" style="color: ${colorNombreLocal};">${acortarNombre(p.EquipoLocal)}</div></div>
                                 <div class="px-2 flex flex-col items-center justify-center h-10"><span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span></div>
-                                <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] font-bold text-center leading-tight" style="color: ${esVisFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)'};">${acortarNombre(p.EquipoVisitante)}</div></div>
+                                <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] font-bold text-center leading-tight" style="color: ${colorNombreVis};">${acortarNombre(p.EquipoVisitante)}</div></div>
                             </div>
-                            <div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);"><i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>${htmlMapa}</div>
+                            <div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: ${esFavorito && !esCanal ? 'rgba(255,255,255,0.8)' : 'var(--text-sec)'}; border-color: ${esFavorito && !esCanal ? 'rgba(255,255,255,0.3)' : 'var(--border-color)'};"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: ${esFavorito && !esCanal ? '#ffffff' : '#f87171'};"></i><span style="${esFavorito && !esCanal ? 'color: #ffffff; text-decoration: underline;' : ''}">${htmlMapa}</span></div>
                             ${botonesExtra}
                         </div>`;
                 }
@@ -692,17 +729,40 @@
                     const esFavorito = esLocalFav || esVisFav;
                     const claseTarjeta = esFavorito ? (esCanal ? 'card p-3 mb-2 flex flex-col w-full card-favorito-canal' : 'card p-3 mb-2 flex flex-col w-full card-favorito') : 'card p-3 mb-2 flex flex-col w-full';
                     const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
+                    
+                    // ARREGLO: Recuperar escudo para el que descansa
+                    const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
+                    
                     const styleScore = esFavorito ? (esCanal ? 'color: var(--primary-color);' : 'color: var(--secondary-color);') : (p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);');
 
                     if (esDescanso) {
-                        contenedor.innerHTML += `<div class="${claseTarjeta}"><div class="flex justify-center py-2 text-sm font-bold" style="color: var(--primary-color);"><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(p.EquipoLocal || p.EquipoVisitante)}</div></div>`;
+                        // ARREGLO: Texto centrado y escudo
+                        contenedor.innerHTML += `
+                            <div class="${claseTarjeta}">
+                                <div class="flex flex-col items-center justify-center py-2 w-full" style="color: var(--primary-color);">
+                                    ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
+                                    <div class="text-sm font-bold text-center"><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(p.EquipoLocal || p.EquipoVisitante)}</div>
+                                </div>
+                            </div>`;
                     } else {
                         let htmlEscLocal = esCanal ? `<div class="w-14 h-14 rounded-full bg-white border border-gray-300 mb-2 shadow-sm"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
                         let htmlEscVis = esCanal ? `<div class="w-14 h-14 rounded-full bg-[#00509E] mb-2 shadow-sm"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
+                        
+                        const colorNombreLocal = esLocalFav ? (esCanal ? 'var(--primary-color)' : '#ffffff') : (esFavorito ? '#ffffff' : 'var(--text-main)');
+                        const colorNombreVis = esVisFav ? (esCanal ? 'var(--primary-color)' : '#ffffff') : (esFavorito ? '#ffffff' : 'var(--text-main)');
+                        
                         contenedor.innerHTML += `
                             <div class="${claseTarjeta}">
-                                <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2"><div class="text-[13px] font-bold text-center" style="color: ${esLocalFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)'};">${acortarNombre(p.EquipoLocal)}</div><div class="text-xs px-1" style="color: var(--text-sec);">-</div><div class="text-[13px] font-bold text-center" style="color: ${esVisFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)'};">${acortarNombre(p.EquipoVisitante)}</div></div>
-                                <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2"><div class="w-12 flex justify-end">${htmlEscLocal}</div><div class="px-2"><span class="text-xl font-black" style="${styleScore}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span></div><div class="w-12 flex justify-start">${htmlEscVis}</div></div>
+                                <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
+                                    <div class="text-[13px] font-bold text-center" style="color: ${colorNombreLocal};">${acortarNombre(p.EquipoLocal)}</div>
+                                    <div class="text-xs px-1" style="color: ${esFavorito && !esCanal ? '#ffffff' : 'var(--text-sec)'};">-</div>
+                                    <div class="text-[13px] font-bold text-center" style="color: ${colorNombreVis};">${acortarNombre(p.EquipoVisitante)}</div>
+                                </div>
+                                <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
+                                    <div class="w-12 flex justify-end">${htmlEscLocal}</div>
+                                    <div class="px-2"><span class="text-xl font-black" style="${styleScore}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span></div>
+                                    <div class="w-12 flex justify-start">${htmlEscVis}</div>
+                                </div>
                             </div>`;
                     }
                 });
@@ -729,11 +789,15 @@
             filas.forEach(f => {
                 const esFavorito = f.NombreEquipo === equipoActual.equipoFavorito;
                 const clasePos = f.Posicion === 1 ? 'text-[#D6B25A]' : 'text-gray-600'; const clasePts = f.Posicion === 1 ? 'text-[#D6B25A]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
+                
+                // ARREGLO: Comprobar si es 'Jugados' (ECM) o 'PJ' (Canal) para evitar el 'undefined'
+                const partidosJugados = f.Jugados !== undefined ? f.Jugados : (f.PJ !== undefined ? f.PJ : 0);
+
                 tbody.innerHTML += `
                     <tr class="${esFavorito ? (isCanal() ? 'bg-[#E0F0FF]' : 'bg-[#e6f2f2]') : ''}" style="border-color: var(--border-color);">
                         <td class="p-3 font-bold ${clasePos} align-middle">${f.Posicion}</td>
                         <td class="p-3 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${f.URLEscudo || '/static/logo.png'}"></div><span class="leading-tight pr-2 font-bold ${esFavorito ? (isCanal() ? 'text-[#00509E]' : 'text-[#D6B25A]') : ''}" style="${!esFavorito ? 'color: var(--text-main);' : ''}">${f.NombreEquipo}</span></td>
-                        <td class="p-3 text-center align-middle" style="color: var(--text-sec);">${f.Jugados || f.PJ}</td>
+                        <td class="p-3 text-center align-middle" style="color: var(--text-sec);">${partidosJugados}</td>
                         <td class="p-3 text-center align-middle hidden sm:table-cell">${calcularRacha(f.NombreEquipo)}</td>
                         <td class="p-3 text-right font-black align-middle text-base ${clasePts}">${f.Puntos}</td>
                     </tr>`;
@@ -743,7 +807,10 @@
         function compartirClasificacion() {
             if (!cacheClasificacion || cacheClasificacion.length === 0) return;
             let texto = `🏆 Clasificación - ${equipoActual.nombre} (${equipoActual.nombreCompeticion})\n\n`;
-            cacheClasificacion.forEach(f => { texto += `${f.Posicion}. ${f.NombreEquipo} - ${f.Puntos} pts (${f.Jugados || f.PJ} PJ)\n`; });
+            cacheClasificacion.forEach(f => { 
+                const pj = f.Jugados !== undefined ? f.Jugados : (f.PJ !== undefined ? f.PJ : 0);
+                texto += `${f.Posicion}. ${f.NombreEquipo} - ${f.Puntos} pts (${pj} PJ)\n`; 
+            });
             window.location.href = `https://wa.me/?text=${encodeURIComponent(texto)}`;
         }
     </script>
