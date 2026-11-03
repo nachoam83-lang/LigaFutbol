@@ -1,0 +1,2841 @@
+{
+  "equipos": [
+    "Alevín 1",
+    "Alevín 10",
+    "Alevín 11",
+    "Alevín 12",
+    "Alevín 13",
+    "Alevín 14",
+    "Alevín 15",
+    "Alevín 16",
+    "Alevín 17",
+    "Alevín 2",
+    "Alevín 3",
+    "Alevín 4",
+    "Alevín 5",
+    "Alevín 6",
+    "Alevín 8",
+    "Alevín 9",
+    "Benjamín 1",
+    "Benjamín 10",
+    "Benjamín 11",
+    "Benjamín 13",
+    "Benjamín 16",
+    "Benjamín 2",
+    "Benjamín 4",
+    "Benjamín 5",
+    "Benjamín 6",
+    "Benjamín 8",
+    "Benjamín 9",
+    "Cadete/Juvenil 1",
+    "Cadete/Juvenil 10",
+    "Cadete/Juvenil 11",
+    "Cadete/Juvenil 13",
+    "Cadete/Juvenil 14",
+    "Cadete/Juvenil 15",
+    "Cadete/Juvenil 16",
+    "Cadete/Juvenil 2",
+    "Cadete/Juvenil 4",
+    "Cadete/Juvenil 5",
+    "Cadete/Juvenil 6",
+    "Cadete/Juvenil 8",
+    "Cadete/Juvenil 9",
+    "E LX17",
+    "E LX18",
+    "E MJ17",
+    "E MJ18",
+    "ESCUELA DE FÚTBOL SÁBADOS",
+    "ESCUELA DE HOCKEY",
+    "Infantil 1",
+    "Infantil 10",
+    "Infantil 11",
+    "Infantil 12",
+    "Infantil 13",
+    "Infantil 14",
+    "Infantil 15",
+    "Infantil 16",
+    "Infantil 2",
+    "Infantil 4",
+    "Infantil 5",
+    "Infantil 6",
+    "Infantil 8",
+    "Infantil 9",
+    "Prebenjamín 1",
+    "Prebenjamín 10",
+    "Prebenjamín 11",
+    "Prebenjamín 13",
+    "Prebenjamín 14",
+    "Prebenjamín 15",
+    "Prebenjamín 2",
+    "Prebenjamín 5",
+    "Prebenjamín 6",
+    "Prebenjamín 8",
+    "Prebenjamín 9",
+    "TECNIFICACIÓN FÚTBOL FEMENINO"
+  ],
+  "partidos": [
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 8",
+      "EquipoVisitante": "Cadete/Juvenil 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 14",
+      "EquipoVisitante": "Cadete/Juvenil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 6",
+      "EquipoVisitante": "Cadete/Juvenil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T09:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 15",
+      "EquipoVisitante": "Prebenjamín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T09:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 2",
+      "EquipoVisitante": "Prebenjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 4",
+      "EquipoVisitante": "Infantil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 6",
+      "EquipoVisitante": "Benjamín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 16",
+      "EquipoVisitante": "Alevín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 11",
+      "EquipoVisitante": "Benjamín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 14",
+      "EquipoVisitante": "Alevín 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 9",
+      "EquipoVisitante": "Benjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 2",
+      "EquipoVisitante": "Alevín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 14",
+      "EquipoVisitante": "Infantil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 5",
+      "EquipoVisitante": "Alevín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 11",
+      "EquipoVisitante": "Infantil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 4",
+      "EquipoVisitante": "Alevín 17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E LX18",
+      "EquipoVisitante": "E LX17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 6",
+      "EquipoVisitante": "Prebenjamín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 5",
+      "EquipoVisitante": "Infantil 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 13",
+      "EquipoVisitante": "Infantil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-07T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 4",
+      "EquipoVisitante": "Cadete/Juvenil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 16",
+      "EquipoVisitante": "Cadete/Juvenil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 14",
+      "EquipoVisitante": "Infantil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 15",
+      "EquipoVisitante": "Alevín 3",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 12",
+      "EquipoVisitante": "Infantil 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 16",
+      "EquipoVisitante": "Benjamín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Benjamín 11",
+      "EquipoVisitante": "Benjamín 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 4",
+      "EquipoVisitante": "Alevín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 10",
+      "EquipoVisitante": "Alevín 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 11",
+      "EquipoVisitante": "Alevín 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 13",
+      "EquipoVisitante": "Alevín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 14",
+      "EquipoVisitante": "Cadete/Juvenil 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 11",
+      "EquipoVisitante": "Cadete/Juvenil 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 13",
+      "EquipoVisitante": "Cadete/Juvenil 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 4",
+      "EquipoVisitante": "Benjamín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 17",
+      "EquipoVisitante": "Alevín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E MJ18",
+      "EquipoVisitante": "E MJ17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 15",
+      "EquipoVisitante": "Prebenjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 15",
+      "EquipoVisitante": "Cadete/Juvenil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 6",
+      "EquipoVisitante": "Infantil 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 9",
+      "EquipoVisitante": "Infantil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T14:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 1",
+      "EquipoVisitante": "Prebenjamín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 9,
+      "FechaHora": "2026-11-14T14:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 14",
+      "EquipoVisitante": "Prebenjamín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 4",
+      "EquipoVisitante": "Benjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 5",
+      "EquipoVisitante": "Benjamín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 1",
+      "EquipoVisitante": "Alevín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T09:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 11",
+      "EquipoVisitante": "Prebenjamín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T09:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 10",
+      "EquipoVisitante": "Prebenjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 10",
+      "EquipoVisitante": "Alevín 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 2",
+      "EquipoVisitante": "Alevín 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 3",
+      "EquipoVisitante": "Alevín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 17",
+      "EquipoVisitante": "Alevín 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 6",
+      "EquipoVisitante": "Alevín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 8",
+      "EquipoVisitante": "Infantil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 6",
+      "EquipoVisitante": "Infantil 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 15",
+      "EquipoVisitante": "Infantil 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 2",
+      "EquipoVisitante": "Infantil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 16",
+      "EquipoVisitante": "Cadete/Juvenil 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 11",
+      "EquipoVisitante": "Cadete/Juvenil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 13",
+      "EquipoVisitante": "Cadete/Juvenil 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E MJ17",
+      "EquipoVisitante": "E LX17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 15",
+      "EquipoVisitante": "Cadete/Juvenil 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 14",
+      "EquipoVisitante": "Cadete/Juvenil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 10,
+      "FechaHora": "2026-11-21T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 2",
+      "EquipoVisitante": "Cadete/Juvenil 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 8",
+      "EquipoVisitante": "Benjamín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 10",
+      "EquipoVisitante": "Benjamín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 3",
+      "EquipoVisitante": "Alevín 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T09:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 13",
+      "EquipoVisitante": "Prebenjamín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T09:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 11",
+      "EquipoVisitante": "Prebenjamín 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 8",
+      "EquipoVisitante": "Alevín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 2",
+      "EquipoVisitante": "Alevín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 15",
+      "EquipoVisitante": "Alevín 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 17",
+      "EquipoVisitante": "Alevín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 1",
+      "EquipoVisitante": "Alevín 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 11",
+      "EquipoVisitante": "Infantil 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 10",
+      "EquipoVisitante": "Infantil 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 9",
+      "EquipoVisitante": "Infantil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 4",
+      "EquipoVisitante": "Infantil 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 16",
+      "EquipoVisitante": "Infantil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 4",
+      "EquipoVisitante": "Cadete/Juvenil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 8",
+      "EquipoVisitante": "Cadete/Juvenil 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E MJ18",
+      "EquipoVisitante": "E LX18",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 1",
+      "EquipoVisitante": "Prebenjamín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 6",
+      "EquipoVisitante": "Cadete/Juvenil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 11,
+      "FechaHora": "2026-11-28T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 9",
+      "EquipoVisitante": "Cadete/Juvenil 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 1",
+      "EquipoVisitante": "Benjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 13",
+      "EquipoVisitante": "Benjamín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 15",
+      "EquipoVisitante": "Alevín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T09:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 5",
+      "EquipoVisitante": "Prebenjamín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T09:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 15",
+      "EquipoVisitante": "Prebenjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 1",
+      "EquipoVisitante": "Alevín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 3",
+      "EquipoVisitante": "Alevín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 11",
+      "EquipoVisitante": "Alevín 17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 1",
+      "EquipoVisitante": "Infantil 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 4",
+      "EquipoVisitante": "Alevín 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 5",
+      "EquipoVisitante": "Alevín 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 2",
+      "EquipoVisitante": "Infantil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 6",
+      "EquipoVisitante": "Infantil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 16",
+      "EquipoVisitante": "Infantil 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 9",
+      "EquipoVisitante": "Cadete/Juvenil 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 14",
+      "EquipoVisitante": "Cadete/Juvenil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 6",
+      "EquipoVisitante": "Cadete/Juvenil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E LX17",
+      "EquipoVisitante": "E MJ18",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 13",
+      "EquipoVisitante": "Prebenjamín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 10",
+      "EquipoVisitante": "Cadete/Juvenil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 5",
+      "EquipoVisitante": "Cadete/Juvenil 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 12,
+      "FechaHora": "2026-12-12T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 13",
+      "EquipoVisitante": "Cadete/Juvenil 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 2",
+      "EquipoVisitante": "Benjamín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 4",
+      "EquipoVisitante": "Benjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Benjamín 6",
+      "EquipoVisitante": "Benjamín 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 8",
+      "EquipoVisitante": "Alevín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 5",
+      "EquipoVisitante": "Alevín 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 6",
+      "EquipoVisitante": "Alevín 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 2",
+      "EquipoVisitante": "Infantil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 9",
+      "EquipoVisitante": "Alevín 3",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 14",
+      "EquipoVisitante": "Alevín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 15",
+      "EquipoVisitante": "Infantil 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 4",
+      "EquipoVisitante": "Infantil 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 13",
+      "EquipoVisitante": "Infantil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 16",
+      "EquipoVisitante": "Infantil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 16",
+      "EquipoVisitante": "Cadete/Juvenil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 10",
+      "EquipoVisitante": "Cadete/Juvenil 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E LX18",
+      "EquipoVisitante": "E MJ17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 6",
+      "EquipoVisitante": "Prebenjamín 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 9",
+      "EquipoVisitante": "Cadete/Juvenil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 5",
+      "EquipoVisitante": "Cadete/Juvenil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T14:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 5",
+      "EquipoVisitante": "Prebenjamín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 13,
+      "FechaHora": "2026-12-19T14:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 2",
+      "EquipoVisitante": "Prebenjamín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 16",
+      "EquipoVisitante": "Benjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 10",
+      "EquipoVisitante": "Benjamín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Prebenjamín 1",
+      "EquipoVisitante": "Prebenjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T09:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 2",
+      "EquipoVisitante": "Prebenjamín 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 16",
+      "EquipoVisitante": "Alevín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 14",
+      "EquipoVisitante": "Alevín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 1",
+      "EquipoVisitante": "Alevín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 15",
+      "EquipoVisitante": "Alevín 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 9",
+      "EquipoVisitante": "Infantil 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 8",
+      "EquipoVisitante": "Infantil 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 3",
+      "EquipoVisitante": "Alevín 17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 11",
+      "EquipoVisitante": "Infantil 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "E LX17",
+      "EquipoVisitante": "E LX18",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 14",
+      "EquipoVisitante": "Prebenjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 10",
+      "EquipoVisitante": "Cadete/Juvenil 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 14",
+      "EquipoVisitante": "Cadete/Juvenil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 14,
+      "FechaHora": "2026-01-09T14:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 8",
+      "EquipoVisitante": "Prebenjamín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 10",
+      "EquipoVisitante": "Benjamín 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 16",
+      "EquipoVisitante": "Benjamín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Benjamín 1",
+      "EquipoVisitante": "Benjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 14",
+      "EquipoVisitante": "Alevín 17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 5",
+      "EquipoVisitante": "Alevín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 10",
+      "EquipoVisitante": "Alevín 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 8",
+      "EquipoVisitante": "Alevín 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 3",
+      "EquipoVisitante": "Alevín 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 16",
+      "EquipoVisitante": "Alevín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 4",
+      "EquipoVisitante": "Infantil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 6",
+      "EquipoVisitante": "Infantil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 2",
+      "EquipoVisitante": "Infantil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 5",
+      "EquipoVisitante": "Infantil 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 15",
+      "EquipoVisitante": "Infantil 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 14",
+      "EquipoVisitante": "Infantil 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E MJ17",
+      "EquipoVisitante": "E MJ18",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 13",
+      "EquipoVisitante": "Prebenjamín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 6",
+      "EquipoVisitante": "Cadete/Juvenil 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 15",
+      "EquipoVisitante": "Cadete/Juvenil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 15,
+      "FechaHora": "2026-01-16T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 11",
+      "EquipoVisitante": "Cadete/Juvenil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 9",
+      "EquipoVisitante": "Benjamín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 8",
+      "EquipoVisitante": "Benjamín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Benjamín 2",
+      "EquipoVisitante": "Benjamín 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 11",
+      "EquipoVisitante": "Alevín 3",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 6",
+      "EquipoVisitante": "Alevín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 5",
+      "EquipoVisitante": "Alevín 17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 9",
+      "EquipoVisitante": "Alevín 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 10",
+      "EquipoVisitante": "Alevín 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 15",
+      "EquipoVisitante": "Alevín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 9",
+      "EquipoVisitante": "Infantil 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 10",
+      "EquipoVisitante": "Infantil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 15",
+      "EquipoVisitante": "Infantil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 8",
+      "EquipoVisitante": "Cadete/Juvenil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 9",
+      "EquipoVisitante": "Cadete/Juvenil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 6",
+      "EquipoVisitante": "Cadete/Juvenil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E LX17",
+      "EquipoVisitante": "E MJ17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 11",
+      "EquipoVisitante": "Prebenjamín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T14:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 1",
+      "EquipoVisitante": "Prebenjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 16,
+      "FechaHora": "2026-01-23T14:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 15",
+      "EquipoVisitante": "Prebenjamín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 17",
+      "EquipoVisitante": "Alevín 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 16",
+      "EquipoVisitante": "Benjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Benjamín 13",
+      "EquipoVisitante": "Benjamín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T09:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 14",
+      "EquipoVisitante": "Prebenjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T09:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 13",
+      "EquipoVisitante": "Prebenjamín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 15",
+      "EquipoVisitante": "Alevín 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 14",
+      "EquipoVisitante": "Alevín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 13",
+      "EquipoVisitante": "Alevín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 3",
+      "EquipoVisitante": "Alevín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 9",
+      "EquipoVisitante": "Alevín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 13",
+      "EquipoVisitante": "Infantil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 8",
+      "EquipoVisitante": "Infantil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 4",
+      "EquipoVisitante": "Infantil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 14",
+      "EquipoVisitante": "Infantil 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 5",
+      "EquipoVisitante": "Cadete/Juvenil 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 12",
+      "EquipoVisitante": "Infantil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 11",
+      "EquipoVisitante": "Infantil 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E LX18",
+      "EquipoVisitante": "E MJ18",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 4",
+      "EquipoVisitante": "Cadete/Juvenil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 16",
+      "EquipoVisitante": "Cadete/Juvenil 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 17,
+      "FechaHora": "2026-01-30T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 8",
+      "EquipoVisitante": "Cadete/Juvenil 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 10",
+      "EquipoVisitante": "Benjamín 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 11",
+      "EquipoVisitante": "Benjamín 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 1",
+      "EquipoVisitante": "Alevín 17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 8",
+      "EquipoVisitante": "Alevín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 9",
+      "EquipoVisitante": "Alevín 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 11",
+      "EquipoVisitante": "Alevín 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 5",
+      "EquipoVisitante": "Alevín 12",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 2",
+      "EquipoVisitante": "Alevín 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 11",
+      "EquipoVisitante": "Infantil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 12",
+      "EquipoVisitante": "Infantil 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 1",
+      "EquipoVisitante": "Infantil 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 14",
+      "EquipoVisitante": "Infantil 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 8",
+      "EquipoVisitante": "Infantil 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 4",
+      "EquipoVisitante": "Cadete/Juvenil 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 1",
+      "EquipoVisitante": "Cadete/Juvenil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E MJ18",
+      "EquipoVisitante": "E LX17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 10",
+      "EquipoVisitante": "Prebenjamín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 6",
+      "EquipoVisitante": "Cadete/Juvenil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 2",
+      "EquipoVisitante": "Cadete/Juvenil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 15",
+      "EquipoVisitante": "Cadete/Juvenil 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T14:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 9",
+      "EquipoVisitante": "Prebenjamín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 18,
+      "FechaHora": "2026-02-06T14:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 1",
+      "EquipoVisitante": "Prebenjamín 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 9",
+      "EquipoVisitante": "Benjamín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 16",
+      "EquipoVisitante": "Benjamín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Benjamín 6",
+      "EquipoVisitante": "Benjamín 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 17",
+      "EquipoVisitante": "Alevín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 3",
+      "EquipoVisitante": "Alevín 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 12",
+      "EquipoVisitante": "Alevín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 13",
+      "EquipoVisitante": "Alevín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 11",
+      "EquipoVisitante": "Alevín 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 1",
+      "EquipoVisitante": "Alevín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 13",
+      "EquipoVisitante": "Infantil 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 11",
+      "EquipoVisitante": "Infantil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 8",
+      "EquipoVisitante": "Infantil 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 4",
+      "EquipoVisitante": "Infantil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 14",
+      "EquipoVisitante": "Cadete/Juvenil 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 1",
+      "EquipoVisitante": "Cadete/Juvenil 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E MJ17",
+      "EquipoVisitante": "E LX18",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 6",
+      "EquipoVisitante": "Prebenjamín 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 11",
+      "EquipoVisitante": "Cadete/Juvenil 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T14:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "Prebenjamín 9",
+      "EquipoVisitante": "Prebenjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 19,
+      "FechaHora": "2026-02-13T14:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 8",
+      "EquipoVisitante": "Prebenjamín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T09:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Benjamín 11",
+      "EquipoVisitante": "Benjamín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T09:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Benjamín 4",
+      "EquipoVisitante": "Benjamín 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T09:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Benjamín 2",
+      "EquipoVisitante": "Benjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T10:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 11",
+      "EquipoVisitante": "Alevín 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 4",
+      "EquipoVisitante": "Alevín 16",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T10:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 13",
+      "EquipoVisitante": "Alevín 17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Alevín 2",
+      "EquipoVisitante": "Alevín 3",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 14",
+      "EquipoVisitante": "Alevín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 12",
+      "EquipoVisitante": "Alevín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T11:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE FÚTBOL SÁBADOS",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 10",
+      "EquipoVisitante": "Infantil 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 15",
+      "EquipoVisitante": "Infantil 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Infantil 12",
+      "EquipoVisitante": "Infantil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T12:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "ESCUELA DE HOCKEY",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T12:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "TECNIFICACIÓN FÚTBOL FEMENINO",
+      "EquipoVisitante": "",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T13:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 9",
+      "EquipoVisitante": "Infantil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T13:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 13",
+      "EquipoVisitante": "Cadete/Juvenil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 8",
+      "EquipoVisitante": "Cadete/Juvenil 15",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T13:00:00",
+      "Campo": "Campo 4",
+      "EquipoLocal": "E LX18",
+      "EquipoVisitante": "E LX17",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 14",
+      "EquipoVisitante": "Prebenjamín 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T14:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 5",
+      "EquipoVisitante": "Cadete/Juvenil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T14:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 1",
+      "EquipoVisitante": "Cadete/Juvenil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Cadete/Juvenil 11",
+      "EquipoVisitante": "Cadete/Juvenil 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    },
+    {
+      "NumeroJornada": 20,
+      "FechaHora": "2026-02-20T14:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 10",
+      "EquipoVisitante": "Prebenjamín 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png"
+    }
+  ]
+}
