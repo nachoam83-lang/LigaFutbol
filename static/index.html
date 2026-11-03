@@ -52,7 +52,31 @@
         .card-favorito .border-t { border-color: rgba(255,255,255,0.3) !important; }
         .card-favorito a.text-blue-500 { color: #ffffff !important; text-decoration: underline; }
 
-        .loader { border: 3px solid var(--border-color); border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
+        /* --- ESTILOS DE LA PANTALLA DE CARGA --- */
+        #pantalla-carga {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;
+            background-color: var(--primary-color);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: white; transition: opacity 0.4s ease, visibility 0.4s ease;
+        }
+        #pantalla-carga.oculto { opacity: 0; visibility: hidden; }
+        
+        .loader-juego {
+            position: relative; width: 100px; height: 100px;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .loader-juego::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--secondary-color);
+            border-radius: 50%; animation: spin 1s linear infinite;
+        }
+        .loader-juego img {
+            width: 60px; height: 60px; object-fit: contain; animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.8; } }
+
+        /* Resto de estilos */
+        .loader-sm { border: 3px solid var(--border-color); border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         .btn-primary { background-color: var(--primary-color); color: white; }
@@ -95,6 +119,15 @@
     </style>
 </head>
 <body class="pb-20">
+
+    <!-- PANTALLA DE CARGA -->
+    <div id="pantalla-carga" class="oculto">
+        <div class="loader-juego mb-6">
+            <img id="carga-escudo" src="/static/logo.png" alt="Escudo">
+        </div>
+        <h2 class="text-2xl font-black mb-2 tracking-wider">CARGANDO EQUIPO</h2>
+        <p class="text-sm text-white/70">Obteniendo calendario, resultados y clasificación...</p>
+    </div>
 
     <div id="screen-equipos" class="max-w-md mx-auto min-h-screen">
         <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
@@ -160,7 +193,6 @@
                         <p id="titulo-detalle-categoria" class="text-sm font-semibold text-white/80 uppercase tracking-widest"></p>
                     </div>
                 </div>
-                <!-- NUEVO BOTÓN DE REFRESCAR AQUÍ -->
                 <button onclick="refrescarPantallaJugador(this)" class="text-white hover:opacity-80 transition ml-2">
                     <i class="fas fa-sync-alt text-lg"></i>
                 </button>
@@ -174,7 +206,7 @@
             </div>
             
             <div class="flex gap-2 mb-2">
-                <select id="select-jornada" onchange="cargarCalendario(true)" class="flex-1 p-3 rounded-lg shadow-sm text-sm font-bold" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--primary-color);"></select>
+                <select id="select-jornada" onchange="cargarCalendario()" class="flex-1 p-3 rounded-lg shadow-sm text-sm font-bold" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--primary-color);"></select>
                 <button onclick="toggleFiltro()" id="btn-filtro" class="px-3 rounded-lg shadow-sm text-sm font-bold border transition" style="background-color: var(--card-bg); border-color: var(--border-color); color: var(--text-main);">
                     <i class="fas fa-filter"></i> Todos
                 </button>
@@ -229,7 +261,7 @@
         let soloMiEquipo = false;
         let editandoEquipoId = null; 
         
-        // VARIABLES DE CACHÉ PARA EVITAR EL LAG
+        // CACHÉ GLOBAL
         let cacheCalendarioGlobal = null;
         let cacheResultados = null;
         let cacheClasificacion = null;
@@ -263,30 +295,6 @@
             const icono = document.querySelector('#btn-refresh i');
             icono.classList.add('spin-anim');
             setTimeout(() => { window.location.reload(); }, 500);
-        }
-
-        // NUEVA FUNCIÓN PARA REFRESCAR LA PANTALLA DEL JUGADOR
-        function refrescarPantallaJugador(btn) {
-            const icono = btn.querySelector('i');
-            icono.classList.add('spin-anim');
-
-            // Limpiamos TODAS las cachés
-            cacheCalendarioGlobal = null;
-            cacheResultados = null;
-            cacheClasificacion = null;
-            cacheClasificacionPartidos = null;
-
-            // Forzamos la recarga de la pestaña en la que estemos
-            if (!document.getElementById('tab-calendario').classList.contains('hide')) {
-                cargarJornadas();
-            } else if (!document.getElementById('tab-resultados').classList.contains('hide')) {
-                cargarResultados();
-            } else if (!document.getElementById('tab-clasificacion').classList.contains('hide')) {
-                cargarClasificacion();
-            }
-
-            // Quitamos la animación después de 1 segundo para que no gire infinitamente
-            setTimeout(() => { icono.classList.remove('spin-anim'); }, 1000);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -519,7 +527,7 @@
 
             if (!idGrupo) { panel.classList.add('hide'); return; }
 
-            grid.innerHTML = '<div class="col-span-3 text-center py-4"><div class="loader mx-auto"></div></div>';
+            grid.innerHTML = '<div class="col-span-3 text-center py-4"><div class="loader-sm mx-auto"></div></div>';
             panel.classList.remove('hide');
 
             try {
@@ -590,34 +598,104 @@
             
             localStorage.setItem('equipos_liga', JSON.stringify(equipos));
             editandoEquipoId = null; 
-            
-            cacheCalendarioGlobal = null;
-            cacheResultados = null;
-            cacheClasificacion = null;
-            cacheClasificacionPartidos = null;
-            
             volverInicio();
         }
 
-        function abrirEquipo(index) {
+        // --- NUEVA FUNCIÓN DE APERTURA CON PANTALLA DE CARGA ---
+        async function abrirEquipo(index) {
             equipoActual = equipos[index];
             document.getElementById('titulo-detalle-nombre').innerText = equipoActual.nombre;
             document.getElementById('titulo-detalle-categoria').innerText = equipoActual.nombreCompeticion;
-            if (equipoActual.escudoFavorito) {
-                document.getElementById('titulo-detalle-escudo').src = equipoActual.escudoFavorito;
-                document.getElementById('titulo-detalle-escudo').classList.remove('hide');
-            } else {
-                document.getElementById('titulo-detalle-escudo').classList.add('hide');
-            }
             
+            const escudoImg = document.getElementById('titulo-detalle-escudo');
+            if (equipoActual.escudoFavorito) {
+                escudoImg.src = equipoActual.escudoFavorito;
+                escudoImg.classList.remove('hide');
+                document.getElementById('carga-escudo').src = equipoActual.escudoFavorito;
+            } else {
+                escudoImg.classList.add('hide');
+                document.getElementById('carga-escudo').src = '/static/logo.png';
+            }
+
+            // Mostramos pantalla de carga
+            const pantallaCarga = document.getElementById('pantalla-carga');
+            pantallaCarga.classList.remove('oculto');
+
+            // Limpiamos caché
             cacheCalendarioGlobal = null;
             cacheResultados = null;
             cacheClasificacion = null;
             cacheClasificacionPartidos = null;
 
-            document.getElementById('screen-equipos').classList.add('hide');
-            document.getElementById('screen-detalle').classList.remove('hide');
-            cambiarTab('calendario');
+            try {
+                // Descargamos TODO en paralelo con Promise.all para camuflar la latencia
+                const [resCal, resRes, resClasif] = await Promise.all([
+                    fetch(`/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}/0`),
+                    fetch(`/api/resultados/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`),
+                    fetch(`/api/clasificacion/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`)
+                ]);
+
+                cacheCalendarioGlobal = await resCal.json();
+                cacheResultados = await resRes.json();
+                cacheClasificacion = await resClasif.json();
+                cacheClasificacionPartidos = cacheResultados; 
+                
+                // Simulamos un poco de tiempo extra (ej. 1 segundo) para que el videojuego de carga sea visible
+                setTimeout(() => {
+                    pantallaCarga.classList.add('oculto');
+                    document.getElementById('screen-equipos').classList.add('hide');
+                    document.getElementById('screen-detalle').classList.remove('hide');
+                    actualizarUIJornadas();
+                    cambiarTab('calendario');
+                }, 800); // 800ms extra
+
+            } catch (e) {
+                console.error("Error cargando datos:", e);
+                pantallaCarga.classList.add('oculto');
+                alert("Error de conexión. Usando datos guardados si existen.");
+            }
+        }
+
+        async function refrescarPantallaJugador(btn) {
+            const icono = btn.querySelector('i');
+            icono.classList.add('spin-anim');
+            
+            const pantallaCarga = document.getElementById('pantalla-carga');
+            pantallaCarga.classList.remove('oculto');
+
+            cacheCalendarioGlobal = null;
+            cacheResultados = null;
+            cacheClasificacion = null;
+            cacheClasificacionPartidos = null;
+
+            try {
+                const [resCal, resRes, resClasif] = await Promise.all([
+                    fetch(`/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}/0`),
+                    fetch(`/api/resultados/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`),
+                    fetch(`/api/clasificacion/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`)
+                ]);
+
+                cacheCalendarioGlobal = await resCal.json();
+                cacheResultados = await resRes.json();
+                cacheClasificacion = await resClasif.json();
+                cacheClasificacionPartidos = cacheResultados;
+
+                setTimeout(() => {
+                    pantallaCarga.classList.add('oculto');
+                    icono.classList.remove('spin-anim');
+                    actualizarUIJornadas();
+                    
+                    // Si estamos en otra pestaña, refrescamos la UI
+                    if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
+                    if (!document.getElementById('tab-clasificacion').classList.contains('hide')) renderizarClasificacionUI();
+                    if (!document.getElementById('tab-calendario').classList.contains('hide')) renderizarCalendarioUI();
+
+                }, 800);
+
+            } catch (e) {
+                pantallaCarga.classList.add('oculto');
+                icono.classList.remove('spin-anim');
+            }
         }
 
         function cambiarTab(tab) {
@@ -630,63 +708,21 @@
             document.getElementById(`tab-${tab}`).classList.remove('hide');
             document.getElementById(`btn-tab-${tab}`).classList.add('tab-active');
 
-            if (tab === 'calendario') {
-                if (cacheCalendarioGlobal) {
-                    renderizarCalendarioUI();
-                } else {
-                    cargarJornadas();
-                }
-            }
-            if (tab === 'resultados') {
-                if (cacheResultados) {
-                    renderizarResultadosUI();
-                } else {
-                    cargarResultados();
-                }
-            }
-            if (tab === 'clasificacion') {
-                if (cacheClasificacion) {
-                    renderizarClasificacionUI();
-                } else {
-                    cargarClasificacion();
-                }
-            }
+            if (tab === 'calendario') renderizarCalendarioUI();
+            if (tab === 'resultados') renderizarResultadosUI();
+            if (tab === 'clasificacion') renderizarClasificacionUI();
         }
 
-        function toggleFiltro() {
-            soloMiEquipo = !soloMiEquipo;
-            const btn = document.getElementById('btn-filtro');
-            if (soloMiEquipo) {
-                btn.innerHTML = '<i class="fas fa-filter text-[#D6B25A]"></i> Mi equipo';
-                btn.style.borderColor = 'var(--secondary-color)';
-            } else {
-                btn.innerHTML = '<i class="fas fa-filter"></i> Todos';
-                btn.style.borderColor = 'var(--border-color)';
-            }
-            cargarCalendario(false);
-        }
-
-        async function cargarJornadas() {
-            const url = `/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}/0`;
-            const res = await fetch(url);
-            const data = await res.json();
-            
-            cacheCalendarioGlobal = data; 
-            
-            jornadasData = data.jornadas || [];
+        function actualizarUIJornadas() {
+            if (!cacheCalendarioGlobal) return;
+            jornadasData = cacheCalendarioGlobal.jornadas || [];
             
             let hayCambios = false;
-            const todosLosPartidos = data.resultados || [];
-            todosLosPartidos.forEach(p => {
-                if (p.Cambio) hayCambios = true;
-            });
-
-            const banner = document.getElementById('banner-alerta');
-            if (hayCambios) {
-                banner.classList.remove('hide');
-            } else {
-                banner.classList.add('hide');
+            if (cacheResultados) {
+                cacheResultados.forEach(p => { if (p.Cambio) hayCambios = true; });
             }
+            const banner = document.getElementById('banner-alerta');
+            if (hayCambios) banner.classList.remove('hide'); else banner.classList.add('hide');
 
             let indiceSeleccionado = 0; 
             if (jornadasData.length > 0) {
@@ -710,30 +746,18 @@
             });
 
             if(jornadasData.length > 0) select.value = jornadasData[indiceSeleccionado].Id;
-            
-            renderizarCalendarioUI();
         }
 
-        async function cargarCalendario(forzarRed = false) {
-            if (!forzarRed && cacheCalendarioGlobal) {
-                renderizarCalendarioUI();
-                return;
-            }
-
-            const idJornada = document.getElementById('select-jornada').value;
-            const contenedor = document.getElementById('lista-calendario');
-            contenedor.innerHTML = '<div class="flex justify-center mt-10"><div class="loader"></div></div>';
-            
-            const url = `/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}/${idJornada}`;
-            const res = await fetch(url);
-            const data = await res.json();
-            
-            if (cacheCalendarioGlobal) {
-                cacheCalendarioGlobal.jornada = data.jornada;
+        function toggleFiltro() {
+            soloMiEquipo = !soloMiEquipo;
+            const btn = document.getElementById('btn-filtro');
+            if (soloMiEquipo) {
+                btn.innerHTML = '<i class="fas fa-filter text-[#D6B25A]"></i> Mi equipo';
+                btn.style.borderColor = 'var(--secondary-color)';
             } else {
-                cacheCalendarioGlobal = data;
+                btn.innerHTML = '<i class="fas fa-filter"></i> Todos';
+                btn.style.borderColor = 'var(--border-color)';
             }
-            
             renderizarCalendarioUI();
         }
 
@@ -742,12 +766,8 @@
             const contenedor = document.getElementById('lista-calendario');
             let data = cacheCalendarioGlobal;
             
-            let partidos = [];
-            if (data.jornada && data.jornada.Id == idJornada) {
-                partidos = data.jornada.Enfrentamientos || [];
-            } else {
-                partidos = data.jornada?.Enfrentamientos || [];
-            }
+            // FILTRO LOCAL DESDE LA CACHÉ (Sin fetch)
+            let partidos = cacheResultados.filter(p => p.NumeroJornada == idJornada || p.IdJornada == idJornada);
             
             if (soloMiEquipo) {
                 partidos = partidos.filter(p => p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito);
@@ -856,17 +876,6 @@
             });
         }
 
-        async function cargarResultados() {
-            const contenedor = document.getElementById('lista-resultados');
-            contenedor.innerHTML = '<div class="flex justify-center mt-10"><div class="loader"></div></div>';
-            const url = `/api/resultados/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`;
-            const res = await fetch(url);
-            const partidos = await res.json();
-            
-            cacheResultados = partidos; 
-            renderizarResultadosUI();
-        }
-
         function renderizarResultadosUI() {
             const contenedor = document.getElementById('lista-resultados');
             const partidos = cacheResultados;
@@ -947,21 +956,6 @@
                     }
                 });
             }
-        }
-
-        async function cargarClasificacion() {
-            const tbody = document.getElementById('tabla-clasificacion');
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4"><div class="loader mx-auto"></div></td></tr>';
-            
-            const [resClasif, resResultados] = await Promise.all([
-                fetch(`/api/clasificacion/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`),
-                fetch(`/api/resultados/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`)
-            ]);
-            
-            cacheClasificacion = await resClasif.json();
-            cacheClasificacionPartidos = await resResultados.json();
-            
-            renderizarClasificacionUI();
         }
 
         function renderizarClasificacionUI() {
