@@ -65,15 +65,17 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
         # Filtramos por categoría (ej. "Benjamín")
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
         
+        # Leemos el NumeroJornada que YA viene guardado del extractor
         for p in partidos:
             p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
             p["NumeroJornada"] = int(p.get("NumeroJornada", 0))
             
-        # Ordenamos por Jornada y luego por Fecha
         partidos.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
 
-        # Sacamos las jornadas únicas (1, 2, 3...)
-        jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos)))
+        jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos if p["NumeroJornada"] > 0)))
+        # Si por un casual no hay jornadas, evitamos que falle
+        if not jornadas_nums and len(partidos) > 0: jornadas_nums = [1]
+
         lista_jornadas = [{"NumeroJornada": j, "Id": j} for j in jornadas_nums]
 
         return {
