@@ -30,12 +30,17 @@
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
-        /* --- ARREGLO DE CONTRASTES ECM --- */
-        .card-favorito { background-color: rgba(0, 109, 111, 0.9) !important; border-color: rgba(0, 109, 111, 1) !important; }
-        .card-favorito .text-main, .card-favorito .text-sec { color: #ffffff !important; }
-        .card-favorito a { color: #ffffff !important; text-decoration: underline; }
+        /* CONTRASTES ECM (Fondo más clarito para que se lea bien) */
+        .card-favorito { 
+            background-color: rgba(0, 109, 111, 0.9) !important; 
+            border-color: rgba(0, 109, 111, 1) !important; 
+        }
         
-        .card-favorito-canal { background-color: #E0F0FF !important; border-color: #00509E !important; }
+        /* CONTRASTE CANAL (Fondo azul claro) */
+        .card-favorito-canal { 
+            background-color: #E0F0FF !important; 
+            border-color: #00509E !important; 
+        }
 
         #pantalla-carga { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; background-color: var(--primary-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.4s; }
         #pantalla-carga.oculto { opacity: 0; visibility: hidden; }
@@ -592,27 +597,39 @@
 
         function actualizarUIJornadas() {
             if (!cacheCalendarioGlobal || !cacheResultados) return;
+            
             let jornadasData = cacheCalendarioGlobal.jornadas || [];
+            jornadasData.sort((a,b) => Number(a.NumeroJornada) - Number(b.NumeroJornada));
+
             let hayCambios = cacheResultados ? cacheResultados.some(p => p.Cambio) : false;
             document.getElementById('banner-alerta').classList.toggle('hide', !hayCambios);
 
-            // --- ARREGLO: Buscar la próxima jornada basándonos en la fecha de los partidos ---
             let indiceSeleccionado = 0; 
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             
-            // Buscamos el primer partido de este equipo que sea hoy o en el futuro
+            // Buscar el próximo partido del equipo actual
             const proximoPartido = cacheResultados
-                .filter(p => p.FechaHora && new Date(p.FechaHora) >= hoy && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito))
+                .filter(p => {
+                    if (!p.FechaHora) return false;
+                    const fechaPartido = new Date(p.FechaHora);
+                    fechaPartido.setHours(0,0,0,0);
+                    return fechaPartido >= hoy && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito);
+                })
                 .sort((a,b) => new Date(a.FechaHora) - new Date(b.FechaHora))[0];
 
-            if (proximoPartido && proximoPartido.NumeroJornada) {
-                const idx = jornadasData.findIndex(j => j.NumeroJornada == proximoPartido.NumeroJornada);
+            if (proximoPartido && proximoPartido.NumeroJornada !== undefined) {
+                const proxJornada = Number(proximoPartido.NumeroJornada);
+                const idx = jornadasData.findIndex(j => Number(j.NumeroJornada) === proxJornada);
                 if (idx !== -1) indiceSeleccionado = idx;
             }
 
             const select = document.getElementById('select-jornada');
             select.innerHTML = '';
-            jornadasData.forEach((j, i) => select.innerHTML += `<option value="${j.NumeroJornada}" ${i === indiceSeleccionado ? 'selected' : ''}>Jornada ${j.NumeroJornada}</option>`);
+            jornadasData.forEach((j, i) => {
+                const selected = (i === indiceSeleccionado) ? 'selected' : '';
+                select.innerHTML += `<option value="${j.NumeroJornada}" ${selected}>Jornada ${j.NumeroJornada}</option>`;
+            });
+            
             if(jornadasData.length > 0) select.value = jornadasData[indiceSeleccionado].NumeroJornada;
         }
 
@@ -645,14 +662,12 @@
                 const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
 
                 const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
-
                 const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
                 
                 let htmlCampo = esCanal ? `<span class="inline-flex items-center text-white font-bold bg-[#00509E] px-2 py-0.5 rounded text-[10px]">${p.Campo || 'Campo'}</span>` 
                     : (esCampoExterior(p) ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
                                           : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-building mr-1"></i> Pabellón</span>`);
                 
-                // --- ARREGLO: Color de la dirección para que se lea sobre fondo verde ---
                 let colorMapa = (esFavorito && !esCanal) ? 'text-white underline' : 'text-blue-500 hover:underline';
                 let htmlMapa = `<a href="http://maps.apple.com/?q=${encodeURIComponent(dirCompleta)}" target="_blank" class="${colorMapa}">${dirCompleta}</a>`;
 
@@ -679,16 +694,28 @@
                     let htmlEscLocal = esCanal ? `<div class="w-14 h-14 rounded-full bg-white border border-gray-300 mb-2 shadow-sm"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
                     let htmlEscVis = esCanal ? `<div class="w-14 h-14 rounded-full bg-[#00509E] mb-2 shadow-sm"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                     
-                    const colorNombreLocal = esLocalFav ? (esCanal ? 'var(--primary-color)' : '#ffffff') : (esFavorito ? '#ffffff' : 'var(--text-main)');
-                    const colorNombreVis = esVisFav ? (esCanal ? 'var(--primary-color)' : '#ffffff') : (esFavorito ? '#ffffff' : 'var(--text-main)');
+                    // LÓGICA DE COLORES REFINADA
+                    let classLocal = '', classVis = '';
+                    if (esCanal) {
+                        classLocal = esLocalFav ? 'text-[#00509E] font-black' : 'text-gray-700';
+                        classVis = esVisFav ? 'text-[#00509E] font-black' : 'text-gray-700';
+                    } else {
+                        if (esFavorito) {
+                            classLocal = esLocalFav ? 'text-[#D6B25A] font-black' : 'text-white';
+                            classVis = esVisFav ? 'text-[#D6B25A] font-black' : 'text-white';
+                        } else {
+                            classLocal = esLocalFav ? 'text-[#D6B25A] font-black' : 'text-gray-800';
+                            classVis = esVisFav ? 'text-[#D6B25A] font-black' : 'text-gray-800';
+                        }
+                    }
                     
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
                             <div class="flex justify-between items-center mb-2"><div class="font-extrabold text-[11px] uppercase" style="color: ${esFavorito && !esCanal ? '#ffffff' : 'var(--primary-color)'};"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>${htmlCampo}</div>
                             <div class="flex justify-between items-center w-full my-2">
-                                <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] font-bold text-center leading-tight" style="color: ${colorNombreLocal};">${acortarNombre(p.EquipoLocal)}</div></div>
+                                <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}</div></div>
                                 <div class="px-2 flex flex-col items-center justify-center h-10"><span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span></div>
-                                <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] font-bold text-center leading-tight" style="color: ${colorNombreVis};">${acortarNombre(p.EquipoVisitante)}</div></div>
+                                <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}</div></div>
                             </div>
                             <div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: ${esFavorito && !esCanal ? 'rgba(255,255,255,0.8)' : 'var(--text-sec)'}; border-color: ${esFavorito && !esCanal ? 'rgba(255,255,255,0.3)' : 'var(--border-color)'};"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: ${esFavorito && !esCanal ? '#ffffff' : '#f87171'};"></i><span style="${esFavorito && !esCanal ? 'color: #ffffff; text-decoration: underline;' : ''}">${htmlMapa}</span></div>
                             ${botonesExtra}
@@ -715,10 +742,10 @@
                     const esFavorito = esLocalFav || esVisFav;
                     const claseTarjeta = esFavorito ? (esCanal ? 'card p-3 mb-2 flex flex-col w-full card-favorito-canal' : 'card p-3 mb-2 flex flex-col w-full card-favorito') : 'card p-3 mb-2 flex flex-col w-full';
                     const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
-                    
                     const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
                     
-                    const styleScore = esFavorito ? (esCanal ? 'color: var(--primary-color);' : 'color: var(--secondary-color);') : (p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0 ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);');
+                    const isZeroZero = p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0;
+                    const styleScore = esFavorito ? (esCanal ? 'color: var(--primary-color);' : 'color: var(--secondary-color);') : (isZeroZero ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);');
 
                     if (esDescanso) {
                         contenedor.innerHTML += `
@@ -732,15 +759,27 @@
                         let htmlEscLocal = esCanal ? `<div class="w-14 h-14 rounded-full bg-white border border-gray-300 mb-2 shadow-sm"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
                         let htmlEscVis = esCanal ? `<div class="w-14 h-14 rounded-full bg-[#00509E] mb-2 shadow-sm"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                         
-                        const colorNombreLocal = esLocalFav ? (esCanal ? 'var(--primary-color)' : '#ffffff') : (esFavorito ? '#ffffff' : 'var(--text-main)');
-                        const colorNombreVis = esVisFav ? (esCanal ? 'var(--primary-color)' : '#ffffff') : (esFavorito ? '#ffffff' : 'var(--text-main)');
+                        // LÓGICA DE COLORES REFINADA
+                        let classLocal = '', classVis = '';
+                        if (esCanal) {
+                            classLocal = esLocalFav ? 'text-[#00509E] font-black' : 'text-gray-700';
+                            classVis = esVisFav ? 'text-[#00509E] font-black' : 'text-gray-700';
+                        } else {
+                            if (esFavorito) {
+                                classLocal = esLocalFav ? 'text-[#D6B25A] font-black' : 'text-white';
+                                classVis = esVisFav ? 'text-[#D6B25A] font-black' : 'text-white';
+                            } else {
+                                classLocal = esLocalFav ? 'text-[#D6B25A] font-black' : 'text-gray-800';
+                                classVis = esVisFav ? 'text-[#D6B25A] font-black' : 'text-gray-800';
+                            }
+                        }
                         
                         contenedor.innerHTML += `
                             <div class="${claseTarjeta}">
                                 <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
-                                    <div class="text-[13px] font-bold text-center" style="color: ${colorNombreLocal};">${acortarNombre(p.EquipoLocal)}</div>
+                                    <div class="text-[13px] ${classLocal} text-center">${acortarNombre(p.EquipoLocal)}</div>
                                     <div class="text-xs px-1" style="color: ${esFavorito && !esCanal ? '#ffffff' : 'var(--text-sec)'};">-</div>
-                                    <div class="text-[13px] font-bold text-center" style="color: ${colorNombreVis};">${acortarNombre(p.EquipoVisitante)}</div>
+                                    <div class="text-[13px] ${classVis} text-center">${acortarNombre(p.EquipoVisitante)}</div>
                                 </div>
                                 <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
                                     <div class="w-12 flex justify-end">${htmlEscLocal}</div>
@@ -773,7 +812,6 @@
             filas.forEach(f => {
                 const esFavorito = f.NombreEquipo === equipoActual.equipoFavorito;
                 const clasePos = f.Posicion === 1 ? 'text-[#D6B25A]' : 'text-gray-600'; const clasePts = f.Posicion === 1 ? 'text-[#D6B25A]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
-                
                 const partidosJugados = f.Jugados !== undefined ? f.Jugados : (f.PJ !== undefined ? f.PJ : 0);
 
                 tbody.innerHTML += `
