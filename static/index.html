@@ -50,8 +50,6 @@
         .card-favorito .text-\[11px\] { color: rgba(255,255,255,0.9) !important; }
         
         .card-favorito .border-t { border-color: rgba(255,255,255,0.3) !important; }
-        
-        /* Enlaces del mapa en la tarjeta destacada */
         .card-favorito a.text-blue-500 { color: #ffffff !important; text-decoration: underline; }
 
         .loader { border: 3px solid var(--border-color); border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
@@ -99,11 +97,36 @@
             object-fit: contain;
         }
 
-        /* Nuevo estilo para el VS dentro de la tarjeta destacada */
+        /* Círculo pequeño para la tabla de clasificación */
+        .escudo-circulo-sm {
+            width: 32px; 
+            height: 32px;
+            background-color: white;
+            border-radius: 50%;
+            padding: 3px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        .escudo-circulo-sm img {
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain;
+        }
+
         .card-favorito .vs-badge {
             background-color: #ffffff !important;
             color: var(--primary-color) !important;
             border-color: #ffffff !important;
+        }
+        
+        /* Puntito rojo de notificación en pestaña */
+        .badge-alerta {
+            position: absolute; top: 2px; right: 10px;
+            width: 8px; height: 8px; background-color: #ef4444; border-radius: 50%;
         }
     </style>
 </head>
@@ -120,18 +143,17 @@
         <div id="lista-equipos" class="p-4 space-y-4"></div>
     </div>
 
+    <!-- FORMULARIO -->
     <div id="screen-formulario" class="hide max-w-md mx-auto min-h-screen" style="background-color: var(--bg-color);">
         <div class="text-white p-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left"></i></button>
             <h1 id="titulo-formulario" class="text-lg font-bold">Añadir Jugador</h1>
         </div>
-        
         <div class="p-4 space-y-4">
             <div class="card p-4">
                 <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Nombre del Jugador</label>
                 <input type="text" id="input-nombre" placeholder="Ej: Mateo" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
             </div>
-            
             <div class="card p-4 space-y-3">
                 <div>
                     <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Deporte</label>
@@ -154,16 +176,15 @@
                     </select>
                 </div>
             </div>
-
             <div id="panel-seleccion-equipo" class="hide card p-4 border-2 border-[#D6B25A]">
                 <label class="block text-xs font-bold text-[#D6B25A] uppercase mb-3 text-center">👇 Toca el escudo de tu equipo</label>
                 <div id="grid-equipos" class="grid grid-cols-3 gap-2"></div>
             </div>
-
             <button onclick="guardarEquipo()" id="btn-guardar" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition disabled:opacity-50 disabled:bg-gray-400 text-sm" disabled>Guardar Equipo</button>
         </div>
     </div>
 
+    <!-- DETALLE -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
         <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <div class="flex items-center p-4">
@@ -181,6 +202,11 @@
         </div>
 
         <div id="tab-calendario" class="p-4 space-y-4">
+            <div id="banner-alerta" class="hide bg-red-100 text-red-700 p-3 rounded-lg text-sm font-bold flex items-center shadow-sm">
+                <i class="fas fa-exclamation-triangle mr-2 text-lg"></i> 
+                <span>¡Atención! Hay cambios en el horario o campo de algún partido.</span>
+            </div>
+            
             <div class="flex gap-2 mb-2">
                 <select id="select-jornada" onchange="cargarCalendario()" class="flex-1 p-3 rounded-lg shadow-sm text-sm font-bold" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--primary-color);"></select>
                 <button onclick="toggleFiltro()" id="btn-filtro" class="px-3 rounded-lg shadow-sm text-sm font-bold border transition" style="background-color: var(--card-bg); border-color: var(--border-color); color: var(--text-main);">
@@ -195,6 +221,12 @@
         </div>
 
         <div id="tab-clasificacion" class="hide p-4">
+            <!-- Botón de compartir clasificación -->
+            <div class="flex justify-end mb-2">
+                <button onclick="compartirClasificacion()" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm border text-xs font-bold" style="border-color: var(--border-color); color: var(--primary-color);">
+                    <i class="fas fa-share-alt"></i> Compartir Clasificación
+                </button>
+            </div>
             <div class="card overflow-hidden">
                 <table class="w-full text-left border-collapse">
                     <thead class="text-xs font-bold uppercase border-b" style="background-color: var(--bg-color); color: var(--text-sec); border-color: var(--border-color);">
@@ -212,7 +244,7 @@
         </div>
 
         <div class="fixed bottom-0 w-full max-w-md border-t flex justify-around pt-2 pb-6 text-xs font-bold" style="background-color: var(--card-bg); border-color: var(--border-color); color: var(--text-sec);">
-            <button onclick="cambiarTab('calendario')" id="btn-tab-calendario" class="flex flex-col items-center tab-active w-1/3">
+            <button onclick="cambiarTab('calendario')" id="btn-tab-calendario" class="flex flex-col items-center tab-active w-1/3 relative">
                 <i class="fas fa-calendar text-lg mb-1"></i> Calendario
             </button>
             <button onclick="cambiarTab('resultados')" id="btn-tab-resultados" class="flex flex-col items-center w-1/3">
@@ -231,6 +263,7 @@
         let equipoSeleccionadoVisual = null; 
         let soloMiEquipo = false;
         let editandoEquipoId = null; 
+        let datosClasificacionActual = []; // Para el botón de compartir
 
         function acortarNombre(nombre) {
             if (!nombre) return "";
@@ -244,22 +277,16 @@
             } else if (p.CampoJuego && p.CampoJuego.Direccion) {
                 dir = p.CampoJuego.Direccion;
             }
-            
             if (p.CampoJuego) {
-                if (p.CampoJuego.CP && !dir.includes(p.CampoJuego.CP)) {
-                    dir += `, ${p.CampoJuego.CP}`;
-                }
-                if (p.CampoJuego.Municipio && !dir.includes(p.CampoJuego.Municipio)) {
-                    dir += ` ${p.CampoJuego.Municipio}`;
-                }
+                if (p.CampoJuego.CP && !dir.includes(p.CampoJuego.CP)) dir += `, ${p.CampoJuego.CP}`;
+                if (p.CampoJuego.Municipio && !dir.includes(p.CampoJuego.Municipio)) dir += ` ${p.CampoJuego.Municipio}`;
             }
             return dir.replace(/,\s*,/g, ',').trim();
         }
 
         function esCampoExterior(p) {
             const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase();
-            if (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')) return true;
-            return false;
+            return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE'));
         }
 
         function refrescarApp() {
@@ -288,11 +315,10 @@
         function editarEquipo(index) {
             const eq = equipos[index];
             editandoEquipoId = eq.id;
-            
             document.getElementById('titulo-formulario').innerText = "Editar Jugador";
             document.getElementById('input-nombre').value = eq.nombre;
-            
             document.getElementById('select-deporte').value = eq.idDeporte;
+            
             cargarCompeticiones(eq.idDeporte).then(() => {
                 document.getElementById('select-competicion').value = eq.idCompeticion;
                 cambiarCompeticion().then(() => {
@@ -309,7 +335,6 @@
                     });
                 });
             });
-            
             mostrarFormulario();
         }
 
@@ -621,6 +646,21 @@
             const data = await res.json();
             jornadasData = data.jornadas || [];
             
+            // --- LÓGICA DE NOTIFICACIÓN DE CAMBIOS ---
+            let hayCambios = false;
+            const todosLosPartidos = data.resultados || [];
+            todosLosPartidos.forEach(p => {
+                if (p.Cambio) hayCambios = true;
+            });
+
+            const banner = document.getElementById('banner-alerta');
+            if (hayCambios) {
+                banner.classList.remove('hide');
+            } else {
+                banner.classList.add('hide');
+            }
+            // -----------------------------------------
+
             let indiceSeleccionado = 0; 
             if (jornadasData.length > 0) {
                 const hoy = new Date(); hoy.setHours(0,0,0,0);
@@ -731,7 +771,6 @@
                         </div>
                     `;
                 } else {
-                    // Badge VS condicional
                     const claseVs = esFavorito ? 'vs-badge' : '';
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
@@ -746,11 +785,9 @@
                                     ${escLocal ? `<div class="escudo-circulo"><img src="${escLocal}"></div>` : '<div class="h-12 mb-1"></div>'}
                                     <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : ''}" style="${!esLocalFav ? 'color: var(--text-main);' : ''}">${acortarNombre(p.EquipoLocal)}</div>
                                 </div>
-                                
                                 <div class="px-2 flex flex-col items-center justify-center h-10">
                                     <span class="text-xs font-bold px-2 py-1 rounded border ${claseVs}" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>
                                 </div>
-
                                 <div class="flex-1 flex flex-col items-center">
                                     ${escVis ? `<div class="escudo-circulo"><img src="${escVis}"></div>` : '<div class="h-12 mb-1"></div>'}
                                     <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : ''}" style="${!esVisFav ? 'color: var(--text-main);' : ''}">${acortarNombre(p.EquipoVisitante)}</div>
@@ -813,7 +850,6 @@
                     }
 
                     const isZeroZero = p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0;
-                    // Números en dorado si es el equipo favorito
                     const styleScore = esFavorito ? 'color: var(--secondary-color);' : (isZeroZero ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);');
 
                     if (esDescanso) {
@@ -826,7 +862,6 @@
                             </div>
                         `;
                     } else {
-                        const claseVs = esFavorito ? 'vs-badge' : '';
                         contenedor.innerHTML += `
                             <div class="${claseTarjeta}">
                                 <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
@@ -866,6 +901,7 @@
             
             const filas = await resClasif.json();
             const todosLosPartidos = await resResultados.json();
+            datosClasificacionActual = filas; // Guardamos para compartir
             
             tbody.innerHTML = '';
             if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
@@ -902,7 +938,7 @@
                     <tr class="${bgFav}" style="border-color: var(--border-color);">
                         <td class="p-3 font-bold ${clasePos} align-middle">${f.Posicion}</td>
                         <td class="p-3 font-medium flex items-center">
-                            <img src="${esc}" class="w-6 h-6 object-contain mr-2 shrink-0">
+                            <div class="escudo-circulo-sm"><img src="${esc}"></div>
                             <span class="leading-tight pr-2 font-bold ${esFavorito ? 'text-[#D6B25A]' : ''}" style="${!esFavorito ? 'color: var(--text-main);' : ''}">${f.NombreEquipo}</span>
                         </td>
                         <td class="p-3 text-center align-middle" style="color: var(--text-sec);">${f.Jugados}</td>
@@ -911,6 +947,20 @@
                     </tr>
                 `;
             });
+        }
+
+        // --- FUNCIÓN PARA COMPARTIR LA CLASIFICACIÓN ---
+        function compartirClasificacion() {
+            if (!datosClasificacionActual || datosClasificacionActual.length === 0) return;
+
+            let texto = `🏆 Clasificación - ${equipoActual.nombre} (${equipoActual.nombreCompeticion})\n\n`;
+            
+            datosClasificacionActual.forEach(f => {
+                texto += `${f.Posicion}. ${f.NombreEquipo} - ${f.Puntos} pts (${f.Jugados} PJ)\n`;
+            });
+            
+            const textoCodificado = encodeURIComponent(texto);
+            window.location.href = `https://wa.me/?text=${textoCodificado}`;
         }
     </script>
 </body>
