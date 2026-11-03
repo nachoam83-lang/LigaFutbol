@@ -35,11 +35,23 @@
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
+        /* TARJETA DESTACADA: Fondo verde oscuro */
         .card-favorito { 
-            background-color: rgba(0, 109, 111, 0.15) !important; 
-            border-color: rgba(0, 109, 111, 0.4) !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 109, 111, 0.15) !important;
+            background-color: #005a5c !important; 
+            border-color: #004749 !important;
+            box-shadow: 0 6px 12px -2px rgba(0, 90, 92, 0.4) !important;
         }
+        
+        /* Ajustes de texto para que se lea bien sobre el fondo oscuro */
+        .card-favorito .text-gray-700, 
+        .card-favorito .text-gray-800, 
+        .card-favorito .text-gray-600 { color: #f3f4f6 !important; }
+        
+        .card-favorito .text-xs, 
+        .card-favorito .text-\[13px\], 
+        .card-favorito .text-\[11px\] { color: rgba(255,255,255,0.8) !important; }
+
+        .card-favorito .border-t { border-color: rgba(255,255,255,0.2) !important; }
 
         .loader { border: 3px solid var(--border-color); border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -65,6 +77,20 @@
         .streak-d { background-color: #ef4444; }
         
         .spin-anim { animation: spin 1s linear infinite; }
+
+        /* Clase para el círculo blanco de los escudos en el calendario */
+        .escudo-circulo {
+            width: 48px; height: 48px;
+            background-color: white;
+            border-radius: 50%;
+            padding: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 4px auto;
+        }
+        .escudo-circulo img {
+            width: 100%; height: 100%; object-fit: contain;
+        }
     </style>
 </head>
 <body class="pb-20">
@@ -219,7 +245,6 @@
             return dir.replace(/,\s*,/g, ',').trim();
         }
 
-        // NUEVA FUNCIÓN PARA DETECTAR SI ES EXTERIOR O PABELLÓN
         function esCampoExterior(p) {
             const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase();
             if (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')) return true;
@@ -639,8 +664,11 @@
                 const esFavorito = esLocalFav || esVisFav;
                 const claseTarjeta = esFavorito ? 'card p-3 card-favorito' : 'card p-3';
 
+                // COMPROBACIÓN DE "DESCANSA"
+                const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
+
                 let alertaCambio = '';
-                if (p.Cambio) {
+                if (p.Cambio && !esDescanso) {
                     alertaCambio = `<div class="mt-2 text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded inline-block"><i class="fas fa-exclamation-triangle mr-1"></i> Cambio de Horario/Campo</div>`;
                 }
 
@@ -657,7 +685,7 @@
                 }
 
                 let botonesExtra = '';
-                if (esFavorito && p.FechaHora) {
+                if (esFavorito && p.FechaHora && !esDescanso) {
                     const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
                     
                     const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}. Nos vemos allí!`;
@@ -677,38 +705,51 @@
                         </div>
                     `;
                 }
-                
-                contenedor.innerHTML += `
-                    <div class="${claseTarjeta}">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="font-extrabold text-[11px] uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
-                            ${htmlCampo}
+
+                // DISEÑO DE LA TARJETA (Condicional para descanso)
+                if (esDescanso) {
+                    // Tarjeta simplificada para descanso
+                    contenedor.innerHTML += `
+                        <div class="${claseTarjeta}">
+                            <div class="flex justify-center items-center text-sm font-bold py-4" style="color: var(--primary-color);">
+                                <i class="fas fa-bed mr-2"></i> Descansa (Jornada ${data.jornada?.NumeroJornada || ''})
+                            </div>
                         </div>
-                        ${alertaCambio}
-                        
-                        <div class="flex justify-between items-center w-full my-2">
-                            <div class="flex-1 flex flex-col items-center">
-                                ${escLocal ? `<img src="${escLocal}" class="w-12 h-12 object-contain mb-1">` : '<div class="h-12 mb-1"></div>'}
-                                <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : ''}" style="${!esLocalFav ? 'color: var(--text-main);' : ''}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
+                    `;
+                } else {
+                    // Tarjeta normal de partido
+                    contenedor.innerHTML += `
+                        <div class="${claseTarjeta}">
+                            <div class="flex justify-between items-center mb-2">
+                                <div class="font-extrabold text-[11px] uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
+                                ${htmlCampo}
+                            </div>
+                            ${alertaCambio}
+                            
+                            <div class="flex justify-between items-center w-full my-2">
+                                <div class="flex-1 flex flex-col items-center">
+                                    ${escLocal ? `<div class="escudo-circulo"><img src="${escLocal}"></div>` : '<div class="h-12 mb-1"></div>'}
+                                    <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : ''}" style="${!esLocalFav ? 'color: var(--text-main);' : ''}">${acortarNombre(p.EquipoLocal)}</div>
+                                </div>
+                                
+                                <div class="px-2 flex flex-col items-center justify-center h-10">
+                                    <span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>
+                                </div>
+
+                                <div class="flex-1 flex flex-col items-center">
+                                    ${escVis ? `<div class="escudo-circulo"><img src="${escVis}"></div>` : '<div class="h-12 mb-1"></div>'}
+                                    <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : ''}" style="${!esVisFav ? 'color: var(--text-main);' : ''}">${acortarNombre(p.EquipoVisitante)}</div>
+                                </div>
                             </div>
                             
-                            <div class="px-2 flex flex-col items-center justify-center h-10">
-                                <span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>
+                            <div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);">
+                                <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
+                                ${htmlMapa}
                             </div>
-
-                            <div class="flex-1 flex flex-col items-center">
-                                ${escVis ? `<img src="${escVis}" class="w-12 h-12 object-contain mb-1">` : '<div class="h-12 mb-1"></div>'}
-                                <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : ''}" style="${!esVisFav ? 'color: var(--text-main);' : ''}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
-                            </div>
+                            ${botonesExtra}
                         </div>
-                        
-                        <div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);">
-                            <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
-                            ${htmlMapa}
-                        </div>
-                        ${botonesExtra}
-                    </div>
-                `;
+                    `;
+                }
             });
         }
 
@@ -740,6 +781,7 @@
                     const esFavorito = esLocalFav || esVisFav;
                     const claseTarjeta = esFavorito ? 'card p-3 mb-2 flex flex-col w-full card-favorito' : 'card p-3 mb-2 flex flex-col w-full';
                     
+                    const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
                     const dirCompletaRes = construirDireccion(p);
                     const esExterior = esCampoExterior(p);
                     
@@ -755,29 +797,40 @@
                     const isZeroZero = p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0;
                     const styleScore = isZeroZero ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);';
 
-                    contenedor.innerHTML += `
-                        <div class="${claseTarjeta}">
-                            <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
-                                <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : ''}" style="${!esLocalFav ? 'color: var(--text-main);' : ''}">${p.EquipoLocal ? acortarNombre(p.EquipoLocal) : 'Descansa'}</div>
-                                <div class="text-xs px-1" style="color: var(--text-sec);">-</div>
-                                <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : ''}" style="${!esVisFav ? 'color: var(--text-main);' : ''}">${p.EquipoVisitante ? acortarNombre(p.EquipoVisitante) : 'Descansa'}</div>
-                            </div>
-                            <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
-                                <div class="w-12 flex justify-end">${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain">` : ''}</div>
-                                <div class="px-2">
-                                    <span class="text-xl font-black" style="${styleScore}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>
-                                </div>
-                                <div class="w-12 flex justify-start">${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain">` : ''}</div>
-                            </div>
-                            <div class="text-[11px] flex flex-col items-center mt-1 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);">
-                                ${htmlCampoRes}
-                                <div class="mt-1 flex items-start">
-                                    <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
-                                    ${htmlMapaRes}
+                    // DISEÑO DE LA TARJETA (Condicional para descanso)
+                    if (esDescanso) {
+                        contenedor.innerHTML += `
+                            <div class="${claseTarjeta}">
+                                <div class="flex justify-center items-center text-sm font-bold py-2" style="color: var(--primary-color);">
+                                    <i class="fas fa-bed mr-2"></i> Descansa
                                 </div>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        contenedor.innerHTML += `
+                            <div class="${claseTarjeta}">
+                                <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
+                                    <div class="text-[13px] font-bold text-center leading-tight ${esLocalFav ? 'text-[#D6B25A]' : ''}" style="${!esLocalFav ? 'color: var(--text-main);' : ''}">${acortarNombre(p.EquipoLocal)}</div>
+                                    <div class="text-xs px-1" style="color: var(--text-sec);">-</div>
+                                    <div class="text-[13px] font-bold text-center leading-tight ${esVisFav ? 'text-[#D6B25A]' : ''}" style="${!esVisFav ? 'color: var(--text-main);' : ''}">${acortarNombre(p.EquipoVisitante)}</div>
+                                </div>
+                                <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
+                                    <div class="w-12 flex justify-end">${escLocal ? `<img src="${escLocal}" class="w-10 h-10 object-contain">` : ''}</div>
+                                    <div class="px-2">
+                                        <span class="text-xl font-black" style="${styleScore}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>
+                                    </div>
+                                    <div class="w-12 flex justify-start">${escVis ? `<img src="${escVis}" class="w-10 h-10 object-contain">` : ''}</div>
+                                </div>
+                                <div class="text-[11px] flex flex-col items-center mt-1 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);">
+                                    ${htmlCampoRes}
+                                    <div class="mt-1 flex items-start">
+                                        <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
+                                        ${htmlMapaRes}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
                 });
             }
         }
