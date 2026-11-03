@@ -62,7 +62,7 @@
         #pantalla-carga.oculto { opacity: 0; visibility: hidden; }
         
         .loader-juego {
-            position: relative; width: 100px; height: 100px;
+            position: relative; width: 110px; height: 110px;
             display: flex; align-items: center; justify-content: center;
         }
         .loader-juego::before {
@@ -70,9 +70,18 @@
             border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--secondary-color);
             border-radius: 50%; animation: spin 1s linear infinite;
         }
+        
+        /* NUEVO ESTILO: Escudo redondeado en la pantalla de carga */
         .loader-juego img {
-            width: 60px; height: 60px; object-fit: contain; animation: pulse 1.5s ease-in-out infinite;
+            width: 75px; 
+            height: 75px; 
+            object-fit: cover; 
+            border-radius: 50%; 
+            background-color: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            animation: pulse 1.5s ease-in-out infinite; 
         }
+        
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.8; } }
 
         /* Resto de estilos */
