@@ -14,7 +14,6 @@
     
     <style>
         :root {
-            /* Variables por defecto (ECM) */
             --primary-color: #006D6F;
             --secondary-color: #D6B25A;
             --bg-color: #f0f2f5;
@@ -22,10 +21,10 @@
             --text-main: #1f2937;
             --text-sec: #6b7280;
             --border-color: #e5e7eb;
-            --header-bg: #2F3640; /* Gris antracita */
+            --header-bg: #2F3640; /* Gris antracita para "Mis Equipos" */
         }
 
-        /* Tema para Escuela Canal */
+        /* Tema específico para Escuela Canal */
         .theme-canal {
             --primary-color: #00509E; /* Azul oscuro */
             --secondary-color: #E0F0FF; /* Azul claro */
@@ -43,31 +42,24 @@
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
-        /* --- CONTRASTES RECUPERADOS PARA ECM --- */
+        /* CONTRASTES PARA ECM */
         .card-favorito { 
             background-color: rgba(0, 109, 111, 0.6) !important; 
             border-color: rgba(0, 109, 111, 0.8) !important;
             box-shadow: 0 4px 10px -1px rgba(0, 109, 111, 0.3) !important;
         }
-        
-        .card-favorito .text-gray-700, 
-        .card-favorito .text-gray-800, 
-        .card-favorito .text-gray-600 { color: #ffffff !important; }
-        
-        .card-favorito .text-xs, 
-        .card-favorito .text-\[13px\], 
-        .card-favorito .text-\[11px\] { color: rgba(255,255,255,0.9) !important; }
-        
+        .card-favorito .text-gray-700, .card-favorito .text-gray-800, .card-favorito .text-gray-600 { color: #ffffff !important; }
+        .card-favorito .text-xs, .card-favorito .text-\[13px\], .card-favorito .text-\[11px\] { color: rgba(255,255,255,0.9) !important; }
         .card-favorito .border-t { border-color: rgba(255,255,255,0.3) !important; }
         .card-favorito a.text-blue-500 { color: #ffffff !important; text-decoration: underline; }
 
-        /* Estilo para tarjeta favorita de Canal */
+        /* CONTRASTE PARA CANAL */
         .card-favorito-canal {
             background-color: var(--secondary-color) !important;
             border-color: var(--primary-color) !important;
         }
 
-        /* --- ESTILOS DE LA PANTALLA DE CARGA --- */
+        /* --- PANTALLA DE CARGA --- */
         #pantalla-carga {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000;
             background-color: var(--primary-color);
@@ -85,23 +77,18 @@
             border: 4px solid rgba(255,255,255,0.2); border-top-color: var(--secondary-color);
             border-radius: 50%; animation: spin 1s linear infinite;
         }
-        
         .loader-juego .escudo-wrapper {
             width: 75px; height: 75px;
-            background-color: white;
-            border-radius: 50%;
+            background-color: white; border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
-            overflow: hidden;
-            z-index: 10;
+            overflow: hidden; z-index: 10;
             animation: pulse 1.5s ease-in-out infinite;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        .loader-juego .escudo-wrapper img {
-            width: 100%; height: 100%; object-fit: cover;
-        }
-        
+        .loader-juego .escudo-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.8; } }
 
+        /* RESTO DE ESTILOS */
         .loader-sm { border: 3px solid var(--border-color); border-top: 3px solid var(--primary-color); border-radius: 50%; width: 24px; height: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
@@ -124,10 +111,8 @@
         .streak-v { background-color: #10b981; }
         .streak-e { background-color: #9ca3af; }
         .streak-d { background-color: #ef4444; }
-        
         .spin-anim { animation: spin 1s linear infinite; }
 
-        /* --- ESCUDOS CIRCULARES (CALENDARIO Y RESULTADOS) --- */
         .escudo-circulo {
             width: 56px; height: 56px; background-color: white; border-radius: 50%; padding: 6px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center;
@@ -160,6 +145,7 @@
     </div>
 
     <div id="screen-equipos" class="max-w-md mx-auto min-h-screen">
+        <!-- CABECERA GRIS ANTRACITA -->
         <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <h1 class="text-xl font-bold tracking-wide">Mis Equipos</h1>
             <div class="flex gap-3">
@@ -187,7 +173,7 @@
                         <option value="1">Baloncesto (ECM)</option>
                         <option value="2" selected>Fútbol Sala (ECM)</option>
                         <option value="3">Voleibol (ECM)</option>
-                        <option value="4">Escuela Canal (Liga Interna)</option>
+                        <option value="4">Escuela Canal</option>
                     </select>
                 </div>
                 <div id="div-competicion">
@@ -199,7 +185,7 @@
                 <div>
                     <label id="label-grupo" class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Grupo</label>
                     <select id="select-grupo" onchange="cargarEquiposParaSeleccion()" class="w-full p-3 rounded-lg text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-                        <option value="">Selecciona...</option>
+                        <option value="">Selecciona grupo...</option>
                     </select>
                 </div>
             </div>
@@ -287,14 +273,17 @@
     <script>
         let equipos = JSON.parse(localStorage.getItem('equipos_liga')) || [];
         let equipoActual = null;
+        let jornadasData = [];
         let equipoSeleccionadoVisual = null; 
-        let editandoEquipoId = null; 
         let soloMiEquipo = false;
+        let editandoEquipoId = null; 
         
-        let cacheCalendarioJornadas = [];
-        let cacheResultados = [];
-        let cacheClasificacion = [];
-        let cacheProximoPartido = {};
+        let cacheCalendarioGlobal = null;
+        let cacheResultados = null;
+        let cacheClasificacion = null;
+        let cacheClasificacionPartidos = null;
+        
+        let cacheProximoPartido = {}; 
         let cacheEquipoAbiertoId = null; 
 
         function acortarNombre(nombre) {
@@ -302,7 +291,6 @@
             return nombre.length > 35 ? nombre.substring(0, 35) + "..." : nombre;
         }
 
-        // FUNCIONES RECUPERADAS PARA EL CALENDARIO DE ECM
         function construirDireccion(p) {
             let dir = "";
             if (p.Campo) {
@@ -329,8 +317,11 @@
         function refrescarApp() {
             const icono = document.querySelector('#btn-refresh i');
             icono.classList.add('spin-anim');
-            cacheProximoPartido = {};
-            setTimeout(() => { renderizarEquipos(); icono.classList.remove('spin-anim'); }, 500);
+            cacheProximoPartido = {}; 
+            setTimeout(() => { 
+                renderizarEquipos(); 
+                icono.classList.remove('spin-anim'); 
+            }, 500);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -342,9 +333,8 @@
             editandoEquipoId = null;
             document.getElementById('titulo-formulario').innerText = "Añadir Jugador";
             document.getElementById('input-nombre').value = "";
+            document.getElementById('select-deporte').value = "2";
             
-            const selectDep = document.getElementById('select-deporte');
-            selectDep.value = "2";
             document.getElementById('div-competicion').classList.remove('hide');
             document.getElementById('label-grupo').innerText = "Grupo";
             
@@ -369,16 +359,9 @@
                 document.getElementById('label-grupo').innerText = "Equipo";
                 cargarEquiposCanal().then(() => {
                     document.getElementById('select-grupo').value = eq.equipoFavorito;
-                    cargarEquiposParaSeleccion().then(() => {
-                        const cards = document.querySelectorAll('.team-select-card');
-                        cards.forEach(c => {
-                            if(c.querySelector('span').innerText === acortarNombre(eq.equipoFavorito)) {
-                                c.classList.add('selected');
-                                equipoSeleccionadoVisual = { nombre: eq.equipoFavorito, escudo: eq.escudoFavorito };
-                                document.getElementById('btn-guardar').disabled = false;
-                            }
-                        });
-                    });
+                    equipoSeleccionadoVisual = { nombre: eq.equipoFavorito, escudo: eq.escudoFavorito };
+                    document.getElementById('btn-guardar').disabled = false;
+                    document.getElementById('panel-seleccion-equipo').classList.add('hide');
                 });
             } else {
                 document.getElementById('div-competicion').classList.remove('hide');
@@ -619,18 +602,19 @@
 
             if (!idGrupo) { panel.classList.add('hide'); return; }
 
-            grid.innerHTML = '<div class="col-span-3 text-center py-4"><div class="loader-sm mx-auto"></div></div>';
-            panel.classList.remove('hide');
-
+            // Para Canal, el equipo seleccionado en el desplegable es el que cuenta
             if (idDep === "4") {
                 equipoSeleccionadoVisual = { 
                     nombre: idGrupo, 
                     escudo: "/static/escudo_canal.png" 
                 };
                 document.getElementById('btn-guardar').disabled = false;
-                panel.classList.add('hide'); 
+                panel.classList.add('hide'); // No mostramos grid porque ya lo hemos elegido en el select
                 return;
             }
+
+            grid.innerHTML = '<div class="col-span-3 text-center py-4"><div class="loader-sm mx-auto"></div></div>';
+            panel.classList.remove('hide');
 
             try {
                 const idComp = document.getElementById('select-competicion').value;
@@ -724,6 +708,7 @@
         async function abrirEquipo(index) {
             equipoActual = equipos[index];
             
+            // Aplicar tema
             if (equipoActual.idDeporte === "4") {
                 document.body.classList.add('theme-canal');
             } else {
@@ -743,7 +728,7 @@
                 document.getElementById('carga-escudo').src = '/static/logo.png';
             }
 
-            if (cacheEquipoAbiertoId === equipoActual.id && cacheCalendarioJornadas.length > 0) {
+            if (cacheEquipoAbiertoId === equipoActual.id && cacheCalendarioGlobal) {
                 document.getElementById('screen-equipos').classList.add('hide');
                 document.getElementById('screen-detalle').classList.remove('hide');
                 cambiarTab('calendario');
@@ -753,9 +738,10 @@
             const pantallaCarga = document.getElementById('pantalla-carga');
             pantallaCarga.classList.remove('oculto');
 
-            cacheCalendarioJornadas = [];
-            cacheResultados = [];
-            cacheClasificacion = [];
+            cacheCalendarioGlobal = null;
+            cacheResultados = null;
+            cacheClasificacion = null;
+            cacheClasificacionPartidos = null;
             cacheEquipoAbiertoId = equipoActual.id;
 
             try {
@@ -766,9 +752,10 @@
                 ]);
 
                 const dataCal = await resCal.json();
-                cacheCalendarioJornadas = dataCal.jornadas || [];
+                cacheCalendarioGlobal = dataCal;
                 cacheResultados = await resRes.json();
                 cacheClasificacion = await resClasif.json();
+                cacheClasificacionPartidos = cacheResultados; 
                 
                 setTimeout(() => {
                     pantallaCarga.classList.add('oculto');
@@ -792,9 +779,10 @@
             const pantallaCarga = document.getElementById('pantalla-carga');
             pantallaCarga.classList.remove('oculto');
 
-            cacheCalendarioJornadas = [];
-            cacheResultados = [];
-            cacheClasificacion = [];
+            cacheCalendarioGlobal = null;
+            cacheResultados = null;
+            cacheClasificacion = null;
+            cacheClasificacionPartidos = null;
 
             try {
                 const [resCal, resRes, resClasif] = await Promise.all([
@@ -804,9 +792,10 @@
                 ]);
 
                 const dataCal = await resCal.json();
-                cacheCalendarioJornadas = dataCal.jornadas || [];
+                cacheCalendarioGlobal = dataCal;
                 cacheResultados = await resRes.json();
                 cacheClasificacion = await resClasif.json();
+                cacheClasificacionPartidos = cacheResultados;
                 
                 delete cacheProximoPartido[equipoActual.id];
 
@@ -848,10 +837,8 @@
         }
 
         function actualizarUIJornadas() {
-            if (!cacheCalendarioJornadas || cacheCalendarioJornadas.length === 0) {
-                document.getElementById('select-jornada').innerHTML = '<option value="">Jornada</option>';
-                return;
-            }
+            if (!cacheCalendarioGlobal) return;
+            jornadasData = cacheCalendarioGlobal.jornadas || [];
             
             let hayCambios = false;
             if (cacheResultados) {
@@ -861,25 +848,27 @@
             if (hayCambios) banner.classList.remove('hide'); else banner.classList.add('hide');
 
             let indiceSeleccionado = 0; 
-            const hoy = new Date(); hoy.setHours(0,0,0,0);
-            const ayer = new Date(hoy); ayer.setDate(ayer.getDate() - 1); 
+            if (jornadasData.length > 0) {
+                const hoy = new Date(); hoy.setHours(0,0,0,0);
+                const ayer = new Date(hoy); ayer.setDate(ayer.getDate() - 1); 
 
-            for (let i = 0; i < cacheCalendarioJornadas.length; i++) {
-                const j = cacheCalendarioJornadas[i];
-                if (j.Fecha) {
-                    const fechaJornada = new Date(j.Fecha); fechaJornada.setHours(0,0,0,0);
-                    if (fechaJornada >= ayer) { indiceSeleccionado = i; break; }
+                for (let i = 0; i < jornadasData.length; i++) {
+                    const j = jornadasData[i];
+                    if (j.Fecha) {
+                        const fechaJornada = new Date(j.Fecha); fechaJornada.setHours(0,0,0,0);
+                        if (fechaJornada >= ayer) { indiceSeleccionado = i; break; }
+                    }
                 }
             }
 
             const select = document.getElementById('select-jornada');
             select.innerHTML = '';
-            cacheCalendarioJornadas.forEach((j, i) => {
+            jornadasData.forEach((j, i) => {
                 const selected = (i === indiceSeleccionado) ? 'selected' : '';
                 select.innerHTML += `<option value="${j.NumeroJornada}" ${selected}>Jornada ${j.NumeroJornada}</option>`;
             });
 
-            if(cacheCalendarioJornadas.length > 0) select.value = cacheCalendarioJornadas[indiceSeleccionado].NumeroJornada;
+            if(jornadasData.length > 0) select.value = jornadasData[indiceSeleccionado].NumeroJornada;
         }
 
         function toggleFiltro() {
@@ -913,6 +902,9 @@
                 const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
                 const hora = p.FechaHora ? p.FechaHora.split('T')[1].substring(0,5) : '';
                 
+                const escLocal = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : '';
+                const escVis = p.EquipoVisitante ? (p.URLEscudoEquipoVisitante || '/static/logo.png') : '';
+                
                 const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
                 const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
                 const esFavorito = esLocalFav || esVisFav;
@@ -923,6 +915,14 @@
 
                 const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
                 const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
+                
+                // FIX: Aseguramos que escudoDescansa nunca sea undefined o vacío
+                const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
+
+                let alertaCambio = '';
+                if (p.Cambio && !esDescanso) {
+                    alertaCambio = `<div class="mt-2 text-[10px] bg-red-100 text-red-600 font-bold px-2 py-1 rounded inline-block"><i class="fas fa-exclamation-triangle mr-1"></i> Cambio de Horario/Campo</div>`;
+                }
 
                 const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
                 
@@ -944,7 +944,8 @@
                     const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}. Nos vemos allí!`;
                     const urlWp = `https://wa.me/?text=${encodeURIComponent(texto)}`;
                     const tituloIcs = `Partido: ${equipoActual.equipoFavorito} vs ${rival}`;
-                    const urlIcs = `/api/ics?titulo=${encodeURIComponent(tituloIcs)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dirCompleta)}`;
+                    // AÑADIDO: &deporte=...
+                    const urlIcs = `/api/ics?titulo=${encodeURIComponent(tituloIcs)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dirCompleta)}&deporte=${equipoActual.idDeporte}`;
 
                     botonesExtra = `
                         <div class="flex gap-2 mt-3">
@@ -965,7 +966,7 @@
                                 <div class="font-extrabold text-[11px] uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha}</div>
                             </div>
                             <div class="flex justify-center items-center text-sm font-bold py-4 flex-col" style="color: var(--primary-color);">
-                                ${!esCanal && p.EquipoLocal ? `<div class="escudo-circulo mb-2"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>` : ''}
+                                ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
                                 <div><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div>
                             </div>
                         </div>
@@ -978,14 +979,12 @@
                         htmlEscLocal = `<div class="w-14 h-14 rounded-full bg-white border border-gray-300 mb-2 shadow-sm"></div>`;
                         htmlEscVis = `<div class="w-14 h-14 rounded-full bg-[#00509E] mb-2 shadow-sm"></div>`;
                     } else {
-                        const escLocal = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : '';
-                        const escVis = p.EquipoVisitante ? (p.URLEscudoEquipoVisitante || '/static/logo.png') : '';
                         htmlEscLocal = escLocal ? `<div class="escudo-circulo"><img src="${escLocal}"></div>` : '<div class="h-12 mb-1"></div>';
                         htmlEscVis = escVis ? `<div class="escudo-circulo"><img src="${escVis}"></div>` : '<div class="h-12 mb-1"></div>';
                     }
 
-                    const colorNombreLocal = esLocalFav ? (esCanal ? '#000' : '#D6B25A') : 'var(--text-main)';
-                    const colorNombreVis = esVisFav ? (esCanal ? '#000' : '#D6B25A') : 'var(--text-main)';
+                    const colorNombreLocal = esLocalFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)';
+                    const colorNombreVis = esVisFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)';
                     const claseVs = esFavorito && !esCanal ? 'vs-badge' : '';
 
                     contenedor.innerHTML += `
@@ -994,6 +993,7 @@
                                 <div class="font-extrabold text-[11px] uppercase tracking-wider" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>
                                 ${htmlCampo}
                             </div>
+                            ${alertaCambio}
                             
                             <div class="flex justify-between items-center w-full my-2">
                                 <div class="flex-1 flex flex-col items-center">
@@ -1020,7 +1020,6 @@
             });
         }
 
-        // --- RESULTADOS CON ESCUDOS Y CONTRASTES RECUPERADOS ---
         function renderizarResultadosUI() {
             const contenedor = document.getElementById('lista-resultados');
             const partidos = cacheResultados;
@@ -1042,7 +1041,6 @@
                 agrupados[j].forEach(p => {
                     const escLocal = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : '';
                     const escVis = p.EquipoVisitante ? (p.URLEscudoEquipoVisitante || '/static/logo.png') : '';
-                    
                     const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
                     const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
                     const esFavorito = esLocalFav || esVisFav;
@@ -1053,17 +1051,32 @@
                     
                     const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
                     const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
+                    const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
+
+                    const dirCompletaRes = esCanal ? "El Parque Santander" : construirDireccion(p);
+                    const esExterior = esCanal ? false : esCampoExterior(p);
+                    
+                    let htmlCampoRes = esCanal 
+                        ? `<span class="inline-flex items-center text-white font-bold bg-[#00509E] px-2 py-0.5 rounded text-[10px]">${p.Campo || 'Campo'}</span>`
+                        : (esExterior 
+                            ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
+                            : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-building mr-1"></i> Pabellón</span>`);
+
+                    let htmlMapaRes = `<span>${dirCompletaRes}</span>`;
+                    if (!esCanal && p.CampoJuego?.Latitud && p.CampoJuego?.Longitud && p.CampoJuego.Latitud !== 0) {
+                        htmlMapaRes = `<a href="http://maps.apple.com/?daddr=${p.CampoJuego.Latitud},${p.CampoJuego.Longitud}" target="_blank" class="text-blue-500 hover:underline">${dirCompletaRes}</a>`;
+                    }
 
                     const isZeroZero = p.ResultadoEquipoLocal == 0 && p.ResultadoEquipoVisitante == 0;
                     const styleScore = esFavorito 
-                        ? (esCanal ? 'color: #000;' : 'color: var(--secondary-color);') 
+                        ? (esCanal ? 'color: var(--primary-color);' : 'color: var(--secondary-color);') 
                         : (isZeroZero ? 'color: var(--text-sec); opacity: 0.5;' : 'color: var(--primary-color);');
 
                     if (esDescanso) {
                         contenedor.innerHTML += `
                             <div class="${claseTarjeta}">
                                 <div class="flex justify-center items-center py-2 flex-col" style="color: var(--primary-color);">
-                                    ${!esCanal && escLocal ? `<div class="escudo-circulo mb-2"><img src="${escLocal}"></div>` : ''}
+                                    ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
                                     <div class="text-sm font-bold"><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div>
                                 </div>
                             </div>
@@ -1080,8 +1093,8 @@
                             htmlEscVis = escVis ? `<div class="escudo-circulo"><img src="${escVis}"></div>` : '';
                         }
 
-                        const colorNombreLocal = esLocalFav ? (esCanal ? '#000' : '#D6B25A') : 'var(--text-main)';
-                        const colorNombreVis = esVisFav ? (esCanal ? '#000' : '#D6B25A') : 'var(--text-main)';
+                        const colorNombreLocal = esLocalFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)';
+                        const colorNombreVis = esVisFav ? (esCanal ? 'var(--primary-color)' : '#D6B25A') : 'var(--text-main)';
 
                         contenedor.innerHTML += `
                             <div class="${claseTarjeta}">
@@ -1097,6 +1110,13 @@
                                     </div>
                                     <div class="w-12 flex justify-start">${htmlEscVis}</div>
                                 </div>
+                                <div class="text-[11px] flex flex-col items-center mt-1 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);">
+                                    ${htmlCampoRes}
+                                    <div class="mt-1 flex items-start">
+                                        <i class="fas fa-map-marker-alt text-red-400 mt-0.5 mr-1 shrink-0"></i>
+                                        ${htmlMapaRes}
+                                    </div>
+                                </div>
                             </div>
                         `;
                     }
@@ -1107,7 +1127,7 @@
         function renderizarClasificacionUI() {
             const tbody = document.getElementById('tabla-clasificacion');
             const filas = cacheClasificacion;
-            const todosLosPartidos = cacheResultados;
+            const todosLosPartidos = cacheClasificacionPartidos;
             
             tbody.innerHTML = '';
             if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
