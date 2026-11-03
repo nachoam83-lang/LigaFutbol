@@ -56,8 +56,15 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal") == id_grupo or p.get("EquipoVisitante") == id_grupo]
         partidos.sort(key=lambda x: x["FechaHora"])
         
+        # --- ARREGLO: Calculamos la jornada dinámicamente según la fecha ---
+        fechas_unicas = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos)))
+        for p in partidos:
+            fecha = p["FechaHora"].split("T")[0]
+            p["NumeroJornada"] = fechas_unicas.index(fecha) + 1
+            
         jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos)))
         lista_jornadas = [{"NumeroJornada": j, "Id": j} for j in jornadas_nums]
+        
         return {
             "jornadas": lista_jornadas,
             "jornada": {
@@ -90,7 +97,15 @@ def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_g
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal") == id_grupo or p.get("EquipoVisitante") == id_grupo]
-        return sorted(partidos, key=lambda x: x["FechaHora"])
+        partidos.sort(key=lambda x: x["FechaHora"])
+        
+        # --- ARREGLO: Calculamos la jornada dinámicamente según la fecha ---
+        fechas_unicas = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos)))
+        for p in partidos:
+            fecha = p["FechaHora"].split("T")[0]
+            p["NumeroJornada"] = fechas_unicas.index(fecha) + 1
+            
+        return partidos
 
     datos = cargar_datos()
     if not datos: return []
