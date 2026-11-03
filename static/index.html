@@ -157,7 +157,7 @@
     </div>
 
     <div id="screen-equipos" class="max-w-md mx-auto min-h-screen">
-        <!-- Cambiado a gris antracita -->
+        <!-- Cabecera gris antracita -->
         <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <h1 class="text-xl font-bold tracking-wide">Mis Equipos</h1>
             <div class="flex gap-3">
@@ -285,10 +285,9 @@
     <script>
         let equipos = JSON.parse(localStorage.getItem('equipos_liga')) || [];
         let equipoActual = null;
-        let jornadasData = [];
         let equipoSeleccionadoVisual = null; 
-        let soloMiEquipo = false;
         let editandoEquipoId = null; 
+        let soloMiEquipo = false;
         
         let cacheCalendarioJornadas = [];
         let cacheResultados = [];
@@ -301,7 +300,27 @@
             return nombre.length > 35 ? nombre.substring(0, 35) + "..." : nombre;
         }
 
-        // Evaluamos si estamos jugando en la liga de Canal o en ECM
+        // ¡AQUÍ ESTÁN LAS FUNCIONES QUE FALTABAN!
+        function construirDireccion(p) {
+            let dir = "";
+            if (p.Campo) {
+                dir = p.Campo.split(' - ')[0]; 
+            } else if (p.CampoJuego && p.CampoJuego.Direccion) {
+                dir = p.CampoJuego.Direccion;
+            }
+            if (p.CampoJuego) {
+                if (p.CampoJuego.CP && !dir.includes(p.CampoJuego.CP)) dir += `, ${p.CampoJuego.CP}`;
+                if (p.CampoJuego.Municipio && !dir.includes(p.CampoJuego.Municipio)) dir += ` ${p.CampoJuego.Municipio}`;
+            }
+            return dir.replace(/,\s*,/g, ',').trim();
+        }
+
+        function esCampoExterior(p) {
+            const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase();
+            return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE'));
+        }
+        // ----------------------------------------
+
         function isCanal() {
             return equipoActual && equipoActual.idDeporte === "4";
         }
@@ -603,13 +622,12 @@
             panel.classList.remove('hide');
 
             if (idDep === "4") {
-                // Para canal, el equipo seleccionado en el desplegable es el que cuenta
                 equipoSeleccionadoVisual = { 
                     nombre: idGrupo, 
                     escudo: "/static/escudo_canal.png" 
                 };
                 document.getElementById('btn-guardar').disabled = false;
-                panel.classList.add('hide'); // No mostramos grid porque ya lo hemos elegido en el select
+                panel.classList.add('hide'); 
                 return;
             }
 
@@ -899,7 +917,6 @@
                 const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
                 const esFavorito = esLocalFav || esVisFav;
                 
-                // En Canal, resaltamos con un color azul muy clarito. En ECM, usamos la tarjeta verde.
                 const claseTarjeta = esFavorito 
                     ? (esCanal ? 'card p-3' : 'card p-3 card-favorito') 
                     : 'card p-3';
@@ -954,7 +971,6 @@
                         </div>
                     `;
                 } else {
-                    // Escudos o Círculos según sea Canal
                     let htmlEscLocal = '';
                     let htmlEscVis = '';
 
