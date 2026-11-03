@@ -116,6 +116,14 @@
         .escudo-circulo-sm img { width: 100%; height: 100%; object-fit: contain; }
 
         .card-favorito .vs-badge { background-color: #ffffff !important; color: var(--primary-color) !important; border-color: #ffffff !important; }
+
+        /* ESTILO PARA RECORTAR EL FONDO BLANCO DEL ESCUDO EN LA LISTA PRINCIPAL */
+        .escudo-main-img {
+            border-radius: 50%;
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+        }
     </style>
 </head>
 <body class="pb-20">
@@ -185,8 +193,8 @@
             <div class="flex items-center p-4">
                 <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
                 <div class="flex items-center flex-1">
-                    <div class="w-14 h-14 bg-white rounded-full p-1 shadow-sm mr-4 flex-shrink-0 flex items-center justify-center">
-                        <img id="titulo-detalle-escudo" src="/static/logo.png" class="w-10 h-10 object-contain">
+                    <div class="w-14 h-14 bg-white rounded-full p-1 shadow-sm mr-4 flex-shrink-0 flex items-center justify-center overflow-hidden">
+                        <img id="titulo-detalle-escudo" src="/static/logo.png" class="escudo-main-img">
                     </div>
                     <div class="flex flex-col">
                         <h2 id="titulo-detalle-nombre" class="text-2xl font-black text-white leading-tight"></h2>
@@ -266,6 +274,10 @@
         let cacheResultados = null;
         let cacheClasificacion = null;
         let cacheClasificacionPartidos = null;
+        
+        // NUEVAS CACHÉS PARA EVITAR RECARGAS
+        let cacheProximoPartido = {}; // Guarda el HTML del próximo partido por ID de equipo
+        let cacheEquipoAbiertoId = null; // Guarda qué jugador está abierto actualmente
 
         function acortarNombre(nombre) {
             if (!nombre) return "";
@@ -294,7 +306,11 @@
         function refrescarApp() {
             const icono = document.querySelector('#btn-refresh i');
             icono.classList.add('spin-anim');
-            setTimeout(() => { window.location.reload(); }, 500);
+            cacheProximoPartido = {}; // Limpiamos la caché de próximos partidos
+            setTimeout(() => { 
+                renderizarEquipos(); 
+                icono.classList.remove('spin-anim'); 
+            }, 500);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -352,7 +368,7 @@
             document.getElementById('screen-formulario').classList.add('hide');
             document.getElementById('screen-detalle').classList.add('hide');
             document.getElementById('screen-equipos').classList.remove('hide');
-            renderizarEquipos();
+            renderizarEquipos(); // Ahora es instantáneo gracias a cacheProximoPartido
         }
 
         async function renderizarEquipos() {
@@ -375,11 +391,12 @@
                 div.style.backgroundColor = 'var(--primary-color)';
                 div.onclick = () => abrirEquipo(index);
                 
+                // Recortamos la imagen con la clase escudo-main-img para quitarle el fondo blanco cuadrado
                 div.innerHTML = `
                     <div class="flex items-center justify-between w-full">
                         <div class="flex items-center flex-1">
-                            <div class="w-14 h-14 mr-4 flex items-center justify-center bg-white rounded-full p-1 shadow-sm flex-shrink-0">
-                                ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="w-10 h-10 object-contain">` : '<i class="fas fa-shield-alt text-[#006D6F] text-2xl"></i>'}
+                            <div class="w-14 h-14 mr-4 flex items-center justify-center bg-white rounded-full p-1 shadow-sm flex-shrink-0 overflow-hidden">
+                                ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="escudo-main-img">` : '<i class="fas fa-shield-alt text-[#006D6F] text-2xl"></i>'}
                             </div>
                             <div class="flex flex-col flex-1 min-w-0">
                                 <h3 class="font-black text-xl leading-tight">${eq.nombre}</h3>
@@ -399,7 +416,13 @@
                     <div id="proximo-partido-${eq.id}" class="mt-3 pt-3 border-t border-white/20 w-full text-xs text-white/90"></div>
                 `;
                 contenedor.appendChild(div);
-                cargarProximoPartido(eq, `proximo-partido-${eq.id}`);
+
+                // Si ya tenemos el próximo partido en caché, lo pintamos al instante
+                if (cacheProximoPartido[eq.id]) {
+                    document.getElementById(`proximo-partido-${eq.id}`).innerHTML = cacheProximoPartido[eq.id];
+                } else {
+                    cargarProximoPartido(eq, `proximo-partido-${eq.id}`);
+                }
             }
         }
 
@@ -425,6 +448,7 @@
                     statsHTML = `<div class="mt-2 text-[11px] font-bold bg-black/10 px-2 py-1 rounded inline-block"><i class="fas fa-trophy text-[#D6B25A] mr-1"></i> Posición: ${stats.Posicion} · ${stats.Puntos} puntos</div>`;
                 }
 
+                let htmlFinal = '';
                 if (partido) {
                     const fecha = partido.FechaHora ? partido.FechaHora.split('T')[0].split('-').reverse().join('/') : '';
                     const hora = partido.FechaHora ? partido.FechaHora.split('T')[1].substring(0,5) : '';
@@ -438,7 +462,7 @@
                         mapLink = `<a href="http://maps.apple.com/?daddr=${lat},${lon}" target="_blank" class="ml-2 bg-white/20 hover:bg-white/40 px-2 py-1 rounded text-white font-bold"><i class="fas fa-map-marker-alt text-red-300 mr-1"></i> Ir</a>`;
                     }
 
-                    contenedor.innerHTML = `
+                    htmlFinal = `
                         <div class="flex flex-col gap-1">
                             <div><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div>
                             <div class="font-bold">vs. ${acortarNombre(rival)}</div>
@@ -449,8 +473,12 @@
                         </div>
                     `;
                 } else {
-                    contenedor.innerHTML = `<i class="far fa-calendar-alt mr-1"></i> Jornada ${dataCal.jornada?.NumeroJornada || ''} (Descansa) ${statsHTML}`;
+                    htmlFinal = `<i class="far fa-calendar-alt mr-1"></i> Jornada ${dataCal.jornada?.NumeroJornada || ''} (Descansa) ${statsHTML}`;
                 }
+                
+                contenedor.innerHTML = htmlFinal;
+                cacheProximoPartido[eq.id] = htmlFinal; // GUARDAMOS EN CACHÉ
+
             } catch (e) {
                 contenedor.innerHTML = `No se pudo cargar el próximo partido`;
             }
@@ -458,6 +486,8 @@
 
         function borrarEquipo(index) {
             if (confirm('¿Borrar este equipo?')) {
+                const eq = equipos[index];
+                delete cacheProximoPartido[eq.id]; // Borramos su caché específica
                 equipos.splice(index, 1);
                 localStorage.setItem('equipos_liga', JSON.stringify(equipos));
                 renderizarEquipos();
@@ -591,7 +621,10 @@
             
             if (editandoEquipoId) {
                 const index = equipos.findIndex(e => e.id === editandoEquipoId);
-                if (index !== -1) equipos[index] = equipoData;
+                if (index !== -1) {
+                    delete cacheProximoPartido[equipoData.id]; // Borramos su caché para que se actualice
+                    equipos[index] = equipoData;
+                }
             } else {
                 equipos.push(equipoData);
             }
@@ -601,9 +634,19 @@
             volverInicio();
         }
 
-        // --- NUEVA FUNCIÓN DE APERTURA CON PANTALLA DE CARGA ---
+        // --- LÓGICA DE APERTURA SIN LOADER SI YA ESTÁ EN CACHÉ ---
         async function abrirEquipo(index) {
             equipoActual = equipos[index];
+            
+            // Si ya hemos abierto ESTE MISMO jugador y tenemos sus datos, entramos directo
+            if (cacheEquipoAbiertoId === equipoActual.id && cacheCalendarioGlobal) {
+                document.getElementById('screen-equipos').classList.add('hide');
+                document.getElementById('screen-detalle').classList.remove('hide');
+                cambiarTab('calendario');
+                return;
+            }
+
+            // Si es otro jugador o no hay datos, configuramos la UI y mostramos el loader
             document.getElementById('titulo-detalle-nombre').innerText = equipoActual.nombre;
             document.getElementById('titulo-detalle-categoria').innerText = equipoActual.nombreCompeticion;
             
@@ -617,18 +660,17 @@
                 document.getElementById('carga-escudo').src = '/static/logo.png';
             }
 
-            // Mostramos pantalla de carga
             const pantallaCarga = document.getElementById('pantalla-carga');
             pantallaCarga.classList.remove('oculto');
 
-            // Limpiamos caché
+            // Limpiamos caché de datos
             cacheCalendarioGlobal = null;
             cacheResultados = null;
             cacheClasificacion = null;
             cacheClasificacionPartidos = null;
+            cacheEquipoAbiertoId = equipoActual.id; // Guardamos qué ID está abierto
 
             try {
-                // Descargamos TODO en paralelo con Promise.all para camuflar la latencia
                 const [resCal, resRes, resClasif] = await Promise.all([
                     fetch(`/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}/0`),
                     fetch(`/api/resultados/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`),
@@ -640,14 +682,13 @@
                 cacheClasificacion = await resClasif.json();
                 cacheClasificacionPartidos = cacheResultados; 
                 
-                // Simulamos un poco de tiempo extra (ej. 1 segundo) para que el videojuego de carga sea visible
                 setTimeout(() => {
                     pantallaCarga.classList.add('oculto');
                     document.getElementById('screen-equipos').classList.add('hide');
                     document.getElementById('screen-detalle').classList.remove('hide');
                     actualizarUIJornadas();
                     cambiarTab('calendario');
-                }, 800); // 800ms extra
+                }, 800);
 
             } catch (e) {
                 console.error("Error cargando datos:", e);
@@ -679,13 +720,16 @@
                 cacheResultados = await resRes.json();
                 cacheClasificacion = await resClasif.json();
                 cacheClasificacionPartidos = cacheResultados;
+                
+                // Al refrescar, también limpiamos la caché del próximo partido para este equipo
+                // para que la próxima vez que vayamos a la lista, se actualice
+                delete cacheProximoPartido[equipoActual.id];
 
                 setTimeout(() => {
                     pantallaCarga.classList.add('oculto');
                     icono.classList.remove('spin-anim');
                     actualizarUIJornadas();
                     
-                    // Si estamos en otra pestaña, refrescamos la UI
                     if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
                     if (!document.getElementById('tab-clasificacion').classList.contains('hide')) renderizarClasificacionUI();
                     if (!document.getElementById('tab-calendario').classList.contains('hide')) renderizarCalendarioUI();
@@ -764,9 +808,7 @@
         function renderizarCalendarioUI() {
             const idJornada = document.getElementById('select-jornada').value;
             const contenedor = document.getElementById('lista-calendario');
-            let data = cacheCalendarioGlobal;
             
-            // FILTRO LOCAL DESDE LA CACHÉ (Sin fetch)
             let partidos = cacheResultados.filter(p => p.NumeroJornada == idJornada || p.IdJornada == idJornada);
             
             if (soloMiEquipo) {
