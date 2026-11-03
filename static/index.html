@@ -71,15 +71,19 @@
             border-radius: 50%; animation: spin 1s linear infinite;
         }
         
-        /* NUEVO ESTILO: Escudo redondeado en la pantalla de carga */
-        .loader-juego img {
-            width: 75px; 
-            height: 75px; 
-            object-fit: cover; 
-            border-radius: 50%; 
+        /* NUEVO ESTILO: Círculo blanco perfecto para el escudo */
+        .loader-juego .escudo-wrapper {
+            width: 75px; height: 75px;
             background-color: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+            z-index: 10;
+            animation: pulse 1.5s ease-in-out infinite;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            animation: pulse 1.5s ease-in-out infinite; 
+        }
+        .loader-juego .escudo-wrapper img {
+            width: 100%; height: 100%; object-fit: cover;
         }
         
         @keyframes pulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(0.9); opacity: 0.8; } }
@@ -137,10 +141,12 @@
 </head>
 <body class="pb-20">
 
-    <!-- PANTALLA DE CARGA -->
+    <!-- PANTALLA DE CARGA CORREGIDA -->
     <div id="pantalla-carga" class="oculto">
         <div class="loader-juego mb-6">
-            <img id="carga-escudo" src="/static/logo.png" alt="Escudo">
+            <div class="escudo-wrapper">
+                <img id="carga-escudo" src="/static/logo.png" alt="Escudo">
+            </div>
         </div>
         <h2 class="text-2xl font-black mb-2 tracking-wider">CARGANDO EQUIPO</h2>
         <p class="text-sm text-white/70">Obteniendo calendario, resultados y clasificación...</p>
@@ -223,7 +229,8 @@
             </div>
             
             <div class="flex gap-2 mb-2">
-                <select id="select-jornada" onchange="cargarCalendario()" class="flex-1 p-3 rounded-lg shadow-sm text-sm font-bold" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--primary-color);"></select>
+                <!-- CORREGIDO: Ahora llama a renderizarCalendarioUI() -->
+                <select id="select-jornada" onchange="renderizarCalendarioUI()" class="flex-1 p-3 rounded-lg shadow-sm text-sm font-bold" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--primary-color);"></select>
                 <button onclick="toggleFiltro()" id="btn-filtro" class="px-3 rounded-lg shadow-sm text-sm font-bold border transition" style="background-color: var(--card-bg); border-color: var(--border-color); color: var(--text-main);">
                     <i class="fas fa-filter"></i> Todos
                 </button>
@@ -731,7 +738,6 @@
                 cacheClasificacionPartidos = cacheResultados;
                 
                 // Al refrescar, también limpiamos la caché del próximo partido para este equipo
-                // para que la próxima vez que vayamos a la lista, se actualice
                 delete cacheProximoPartido[equipoActual.id];
 
                 setTimeout(() => {
@@ -795,10 +801,11 @@
             select.innerHTML = '';
             jornadasData.forEach((j, i) => {
                 const selected = (i === indiceSeleccionado) ? 'selected' : '';
-                select.innerHTML += `<option value="${j.Id}" ${selected}>Jornada ${j.NumeroJornada}</option>`;
+                // Usamos NumeroJornada como value para que el filtro de cacheResultados funcione directo
+                select.innerHTML += `<option value="${j.NumeroJornada}" ${selected}>Jornada ${j.NumeroJornada}</option>`;
             });
 
-            if(jornadasData.length > 0) select.value = jornadasData[indiceSeleccionado].Id;
+            if(jornadasData.length > 0) select.value = jornadasData[indiceSeleccionado].NumeroJornada;
         }
 
         function toggleFiltro() {
@@ -815,10 +822,11 @@
         }
 
         function renderizarCalendarioUI() {
-            const idJornada = document.getElementById('select-jornada').value;
+            const numJornada = parseInt(document.getElementById('select-jornada').value);
             const contenedor = document.getElementById('lista-calendario');
             
-            let partidos = cacheResultados.filter(p => p.NumeroJornada == idJornada || p.IdJornada == idJornada);
+            // Filtramos por NumeroJornada (que ahora es el value del select)
+            let partidos = cacheResultados.filter(p => p.NumeroJornada == numJornada);
             
             if (soloMiEquipo) {
                 partidos = partidos.filter(p => p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito);
