@@ -1,264 +1,78 @@
-import requests
-import json
-import time
-import urllib3
 import subprocess
 import os
-import io
-import re
-import pdfplumber
-from bs4 import BeautifulSoup
+import sys
 
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+from extractor_ecm import extraer_ecm
+from extractor_canal import extraer_canal
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-    "Accept": "application/json, text/javascript, */*; q=0.01",
-    "X-Requested-With": "XMLHttpRequest"
-}
-
-os.makedirs("static/escudos", exist_ok=True)
-
-def descargar_escudo(url_escudo):
-    if not url_escudo: return ""
-    url_completa = f"https://juegosdeportivos.ecmadrid.org{url_escudo}" if url_escudo.startswith("/") else url_escudo
-    nombre_archivo = url_completa.split("/")[-1]
-    ruta_local = f"/static/escudos/{nombre_archivo}"
-    ruta_fisica = f"static/escudos/{nombre_archivo}"
+def ejecutar_todo():
+    print("=== INICIANDO EXTRACCIÓN ===")
     
-    if not os.path.exists(ruta_fisica):
-        try:
-            r = requests.get(url_completa, headers=HEADERS, verify=False, timeout=10)
-            if r.status_code == 200:
-                with open(ruta_fisica, "wb") as f:
-                    f.write(r.content)
-        except Exception:
-            return url_escudo
-    return ruta_local
-
-def get_json(url):
+    # 1. Extraer ECM
+ #   try:
+ #       extraer_ecm()
+ #   except Exception as e:
+ #       print(f"❌ Error crítico en ECM: {e}")
+    
+    # 2. Extraer Canal
     try:
-        r = requests.get(url, headers=HEADERS, timeout=15, verify=False)
-        data = r.json()
-        if isinstance(data, str): data = json.loads(data)
-        return data
+        extraer_canal()
     except Exception as e:
-        print(f"Error en la URL: {e}")
-        return None
-
-def extraer_canal():
-    print("\n🚀 Iniciando extracción final de Escuela Canal...")
-    url_base = "https://www.ocioydeportecanal.es"
-    url_evento = f"{url_base}/es/event/view/240702-competicion-escuela-2627"
-    url_api = f"{url_base}/es/matches/loadPublicEventMatchesView/240702"
-    url_pdf = "https://32760c338621fc279e50-75ecfd1a96ffdf4c500d931ef477c188.ssl.cf3.rackcdn.com/56/6e/4e/43/f4/63/74/f2/f2/a7/f9/c4/6a/3d/56/24/6ae9bd2dec243.pdf"
+        print(f"❌ Error crítico en Canal: {e}")
     
-    categorias = {"PB": "Prebenjamín", "B": "Benjamín", "A": "Alevín", "I": "Infantil", "CJ": "Cadete/Juvenil", "C": "Cadete", "J": "Juvenil"}
-
-    def traducir_equipo(codigo):
-        if not codigo: return ""
-        codigo = str(codigo).replace('\n', ' ').strip()
-        match = re.match(r"^([A-Z]{1,2})(\d+)$", codigo)
-        if match: return f"{categorias.get(match.group(1), match.group(1))} {match.group(2)}"
-        return codigo
-
-    def es_equipo_valido(nombre):
-        return any(nombre.startswith(cat) for cat in categorias.values())
-
-    def parsear_fecha_pdf(fecha_str):
-        meses = {"ENERO":"01", "FEBRERO":"02", "MARZO":"03", "ABRIL":"04", "MAYO":"05", "JUNIO":"06", "JULIO":"07", "AGOSTO":"08", "SEPTIEMBRE":"09", "OCTUBRE":"10", "NOVIEMBRE":"11", "DICIEMBRE":"12"}
-        match = re.search(r"(\d+)\s+DE\s+([A-Z]+)", fecha_str.upper())
-        if match:
-            dia = match.group(1).zfill(2)
-            mes = meses.get(match.group(2), "01")
-            anio = "2027" if int(mes) <= 7 else "2026"
-            return f"{anio}-{mes}-{dia}"
-        return "2026-01-01"
-
-    # Cargamos antiguos para detectar cambios
-    partidos_antiguos = {}
-    if os.path.exists("datos_canal.json"):
-        try:
-            with open("datos_canal.json", "r", encoding="utf-8") as f:
-                old_data = json.load(f)
-                for p in old_data.get("partidos", []):
-                    key_old = "_".join(sorted([p.get("EquipoLocal", ""), p.get("EquipoVisitante", "")]))
-                    partidos_antiguos[key_old] = p
-        except Exception:
-            pass
-
-    diccionario_partidos = {}
-    equipos_por_categoria = {}
-
-    # --- 1. WEB ---
-    print("  🌐 Extrayendo de la Web...")
-    session = requests.Session()
-    session.headers.update({"User-Agent": "Mozilla/5.0", "X-Requested-With": "XMLHttpRequest"})
-    res_get = session.get(url_evento, verify=False)
-    csrf = session.cookies.get('oydci_productioncsrf_cookie_oydci_production') or '1869d5817061e74fb3b93b50329802d5'
-
-    for page in range(1, 25):
-        payload = {'csrf_token_oydci_production': csrf, 'date': '', 'idStatus': '-1', 'idCompetition': '0', 'group': '-1', 'day': '-1', 'venuePitch': '0', 'page': str(page)}
-        res = session.post(url_api, data=payload, verify=False)
-        
-        try:
-            soup = BeautifulSoup(res.json().get("page", ""), 'html.parser')
-            partidos_html = soup.select('div.match-round')
-            if not partidos_html: break
-
-            for p in partidos_html:
-                loc_tag = p.select_one('.match-round-team.local .match-round-team-name')
-                vis_tag = p.select_one('.match-round-team.away .match-round-team-name')
-                if not loc_tag or not vis_tag: continue
-                
-                loc, vis = traducir_equipo(loc_tag.text), traducir_equipo(vis_tag.text)
-                if not es_equipo_valido(loc) or not es_equipo_valido(vis): continue
-
-                # AQUI EXTRAEMOS LA JORNADA
-                jornada_tag = p.select_one('.match-round-matchday')
-                num_jornada = 1
-                if jornada_tag:
-                    match_j = re.search(r'(\d+)', jornada_tag.text)
-                    if match_j: num_jornada = int(match_j.group(1))
-
-                fecha_tag = p.find_parent('div', class_='matches-round')
-                fecha = fecha_tag.get('data-day', '') if fecha_tag else ""
-                if fecha.startswith("2025") or fecha.startswith("2024") or not fecha: continue
-
-                scoreboard = p.select('.match-round-scoreboard span')
-                rl, rv = 0, 0
-                if len(scoreboard) >= 3:
-                    try: rl, rv = int(scoreboard[0].text.strip()), int(scoreboard[2].text.strip())
-                    except: pass
-                
-                key = "_".join(sorted([loc, vis]))
-                diccionario_partidos[key] = {
-                    "NumeroJornada": num_jornada, # GUARDAMOS LA JORNADA
-                    "FechaHora": f"{fecha}T12:00:00", "Campo": "Campo",
-                    "EquipoLocal": loc, "EquipoVisitante": vis,
-                    "URLEscudoEquipoLocal": "/static/escudo_canal.png", "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-                    "ResultadoEquipoLocal": rl, "ResultadoEquipoVisitante": rv,
-                    "Cambio": False
-                }
-                
-                cat_loc = loc.split(' ')[0]
-                if cat_loc not in equipos_por_categoria: equipos_por_categoria[cat_loc] = set()
-                equipos_por_categoria[cat_loc].add(loc)
-                equipos_por_categoria[cat_loc].add(vis)
-        except Exception:
-            break
-
-    # --- 2. PDF ---
-    print("  📄 Procesando PDF...")
-    try:
-        response_pdf = requests.get(url_pdf, verify=False, timeout=15)
-        with pdfplumber.open(io.BytesIO(response_pdf.content)) as pdf:
-            for page in pdf.pages[1:]:
-                tables = page.extract_tables() or page.extract_tables({"vertical_strategy": "text", "horizontal_strategy": "text"})
-                for tabla in tables:
-                    if len(tabla) < 5 or not any("LIGA INTERNA" in str(c) for fila in tabla[:4] for c in fila if c): continue
-                    
-                    fecha_cruda = next((str(c).replace('\n', ' ') for c in tabla[0] if c), "")
-                    fecha_iso = parsear_fecha_pdf(fecha_cruda)
-                    if fecha_iso == "2026-01-01": continue
-
-                    for fila in tabla:
-                        if not fila[0] or "-" not in str(fila[0]): continue
-                        hora = str(fila[0]).split('-')[0].strip()
-                        
-                        equipos_en_fila = [str(c).strip() for c in fila if c and re.match(r"^[A-Z]{1,2}\d+$", str(c).strip())]
-                        for i in range(0, len(equipos_en_fila), 2):
-                            if i + 1 < len(equipos_en_fila):
-                                loc = traducir_equipo(equipos_en_fila[i])
-                                vis = traducir_equipo(equipos_en_fila[i+1])
-                                if not es_equipo_valido(loc) or not es_equipo_valido(vis): continue
-                                
-                                campo_num = (i // 2) + 1
-                                key = "_".join(sorted([loc, vis]))
-                                if key in diccionario_partidos:
-                                    diccionario_partidos[key]["FechaHora"] = f"{fecha_iso}T{hora}:00"
-                                    diccionario_partidos[key]["Campo"] = f"Campo {campo_num}"
-    except Exception as e:
-        print(f"    ❌ Error PDF: {e}")
-
-    # --- 3. COMPARACIÓN DE CAMBIOS ---
-    print("  🔍 Comparando cambios...")
-    for key, p in diccionario_partidos.items():
-        if key in partidos_antiguos:
-            old_p = partidos_antiguos[key]
-            if old_p.get("FechaHora") != p["FechaHora"] or old_p.get("Campo") != p["Campo"]:
-                p["Cambio"] = True
-
-    # --- 4. CÁLCULO DE CLASIFICACIONES ---
-    print("  📊 Calculando Clasificaciones...")
-    clasificaciones = {}
-    for cat, eqs in equipos_por_categoria.items():
-        tabla = {eq: {"NombreEquipo": eq, "URLEscudo": "/static/escudo_canal.png", "PJ": 0, "PG": 0, "PE": 0, "PP": 0, "GF": 0, "GC": 0, "Puntos": 0} for eq in eqs}
-        
-        for p in diccionario_partidos.values():
-            loc = p["EquipoLocal"]
-            vis = p["EquipoVisitante"]
-            if loc in tabla and vis in tabla and (p["ResultadoEquipoLocal"] > 0 or p["ResultadoEquipoVisitante"] > 0):
-                rl, rv = p["ResultadoEquipoLocal"], p["ResultadoEquipoVisitante"]
-                tabla[loc]["PJ"] += 1; tabla[vis]["PJ"] += 1
-                tabla[loc]["GF"] += rl; tabla[loc]["GC"] += rv
-                tabla[vis]["GF"] += rv; tabla[vis]["GC"] += rl
-                
-                if rl > rv:
-                    tabla[loc]["Puntos"] += 3; tabla[loc]["PG"] += 1; tabla[vis]["PP"] += 1
-                elif rv > rl:
-                    tabla[vis]["Puntos"] += 3; tabla[vis]["PG"] += 1; tabla[loc]["PP"] += 1
-                else:
-                    tabla[loc]["Puntos"] += 1; tabla[vis]["Puntos"] += 1
-                    tabla[loc]["PE"] += 1; tabla[vis]["PE"] += 1
-                    
-        lista_tabla = list(tabla.values())
-        lista_tabla.sort(key=lambda x: (x["Puntos"], x["GF"] - x["GC"], x["GF"]), reverse=True)
-        for i, eq in enumerate(lista_tabla): eq["Posicion"] = i + 1
-        clasificaciones[cat] = lista_tabla
-
-    # --- 5. GUARDAR ---
-    partidos_finales = sorted(diccionario_partidos.values(), key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
-    equipos_finales = {k: sorted(list(v)) for k, v in equipos_por_categoria.items()}
-    
-    datos_canal = {
-        "equipos": equipos_finales,
-        "partidos": partidos_finales,
-        "clasificacion": clasificaciones
-    }
-    
-    with open("datos_canal.json", "w", encoding="utf-8") as f:
-        json.dump(datos_canal, f, ensure_ascii=False, indent=2)
-        
-    print(f"✅ Escuela Canal finalizada: {len(partidos_finales)} partidos y {len(equipos_finales)} categorías.")
-
-def extraer_todo():
-    print("🚀 Iniciando extracción de ECMADRID...")
-    # [Tu código de ECMADRID aquí sin tocar]
-    # ...
-    
-    extraer_canal()
-    
-    # --- SUBIR A GITHUB ---
-    print("🚀 Comprobando cambios para subir a GitHub...")
+    # 3. Subir a GitHub de forma segura y transparente
+    print("\n🚀 Comprobando cambios para subir a GitHub...")
     try:
         subprocess.run(["git", "config", "user.email", "bot@ligafutbol.com"], check=True)
         subprocess.run(["git", "config", "user.name", "LigaFutbol Bot"], check=True)
-        subprocess.run(["git", "pull", "origin", "main", "--no-rebase"], check=False)
-        subprocess.run(["git", "add", "datos_liga.json"], check=True)
-        subprocess.run(["git", "add", "datos_canal.json"], check=True)
-        subprocess.run(["git", "add", "static/escudos"], check=True)
+        
+        # Añadimos TODO (incluyendo archivos nuevos como extractor_canal.py)
+        subprocess.run(["git", "add", "-A"], check=True)
         
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
+        
         if status.stdout.strip():
-            subprocess.run(["git", "commit", "-m", "Actualización de datos y escudos"], check=True)
-            subprocess.run(["git", "push", "origin", "main"], check=True)
-            print("✅ ¡Todo subido a GitHub! Render se actualizará.")
+            # Intentamos hacer commit y mostramos el error si falla
+            commit_result = subprocess.run(
+                ["git", "commit", "-m", "Actualización de datos y escudos"],
+                capture_output=True, text=True, check=False
+            )
+            if commit_result.returncode != 0:
+                print("❌ El commit ha fallado. Detalle:")
+                print(commit_result.stdout)
+                print(commit_result.stderr)
+                return
+            
+            print("✅ Commit realizado correctamente.")
+            
+            # Pull seguro con autostash
+            pull_result = subprocess.run(
+                ["git", "pull", "origin", "main", "--rebase", "--autostash"],
+                capture_output=True, text=True, check=False
+            )
+            
+            if pull_result.returncode == 0:
+                push_result = subprocess.run(
+                    ["git", "push", "origin", "main"],
+                    capture_output=True, text=True, check=False
+                )
+                if push_result.returncode == 0:
+                    print("✅ ¡Todo subido a GitHub! Render se actualizará.")
+                else:
+                    print("❌ Error al hacer push:")
+                    print(push_result.stdout)
+                    print(push_result.stderr)
+            else:
+                print("⚠️ No se pudo hacer pull. Detalle:")
+                print(pull_result.stdout)
+                print(pull_result.stderr)
+                subprocess.run(["git", "rebase", "--abort"], check=False)
         else:
-            subprocess.run(["git", "commit", "--allow-empty", "-m", "Comprobación diaria: Sin cambios"], check=True)
-            subprocess.run(["git", "push", "origin", "main"], check=True)
+            print("ℹ️ No hay cambios en los datos.")
+            
     except Exception as e:
         print(f"❌ Error inesperado al subir a GitHub: {e}")
+        subprocess.run(["git", "rebase", "--abort"], check=False)
 
 if __name__ == "__main__":
-    extraer_todo()
+    ejecutar_todo()
