@@ -38,21 +38,27 @@ def extraer_canal():
             return f"{anio}-{mes}-{dia}"
         return "2026-01-01"
 
-    # NUEVO: Función blindada para obtener el resultado real de un partido "no presentado"
     def obtener_resultado_detalle(url_detalle, session):
         try:
             res = session.get(url_detalle, verify=False, timeout=10)
             if res.status_code == 200:
-                # Buscamos patrones como "0 - 3" (solo 1 o 2 dígitos para evitar fechas como 2026-11)
-                matches = re.findall(r'(\d{1,2})\s*-\s*(\d{1,2})', res.text)
+                soup_detalle = BeautifulSoup(res.text, 'html.parser')
+                
+                # 1. Buscamos el marcador en las clases típicas
+                score_div = soup_detalle.select_one('.match-score, .score, .result, .match-result')
+                if score_div:
+                    match_res = re.findall(r'(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)', score_div.text.strip())
+                    if match_res:
+                        return int(match_res[0][0]), int(match_res[0][1])
+                
+                # 2. Si no, buscamos en todo el texto pero con el regex seguro
+                matches = re.findall(r'(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)', soup_detalle.text)
                 if matches:
-                    rl, rv = matches[0]
-                    return int(rl), int(rv)
+                    return int(matches[0][0]), int(matches[0][1])
         except Exception:
             pass
         return 0, 0
 
-    # Cargar datos antiguos para comparar y ver si hay cambios
     partidos_antiguos = {}
     if os.path.exists("datos_canal.json"):
         try:
@@ -100,7 +106,6 @@ def extraer_canal():
                 fecha = fecha_tag.get('data-day', '') if fecha_tag else ""
                 if fecha.startswith("2025") or fecha.startswith("2024") or not fecha: continue
 
-                # --- LÓGICA DE "NO PRESENTADO" ---
                 if 'missing-team' in p.get('class', []):
                     enlace_tag = p.select_one('a.link-encapsulated')
                     if enlace_tag and enlace_tag.get('href'):
@@ -183,7 +188,6 @@ def extraer_canal():
         for p in diccionario_partidos.values():
             loc = p["EquipoLocal"]
             vis = p["EquipoVisitante"]
-            # Ahora que los "no presentados" tienen goles reales, esta condición los contará
             if loc in tabla and vis in tabla and (p["ResultadoEquipoLocal"] > 0 or p["ResultadoEquipoVisitante"] > 0):
                 rl, rv = p["ResultadoEquipoLocal"], p["ResultadoEquipoVisitante"]
                 tabla[loc]["PJ"] += 1; tabla[vis]["PJ"] += 1
