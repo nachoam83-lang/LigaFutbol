@@ -62,20 +62,15 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
         
-        # Filtramos por categoría (ej. "Benjamín")
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
         
-        # Leemos el NumeroJornada que YA viene guardado del extractor
         for p in partidos:
             p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-            p["NumeroJornada"] = int(p.get("NumeroJornada", 0))
+            p["NumeroJornada"] = int(p.get("NumeroJornada", 1))
             
         partidos.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
 
-        jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos if p["NumeroJornada"] > 0)))
-        # Si por un casual no hay jornadas, evitamos que falle
-        if not jornadas_nums and len(partidos) > 0: jornadas_nums = [1]
-
+        jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos)))
         lista_jornadas = [{"NumeroJornada": j, "Id": j} for j in jornadas_nums]
 
         return {
@@ -112,7 +107,7 @@ def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_g
         
         for p in partidos:
             p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-            p["NumeroJornada"] = int(p.get("NumeroJornada", 0))
+            p["NumeroJornada"] = int(p.get("NumeroJornada", 1))
             
         return sorted(partidos, key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
 
