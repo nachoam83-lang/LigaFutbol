@@ -8,22 +8,37 @@ import os
 
 app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
-
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def read_index():
     return FileResponse("static/index.html")
 
+def cargar_datos_con_backup(nombre_archivo, nombre_backup, default_vacio):
+    if os.path.exists(nombre_archivo):
+        try:
+            with open(nombre_archivo, "r", encoding="utf-8") as f:
+                datos = json.load(f)
+                if datos and len(datos.get("partidos", [])) > 0:
+                    return datos
+        except Exception:
+            pass
+            
+    print(f"⚠️ Usando backup para {nombre_archivo}")
+    if os.path.exists(nombre_backup):
+        try:
+            with open(nombre_backup, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+            
+    return default_vacio
+
 def cargar_datos():
-    if not os.path.exists("datos_liga.json"): return None
-    with open("datos_liga.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+    return cargar_datos_con_backup("datos_liga.json", "datos_liga_backup.json", None)
 
 def cargar_datos_canal():
-    if not os.path.exists("datos_canal.json"): return {"equipos": {}, "partidos": [], "clasificacion": {}}
-    with open("datos_canal.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+    return cargar_datos_con_backup("datos_canal.json", "datos_canal_backup.json", {"equipos": {}, "partidos": [], "clasificacion": {}})
 
 def corregir_anio(fecha_str):
     if not fecha_str or len(fecha_str) < 7: return fecha_str
@@ -33,9 +48,7 @@ def corregir_anio(fecha_str):
         else: return "2026" + fecha_str[4:]
     except: return fecha_str
 
-# --- LÓGICA DE JORNADAS PARA CANAL ---
 def calcular_jornadas_canal(partidos, categoria):
-    # 1. Mapa manual de fechas a jornadas base
     mapa_fechas = {
         "2026-09-26": 1, "2026-10-03": 1,
         "2026-10-10": 2, "2026-10-17": 2,
@@ -50,63 +63,52 @@ def calcular_jornadas_canal(partidos, categoria):
         "2027-02-20": 11
     }
 
-    # 2. Preparar partidos
     for p in partidos:
         p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
         p["Fecha"] = p["FechaHora"].split("T")[0]
         p["JornadaBase"] = mapa_fechas.get(p["Fecha"], 99)
         p["Descolgado"] = False
-        p["NumeroJornada"] = p["JornadaBase"] # <--- ASIGNAMOS EL NÚMERO BASE
+        p["NumeroJornada"] = p["JornadaBase"]
 
     partidos.sort(key=lambda x: (x["JornadaBase"], x["FechaHora"]))
-
-    # 3. Obtener equipos
     equipos = set()
     for p in partidos:
         equipos.add(p["EquipoLocal"])
         equipos.add(p["EquipoVisitante"])
 
-    # 4. Asignación por jornadas
     jornadas_finales = {j: [] for j in range(1, 12)}
     descolgados = []
 
     for j in range(1, 12):
         partidos_j = [p for p in partidos if p["JornadaBase"] == j]
         partidos_j.sort(key=lambda x: x["FechaHora"])
-        
         equipos_jugando = set()
         
         for p in partidos_j:
             loc = p["EquipoLocal"]
             vis = p["EquipoVisitante"]
-            
             if loc not in equipos_jugando and vis not in equipos_jugando:
                 equipos_jugando.add(loc)
                 equipos_jugando.add(vis)
-                p["NumeroJornada"] = j # <--- ACTUALIZAMOS A LA JORNADA REAL
+                p["NumeroJornada"] = j
                 jornadas_finales[j].append(p)
             else:
                 p["Descolgado"] = True
-                p["NumeroJornada"] = j # Se queda en su jornada base
+                p["NumeroJornada"] = j
                 descolgados.append(p)
                 jornadas_finales[j].append(p)
 
-    # 5. Crear la Jornada 12 (*) con COPIA de los descolgados
     if descolgados:
         jornadas_finales[12] = []
         for p in descolgados:
             p_copia = p.copy()
-            p_copia["NumeroJornada"] = 12 # <--- ASIGNAMOS LA J12 A LA COPIA
+            p_copia["NumeroJornada"] = 12
             jornadas_finales[12].append(p_copia)
 
-    # 6. Aplanar la lista de partidos para devolverla
     partidos_finales = []
     for j in sorted(jornadas_finales.keys()):
         partidos_finales.extend(jornadas_finales[j])
-
     return partidos_finales, jornadas_finales
-
-# --- ENDPOINTS ---
 
 @app.get("/api/competiciones/{id_deporte}")
 def get_competiciones(id_deporte: str):
@@ -135,17 +137,10 @@ def get_equipos_canal():
 def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_grupo: str, id_jornada: str):
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
-        
-        # Filtramos por categoría
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
-        
-        # Aplicamos la nueva lógica
         partidos_finales, jornadas_dict = calcular_jornadas_canal(partidos, id_categoria)
-        
-        # Generar la lista de jornadas para el desplegable
         jornadas_nums = sorted(list(jornadas_dict.keys()))
         lista_jornadas = [{"NumeroJornada": j, "Id": j} for j in jornadas_nums]
-
         return {
             "jornadas": lista_jornadas,
             "jornada": {
@@ -159,9 +154,7 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
     key = f"{id_deporte}_{id_competicion}_{id_categoria}_{id_grupo}"
     calendario_guardado = datos["calendario"].get(key)
     if not calendario_guardado: return {"jornada": {"Enfrentamientos": []}, "jornadas": []}
-        
     if id_jornada == "0": return calendario_guardado
-        
     jornadas = calendario_guardado.get("jornadas", [])
     for j in jornadas:
         if str(j.get("Id")) == id_jornada:
@@ -169,20 +162,14 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
             j_custom = j.copy()
             j_custom["Enfrentamientos"] = enfrentamientos
             return {"jornada": j_custom, "jornadas": jornadas}
-            
     return calendario_guardado
 
 @app.get("/api/resultados/{id_deporte}/{id_competicion}/{id_categoria}/{id_grupo}")
 def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_grupo: str):
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
-        
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
-        
-        # Aplicamos la nueva lógica
         partidos_finales, _ = calcular_jornadas_canal(partidos, id_categoria)
-        
-        # Para resultados, ordenamos por JornadaBase y Fecha para que salgan agrupados correctamente
         partidos_finales.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
         return partidos_finales
 
@@ -196,7 +183,6 @@ def get_clasificacion(id_deporte: str, id_competicion: str, id_categoria: str, i
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
         return datos_canal.get("clasificacion", {}).get(id_categoria, [])
-        
     datos = cargar_datos()
     if not datos: return []
     key = f"{id_deporte}_{id_competicion}_{id_categoria}_{id_grupo}"
@@ -215,11 +201,9 @@ def get_ics(titulo: str, fecha: str, lugar: str, deporte: str = "2"):
             hora_fin_evento = hora_inicio_evento + timedelta(minutes=105)
             tipo_campo = "Exterior" if ("EXTERIOR" in lugar.upper() or "AIRE LIBRE" in lugar.upper()) else "Pabellón"
             descripcion = f"Convocatoria 30 min antes.\\nEl partido comienza a las {fecha_dt.strftime('%H:%M')}h.\\nCampo: {tipo_campo}."
-
         dtstart = hora_inicio_evento.strftime("%Y%m%dT%H%M%S")
         dtend = hora_fin_evento.strftime("%Y%m%dT%H%M%S")
     except Exception:
         return Response(status_code=400, content="Fecha inválida")
-
     ics_content = f"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//LigaFutbol//ES\r\nBEGIN:VEVENT\r\nSUMMARY:{titulo}\r\nDTSTART:{dtstart}\r\nDTEND:{dtend}\r\nLOCATION:{lugar}\r\nDESCRIPTION:{descripcion}\r\nEND:VEVENT\r\nEND:VCALENDAR"
     return Response(content=ics_content, media_type="text/calendar", headers={"Content-Disposition": "attachment; filename=partido.ics"})
