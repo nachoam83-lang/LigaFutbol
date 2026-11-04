@@ -61,18 +61,36 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
         
-        # Filtramos por categoría (ej. "Benjamín")
+        # 1. Filtramos por categoría
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
         
-        # Corregimos el año y aseguramos que NumeroJornada sea un entero
+        # 2. Corregimos años
         for p in partidos:
             p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-            p["NumeroJornada"] = int(p.get("NumeroJornada", 1))
             
-        # Ordenamos estrictamente por Jornada y Fecha
+        # 3. ORDENAMOS ESTRICTAMENTE POR FECHA Y HORA
+        partidos.sort(key=lambda x: x["FechaHora"])
+        
+        # 4. APLICAMOS TU LÓGICA DE DEDUPLICACIÓN CRONOLÓGICA
+        current_jornada = 1
+        teams_in_current = set()
+        
+        for p in partidos:
+            loc = p["EquipoLocal"]
+            vis = p["EquipoVisitante"]
+            
+            # Si alguno de los equipos ya ha jugado en esta jornada, avanzamos a la siguiente
+            if loc in teams_in_current or vis in teams_in_current:
+                current_jornada += 1
+                teams_in_current.clear()
+                
+            p["NumeroJornada"] = current_jornada
+            teams_in_current.add(loc)
+            teams_in_current.add(vis)
+            
+        # 5. Volvemos a ordenar por la nueva Jornada asignada
         partidos.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
 
-        # Sacamos la lista de jornadas únicas que existen en el JSON
         jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos)))
         lista_jornadas = [{"NumeroJornada": j, "Id": j} for j in jornadas_nums]
 
@@ -111,7 +129,23 @@ def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_g
         
         for p in partidos:
             p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-            p["NumeroJornada"] = int(p.get("NumeroJornada", 1))
+            
+        partidos.sort(key=lambda x: x["FechaHora"])
+        
+        current_jornada = 1
+        teams_in_current = set()
+        
+        for p in partidos:
+            loc = p["EquipoLocal"]
+            vis = p["EquipoVisitante"]
+            
+            if loc in teams_in_current or vis in teams_in_current:
+                current_jornada += 1
+                teams_in_current.clear()
+                
+            p["NumeroJornada"] = current_jornada
+            teams_in_current.add(loc)
+            teams_in_current.add(vis)
             
         return sorted(partidos, key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
 
