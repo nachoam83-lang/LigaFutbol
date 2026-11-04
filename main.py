@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from datetime import datetime, timedelta
+from functools import lru_cache
 import json
 import os
 
@@ -14,31 +15,38 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 def read_index():
     return FileResponse("static/index.html")
 
-def cargar_datos_con_backup(nombre_archivo, nombre_backup, default_vacio):
-    if os.path.exists(nombre_archivo):
-        try:
-            with open(nombre_archivo, "r", encoding="utf-8") as f:
-                datos = json.load(f)
-                if datos and len(datos.get("partidos", [])) > 0:
-                    return datos
-        except Exception:
-            pass
-            
-    print(f"⚠️ Usando backup para {nombre_archivo}")
-    if os.path.exists(nombre_backup):
-        try:
-            with open(nombre_backup, "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
-            pass
-            
-    return default_vacio
+# --- CACHÉ EN RAM ---
+@lru_cache(maxsize=1)
+def _leer_json_liga():
+    if not os.path.exists("datos_liga.json"): return None
+    with open("datos_liga.json", "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@lru_cache(maxsize=1)
+def _leer_json_canal():
+    if not os.path.exists("datos_canal.json"): return {"equipos": {}, "partidos": [], "clasificacion": {}}
+    with open("datos_canal.json", "r", encoding="utf-8") as f:
+        return json.load(f)
 
 def cargar_datos():
-    return cargar_datos_con_backup("datos_liga.json", "datos_liga_backup.json", None)
+    datos = _leer_json_liga()
+    # Comprobación para ECM: si no hay datos o está vacío, tira del backup
+    if not datos or not datos.get("competiciones"):
+        print("⚠️ Usando backup para datos_liga.json")
+        if os.path.exists("datos_liga_backup.json"):
+            with open("datos_liga_backup.json", "r", encoding="utf-8") as f:
+                return json.load(f)
+    return datos
 
 def cargar_datos_canal():
-    return cargar_datos_con_backup("datos_canal.json", "datos_canal_backup.json", {"equipos": {}, "partidos": [], "clasificacion": {}})
+    datos = _leer_json_canal()
+    # Comprobación para Canal: si no hay partidos, tira del backup
+    if not datos or len(datos.get("partidos", [])) == 0:
+        print("⚠️ Usando backup para datos_canal.json")
+        if os.path.exists("datos_canal_backup.json"):
+            with open("datos_canal_backup.json", "r", encoding="utf-8") as f:
+                return json.load(f)
+    return datos
 
 def corregir_anio(fecha_str):
     if not fecha_str or len(fecha_str) < 7: return fecha_str
