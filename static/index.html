@@ -158,7 +158,6 @@
                 <button onclick="cerrarBanner()" class="text-red-700 hover:text-red-900 ml-2"><i class="fas fa-times text-lg"></i></button>
             </div>
             <div class="flex gap-2 mb-2">
-                <!-- DESPLEGABLE CON ESTILO DE ETIQUETA -->
                 <select id="select-jornada" onchange="renderizarCalendarioUI()" class="flex-1 p-3 rounded-full shadow-md text-sm font-black uppercase tracking-widest text-white text-center appearance-none" style="background-color: var(--primary-color); border: none; outline: none;"></select>
                 <button onclick="toggleFiltro()" id="btn-filtro" class="px-3 rounded-lg shadow-sm text-sm font-bold border transition" style="background-color: var(--card-bg); border-color: var(--border-color); color: var(--text-main);"><i class="fas fa-filter"></i> Todos</button>
             </div>
@@ -219,12 +218,6 @@
         
         function esCampoExterior(p) { const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase(); return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')); }
         function isCanal() { return equipoActual && equipoActual.idDeporte === "4"; }
-
-        function getPos(nombreEquipo) {
-            if (!cacheClasificacion || !Array.isArray(cacheClasificacion)) return "";
-            const eq = cacheClasificacion.find(c => c.NombreEquipo === nombreEquipo);
-            return eq ? ` (Pos. ${eq.Posicion})` : "";
-        }
 
         function refrescarApp() { const icono = document.querySelector('#btn-refresh i'); icono.classList.add('spin-anim'); cacheProximoPartido = {}; setTimeout(() => { renderizarEquipos(); icono.classList.remove('spin-anim'); }, 500); }
         
@@ -313,7 +306,6 @@
                             <div class="flex flex-col flex-1 min-w-0">
                                 <h3 class="font-black text-2xl leading-tight">${eq.nombre}</h3>
                                 <p class="text-sm text-white/90 font-bold uppercase tracking-wider mt-1">${eq.nombreCompeticion}</p>
-                                <!-- NOMBRE DEL EQUIPO SIEMPRE EN DORADO -->
                                 <p class="text-base font-black text-[#D6B25A] tracking-wide mt-1 pr-2">${acortarNombre(eq.equipoFavorito)}</p>
                                 <div id="posicion-${eq.id}" class="text-xs font-bold text-white/80 mt-1"></div>
                             </div>
@@ -742,9 +734,9 @@
                             </div>
                         </div>`;
                 } else {
-                    // LOCAL BLANCO / VISITANTE AZUL (CANAL)
+                    // LOCAL BLANCO / VISITANTE AZUL 30% (CANAL)
                     let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
-                    let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
+                    let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                     
                     let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                     let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
@@ -755,7 +747,7 @@
                             <div class="flex justify-between items-center w-full my-2">
                                 <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}</div></div>
                                 <div class="px-2 flex flex-col items-center justify-center h-10"><span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span></div>
-                                <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}${getPos(p.EquipoVisitante)}</div></div>
+                                <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}</div></div>
                             </div>
                             <div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: #f87171;"></i><span>${htmlMapa}</span></div>
                             ${botonesExtra}
@@ -802,9 +794,9 @@
                                 </div>
                             </div>`;
                     } else {
-                        // LOCAL BLANCO / VISITANTE AZUL (CANAL)
+                        // LOCAL BLANCO / VISITANTE AZUL 30% (CANAL)
                         let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
-                        let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
+                        let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                         
                         let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                         let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
@@ -814,7 +806,7 @@
                                 <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
                                     <div class="text-[13px] ${classLocal} text-center">${acortarNombre(p.EquipoLocal)}</div>
                                     <div class="text-xs px-1" style="color: var(--text-sec);">-</div>
-                                    <div class="text-[13px] ${classVis} text-center">${acortarNombre(p.EquipoVisitante)}${getPos(p.EquipoVisitante)}</div>
+                                    <div class="text-[13px] ${classVis} text-center">${acortarNombre(p.EquipoVisitante)}</div>
                                 </div>
                                 <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
                                     <div class="w-12 flex justify-end">${htmlEscLocal}</div>
