@@ -44,20 +44,21 @@ def extraer_canal():
             if res.status_code == 200:
                 soup_detalle = BeautifulSoup(res.text, 'html.parser')
                 
-                # 1. Buscamos el marcador en las clases típicas
                 score_div = soup_detalle.select_one('.match-score, .score, .result, .match-result')
                 if score_div:
                     match_res = re.findall(r'(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)', score_div.text.strip())
                     if match_res:
                         return int(match_res[0][0]), int(match_res[0][1])
                 
-                # 2. Si no, buscamos en todo el texto pero con el regex seguro
                 matches = re.findall(r'(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)', soup_detalle.text)
                 if matches:
                     return int(matches[0][0]), int(matches[0][1])
         except Exception:
             pass
-        return 0, 0
+        
+        # PARCHE DE SEGURIDAD: Si es missing-team y no encontramos marcador, forzamos 0-3
+        print("       -> No se encontró marcador. Asignando 0-3 por defecto.")
+        return 0, 3
 
     partidos_antiguos = {}
     if os.path.exists("datos_canal.json"):
@@ -113,7 +114,7 @@ def extraer_canal():
                         rl, rv = obtener_resultado_detalle(url_detalle, session)
                         print(f"    🏳️ Partido no presentado: {loc} vs {vis}. Resultado asignado: {rl}-{rv}")
                     else:
-                        rl, rv = 0, 0
+                        rl, rv = 0, 3 # Si no hay enlace, asumimos 0-3
                 else:
                     scoreboard = p.select('.match-round-scoreboard span')
                     rl, rv = 0, 0

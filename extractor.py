@@ -9,10 +9,10 @@ def ejecutar_todo():
     print("=== INICIANDO EXTRACCIÓN ===")
     
     # 1. Extraer ECM
-  #  try:
-  #      extraer_ecm()
-  #  except Exception as e:
-  #      print(f"❌ Error crítico en ECM: {e}")
+    try:
+        extraer_ecm()
+    except Exception as e:
+        print(f"❌ Error crítico en ECM: {e}")
     
     # 2. Extraer Canal
     try:
