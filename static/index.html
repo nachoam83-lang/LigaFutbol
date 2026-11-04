@@ -367,10 +367,11 @@
                     const fecha = partido.FechaHora ? partido.FechaHora.split('T')[0].split('-').reverse().join('/') : '';
                     const hora = partido.FechaHora ? partido.FechaHora.split('T')[1].substring(0,5) : '';
                     const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
+                    // AQUÍ ESTÁ EL CAMBIO: text-lg font-normal
                     htmlFinal = `
                         <div class="flex flex-col gap-1">
                             <div class="text-lg font-bold"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div>
-                            <div class="text-xl font-black">vs. ${acortarNombre(rival)}${rivalPos}</div>
+                            <div class="text-lg font-normal">vs. ${acortarNombre(rival)}${rivalPos}</div>
                         </div>`;
                 }
 
@@ -825,11 +826,10 @@
             if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
 
             function calcularRacha(nombreEquipo) {
-                // FILTRO AÑADIDO: Ignoramos los partidos que pertenecen a la Jornada 12 (*)
                 const partidosEquipo = todosLosPartidos.filter(p => 
                     (p.EquipoLocal === nombreEquipo || p.EquipoVisitante === nombreEquipo) && 
                     (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) &&
-                    p.NumeroJornada !== 12 // <--- Evita contar el partido duplicado
+                    p.NumeroJornada !== 12
                 ).sort((a, b) => a.NumeroJornada - b.NumeroJornada);
                 
                 const ultimos5 = partidosEquipo.slice(-5);
