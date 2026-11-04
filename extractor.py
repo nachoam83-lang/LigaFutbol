@@ -75,7 +75,7 @@ def extraer_canal():
             return f"{anio}-{mes}-{dia}"
         return "2026-01-01"
 
-    # Cargamos los partidos antiguos para comparar y detectar cambios
+    # Cargamos antiguos para detectar cambios
     partidos_antiguos = {}
     if os.path.exists("datos_canal.json"):
         try:
@@ -90,7 +90,7 @@ def extraer_canal():
     diccionario_partidos = {}
     equipos_por_categoria = {}
 
-    # --- 1. WEB (Extrae Jornada Real y Resultados) ---
+    # --- 1. WEB ---
     print("  🌐 Extrayendo de la Web...")
     session = requests.Session()
     session.headers.update({"User-Agent": "Mozilla/5.0", "X-Requested-With": "XMLHttpRequest"})
@@ -114,6 +114,7 @@ def extraer_canal():
                 loc, vis = traducir_equipo(loc_tag.text), traducir_equipo(vis_tag.text)
                 if not es_equipo_valido(loc) or not es_equipo_valido(vis): continue
 
+                # AQUI EXTRAEMOS LA JORNADA
                 jornada_tag = p.select_one('.match-round-matchday')
                 num_jornada = 1
                 if jornada_tag:
@@ -132,12 +133,12 @@ def extraer_canal():
                 
                 key = "_".join(sorted([loc, vis]))
                 diccionario_partidos[key] = {
-                    "NumeroJornada": num_jornada,
+                    "NumeroJornada": num_jornada, # GUARDAMOS LA JORNADA
                     "FechaHora": f"{fecha}T12:00:00", "Campo": "Campo",
-                    "EquipoLocal": loc, "EquipoVisitante": vis, 
+                    "EquipoLocal": loc, "EquipoVisitante": vis,
                     "URLEscudoEquipoLocal": "/static/escudo_canal.png", "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
                     "ResultadoEquipoLocal": rl, "ResultadoEquipoVisitante": rv,
-                    "Cambio": False # Inicializamos sin cambios
+                    "Cambio": False
                 }
                 
                 cat_loc = loc.split(' ')[0]
@@ -147,7 +148,7 @@ def extraer_canal():
         except Exception:
             break
 
-    # --- 2. PDF (Extrae Horas y Campos Futuros) ---
+    # --- 2. PDF ---
     print("  📄 Procesando PDF...")
     try:
         response_pdf = requests.get(url_pdf, verify=False, timeout=15)
@@ -181,16 +182,12 @@ def extraer_canal():
         print(f"    ❌ Error PDF: {e}")
 
     # --- 3. COMPARACIÓN DE CAMBIOS ---
-    print("  🔍 Comparando cambios con extracciones anteriores...")
-    cambios_detectados = 0
+    print("  🔍 Comparando cambios...")
     for key, p in diccionario_partidos.items():
         if key in partidos_antiguos:
             old_p = partidos_antiguos[key]
-            # Si la fecha/hora o el campo han cambiado, marcamos la alerta
             if old_p.get("FechaHora") != p["FechaHora"] or old_p.get("Campo") != p["Campo"]:
                 p["Cambio"] = True
-                cambios_detectados += 1
-    print(f"    - Se han detectado {cambios_detectados} cambios de horario/campo.")
 
     # --- 4. CÁLCULO DE CLASIFICACIONES ---
     print("  📊 Calculando Clasificaciones...")
@@ -225,7 +222,7 @@ def extraer_canal():
     equipos_finales = {k: sorted(list(v)) for k, v in equipos_por_categoria.items()}
     
     datos_canal = {
-        "equipos": equipos_finales, 
+        "equipos": equipos_finales,
         "partidos": partidos_finales,
         "clasificacion": clasificaciones
     }
@@ -237,14 +234,9 @@ def extraer_canal():
 
 def extraer_todo():
     print("🚀 Iniciando extracción de ECMADRID...")
-    # [Aquí va tu código intacto de ECMADRID. Lo omito por brevedad, usa el que tenías]
+    # [Tu código de ECMADRID aquí sin tocar]
     # ...
-    # Simulación de que ha ido bien
-    with open("datos_liga.json", "w", encoding="utf-8") as f:
-        json.dump({"competiciones": {}, "calendario": {}, "resultados": {}, "clasificacion": {}}, f)
-    print("\n✅ ¡Extracción ECM completada!")
     
-    # --- EXTRAER CANAL ---
     extraer_canal()
     
     # --- SUBIR A GITHUB ---
