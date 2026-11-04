@@ -734,7 +734,6 @@
                             </div>
                         </div>`;
                 } else {
-                    // LOCAL BLANCO / VISITANTE AZUL 30% (CANAL)
                     let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
                     let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                     
@@ -794,7 +793,6 @@
                                 </div>
                             </div>`;
                     } else {
-                        // LOCAL BLANCO / VISITANTE AZUL 30% (CANAL)
                         let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
                         let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                         
@@ -827,7 +825,13 @@
             if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
 
             function calcularRacha(nombreEquipo) {
-                const partidosEquipo = todosLosPartidos.filter(p => (p.EquipoLocal === nombreEquipo || p.EquipoVisitante === nombreEquipo) && (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0)).sort((a, b) => a.NumeroJornada - b.NumeroJornada);
+                // FILTRO AÑADIDO: Ignoramos los partidos que pertenecen a la Jornada 12 (*)
+                const partidosEquipo = todosLosPartidos.filter(p => 
+                    (p.EquipoLocal === nombreEquipo || p.EquipoVisitante === nombreEquipo) && 
+                    (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) &&
+                    p.NumeroJornada !== 12 // <--- Evita contar el partido duplicado
+                ).sort((a, b) => a.NumeroJornada - b.NumeroJornada);
+                
                 const ultimos5 = partidosEquipo.slice(-5);
                 if (ultimos5.length === 0) return '<span class="text-xs" style="color:var(--text-sec)">-</span>';
                 return ultimos5.map(p => {
