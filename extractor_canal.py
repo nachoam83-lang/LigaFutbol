@@ -44,22 +44,25 @@ def extraer_canal():
             if res.status_code == 200:
                 soup_detalle = BeautifulSoup(res.text, 'html.parser')
                 
+                # 1. Buscamos el marcador en las clases típicas
                 score_div = soup_detalle.select_one('.match-score, .score, .result, .match-result')
                 if score_div:
                     match_res = re.findall(r'(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)', score_div.text.strip())
                     if match_res:
                         return int(match_res[0][0]), int(match_res[0][1])
                 
+                # 2. Si no, buscamos en todo el texto pero con el regex blindado
                 matches = re.findall(r'(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)', soup_detalle.text)
                 if matches:
                     return int(matches[0][0]), int(matches[0][1])
         except Exception:
             pass
         
-        # PARCHE DE SEGURIDAD: Si es missing-team y no encontramos marcador, forzamos 0-3
+        # PARCHE DE SEGURIDAD: Si no encontramos marcador, forzamos 0-3
         print("       -> No se encontró marcador. Asignando 0-3 por defecto.")
         return 0, 3
 
+    # Cargar datos antiguos para comparar y ver si hay cambios
     partidos_antiguos = {}
     if os.path.exists("datos_canal.json"):
         try:
@@ -107,6 +110,7 @@ def extraer_canal():
                 fecha = fecha_tag.get('data-day', '') if fecha_tag else ""
                 if fecha.startswith("2025") or fecha.startswith("2024") or not fecha: continue
 
+                # --- LÓGICA DE "NO PRESENTADO" ---
                 if 'missing-team' in p.get('class', []):
                     enlace_tag = p.select_one('a.link-encapsulated')
                     if enlace_tag and enlace_tag.get('href'):
@@ -126,7 +130,7 @@ def extraer_canal():
                 diccionario_partidos[key] = {
                     "NumeroJornada": num_jornada,
                     "FechaHora": f"{fecha}T12:00:00", "Campo": "Campo",
-                    "EquipoLocal": loc, "EquipoVisitante": vis,
+                    "EquipoLocal": loc, "EquipoVisitante": vis, 
                     "URLEscudoEquipoLocal": "/static/escudo_canal.png", "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
                     "ResultadoEquipoLocal": rl, "ResultadoEquipoVisitante": rv,
                     "Cambio": False
@@ -189,6 +193,7 @@ def extraer_canal():
         for p in diccionario_partidos.values():
             loc = p["EquipoLocal"]
             vis = p["EquipoVisitante"]
+            # Ahora que los "no presentados" tienen goles reales, esta condición los contará
             if loc in tabla and vis in tabla and (p["ResultadoEquipoLocal"] > 0 or p["ResultadoEquipoVisitante"] > 0):
                 rl, rv = p["ResultadoEquipoLocal"], p["ResultadoEquipoVisitante"]
                 tabla[loc]["PJ"] += 1; tabla[vis]["PJ"] += 1
@@ -213,7 +218,7 @@ def extraer_canal():
     equipos_finales = {k: sorted(list(v)) for k, v in equipos_por_categoria.items()}
     
     datos_canal = {
-        "equipos": equipos_finales,
+        "equipos": equipos_finales, 
         "partidos": partidos_finales,
         "clasificacion": clasificaciones
     }
