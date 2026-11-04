@@ -661,7 +661,6 @@
                     : (esCampoExterior(p) ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
                                           : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-building mr-1"></i> Pabellón</span>`);
                 
-                // DIRECCIÓN EN NEGRITA
                 let htmlMapa = `<a href="http://maps.apple.com/?q=${encodeURIComponent(dirCompleta)}" target="_blank" class="font-bold text-blue-500 hover:underline">${dirCompleta}</a>`;
 
                 let botonesExtra = '';
@@ -684,11 +683,9 @@
                             </div>
                         </div>`;
                 } else {
-                    // ESCUDO CANAL CON LOGO
                     let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
                     let htmlEscVis = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                     
-                    // NEGRITAS EN TODOS LOS NOMBRES
                     let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                     let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                     
@@ -718,7 +715,6 @@
             partidos.forEach(p => { const j = p.NumeroJornada || 0; if(!agrupados[j]) agrupados[j] = []; agrupados[j].push(p); });
 
             for (const j in agrupados) {
-                // DISEÑO VISUAL DE LA JORNADA RESALTADO
                 contenedor.innerHTML += `
                     <div class="flex justify-center mt-8 mb-4">
                         <span class="px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest shadow-md text-white" style="background-color: var(--primary-color);">
@@ -746,11 +742,9 @@
                                 </div>
                             </div>`;
                     } else {
-                        // ESCUDO CANAL CON LOGO
                         let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
                         let htmlEscVis = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                         
-                        // NEGRITAS EN TODOS LOS NOMBRES
                         let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                         let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                         
@@ -763,7 +757,7 @@
                                 </div>
                                 <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
                                     <div class="w-12 flex justify-end">${htmlEscLocal}</div>
-                                    <div class="px-2"><span class="text-xl font-black" style="${scoreStyle}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span></div>
+                                    <div class="px-2"><span class="text-xl font-black" style="${styleScore}">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span></div>
                                     <div class="w-12 flex justify-start">${htmlEscVis}</div>
                                 </div>
                             </div>`;
@@ -794,7 +788,6 @@
                 const clasePos = f.Posicion === 1 ? 'text-[#D6B25A]' : 'text-gray-600'; const clasePts = f.Posicion === 1 ? 'text-[#D6B25A]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
                 const partidosJugados = f.Jugados !== undefined ? f.Jugados : (f.PJ !== undefined ? f.PJ : 0);
 
-                // ESCUDO CANAL CON LOGO Y NEGRITAS
                 const escudoUrl = isCanal() ? '/static/escudo_canal.png' : (f.URLEscudo || '/static/logo.png');
                 const textBold = esFavorito ? (isCanal() ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : 'font-bold';
 
