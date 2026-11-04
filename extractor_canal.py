@@ -38,6 +38,20 @@ def extraer_canal():
             return f"{anio}-{mes}-{dia}"
         return "2026-01-01"
 
+    # NUEVO: Función blindada para obtener el resultado real de un partido "no presentado"
+    def obtener_resultado_detalle(url_detalle, session):
+        try:
+            res = session.get(url_detalle, verify=False, timeout=10)
+            if res.status_code == 200:
+                # Buscamos patrones como "0 - 3" (solo 1 o 2 dígitos para evitar fechas como 2026-11)
+                matches = re.findall(r'(\d{1,2})\s*-\s*(\d{1,2})', res.text)
+                if matches:
+                    rl, rv = matches[0]
+                    return int(rl), int(rv)
+        except Exception:
+            pass
+        return 0, 0
+
     # Cargar datos antiguos para comparar y ver si hay cambios
     partidos_antiguos = {}
     if os.path.exists("datos_canal.json"):
@@ -86,11 +100,21 @@ def extraer_canal():
                 fecha = fecha_tag.get('data-day', '') if fecha_tag else ""
                 if fecha.startswith("2025") or fecha.startswith("2024") or not fecha: continue
 
-                scoreboard = p.select('.match-round-scoreboard span')
-                rl, rv = 0, 0
-                if len(scoreboard) >= 3:
-                    try: rl, rv = int(scoreboard[0].text.strip()), int(scoreboard[2].text.strip())
-                    except: pass
+                # --- LÓGICA DE "NO PRESENTADO" ---
+                if 'missing-team' in p.get('class', []):
+                    enlace_tag = p.select_one('a.link-encapsulated')
+                    if enlace_tag and enlace_tag.get('href'):
+                        url_detalle = enlace_tag.get('href')
+                        rl, rv = obtener_resultado_detalle(url_detalle, session)
+                        print(f"    🏳️ Partido no presentado: {loc} vs {vis}. Resultado asignado: {rl}-{rv}")
+                    else:
+                        rl, rv = 0, 0
+                else:
+                    scoreboard = p.select('.match-round-scoreboard span')
+                    rl, rv = 0, 0
+                    if len(scoreboard) >= 3:
+                        try: rl, rv = int(scoreboard[0].text.strip()), int(scoreboard[2].text.strip())
+                        except: pass
                 
                 key = "_".join(sorted([loc, vis]))
                 diccionario_partidos[key] = {
@@ -109,7 +133,7 @@ def extraer_canal():
         except Exception:
             break
 
-    # --- 2. PDF ---
+    # --- 2. PDF (Extrae Horas y Campos Futuros) ---
     print("  📄 Procesando PDF...")
     try:
         response_pdf = requests.get(url_pdf, verify=False, timeout=15)
@@ -118,18 +142,6 @@ def extraer_canal():
                 tables = page.extract_tables() or page.extract_tables({"vertical_strategy": "text", "horizontal_strategy": "text"})
                 for tabla in tables:
                     if len(tabla) < 5 or not any("LIGA INTERNA" in str(c) for fila in tabla[:4] for c in fila if c): continue
-                    
-                    # Buscamos la jornada en las primeras filas de la tabla
-                    jornada_cruda = ""
-                    for fila in tabla[:5]:
-                        for c in fila:
-                            if c and "CLASIFICATORIA" in str(c):
-                                jornada_cruda = str(c).replace('\n', ' ')
-                                break
-                        if jornada_cruda: break
-                    if not jornada_cruda: continue
-                    
-                    num_jornada_pdf = int(re.search(r"(\d+)", jornada_cruda).group(1)) if re.search(r"(\d+)", jornada_cruda) else 0
                     
                     fecha_cruda = next((str(c).replace('\n', ' ') for c in tabla[0] if c), "")
                     fecha_iso = parsear_fecha_pdf(fecha_cruda)
@@ -151,8 +163,6 @@ def extraer_canal():
                                 if key in diccionario_partidos:
                                     diccionario_partidos[key]["FechaHora"] = f"{fecha_iso}T{hora}:00"
                                     diccionario_partidos[key]["Campo"] = f"Campo {campo_num}"
-                                    # AQUÍ ESTÁ LA MAGIA: Sobrescribimos la jornada con la del PDF
-                                    diccionario_partidos[key]["NumeroJornada"] = num_jornada_pdf
     except Exception as e:
         print(f"    ❌ Error PDF: {e}")
 
@@ -173,6 +183,7 @@ def extraer_canal():
         for p in diccionario_partidos.values():
             loc = p["EquipoLocal"]
             vis = p["EquipoVisitante"]
+            # Ahora que los "no presentados" tienen goles reales, esta condición los contará
             if loc in tabla and vis in tabla and (p["ResultadoEquipoLocal"] > 0 or p["ResultadoEquipoVisitante"] > 0):
                 rl, rv = p["ResultadoEquipoLocal"], p["ResultadoEquipoVisitante"]
                 tabla[loc]["PJ"] += 1; tabla[vis]["PJ"] += 1
