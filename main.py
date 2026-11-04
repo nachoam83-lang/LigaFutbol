@@ -33,47 +33,76 @@ def corregir_anio(fecha_str):
         else: return "2026" + fecha_str[4:]
     except: return fecha_str
 
-# --- NUEVA FUNCIÓN: Asigna jornadas evitando duplicados y respetando el máximo por jornada ---
-def calcular_jornadas(partidos):
-    if not partidos: return partidos
-    
-    # 1. Ordenamos estrictamente por fecha
-    partidos.sort(key=lambda x: x["FechaHora"])
-    
-    # 2. Obtenemos todos los equipos de la categoría
+# --- LÓGICA DE JORNADAS PARA CANAL ---
+def calcular_jornadas_canal(partidos, categoria):
+    # 1. Mapa manual de fechas a jornadas base
+    mapa_fechas = {
+        "2026-09-26": 1, "2026-10-03": 1,
+        "2026-10-10": 2, "2026-10-17": 2,
+        "2026-10-21": 3, "2026-10-22": 3, "2026-10-23": 3,
+        "2026-10-24": 4, "2026-10-31": 4,
+        "2026-11-07": 5, "2026-11-14": 5,
+        "2026-11-21": 6, "2026-11-28": 6,
+        "2026-12-12": 7, "2026-12-19": 7,
+        "2027-01-09": 8, "2027-01-16": 8,
+        "2027-01-23": 9, "2027-01-30": 9,
+        "2027-02-06": 10, "2027-02-13": 10,
+        "2027-02-20": 11
+    }
+
+    # 2. Preparar partidos
+    for p in partidos:
+        p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
+        p["Fecha"] = p["FechaHora"].split("T")[0]
+        p["JornadaBase"] = mapa_fechas.get(p["Fecha"], 99)
+        p["Descolgado"] = False
+
+    partidos.sort(key=lambda x: (x["JornadaBase"], x["FechaHora"]))
+
+    # 3. Obtener equipos
     equipos = set()
     for p in partidos:
         equipos.add(p["EquipoLocal"])
         equipos.add(p["EquipoVisitante"])
+
+    # 4. Asignación por jornadas
+    jornadas_finales = {j: [] for j in range(1, 12)}
+    descolgados = []
+
+    for j in range(1, 12):
+        partidos_j = [p for p in partidos if p["JornadaBase"] == j]
+        partidos_j.sort(key=lambda x: x["FechaHora"])
         
-    # 3. Calculamos el máximo de partidos por jornada (ej. 11 equipos -> 5 partidos)
-    max_partidos_por_jornada = len(equipos) // 2
-    if max_partidos_por_jornada == 0: max_partidos_por_jornada = 1
-    
-    jornadas_equipos = [] # Aquí guardaremos qué equipos juegan en cada jornada
-    
-    for p in partidos:
-        loc = p["EquipoLocal"]
-        vis = p["EquipoVisitante"]
-        asignado = False
+        equipos_jugando = set()
         
-        # Buscamos la primera jornada que no esté llena y donde no jueguen estos equipos
-        for i in range(len(jornadas_equipos)):
-            if loc not in jornadas_equipos[i] and vis not in jornadas_equipos[i] and len(jornadas_equipos[i]) < max_partidos_por_jornada * 2:
-                jornadas_equipos[i].add(loc)
-                jornadas_equipos[i].add(vis)
-                p["NumeroJornada"] = i + 1
-                asignado = True
-                break
-                
-        # Si no hay hueco en ninguna, creamos una nueva jornada
-        if not asignado:
-            jornadas_equipos.append(set([loc, vis]))
-            p["NumeroJornada"] = len(jornadas_equipos)
+        for p in partidos_j:
+            loc = p["EquipoLocal"]
+            vis = p["EquipoVisitante"]
             
-    # Volvemos a ordenar por la jornada asignada
-    partidos.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
-    return partidos
+            if loc not in equipos_jugando and vis not in equipos_jugando:
+                equipos_jugando.add(loc)
+                equipos_jugando.add(vis)
+                jornadas_finales[j].append(p)
+            else:
+                p["Descolgado"] = True
+                descolgados.append(p)
+                jornadas_finales[j].append(p) # Se queda en su jornada base con asterisco
+
+    # 5. Crear la Jornada 12 (*) con los descolgados
+    if descolgados:
+        jornadas_finales[12] = descolgados
+
+    # 6. Aplanar la lista de partidos para devolverla
+    partidos_finales = []
+    for j in sorted(jornadas_finales.keys()):
+        for p in jornadas_finales[j]:
+            # Evitar duplicar el partido en la lista plana si ya está en su jornada base y en la 12
+            if p not in partidos_finales:
+                partidos_finales.append(p)
+
+    return partidos_finales, jornadas_finales
+
+# --- ENDPOINTS ---
 
 @app.get("/api/competiciones/{id_deporte}")
 def get_competiciones(id_deporte: str):
@@ -103,22 +132,21 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
         
+        # Filtramos por categoría
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
         
-        for p in partidos:
-            p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-            
         # Aplicamos la nueva lógica
-        partidos = calcular_jornadas(partidos)
-
-        jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos)))
+        partidos_finales, jornadas_dict = calcular_jornadas_canal(partidos, id_categoria)
+        
+        # Generar la lista de jornadas para el desplegable
+        jornadas_nums = sorted(list(jornadas_dict.keys()))
         lista_jornadas = [{"NumeroJornada": j, "Id": j} for j in jornadas_nums]
 
         return {
             "jornadas": lista_jornadas,
             "jornada": {
                 "NumeroJornada": int(id_jornada) if id_jornada != "0" and jornadas_nums else (jornadas_nums[0] if jornadas_nums else 0),
-                "Enfrentamientos": partidos
+                "Enfrentamientos": partidos_finales
             }
         }
 
@@ -147,13 +175,12 @@ def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_g
         
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
         
-        for p in partidos:
-            p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-            
         # Aplicamos la nueva lógica
-        partidos = calcular_jornadas(partidos)
-            
-        return partidos
+        partidos_finales, _ = calcular_jornadas_canal(partidos, id_categoria)
+        
+        # Para resultados, ordenamos por JornadaBase y Fecha
+        partidos_finales.sort(key=lambda x: (x.get("JornadaBase", 99), x["FechaHora"]))
+        return partidos_finales
 
     datos = cargar_datos()
     if not datos: return []
