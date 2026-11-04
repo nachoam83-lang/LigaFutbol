@@ -5,7 +5,6 @@ from fastapi.responses import FileResponse
 from datetime import datetime, timedelta
 import json
 import os
-import urllib.parse
 
 app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
@@ -62,37 +61,26 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
         
-        # 1. Fechas únicas SOLO del equipo seleccionado (ej. B6)
-        partidos_equipo = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal") == id_grupo or p.get("EquipoVisitante") == id_grupo]
-        for p in partidos_equipo: p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-        partidos_equipo.sort(key=lambda x: x["FechaHora"])
-        fechas_equipo = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos_equipo)))
-        mapa_fechas = {fecha: i+1 for i, fecha in enumerate(fechas_equipo)}
-
-        # 2. Asignar esa numeración a TODOS los partidos de la categoría
-        partidos_categoria = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
-        for p in partidos_categoria:
+        # Filtramos por categoría (ej. "Benjamín")
+        partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
+        
+        # Corregimos el año y aseguramos que NumeroJornada sea un entero
+        for p in partidos:
             p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-            fecha_str = p["FechaHora"].split("T")[0]
-            if fecha_str in mapa_fechas:
-                p["NumeroJornada"] = mapa_fechas[fecha_str]
-            else:
-                try:
-                    fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d")
-                    fecha_cercana = min(fechas_equipo, key=lambda x: abs((datetime.strptime(x, "%Y-%m-%d") - fecha_dt).days))
-                    p["NumeroJornada"] = mapa_fechas[fecha_cercana]
-                except:
-                    p["NumeroJornada"] = 1
-                    
-        partidos_categoria.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
-        jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos_categoria)))
+            p["NumeroJornada"] = int(p.get("NumeroJornada", 1))
+            
+        # Ordenamos estrictamente por Jornada y Fecha
+        partidos.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
+
+        # Sacamos la lista de jornadas únicas que existen en el JSON
+        jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos)))
         lista_jornadas = [{"NumeroJornada": j, "Id": j} for j in jornadas_nums]
 
         return {
             "jornadas": lista_jornadas,
             "jornada": {
                 "NumeroJornada": int(id_jornada) if id_jornada != "0" and jornadas_nums else (jornadas_nums[0] if jornadas_nums else 0),
-                "Enfrentamientos": partidos_categoria
+                "Enfrentamientos": partidos
             }
         }
 
@@ -119,29 +107,13 @@ def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_g
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
         
-        # 1. Fechas únicas SOLO del equipo seleccionado
-        partidos_equipo = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal") == id_grupo or p.get("EquipoVisitante") == id_grupo]
-        for p in partidos_equipo: p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-        partidos_equipo.sort(key=lambda x: x["FechaHora"])
-        fechas_equipo = sorted(list(set(p["FechaHora"].split("T")[0] for p in partidos_equipo)))
-        mapa_fechas = {fecha: i+1 for i, fecha in enumerate(fechas_equipo)}
-
-        # 2. Asignar a todos los partidos
-        partidos_categoria = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
-        for p in partidos_categoria:
+        partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
+        
+        for p in partidos:
             p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
-            fecha_str = p["FechaHora"].split("T")[0]
-            if fecha_str in mapa_fechas:
-                p["NumeroJornada"] = mapa_fechas[fecha_str]
-            else:
-                try:
-                    fecha_dt = datetime.strptime(fecha_str, "%Y-%m-%d")
-                    fecha_cercana = min(fechas_equipo, key=lambda x: abs((datetime.strptime(x, "%Y-%m-%d") - fecha_dt).days))
-                    p["NumeroJornada"] = mapa_fechas[fecha_cercana]
-                except:
-                    p["NumeroJornada"] = 1
-                    
-        return sorted(partidos_categoria, key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
+            p["NumeroJornada"] = int(p.get("NumeroJornada", 1))
+            
+        return sorted(partidos, key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
 
     datos = cargar_datos()
     if not datos: return []
