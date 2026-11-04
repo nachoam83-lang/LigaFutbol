@@ -355,9 +355,12 @@
 
                 let statsHTML = '';
                 let rivalPos = "";
-                if (eq.idDeporte !== "4") {
-                    const resClasif = await fetch(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
-                    const clasif = await resClasif.json();
+                
+                // --- CLASIFICACIÓN PARA TODOS (INCLUIDO CANAL) ---
+                const resClasif = await fetch(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
+                const clasif = await resClasif.json();
+                
+                if (clasif && Array.isArray(clasif)) {
                     const stats = clasif.find(c => c.NombreEquipo === eq.equipoFavorito);
                     if (stats) statsHTML = `<div class="mt-2 text-sm font-bold text-[#D6B25A]"><i class="fas fa-trophy mr-1"></i> ${stats.Posicion}º Clasificado</div>`;
                     
@@ -742,8 +745,9 @@
                             </div>
                         </div>`;
                 } else {
-                    let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
-                    let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: #00509E; border: 2px solid #003366;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
+                    // CIRCULOS AZULES CON TRANSPARENCIA PARA CANAL (CALENDARIO)
+                    let htmlEscLocal = esCanal ? `<div class="escudo-circulo" style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
+                    let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                     
                     let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                     let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
@@ -801,8 +805,9 @@
                                 </div>
                             </div>`;
                     } else {
-                        let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
-                        let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: #00509E; border: 2px solid #003366;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
+                        // CIRCULOS AZULES CON TRANSPARENCIA PARA CANAL (RESULTADOS)
+                        let htmlEscLocal = esCanal ? `<div class="escudo-circulo" style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
+                        let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                         
                         let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                         let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
