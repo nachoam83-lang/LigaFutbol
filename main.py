@@ -56,6 +56,7 @@ def calcular_jornadas_canal(partidos, categoria):
         p["Fecha"] = p["FechaHora"].split("T")[0]
         p["JornadaBase"] = mapa_fechas.get(p["Fecha"], 99)
         p["Descolgado"] = False
+        p["NumeroJornada"] = p["JornadaBase"] # <--- ASIGNAMOS EL NÚMERO BASE
 
     partidos.sort(key=lambda x: (x["JornadaBase"], x["FechaHora"]))
 
@@ -82,23 +83,26 @@ def calcular_jornadas_canal(partidos, categoria):
             if loc not in equipos_jugando and vis not in equipos_jugando:
                 equipos_jugando.add(loc)
                 equipos_jugando.add(vis)
+                p["NumeroJornada"] = j # <--- ACTUALIZAMOS A LA JORNADA REAL
                 jornadas_finales[j].append(p)
             else:
                 p["Descolgado"] = True
+                p["NumeroJornada"] = j # Se queda en su jornada base
                 descolgados.append(p)
-                jornadas_finales[j].append(p) # Se queda en su jornada base con asterisco
+                jornadas_finales[j].append(p)
 
-    # 5. Crear la Jornada 12 (*) con los descolgados
+    # 5. Crear la Jornada 12 (*) con COPIA de los descolgados
     if descolgados:
-        jornadas_finales[12] = descolgados
+        jornadas_finales[12] = []
+        for p in descolgados:
+            p_copia = p.copy()
+            p_copia["NumeroJornada"] = 12 # <--- ASIGNAMOS LA J12 A LA COPIA
+            jornadas_finales[12].append(p_copia)
 
     # 6. Aplanar la lista de partidos para devolverla
     partidos_finales = []
     for j in sorted(jornadas_finales.keys()):
-        for p in jornadas_finales[j]:
-            # Evitar duplicar el partido en la lista plana si ya está en su jornada base y en la 12
-            if p not in partidos_finales:
-                partidos_finales.append(p)
+        partidos_finales.extend(jornadas_finales[j])
 
     return partidos_finales, jornadas_finales
 
@@ -178,8 +182,8 @@ def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_g
         # Aplicamos la nueva lógica
         partidos_finales, _ = calcular_jornadas_canal(partidos, id_categoria)
         
-        # Para resultados, ordenamos por JornadaBase y Fecha
-        partidos_finales.sort(key=lambda x: (x.get("JornadaBase", 99), x["FechaHora"]))
+        # Para resultados, ordenamos por JornadaBase y Fecha para que salgan agrupados correctamente
+        partidos_finales.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
         return partidos_finales
 
     datos = cargar_datos()
