@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LigaFutbol</title>
+    <title>Ligas Infantiles</title>
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Ligas Infantiles">
     <meta name="mobile-web-app-capable" content="yes">
     
     <style>
@@ -30,10 +31,7 @@
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
-        /* CONTRASTES ECM */
         .card-favorito { background-color: rgba(0, 109, 111, 0.15) !important; border-color: rgba(0, 109, 111, 0.5) !important; }
-        
-        /* CONTRASTE CANAL */
         .card-favorito-canal { background-color: #E0F0FF !important; border-color: #00509E !important; }
 
         #pantalla-carga { position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1000; background-color: var(--primary-color); display: flex; flex-direction: column; align-items: center; justify-content: center; color: white; transition: opacity 0.4s; }
@@ -152,8 +150,12 @@
         </div>
 
         <div id="tab-calendario" class="p-4 space-y-4">
-            <div id="banner-alerta" class="hide bg-red-100 text-red-700 p-3 rounded-lg text-sm font-bold flex items-center shadow-sm">
-                <i class="fas fa-exclamation-triangle mr-2 text-lg"></i> <span>¡Atención! Hay cambios en el horario o campo de algún partido.</span>
+            <div id="banner-alerta" class="hide bg-red-100 text-red-700 p-3 rounded-lg text-sm font-bold flex items-center justify-between shadow-sm relative">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2 text-lg"></i> 
+                    <span>¡Atención! Hay cambios en el horario o campo de tu partido.</span>
+                </div>
+                <button onclick="cerrarBanner()" class="text-red-700 hover:text-red-900 ml-2"><i class="fas fa-times text-lg"></i></button>
             </div>
             <div class="flex gap-2 mb-2">
                 <select id="select-jornada" onchange="renderizarCalendarioUI()" class="flex-1 p-3 rounded-lg shadow-sm text-sm font-bold" style="background-color: var(--card-bg); border: 1px solid var(--border-color); color: var(--primary-color);"></select>
@@ -172,7 +174,7 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="text-xs font-bold uppercase border-b" style="background-color: var(--bg-color); color: var(--text-sec); border-color: var(--border-color);">
                         <tr>
-                            <th class="p-3">Pos</th><th class="p-3">Equipo</th><th class="p-3 text-center">PJ</th><th class="p-3 text-center hidden sm:table-cell">Racha</th><th class="p-3 text-right">PTS</th>
+                            <th class="p-2">Pos</th><th class="p-2">Equipo</th><th class="p-2 text-center">PJ</th><th class="p-2 text-center">Racha</th><th class="p-2 text-right">PTS</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-clasificacion" class="divide-y text-[13px]" style="border-color: var(--border-color);"></tbody>
@@ -216,6 +218,12 @@
         
         function esCampoExterior(p) { const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase(); return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')); }
         function isCanal() { return equipoActual && equipoActual.idDeporte === "4"; }
+
+        function getPos(nombreEquipo) {
+            if (!cacheClasificacion || !Array.isArray(cacheClasificacion)) return "";
+            const eq = cacheClasificacion.find(c => c.NombreEquipo === nombreEquipo);
+            return eq ? ` (Pos. ${eq.Posicion})` : "";
+        }
 
         function refrescarApp() { const icono = document.querySelector('#btn-refresh i'); icono.classList.add('spin-anim'); cacheProximoPartido = {}; setTimeout(() => { renderizarEquipos(); icono.classList.remove('spin-anim'); }, 500); }
         
@@ -302,9 +310,10 @@
                                 ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="escudo-main-img">` : '<i class="fas fa-shield-alt text-gray-500 text-2xl"></i>'}
                             </div>
                             <div class="flex flex-col flex-1 min-w-0">
-                                <h3 class="font-black text-xl leading-tight">${eq.nombre}</h3>
-                                <p class="text-xs text-white/80 font-semibold uppercase tracking-wider mt-1">${eq.nombreCompeticion}</p>
-                                <p class="text-[12px] font-bold text-[#D6B25A] tracking-wide mt-0.5 pr-2" style="color: ${esCanal ? '#E0F0FF' : '#D6B25A'}">${acortarNombre(eq.equipoFavorito)}</p>
+                                <h3 class="font-black text-2xl leading-tight">${eq.nombre}</h3>
+                                <p class="text-sm text-white/90 font-bold uppercase tracking-wider mt-1">${eq.nombreCompeticion}</p>
+                                <p class="text-base font-black text-[#D6B25A] tracking-wide mt-1 pr-2" style="color: ${esCanal ? '#E0F0FF' : '#D6B25A'}">${acortarNombre(eq.equipoFavorito)}</p>
+                                <div id="posicion-${eq.id}" class="text-xs font-bold text-white/80 mt-1"></div>
                             </div>
                         </div>
                         <div class="flex flex-col gap-3 ml-2 flex-shrink-0">
@@ -312,41 +321,70 @@
                             <button class="text-white/60 hover:text-red-400" onclick="event.stopPropagation(); borrarEquipo(${index})"><i class="fas fa-trash-alt text-sm"></i></button>
                         </div>
                     </div>
-                    <div id="proximo-partido-${eq.id}" class="mt-3 pt-3 border-t border-white/20 w-full text-xs text-white/90"></div>
+                    <div id="proximo-partido-${eq.id}" class="mt-3 pt-3 border-t border-white/20 w-full text-sm text-white/90"></div>
                 `;
                 contenedor.appendChild(div);
-                if (cacheProximoPartido[eq.id]) document.getElementById(`proximo-partido-${eq.id}`).innerHTML = cacheProximoPartido[eq.id];
-                else cargarProximoPartido(eq, `proximo-partido-${eq.id}`);
+                if (cacheProximoPartido[eq.id]) {
+                    document.getElementById(`proximo-partido-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].html;
+                    document.getElementById(`posicion-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].pos;
+                } else {
+                    cargarProximoPartido(eq);
+                }
             }
         }
 
-        async function cargarProximoPartido(eq, elementId) {
-            const contenedor = document.getElementById(elementId);
-            if (!contenedor) return;
-            contenedor.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Buscando datos...';
+        async function cargarProximoPartido(eq) {
+            const divProximo = document.getElementById(`proximo-partido-${eq.id}`);
+            const divPos = document.getElementById(`posicion-${eq.id}`);
+            if (!divProximo) return;
+            divProximo.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Buscando datos...';
             try {
                 const resCal = await fetch(`/api/calendario/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}/0`);
                 const dataCal = await resCal.json();
-                let partido = dataCal.jornada?.Enfrentamientos?.find(p => p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito);
                 
+                let todosLosPartidos = dataCal.jornada?.Enfrentamientos?.filter(p => p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito) || [];
+                
+                // Encontrar el próximo partido (fecha >= hoy)
+                const hoy = new Date(); hoy.setHours(0,0,0,0);
+                let partido = todosLosPartidos.filter(p => new Date(p.FechaHora) >= hoy).sort((a,b) => new Date(a.FechaHora) - new Date(b.FechaHora))[0];
+                
+                if (!partido && todosLosPartidos.length > 0) {
+                    // Si no hay futuro, mostrar el último jugado
+                    partido = todosLosPartidos.sort((a,b) => new Date(b.FechaHora) - new Date(a.FechaHora))[0];
+                }
+
                 let statsHTML = '';
+                let rivalPos = "";
                 if (eq.idDeporte !== "4") {
                     const resClasif = await fetch(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
                     const clasif = await resClasif.json();
                     const stats = clasif.find(c => c.NombreEquipo === eq.equipoFavorito);
-                    if (stats) statsHTML = `<div class="mt-2 text-[11px] font-bold bg-black/10 px-2 py-1 rounded inline-block"><i class="fas fa-trophy text-[#D6B25A] mr-1"></i> Posición: ${stats.Posicion} · ${stats.Puntos} puntos</div>`;
+                    if (stats) statsHTML = `<div class="mt-2 text-sm font-bold text-[#D6B25A]"><i class="fas fa-trophy mr-1"></i> ${stats.Posicion}º Clasificado</div>`;
+                    
+                    if (partido) {
+                        const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
+                        const rivalStats = clasif.find(c => c.NombreEquipo === rival);
+                        if (rivalStats) rivalPos = ` (Pos. ${rivalStats.Posicion})`;
+                    }
                 }
 
-                let htmlFinal = `<i class="far fa-calendar-alt mr-1"></i> Sin partidos próximos ${statsHTML}`;
+                let htmlFinal = `<i class="far fa-calendar-alt mr-1"></i> Sin partidos próximos`;
                 if (partido) {
                     const fecha = partido.FechaHora ? partido.FechaHora.split('T')[0].split('-').reverse().join('/') : '';
                     const hora = partido.FechaHora ? partido.FechaHora.split('T')[1].substring(0,5) : '';
                     const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
-                    htmlFinal = `<div class="flex flex-col gap-1"><div><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div><div class="font-bold">vs. ${acortarNombre(rival)}</div>${statsHTML}</div>`;
+                    htmlFinal = `
+                        <div class="flex flex-col gap-1">
+                            <div class="text-lg font-bold"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div>
+                            <div class="text-xl font-black">vs. ${acortarNombre(rival)}${rivalPos}</div>
+                        </div>`;
                 }
-                contenedor.innerHTML = htmlFinal;
-                cacheProximoPartido[eq.id] = htmlFinal;
-            } catch (e) { contenedor.innerHTML = `No se pudo cargar el próximo partido`; }
+
+                divProximo.innerHTML = htmlFinal;
+                divPos.innerHTML = statsHTML;
+                
+                cacheProximoPartido[eq.id] = { html: htmlFinal, pos: statsHTML };
+            } catch (e) { divProximo.innerHTML = `No se pudo cargar el próximo partido`; }
         }
 
         function borrarEquipo(index) { if (confirm('¿Borrar este equipo?')) { delete cacheProximoPartido[equipos[index].id]; equipos.splice(index, 1); localStorage.setItem('equipos_liga', JSON.stringify(equipos)); renderizarEquipos(); } }
@@ -595,9 +633,19 @@
             let jornadasData = cacheCalendarioGlobal.jornadas || [];
             jornadasData.sort((a,b) => Number(a.NumeroJornada) - Number(b.NumeroJornada));
 
-            let hayCambios = cacheResultados ? cacheResultados.some(p => p.Cambio) : false;
-            document.getElementById('banner-alerta').classList.toggle('hide', !hayCambios);
+            // Lógica del Banner de Cambios
+            let misPartidosCambiados = cacheResultados.filter(p => p.Cambio && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
+            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '[]');
+            let hasNewChanges = false;
+            
+            misPartidosCambiados.forEach(p => {
+                let hash = `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo}`;
+                if(!dismissed.includes(hash)) hasNewChanges = true;
+            });
+            
+            document.getElementById('banner-alerta').classList.toggle('hide', !hasNewChanges);
 
+            // Lógica de selección de Jornada automática
             let indiceSeleccionado = 0; 
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             
@@ -624,6 +672,17 @@
             });
             
             if(jornadasData.length > 0) select.value = jornadasData[indiceSeleccionado].NumeroJornada;
+        }
+
+        function cerrarBanner() {
+            let misPartidosCambiados = cacheResultados.filter(p => p.Cambio && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
+            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '[]');
+            misPartidosCambiados.forEach(p => {
+                let hash = `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo}`;
+                if(!dismissed.includes(hash)) dismissed.push(hash);
+            });
+            localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
+            document.getElementById('banner-alerta').classList.add('hide');
         }
 
         function toggleFiltro() {
@@ -657,9 +716,9 @@
                 const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
                 const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
                 
-                let htmlCampo = esCanal ? `<span class="inline-flex items-center text-white font-bold bg-[#00509E] px-2 py-0.5 rounded text-[10px]">${p.Campo || 'Campo'}</span>` 
-                    : (esCampoExterior(p) ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
-                                          : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-[10px]"><i class="fas fa-building mr-1"></i> Pabellón</span>`);
+                let htmlCampo = esCanal ? `<span class="inline-flex items-center text-white font-bold bg-[#00509E] px-2 py-0.5 rounded text-sm">${p.Campo || 'Campo'}</span>` 
+                    : (esCampoExterior(p) ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-sm"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
+                                          : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-sm"><i class="fas fa-building mr-1"></i> Pabellón</span>`);
                 
                 let htmlMapa = `<a href="http://maps.apple.com/?q=${encodeURIComponent(dirCompleta)}" target="_blank" class="font-bold text-blue-500 hover:underline">${dirCompleta}</a>`;
 
@@ -684,18 +743,18 @@
                         </div>`;
                 } else {
                     let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
-                    let htmlEscVis = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
+                    let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: #00509E; border: 2px solid #003366;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                     
                     let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                     let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                     
                     contenedor.innerHTML += `
                         <div class="${claseTarjeta}">
-                            <div class="flex justify-between items-center mb-2"><div class="font-extrabold text-[11px] uppercase" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>${htmlCampo}</div>
+                            <div class="flex justify-between items-center mb-2"><div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);"><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}</div>${htmlCampo}</div>
                             <div class="flex justify-between items-center w-full my-2">
                                 <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}</div></div>
                                 <div class="px-2 flex flex-col items-center justify-center h-10"><span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span></div>
-                                <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}</div></div>
+                                <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}${getPos(p.EquipoVisitante)}</div></div>
                             </div>
                             <div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: #f87171;"></i><span>${htmlMapa}</span></div>
                             ${botonesExtra}
@@ -743,7 +802,7 @@
                             </div>`;
                     } else {
                         let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
-                        let htmlEscVis = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
+                        let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: #00509E; border: 2px solid #003366;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
                         
                         let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
                         let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
@@ -753,7 +812,7 @@
                                 <div class="grid grid-cols-[1fr,auto,1fr] items-center w-full mb-2">
                                     <div class="text-[13px] ${classLocal} text-center">${acortarNombre(p.EquipoLocal)}</div>
                                     <div class="text-xs px-1" style="color: var(--text-sec);">-</div>
-                                    <div class="text-[13px] ${classVis} text-center">${acortarNombre(p.EquipoVisitante)}</div>
+                                    <div class="text-[13px] ${classVis} text-center">${acortarNombre(p.EquipoVisitante)}${getPos(p.EquipoVisitante)}</div>
                                 </div>
                                 <div class="flex justify-center items-center gap-4 w-full mt-1 mb-2">
                                     <div class="w-12 flex justify-end">${htmlEscLocal}</div>
@@ -793,11 +852,11 @@
 
                 tbody.innerHTML += `
                     <tr class="${esFavorito ? (isCanal() ? 'bg-[#E0F0FF]' : 'bg-[#e6f2f2]') : ''}" style="border-color: var(--border-color);">
-                        <td class="p-3 font-bold ${clasePos} align-middle">${f.Posicion}</td>
-                        <td class="p-3 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${escudoUrl}"></div><span class="leading-tight pr-2 ${textBold}" style="${!esFavorito ? 'color: var(--text-main);' : ''}">${f.NombreEquipo}</span></td>
-                        <td class="p-3 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
-                        <td class="p-3 text-center align-middle hidden sm:table-cell">${calcularRacha(f.NombreEquipo)}</td>
-                        <td class="p-3 text-right font-black align-middle text-base ${clasePts}">${f.Puntos}</td>
+                        <td class="p-2 font-bold ${clasePos} align-middle">${f.Posicion}</td>
+                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${escudoUrl}"></div><span class="leading-tight pr-1 ${textBold}" style="${!esFavorito ? 'color: var(--text-main);' : ''}">${f.NombreEquipo}</span></td>
+                        <td class="p-2 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
+                        <td class="p-2 text-center align-middle">${calcularRacha(f.NombreEquipo)}</td>
+                        <td class="p-2 text-right font-black align-middle text-base ${clasePts}">${f.Puntos}</td>
                     </tr>`;
             });
         }
