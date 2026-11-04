@@ -33,6 +33,48 @@ def corregir_anio(fecha_str):
         else: return "2026" + fecha_str[4:]
     except: return fecha_str
 
+# --- NUEVA FUNCIÓN: Asigna jornadas evitando duplicados y respetando el máximo por jornada ---
+def calcular_jornadas(partidos):
+    if not partidos: return partidos
+    
+    # 1. Ordenamos estrictamente por fecha
+    partidos.sort(key=lambda x: x["FechaHora"])
+    
+    # 2. Obtenemos todos los equipos de la categoría
+    equipos = set()
+    for p in partidos:
+        equipos.add(p["EquipoLocal"])
+        equipos.add(p["EquipoVisitante"])
+        
+    # 3. Calculamos el máximo de partidos por jornada (ej. 11 equipos -> 5 partidos)
+    max_partidos_por_jornada = len(equipos) // 2
+    if max_partidos_por_jornada == 0: max_partidos_por_jornada = 1
+    
+    jornadas_equipos = [] # Aquí guardaremos qué equipos juegan en cada jornada
+    
+    for p in partidos:
+        loc = p["EquipoLocal"]
+        vis = p["EquipoVisitante"]
+        asignado = False
+        
+        # Buscamos la primera jornada que no esté llena y donde no jueguen estos equipos
+        for i in range(len(jornadas_equipos)):
+            if loc not in jornadas_equipos[i] and vis not in jornadas_equipos[i] and len(jornadas_equipos[i]) < max_partidos_por_jornada * 2:
+                jornadas_equipos[i].add(loc)
+                jornadas_equipos[i].add(vis)
+                p["NumeroJornada"] = i + 1
+                asignado = True
+                break
+                
+        # Si no hay hueco en ninguna, creamos una nueva jornada
+        if not asignado:
+            jornadas_equipos.append(set([loc, vis]))
+            p["NumeroJornada"] = len(jornadas_equipos)
+            
+    # Volvemos a ordenar por la jornada asignada
+    partidos.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
+    return partidos
+
 @app.get("/api/competiciones/{id_deporte}")
 def get_competiciones(id_deporte: str):
     if id_deporte == "4": return []
@@ -61,35 +103,13 @@ def get_calendario(id_deporte: str, id_competicion: str, id_categoria: str, id_g
     if id_deporte == "4":
         datos_canal = cargar_datos_canal()
         
-        # 1. Filtramos por categoría
         partidos = [p for p in datos_canal.get("partidos", []) if p.get("EquipoLocal", "").startswith(id_categoria) or p.get("EquipoVisitante", "").startswith(id_categoria)]
         
-        # 2. Corregimos años
         for p in partidos:
             p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
             
-        # 3. ORDENAMOS ESTRICTAMENTE POR FECHA Y HORA
-        partidos.sort(key=lambda x: x["FechaHora"])
-        
-        # 4. APLICAMOS TU LÓGICA DE DEDUPLICACIÓN CRONOLÓGICA
-        current_jornada = 1
-        teams_in_current = set()
-        
-        for p in partidos:
-            loc = p["EquipoLocal"]
-            vis = p["EquipoVisitante"]
-            
-            # Si alguno de los equipos ya ha jugado en esta jornada, avanzamos a la siguiente
-            if loc in teams_in_current or vis in teams_in_current:
-                current_jornada += 1
-                teams_in_current.clear()
-                
-            p["NumeroJornada"] = current_jornada
-            teams_in_current.add(loc)
-            teams_in_current.add(vis)
-            
-        # 5. Volvemos a ordenar por la nueva Jornada asignada
-        partidos.sort(key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
+        # Aplicamos la nueva lógica
+        partidos = calcular_jornadas(partidos)
 
         jornadas_nums = sorted(list(set(p["NumeroJornada"] for p in partidos)))
         lista_jornadas = [{"NumeroJornada": j, "Id": j} for j in jornadas_nums]
@@ -130,24 +150,10 @@ def get_resultados(id_deporte: str, id_competicion: str, id_categoria: str, id_g
         for p in partidos:
             p["FechaHora"] = corregir_anio(p.get("FechaHora", ""))
             
-        partidos.sort(key=lambda x: x["FechaHora"])
-        
-        current_jornada = 1
-        teams_in_current = set()
-        
-        for p in partidos:
-            loc = p["EquipoLocal"]
-            vis = p["EquipoVisitante"]
+        # Aplicamos la nueva lógica
+        partidos = calcular_jornadas(partidos)
             
-            if loc in teams_in_current or vis in teams_in_current:
-                current_jornada += 1
-                teams_in_current.clear()
-                
-            p["NumeroJornada"] = current_jornada
-            teams_in_current.add(loc)
-            teams_in_current.add(vis)
-            
-        return sorted(partidos, key=lambda x: (x["NumeroJornada"], x["FechaHora"]))
+        return partidos
 
     datos = cargar_datos()
     if not datos: return []
