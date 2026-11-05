@@ -67,7 +67,6 @@
 
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
 
-        /* Estilos para Pull to Refresh */
         #ptr-indicator { position: fixed; top: -50px; left: 50%; transform: translateX(-50%); background: white; padding: 10px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; transition: top 0.3s; }
         #ptr-indicator.active { top: 20px; }
     </style>
@@ -97,7 +96,11 @@
     <div id="screen-equipos" class="max-w-md mx-auto min-h-screen">
         <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <h1 class="text-xl font-bold tracking-wide">Mis Equipos</h1>
-            <div class="flex gap-3">
+            <div class="flex gap-3 items-center">
+                <!-- Botón Ordenación Automática -->
+                <button onclick="toggleAutoOrden()" id="btn-auto-orden" class="hover:opacity-80 transition flex items-center justify-center w-8 h-8">
+                    <i class="fas fa-hourglass-half text-lg" id="icono-auto-orden"></i>
+                </button>
                 <button onclick="refrescarApp()" id="btn-refresh" class="text-white hover:opacity-80 transition"><i class="fas fa-sync-alt text-lg"></i></button>
                 <button onclick="prepararNuevoEquipo()" class="bg-white text-gray-800 rounded-full w-8 h-8 flex items-center justify-center shadow-sm text-lg font-bold">+</button>
             </div>
@@ -218,7 +221,6 @@
     </div>
 
     <script>
-        // --- REGISTRO DEL SERVICE WORKER PARA MODO OFFLINE ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/static/sw.js').catch(err => console.log('SW fallo:', err));
@@ -230,11 +232,14 @@
         let equipoSeleccionadoVisual = null; 
         let editandoEquipoId = null; 
         let soloMiEquipo = false;
+        let autoOrden = localStorage.getItem('auto_orden') === 'true';
+        
         let cacheCalendarioGlobal = null;
         let cacheResultados = null;
         let cacheClasificacion = null;
         let cacheClasificacionPartidos = null;
-        let cacheProximoPartido = {}; 
+        // GUARDAR CACHÉ DE PARTIDOS EN LOCALSTORAGE
+        let cacheProximoPartido = JSON.parse(localStorage.getItem('cache_proximo_partido')) || {}; 
         let cacheEquipoAbiertoId = null; 
         let cacheCanal = {}; 
         let rutaActualMapa = "";
@@ -270,13 +275,18 @@
             icono.classList.add('spin-anim'); 
             cacheProximoPartido = {}; 
             cacheClima = {};
+            localStorage.removeItem('cache_proximo_partido');
             localStorage.removeItem('cache_clima');
             setTimeout(() => { renderizarEquipos(); icono.classList.remove('spin-anim'); }, 500); 
         }
         
-        document.addEventListener('DOMContentLoaded', () => { renderizarEquipos(); cargarCompeticiones(2); });
+        document.addEventListener('DOMContentLoaded', () => { 
+            actualizarBotonOrden();
+            renderizarEquipos(); 
+            cargarCompeticiones(2); 
+        });
 
-        // --- LÓGICA DE PULL TO REFRESH ---
+        // LÓGICA PULL TO REFRESH
         let touchStartY = 0;
         let touchEndY = 0;
         const screenEquipos = document.getElementById('screen-equipos');
@@ -381,6 +391,22 @@
             }
         }
 
+        // --- LÓGICA DE ORDENACIÓN AUTOMÁTICA ---
+        function toggleAutoOrden() {
+            autoOrden = !autoOrden;
+            localStorage.setItem('auto_orden', autoOrden);
+            actualizarBotonOrden();
+            renderizarEquipos();
+        }
+
+        function actualizarBotonOrden() {
+            const icon = document.getElementById('icono-auto-orden');
+            if (icon) {
+                if (autoOrden) icon.style.color = '#D6B25A'; // Dorado
+                else icon.style.color = 'rgba(255,255,255,0.5)'; // Blanco translúcido
+            }
+        }
+
         function prepararNuevoEquipo() {
             editandoEquipoId = null;
             document.getElementById('titulo-formulario').innerText = "Añadir Jugador";
@@ -453,8 +479,8 @@
             renderizarEquipos();
         }
 
-        // --- NUEVA FUNCIÓN PARA ORDENAR AUTOMÁTICAMENTE ---
         function ordenarEquiposVisualmente() {
+            if (!autoOrden) return;
             const contenedor = document.getElementById('lista-equipos');
             const tarjetas = Array.from(contenedor.children);
             
@@ -475,19 +501,41 @@
         async function renderizarEquipos() {
             const contenedor = document.getElementById('lista-equipos');
             contenedor.innerHTML = '';
-            if (equipos.length === 0) { contenedor.innerHTML = `<div class="text-center text-gray-400 mt-16"><i class="fas fa-shield-alt text-6xl mb-4 text-gray-200"></i><p class="font-medium">No tienes equipos guardados.</p></div>`; return; }
+            actualizarBotonOrden();
             
-            for (let index = 0; index < equipos.length; index++) {
-                const eq = equipos[index];
+            if (equipos.length === 0) { 
+                contenedor.innerHTML = `<div class="text-center text-gray-400 mt-16"><i class="fas fa-shield-alt text-6xl mb-4 text-gray-200"></i><p class="font-medium">No tienes equipos guardados.</p></div>`; 
+                return; 
+            }
+
+            // Si el orden automático está activo, ordenamos una copia para pintar
+            let equiposAMostrar = [...equipos];
+            if (autoOrden) {
+                equiposAMostrar.sort((a, b) => {
+                    const dateA = cacheProximoPartido[a.id]?.timestamp || Infinity;
+                    const dateB = cacheProximoPartido[b.id]?.timestamp || Infinity;
+                    return dateA - dateB;
+                });
+            }
+            
+            for (let i = 0; i < equiposAMostrar.length; i++) {
+                const eq = equiposAMostrar[i];
+                const realIndex = equipos.indexOf(eq);
                 const esCanal = (eq.idDeporte === "4");
                 const colorFondo = esCanal ? '#00509E' : '#006D6F';
                 const div = document.createElement('div');
                 div.className = 'text-white p-4 rounded-xl shadow-md flex flex-col cursor-pointer transition hover:opacity-90 relative';
                 div.style.backgroundColor = colorFondo;
-                div.onclick = () => abrirEquipo(index);
+                div.onclick = () => abrirEquipo(realIndex);
                 
+                // Ocultar flechas si el auto-orden está activo
+                const flechasHTML = autoOrden ? '' : `
+                    <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-1 transition" onclick="event.stopPropagation(); moverEquipo(${realIndex}, -1)"><i class="fas fa-arrow-up"></i></button>
+                    <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-2 transition" onclick="event.stopPropagation(); moverEquipo(${realIndex}, 1)"><i class="fas fa-arrow-down"></i></button>
+                `;
+
                 div.innerHTML = `
-                    <button class="absolute top-2 left-2 bg-black/20 hover:bg-red-500/80 rounded-full w-8 h-8 flex items-center justify-center text-red-300 transition z-10" onclick="event.stopPropagation(); borrarEquipo(${index})"><i class="fas fa-trash-alt text-xs"></i></button>
+                    <button class="absolute top-2 left-2 bg-black/20 hover:bg-red-500/80 rounded-full w-8 h-8 flex items-center justify-center text-red-300 transition z-10" onclick="event.stopPropagation(); borrarEquipo(${realIndex})"><i class="fas fa-trash-alt text-xs"></i></button>
 
                     <div class="flex items-center justify-between w-full mt-2">
                         <div class="flex items-center flex-1">
@@ -502,16 +550,15 @@
                             </div>
                         </div>
                         <div class="flex flex-col items-center justify-center gap-1 ml-2 flex-shrink-0">
-                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-1 transition" onclick="event.stopPropagation(); moverEquipo(${index}, -1)"><i class="fas fa-arrow-up"></i></button>
-                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-2 transition" onclick="event.stopPropagation(); moverEquipo(${index}, 1)"><i class="fas fa-arrow-down"></i></button>
-                            
-                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white transition" onclick="event.stopPropagation(); editarEquipo(${index})"><i class="fas fa-pen text-sm"></i></button>
+                            ${flechasHTML}
+                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white transition" onclick="event.stopPropagation(); editarEquipo(${realIndex})"><i class="fas fa-pen text-sm"></i></button>
                         </div>
                     </div>
                     <div id="proximo-partido-${eq.id}" class="mt-3 pt-3 border-t border-white/20 w-full text-sm text-white/90"></div>
                 `;
                 contenedor.appendChild(div);
                 
+                // PINTAR DESDE CACHÉ (ESTO ARREGLA EL MODO OFFLINE)
                 if (cacheProximoPartido[eq.id]) {
                     document.getElementById(`proximo-partido-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].html;
                     document.getElementById(`posicion-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].pos;
@@ -528,7 +575,12 @@
             const divProximo = document.getElementById(`proximo-partido-${eq.id}`);
             const divPos = document.getElementById(`posicion-${eq.id}`);
             if (!divProximo) return;
-            divProximo.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Buscando datos...';
+            
+            // Si ya hay datos, no mostramos el spinner, así no parpadea en offline
+            if (!cacheProximoPartido[eq.id]) {
+                divProximo.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Buscando datos...';
+            }
+            
             try {
                 const resCal = await fetchWithTimeout(`/api/calendario/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}/0`);
                 const dataCal = await resCal.json();
@@ -595,26 +647,24 @@
                 divPos.innerHTML = statsHTML;
                 
                 cacheProximoPartido[eq.id] = { html: htmlFinal, pos: statsHTML, dir: dirCompleta, fecha: fechaHoraPartido, timestamp: timestampPartido };
+                // GUARDAR EN LOCALSTORAGE PARA QUE SOBREVIVA AL MODO OFFLINE
+                localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido));
                 
                 if (dirCompleta && fechaHoraPartido) {
                     setTimeout(() => { cargarClimaTarjeta(eq.id, dirCompleta, fechaHoraPartido); }, 100);
                 }
 
-                // Ordenar después de cargar los datos
                 ordenarEquiposVisualmente();
 
             } catch (e) { 
-                const cachedPos = localStorage.getItem(`pos_${eq.id}`);
-                if (cachedPos) {
-                    divProximo.innerHTML = `<i class="far fa-calendar-alt mr-1"></i> Datos guardados`;
-                    divPos.innerHTML = cachedPos;
-                } else {
+                // Si falla (offline) y ya tenemos datos en caché, no hacemos nada (se queda lo que ya había)
+                if (!cacheProximoPartido[eq.id]) {
                     divProximo.innerHTML = `No se pudo cargar el próximo partido`; 
                 }
             }
         }
 
-        function borrarEquipo(index) { if (confirm('¿Borrar este equipo?')) { delete cacheProximoPartido[equipos[index].id]; equipos.splice(index, 1); localStorage.setItem('equipos_liga', JSON.stringify(equipos)); renderizarEquipos(); } }
+        function borrarEquipo(index) { if (confirm('¿Borrar este equipo?')) { const eqId = equipos[index].id; delete cacheProximoPartido[eqId]; localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido)); equipos.splice(index, 1); localStorage.setItem('equipos_liga', JSON.stringify(equipos)); renderizarEquipos(); } }
         
         async function cargarCompeticiones(idDeporte) {
             const select = document.getElementById('select-competicion');
@@ -763,6 +813,7 @@
             } else equipos.push(equipoData);
             
             localStorage.setItem('equipos_liga', JSON.stringify(equipos));
+            localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido));
             editandoEquipoId = null; 
             volverInicio();
         }
@@ -862,7 +913,9 @@
                 localStorage.setItem(`cache_res_${equipoActual.id}`, JSON.stringify(cacheResultados));
                 localStorage.setItem(`cache_clas_${equipoActual.id}`, JSON.stringify(cacheClasificacion));
 
-                cacheClasificacionPartidos = cacheResultados; delete cacheProximoPartido[equipoActual.id];
+                cacheClasificacionPartidos = cacheResultados; 
+                delete cacheProximoPartido[equipoActual.id];
+                localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido));
 
                 setTimeout(() => {
                     document.getElementById('pantalla-carga').classList.add('oculto');
