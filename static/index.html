@@ -66,9 +66,15 @@
         .escudo-main-img { border-radius: 50%; object-fit: cover; width: 100%; height: 100%; }
 
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
+
+        /* Estilos para Pull to Refresh */
+        #ptr-indicator { position: fixed; top: -50px; left: 50%; transform: translateX(-50%); background: white; padding: 10px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; transition: top 0.3s; }
+        #ptr-indicator.active { top: 20px; }
     </style>
 </head>
 <body class="pb-20">
+
+    <div id="ptr-indicator" class="text-gray-500 text-xl"><i class="fas fa-sync-alt spin-anim"></i></div>
 
     <div id="modal-mapa" class="fixed inset-0 bg-black/50 z-50 hide flex items-end justify-center opacity-0 transition-opacity" onclick="cerrarModalMapa()">
         <div class="bg-white w-full max-w-md rounded-t-2xl p-4 pb-8" onclick="event.stopPropagation()">
@@ -212,6 +218,13 @@
     </div>
 
     <script>
+        // --- REGISTRO DEL SERVICE WORKER PARA MODO OFFLINE ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/static/sw.js').catch(err => console.log('SW fallo:', err));
+            });
+        }
+
         let equipos = JSON.parse(localStorage.getItem('equipos_liga')) || [];
         let equipoActual = null;
         let equipoSeleccionadoVisual = null; 
@@ -262,6 +275,30 @@
         }
         
         document.addEventListener('DOMContentLoaded', () => { renderizarEquipos(); cargarCompeticiones(2); });
+
+        // --- LÓGICA DE PULL TO REFRESH ---
+        let touchStartY = 0;
+        let touchEndY = 0;
+        const screenEquipos = document.getElementById('screen-equipos');
+        const ptrIndicator = document.getElementById('ptr-indicator');
+
+        screenEquipos.addEventListener('touchstart', e => {
+            if (window.scrollY === 0) {
+                touchStartY = e.changedTouches[0].screenY;
+            }
+        }, { passive: true });
+
+        screenEquipos.addEventListener('touchend', e => {
+            if (window.scrollY === 0 && touchStartY > 0) {
+                touchEndY = e.changedTouches[0].screenY;
+                if (touchEndY - touchStartY > 100) {
+                    ptrIndicator.classList.add('active');
+                    refrescarApp();
+                    setTimeout(() => ptrIndicator.classList.remove('active'), 1000);
+                }
+            }
+            touchStartY = 0;
+        }, { passive: true });
 
         function abrirModalMapa(dir) {
             rutaActualMapa = dir;
@@ -416,10 +453,30 @@
             renderizarEquipos();
         }
 
+        // --- NUEVA FUNCIÓN PARA ORDENAR AUTOMÁTICAMENTE ---
+        function ordenarEquiposVisualmente() {
+            const contenedor = document.getElementById('lista-equipos');
+            const tarjetas = Array.from(contenedor.children);
+            
+            tarjetas.sort((a, b) => {
+                const idA = a.querySelector('[id^="proximo-partido-"]').id.replace('proximo-partido-', '');
+                const idB = b.querySelector('[id^="proximo-partido-"]').id.replace('proximo-partido-', '');
+                
+                const fechaA = cacheProximoPartido[idA]?.timestamp || Infinity;
+                const fechaB = cacheProximoPartido[idB]?.timestamp || Infinity;
+                
+                return fechaA - fechaB;
+            });
+
+            contenedor.innerHTML = '';
+            tarjetas.forEach(t => contenedor.appendChild(t));
+        }
+
         async function renderizarEquipos() {
             const contenedor = document.getElementById('lista-equipos');
             contenedor.innerHTML = '';
             if (equipos.length === 0) { contenedor.innerHTML = `<div class="text-center text-gray-400 mt-16"><i class="fas fa-shield-alt text-6xl mb-4 text-gray-200"></i><p class="font-medium">No tienes equipos guardados.</p></div>`; return; }
+            
             for (let index = 0; index < equipos.length; index++) {
                 const eq = equipos[index];
                 const esCanal = (eq.idDeporte === "4");
@@ -454,6 +511,7 @@
                     <div id="proximo-partido-${eq.id}" class="mt-3 pt-3 border-t border-white/20 w-full text-sm text-white/90"></div>
                 `;
                 contenedor.appendChild(div);
+                
                 if (cacheProximoPartido[eq.id]) {
                     document.getElementById(`proximo-partido-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].html;
                     document.getElementById(`posicion-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].pos;
@@ -504,6 +562,7 @@
                 let htmlFinal = `<i class="far fa-calendar-alt mr-1"></i> Sin partidos próximos`;
                 let dirCompleta = "";
                 let fechaHoraPartido = "";
+                let timestampPartido = Infinity;
 
                 if (partido) {
                     const fecha = partido.FechaHora ? partido.FechaHora.split('T')[0].split('-').reverse().join('/') : '';
@@ -512,6 +571,7 @@
                     const esLocal = partido.EquipoLocal === eq.equipoFavorito;
                     dirCompleta = (eq.idDeporte === "4") ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(partido);
                     fechaHoraPartido = partido.FechaHora;
+                    timestampPartido = new Date(partido.FechaHora).getTime();
                     
                     const iconoLocalia = esLocal 
                         ? `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-home"></i></div>` 
@@ -534,11 +594,14 @@
                 divProximo.innerHTML = htmlFinal;
                 divPos.innerHTML = statsHTML;
                 
-                cacheProximoPartido[eq.id] = { html: htmlFinal, pos: statsHTML, dir: dirCompleta, fecha: fechaHoraPartido };
+                cacheProximoPartido[eq.id] = { html: htmlFinal, pos: statsHTML, dir: dirCompleta, fecha: fechaHoraPartido, timestamp: timestampPartido };
                 
                 if (dirCompleta && fechaHoraPartido) {
                     setTimeout(() => { cargarClimaTarjeta(eq.id, dirCompleta, fechaHoraPartido); }, 100);
                 }
+
+                // Ordenar después de cargar los datos
+                ordenarEquiposVisualmente();
 
             } catch (e) { 
                 const cachedPos = localStorage.getItem(`pos_${eq.id}`);
@@ -984,7 +1047,6 @@
                 escudoVisitante = esVisFav ? (equipoActual.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
             }
 
-            // NUEVO: Bordes gruesos para mi equipo
             const bordeFav = 'border: 4px solid var(--primary-color); box-sizing: border-box;';
             let styleEscLocal = esLocalFav ? `style="${bordeFav}"` : '';
             let styleEscVis = '';
@@ -1126,7 +1188,6 @@
                     }
                 }
 
-                // NUEVO: Estilos para el 1º clasificado
                 let rowStyle = "border-color: var(--border-color);";
                 let posColor = esPrimero ? 'text-[#997A00] font-black' : 'text-gray-600';
                 let ptsColor = esPrimero ? 'text-[#997A00]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
