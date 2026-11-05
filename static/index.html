@@ -149,31 +149,31 @@
             </div>
         </div>
 
-        <div id="tab-calendario" class="p-4 space-y-4">
-            <div id="banner-alerta" class="hide bg-red-100 text-red-700 p-3 rounded-lg text-sm font-bold flex items-center justify-between shadow-sm relative">
+        <div id="tab-calendario" class="p-4">
+            <div id="banner-alerta" class="hide bg-red-100 text-red-700 p-3 rounded-lg text-sm font-bold flex items-center justify-between shadow-sm relative mb-4">
                 <div class="flex items-center">
                     <i class="fas fa-exclamation-triangle mr-2 text-lg"></i> 
                     <span>¡Atención! Hay cambios en el horario o campo de tu partido.</span>
                 </div>
                 <button onclick="cerrarBanner()" class="text-red-700 hover:text-red-900 ml-2"><i class="fas fa-times text-lg"></i></button>
             </div>
-            <div class="flex gap-2 mb-2">
+            <div class="flex gap-2 mb-4">
                 <select id="select-jornada-cal" onchange="renderizarCalendarioUI()" class="flex-1 h-[46px] px-4 rounded-full shadow-md text-sm font-black uppercase tracking-widest text-white text-center appearance-none" style="background-color: var(--primary-color); border: none; outline: none;"></select>
                 <button onclick="toggleFiltro()" id="btn-filtro-cal" class="h-[46px] px-4 rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);"><i class="fas fa-filter mr-1"></i> Todos</button>
             </div>
             <div id="lista-calendario" class="space-y-3"></div>
         </div>
 
-        <div id="tab-resultados" class="hide p-4 space-y-4">
-            <div class="flex gap-2 mb-2">
+        <div id="tab-resultados" class="hide p-4">
+            <div class="flex gap-2 mb-4">
                 <select id="select-jornada-res" onchange="renderizarResultadosUI()" class="flex-1 h-[46px] px-4 rounded-full shadow-md text-sm font-black uppercase tracking-widest text-white text-center appearance-none" style="background-color: var(--primary-color); border: none; outline: none;"></select>
                 <button onclick="toggleFiltro()" id="btn-filtro-res" class="h-[46px] px-4 rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);"><i class="fas fa-filter mr-1"></i> Todos</button>
             </div>
             <div id="lista-resultados" class="space-y-3"></div>
         </div>
 
-        <div id="tab-clasificacion" class="hide p-4 space-y-4">
-            <div class="flex justify-center">
+        <div id="tab-clasificacion" class="hide p-4">
+            <div class="w-full mb-4">
                 <button onclick="compartirClasificacion()" id="btn-compartir-clasificacion" class="w-full h-[46px] px-4 rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);">
                     <i class="fas fa-share-alt mr-1"></i> Compartir Clasificación
                 </button>
@@ -321,13 +321,11 @@
                 const esCanal = (eq.idDeporte === "4");
                 const colorFondo = esCanal ? '#00509E' : '#006D6F';
                 const div = document.createElement('div');
-                // Añadido relative para posicionar la papelera
                 div.className = 'text-white p-4 rounded-xl shadow-md flex flex-col cursor-pointer transition hover:opacity-90 relative';
                 div.style.backgroundColor = colorFondo;
                 div.onclick = () => abrirEquipo(index);
                 
                 div.innerHTML = `
-                    <!-- Botón de papelera arriba a la izquierda -->
                     <button class="absolute top-2 left-2 bg-black/20 hover:bg-red-500/80 rounded-full w-8 h-8 flex items-center justify-center text-red-300 transition z-10" onclick="event.stopPropagation(); borrarEquipo(${index})"><i class="fas fa-trash-alt text-xs"></i></button>
 
                     <div class="flex items-center justify-between w-full mt-2">
@@ -342,7 +340,6 @@
                                 <div id="posicion-${eq.id}" class="text-xs font-bold text-white/80 mt-1"></div>
                             </div>
                         </div>
-                        <!-- Botones de acción sin la papelera -->
                         <div class="flex flex-col items-center justify-center gap-1 ml-2 flex-shrink-0">
                             <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-1 transition" onclick="event.stopPropagation(); moverEquipo(${index}, -1)"><i class="fas fa-arrow-up"></i></button>
                             <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-2 transition" onclick="event.stopPropagation(); moverEquipo(${index}, 1)"><i class="fas fa-arrow-down"></i></button>
@@ -404,7 +401,6 @@
                     const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
                     const esLocal = partido.EquipoLocal === eq.equipoFavorito;
                     
-                    // ICONO CASA/FUERA (FONDO BLANCO, ICONO NEGRO)
                     const iconoLocalia = esLocal 
                         ? `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-home"></i></div>` 
                         : `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-plane"></i></div>`;
@@ -685,7 +681,6 @@
                 setTimeout(() => {
                     document.getElementById('pantalla-carga').classList.add('oculto');
                     btn.querySelector('i').classList.remove('spin-anim');
-                    // Al llamar a actualizarUIJornadas, los selects se resetean a su vista predefinida
                     actualizarUIJornadas();
                     if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
                     if (!document.getElementById('tab-clasificacion').classList.contains('hide')) renderizarClasificacionUI();
@@ -733,7 +728,6 @@
             let indiceSeleccionadoRes = 0; 
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             
-            // Lógica para Calendario: Próximo partido
             const proximoPartido = cacheResultados
                 .filter(p => {
                     if (!p.FechaHora) return false;
@@ -749,7 +743,6 @@
                 if (idx !== -1) indiceSeleccionadoCal = idx;
             }
 
-            // Lógica para Resultados: Última jornada jugada
             const partidosJugados = cacheResultados.filter(p => new Date(p.FechaHora) < hoy && (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0));
             if (partidosJugados.length > 0) {
                 partidosJugados.sort((a,b) => new Date(b.FechaHora) - new Date(a.FechaHora));
@@ -757,11 +750,9 @@
                 const idx = jornadasData.findIndex(j => Number(j.NumeroJornada) === ultimaJornada);
                 if (idx !== -1) indiceSeleccionadoRes = idx;
             } else {
-                // Si no hay partidos jugados, igualamos Resultados al Calendario (Jornada 1)
                 indiceSeleccionadoRes = indiceSeleccionadoCal;
             }
 
-            // Rellenar Select Calendario
             const selectCal = document.getElementById('select-jornada-cal');
             selectCal.innerHTML = '<option value="0">Todas las jornadas</option>';
             jornadasData.forEach((j, i) => {
@@ -769,7 +760,6 @@
                 selectCal.innerHTML += `<option value="${j.NumeroJornada}" ${selected}>Jornada ${j.NumeroJornada}</option>`;
             });
             
-            // Rellenar Select Resultados
             const selectRes = document.getElementById('select-jornada-res');
             selectRes.innerHTML = '<option value="0">Todas las jornadas</option>';
             jornadasData.forEach((j, i) => {
@@ -856,7 +846,6 @@
             let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
             let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
 
-            // Comprobar si el partido ya se ha jugado (para mostrar el resultado en vez de "vs")
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             const esPasado = p.FechaHora && new Date(p.FechaHora) < hoy;
             const marcador = (esPasado || p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) 
@@ -885,7 +874,6 @@
             if (soloMiEquipo) partidosBase = partidosBase.filter(p => p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito);
 
             if (numJornada === 0) {
-                // Vista agrupada por todas las jornadas
                 const agrupados = {};
                 partidosBase.forEach(p => { const j = p.NumeroJornada || 0; if(!agrupados[j]) agrupados[j] = []; agrupados[j].push(p); });
                 
@@ -902,7 +890,6 @@
                     agrupados[j].forEach(p => { contenedor.innerHTML += generarHTMLPartido(p); });
                 });
             } else {
-                // Vista de una sola jornada
                 let partidos = partidosBase.filter(p => p.NumeroJornada == numJornada);
                 if (partidos.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay partidos.</p>';
                 partidos.forEach(p => { contenedor.innerHTML += generarHTMLPartido(p); });
@@ -918,7 +905,6 @@
             if (soloMiEquipo) partidosBase = partidosBase.filter(p => p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito);
 
             if (numJornada === 0) {
-                // Vista agrupada por todas las jornadas
                 const agrupados = {};
                 partidosBase.forEach(p => { const j = p.NumeroJornada || 0; if(!agrupados[j]) agrupados[j] = []; agrupados[j].push(p); });
                 
@@ -935,7 +921,6 @@
                     agrupados[j].forEach(p => { contenedor.innerHTML += generarHTMLPartido(p); });
                 });
             } else {
-                // Vista de una sola jornada
                 let partidos = partidosBase.filter(p => p.NumeroJornada == numJornada);
                 if (partidos.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay resultados.</p>';
                 partidos.forEach(p => { contenedor.innerHTML += generarHTMLPartido(p); });
@@ -948,7 +933,6 @@
             const todosLosPartidos = cacheClasificacionPartidos;
             tbody.innerHTML = '';
             
-            // Actualizar estilos del botón de compartir para que coincida con el filtro
             const btnComp = document.getElementById('btn-compartir-clasificacion');
             if(btnComp) {
                 const primaryRgb = isCanal() ? '0, 80, 158' : '0, 109, 111';
