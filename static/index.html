@@ -65,13 +65,11 @@
         .escudo-circulo-sm img { width: 100%; height: 100%; object-fit: contain; }
         .escudo-main-img { border-radius: 50%; object-fit: cover; width: 100%; height: 100%; }
 
-        /* Modal para elegir mapa */
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
     </style>
 </head>
 <body class="pb-20">
 
-    <!-- MODAL PARA ELEGIR APP DE MAPAS -->
     <div id="modal-mapa" class="fixed inset-0 bg-black/50 z-50 hide flex items-end justify-center opacity-0 transition-opacity" onclick="cerrarModalMapa()">
         <div class="bg-white w-full max-w-md rounded-t-2xl p-4 pb-8" onclick="event.stopPropagation()">
             <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4"></div>
@@ -257,7 +255,6 @@
         
         document.addEventListener('DOMContentLoaded', () => { renderizarEquipos(); cargarCompeticiones(2); });
 
-        // --- FUNCIONES DEL MAPA ---
         function abrirModalMapa(dir) {
             rutaActualMapa = dir;
             const modal = document.getElementById('modal-mapa');
@@ -282,24 +279,26 @@
             cerrarModalMapa();
         }
 
-        // --- FUNCIÓN DEL CLIMA ---
         async function obtenerClimaIcono(direccion, fechaHora) {
             try {
-                // 1. Geocodificar dirección
-                const resGeo = await fetchWithTimeout(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(direccion)}`, { headers: { 'User-Agent': 'LigasInfantilesApp/1.0' } });
-                const geoData = await resGeo.json();
-                if (!geoData || geoData.length === 0) return '';
+                let lat, lon;
+                
+                // Coordenadas fijas para Canal (Avenida de Filipinas, 11)
+                if (direccion.includes("El Parque Santander") || direccion.includes("Avenida de Filipinas")) {
+                    lat = 40.44372331454751;
+                    lon = -3.706714444750114;
+                } else {
+                    const resGeo = await fetchWithTimeout(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(direccion)}`, { headers: { 'User-Agent': 'LigasInfantilesApp/1.0' } });
+                    const geoData = await resGeo.json();
+                    if (!geoData || geoData.length === 0) return '';
+                    lat = geoData[0].lat;
+                    lon = geoData[0].lon;
+                }
 
-                const lat = geoData[0].lat;
-                const lon = geoData[0].lon;
                 const fecha = fechaHora.split('T')[0];
-
-                // 2. Obtener clima para esa fecha
                 const resClima = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code&start_date=${fecha}&end_date=${fecha}`);
                 const climaData = await resClima.json();
                 
-                // 3. Mapear código WMO a FontAwesome
-                // Tomamos el código de la hora del partido (o el mediodía si falla)
                 const horaObj = fechaHora.split('T')[1];
                 const horaStr = horaObj ? horaObj.substring(0, 2) + ":00" : "12:00";
                 const index = climaData.hourly.time.findIndex(t => t.endsWith(horaStr));
@@ -499,7 +498,6 @@
                             <div class="text-lg font-normal">vs. ${acortarNombre(rival)}${rivalPos}</div>
                         </div>`;
                     
-                    // Cargar clima asíncronamente
                     setTimeout(async () => {
                         const elClima = document.getElementById(`clima-${eq.id}`);
                         if (elClima) {
