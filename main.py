@@ -11,6 +11,10 @@ app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+@app.get("/ping")
+def ping():
+    return Response(content="OK", media_type="text/plain")
+
 @app.get("/")
 def read_index():
     return FileResponse("static/index.html")
