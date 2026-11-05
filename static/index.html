@@ -846,6 +846,39 @@
                 
                 if (!cacheResultados || cacheResultados.length === 0) throw new Error("Datos vacíos");
 
+                // LÓGICA DE SNAPSHOT (COMPARAR CON LO ÚLTIMO VISTO)
+                const snapshotKey = `snapshot_v1_${equipoActual.id}`;
+                const snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
+                const snapshotNuevo = { ...snapshotViejo };
+
+                cacheResultados.forEach(p => {
+                    if (!p.EquipoLocal && !p.EquipoVisitante) return;
+                    const matchHash = `${p.EquipoLocal}_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo || ''}`;
+                    const jKey = p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : matchHash;
+                    
+                    let pending = false;
+                    const snapViejo = snapshotViejo[jKey];
+                    if (snapViejo) {
+                        if (snapViejo.hash !== matchHash) pending = true; // Cambió la hora/campo
+                        else if (snapViejo.pending) pending = true; // Ya estaba pendiente
+                    }
+
+                    snapshotNuevo[jKey] = { hash: matchHash, pending: pending };
+
+                    if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
+                        p.CambioLocal = true;
+                    }
+                });
+
+                // Limpiar partidos que ya no existen
+                Object.keys(snapshotNuevo).forEach(k => {
+                    if (!cacheResultados.some(p => (p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : `${p.EquipoLocal}_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo || ''}`) === k)) {
+                        delete snapshotNuevo[k];
+                    }
+                });
+
+                localStorage.setItem(snapshotKey, JSON.stringify(snapshotNuevo));
+
                 localStorage.setItem(`cache_cal_${equipoActual.id}`, JSON.stringify(cacheCalendarioGlobal));
                 localStorage.setItem(`cache_res_${equipoActual.id}`, JSON.stringify(cacheResultados));
                 localStorage.setItem(`cache_clas_${equipoActual.id}`, JSON.stringify(cacheClasificacion));
@@ -869,6 +902,17 @@
                     cacheResultados = JSON.parse(cachedRes);
                     cacheClasificacion = JSON.parse(cachedClas);
                     cacheClasificacionPartidos = cacheResultados;
+
+                    // Aplicar lógica snapshot también a caché
+                    const snapshotKey = `snapshot_v1_${equipoActual.id}`;
+                    const snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
+                    cacheResultados.forEach(p => {
+                        const matchHash = `${p.EquipoLocal}_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo || ''}`;
+                        const jKey = p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : matchHash;
+                        if (snapshotViejo[jKey] && snapshotViejo[jKey].pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
+                            p.CambioLocal = true;
+                        }
+                    });
                     
                     setTimeout(() => {
                         document.getElementById('pantalla-carga').classList.add('oculto');
@@ -900,6 +944,38 @@
                 cacheCalendarioGlobal = await resCal.json(); cacheResultados = await resRes.json(); cacheClasificacion = await resClasif.json();
                 
                 if (!cacheResultados || cacheResultados.length === 0) throw new Error("Datos vacíos");
+
+                // LÓGICA DE SNAPSHOT
+                const snapshotKey = `snapshot_v1_${equipoActual.id}`;
+                const snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
+                const snapshotNuevo = { ...snapshotViejo };
+
+                cacheResultados.forEach(p => {
+                    if (!p.EquipoLocal && !p.EquipoVisitante) return;
+                    const matchHash = `${p.EquipoLocal}_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo || ''}`;
+                    const jKey = p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : matchHash;
+                    
+                    let pending = false;
+                    const snapViejo = snapshotViejo[jKey];
+                    if (snapViejo) {
+                        if (snapViejo.hash !== matchHash) pending = true;
+                        else if (snapViejo.pending) pending = true;
+                    }
+
+                    snapshotNuevo[jKey] = { hash: matchHash, pending: pending };
+
+                    if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
+                        p.CambioLocal = true;
+                    }
+                });
+
+                Object.keys(snapshotNuevo).forEach(k => {
+                    if (!cacheResultados.some(p => (p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : `${p.EquipoLocal}_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo || ''}`) === k)) {
+                        delete snapshotNuevo[k];
+                    }
+                });
+
+                localStorage.setItem(snapshotKey, JSON.stringify(snapshotNuevo));
 
                 localStorage.setItem(`cache_cal_${equipoActual.id}`, JSON.stringify(cacheCalendarioGlobal));
                 localStorage.setItem(`cache_res_${equipoActual.id}`, JSON.stringify(cacheResultados));
@@ -944,13 +1020,13 @@
             let jornadasData = cacheCalendarioGlobal.jornadas || [];
             jornadasData.sort((a,b) => Number(a.NumeroJornada) - Number(b.NumeroJornada));
 
-            let misPartidosCambiados = cacheResultados.filter(p => p.Cambio && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
-            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '[]');
+            let misPartidosCambiados = cacheResultados.filter(p => (p.Cambio || p.CambioLocal) && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
+            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
             let hasNewChanges = false;
             
             misPartidosCambiados.forEach(p => {
                 let hash = `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo}`;
-                if(!dismissed.includes(hash)) hasNewChanges = true;
+                if(!dismissed[hash]) hasNewChanges = true;
             });
             
             document.getElementById('banner-alerta').classList.toggle('hide', !hasNewChanges);
@@ -1000,14 +1076,25 @@
         }
 
         function cerrarBanner() {
-            let misPartidosCambiados = cacheResultados.filter(p => p.Cambio && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
-            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '[]');
+            let misPartidosCambiados = cacheResultados.filter(p => (p.Cambio || p.CambioLocal) && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
+            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+            const now = Date.now();
+            
             misPartidosCambiados.forEach(p => {
                 let hash = `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo}`;
-                if(!dismissed.includes(hash)) dismissed.push(hash);
+                dismissed[hash] = now;
             });
+            
             localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
             document.getElementById('banner-alerta').classList.add('hide');
+            
+            // Temporizador para actualizar la UI al cabo de 1 hora
+            setTimeout(() => {
+                if (cacheResultados) {
+                    if (!document.getElementById('tab-calendario').classList.contains('hide')) renderizarCalendarioUI();
+                    if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
+                }
+            }, 3600000); // 1 hora en milisegundos
         }
 
         function toggleFiltro() {
@@ -1039,13 +1126,37 @@
             const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
             const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
             const esResultado = (modo === 'resultados');
+            
+            const matchHash = `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${p.FechaHora}_${p.Campo}`;
+            const dismissedChanges = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+            let haCambiado = p.Cambio || p.CambioLocal;
+            
+            if (haCambiado && dismissedChanges[matchHash]) {
+                if (Date.now() - dismissedChanges[matchHash] > 3600000) {
+                    haCambiado = false;
+                }
+            }
 
             const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
             const hora = p.FechaHora ? p.FechaHora.split('T')[1].substring(0,5) : '';
             const textoFecha = esResultado ? `${fecha}` : `<i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h`;
-            
-            // NUEVO ICONO DE CAMBIO
-            const htmlCambio = p.Cambio ? `<i class="fas fa-exclamation-triangle text-red-500 ml-2" title="Horario o campo modificado"></i>` : '';
+
+            // Icono SVG de la imagen (Triángulo amarillo con borde negro)
+            const warningSvg = `
+                <svg viewBox="0 0 24 24" fill="none" class="w-9 h-9 mb-1 drop-shadow-md z-10">
+                    <path d="M12 2.5L1.5 21h21L12 2.5z" fill="#FACC15" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M12 8.5v5.5" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="17.5" r="1.5" fill="#000"/>
+                </svg>
+            `;
+
+            const warningSvgSmall = `
+                <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6 ml-2 drop-shadow-sm">
+                    <path d="M12 2.5L1.5 21h21L12 2.5z" fill="#FACC15" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
+                    <path d="M12 8.5v5.5" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+                    <circle cx="12" cy="17.5" r="1.5" fill="#000"/>
+                </svg>
+            `;
 
             if (esDescanso) {
                 const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
@@ -1055,7 +1166,7 @@
                         <div class="flex justify-between items-center mb-2">
                             <div class="font-extrabold text-[13px] uppercase flex items-center" style="color: var(--primary-color);">
                                 ${textoFechaDescanso}
-                                ${htmlCambio}
+                                ${haCambiado && esFavorito ? warningSvgSmall : ''}
                             </div>
                         </div>
                         <div class="flex flex-col items-center justify-center w-full py-2" style="color: var(--primary-color);">
@@ -1122,15 +1233,15 @@
             return `
                 <div class="${claseTarjeta}">
                     <div class="flex justify-between items-center mb-2">
-                        <div class="font-extrabold text-[13px] uppercase flex items-center" style="color: var(--primary-color);">
-                            ${textoFecha}
-                            ${htmlCambio}
-                        </div>
+                        <div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFecha}</div>
                         ${htmlCampo}
                     </div>
                     <div class="flex justify-between items-center w-full my-2">
                         <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}</div></div>
-                        <div class="px-2 flex flex-col items-center justify-center h-10">${marcador}</div>
+                        <div class="px-2 flex flex-col items-center justify-center">
+                            ${haCambiado && esFavorito ? warningSvg : ''}
+                            <div class="h-10 flex items-center">${marcador}</div>
+                        </div>
                         <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}</div></div>
                     </div>
                     ${htmlMapa}
