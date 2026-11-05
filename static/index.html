@@ -225,6 +225,7 @@
         let cacheEquipoAbiertoId = null; 
         let cacheCanal = {}; 
         let rutaActualMapa = "";
+        let cacheClima = JSON.parse(localStorage.getItem('cache_clima')) || {};
 
         async function fetchWithTimeout(resource, options = {}) {
             const { timeout = 5000 } = options;
@@ -251,7 +252,14 @@
         function esCampoExterior(p) { const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase(); return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')); }
         function isCanal() { return equipoActual && equipoActual.idDeporte === "4"; }
 
-        function refrescarApp() { const icono = document.querySelector('#btn-refresh i'); icono.classList.add('spin-anim'); cacheProximoPartido = {}; setTimeout(() => { renderizarEquipos(); icono.classList.remove('spin-anim'); }, 500); }
+        function refrescarApp() { 
+            const icono = document.querySelector('#btn-refresh i'); 
+            icono.classList.add('spin-anim'); 
+            cacheProximoPartido = {}; 
+            cacheClima = {};
+            localStorage.removeItem('cache_clima');
+            setTimeout(() => { renderizarEquipos(); icono.classList.remove('spin-anim'); }, 500); 
+        }
         
         document.addEventListener('DOMContentLoaded', () => { renderizarEquipos(); cargarCompeticiones(2); });
 
@@ -280,6 +288,9 @@
         }
 
         async function obtenerClimaIcono(direccion, fechaHora) {
+            const cacheKey = direccion + '_' + fechaHora;
+            if (cacheClima[cacheKey]) return cacheClima[cacheKey];
+
             try {
                 let lat, lon;
                 
@@ -303,14 +314,21 @@
                 const index = climaData.hourly.time.findIndex(t => t.endsWith(horaStr));
                 const code = index !== -1 ? climaData.hourly.weather_code[index] : climaData.hourly.weather_code[12];
 
-                if (code === 0) return 'fa-sun text-yellow-500';
-                if (code === 1 || code === 2) return 'fa-cloud-sun text-yellow-600';
-                if (code === 3) return 'fa-cloud text-gray-400';
-                if (code >= 45 && code <= 48) return 'fa-smog text-gray-500';
-                if (code >= 51 && code <= 67) return 'fa-cloud-rain text-blue-500';
-                if (code >= 71 && code <= 77) return 'fa-snowflake text-blue-300';
-                if (code >= 80 && code <= 82) return 'fa-cloud-showers-heavy text-blue-600';
-                if (code >= 95) return 'fa-cloud-bolt text-yellow-500';
+                let iconoResultado = '';
+                if (code === 0) iconoResultado = 'fa-sun text-yellow-500';
+                else if (code === 1 || code === 2) iconoResultado = 'fa-cloud-sun text-yellow-600';
+                else if (code === 3) iconoResultado = 'fa-cloud text-gray-400';
+                else if (code >= 45 && code <= 48) iconoResultado = 'fa-smog text-gray-500';
+                else if (code >= 51 && code <= 67) iconoResultado = 'fa-cloud-rain text-blue-500';
+                else if (code >= 71 && code <= 77) iconoResultado = 'fa-snowflake text-blue-300';
+                else if (code >= 80 && code <= 82) iconoResultado = 'fa-cloud-showers-heavy text-blue-600';
+                else if (code >= 95) iconoResultado = 'fa-cloud-bolt text-yellow-500';
+
+                if (iconoResultado) {
+                    cacheClima[cacheKey] = iconoResultado;
+                    localStorage.setItem('cache_clima', JSON.stringify(cacheClima));
+                }
+                return iconoResultado;
 
             } catch (e) {
                 console.log("Error clima", e);
@@ -753,6 +771,8 @@
             btn.querySelector('i').classList.add('spin-anim');
             document.getElementById('pantalla-carga').classList.remove('oculto');
             cacheCalendarioGlobal = null; cacheResultados = null; cacheClasificacion = null;
+            cacheClima = {};
+            localStorage.removeItem('cache_clima');
             try {
                 const [resCal, resRes, resClasif] = await Promise.all([
                     fetchWithTimeout(`/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}/0`),
@@ -950,10 +970,6 @@
             let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
             let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
 
-            // Estrella para el equipo favorito
-            const estrellaLocal = esLocalFav ? `<i class="fas fa-star text-[#D6B25A] text-[10px] ml-1"></i>` : '';
-            const estrellaVis = esVisFav ? `<i class="fas fa-star text-[#D6B25A] text-[10px] ml-1"></i>` : '';
-
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             const esPasado = p.FechaHora && new Date(p.FechaHora) < hoy;
             const marcador = (esPasado || p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) 
@@ -964,9 +980,9 @@
                 <div class="${claseTarjeta}">
                     <div class="flex justify-between items-center mb-2"><div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFecha}</div>${htmlCampo}</div>
                     <div class="flex justify-between items-center w-full my-2">
-                        <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}${estrellaLocal}</div></div>
+                        <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}</div></div>
                         <div class="px-2 flex flex-col items-center justify-center h-10">${marcador}</div>
-                        <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}${estrellaVis}</div></div>
+                        <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}</div></div>
                     </div>
                     ${htmlMapa}
                     ${botonesExtra}
@@ -1077,7 +1093,7 @@
                 tbody.innerHTML += `
                     <tr class="${esFavorito ? (isCanal() ? 'bg-[#E0F0FF]' : 'bg-[#e6f2f2]') : ''}" style="border-color: var(--border-color);">
                         <td class="p-2 font-bold ${clasePos} align-middle">${f.Posicion}</td>
-                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${escudoUrl}"></div><span class="leading-tight pr-1 ${textBold}" style="${!esFavorito ? 'color: var(--text-main);' : ''}">${f.NombreEquipo}${esFavorito ? ' <i class="fas fa-star text-[10px] text-[#D6B25A]"></i>' : ''}</span></td>
+                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${escudoUrl}"></div><span class="leading-tight pr-1 ${textBold}" style="${!esFavorito ? 'color: var(--text-main);' : ''}">${f.NombreEquipo}</span></td>
                         <td class="p-2 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
                         <td class="p-2 text-center align-middle">${calcularRacha(f.NombreEquipo)}</td>
                         <td class="p-2 text-right font-black align-middle text-base ${clasePts}">${f.Puntos}</td>
