@@ -268,7 +268,12 @@
         function esCampoExterior(p) { const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase(); return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')); }
         function isCanal() { return equipoActual && equipoActual.idDeporte === "4"; }
 
-        // Función para generar un hash consistente e inmune a formatos de fecha
+        // Identificador único y seguro para cada partido
+        function getMatchId(p) {
+            return `${p.NumeroJornada || 0}_${p.EquipoLocal}_${p.EquipoVisitante}`;
+        }
+
+        // Huella digital del estado actual del partido
         function getMatchHash(p) {
             let dateMs = 0;
             if (p.FechaHora) {
@@ -855,33 +860,36 @@
                 
                 if (!cacheResultados || cacheResultados.length === 0) throw new Error("Datos vacíos");
 
-                // LÓGICA DE SNAPSHOT (COMPARAR CON LO ÚLTIMO VISTO)
-                const snapshotKey = `snapshot_v1_${equipoActual.id}`;
+                // LÓGICA DE SNAPSHOT (VERSIÓN 3 PARA LIMPIAR ERRORES)
+                const snapshotKey = `snapshot_v3_${equipoActual.id}`;
                 let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
                 if (Array.isArray(snapshotViejo)) snapshotViejo = {};
                 const snapshotNuevo = { ...snapshotViejo };
 
                 cacheResultados.forEach(p => {
                     if (!p.EquipoLocal && !p.EquipoVisitante) return;
-                    const matchHash = getMatchHash(p); // USAMOS EL HASH SEGURO
-                    const jKey = p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : matchHash;
+                    
+                    const matchId = getMatchId(p);
+                    const matchHash = getMatchHash(p);
                     
                     let pending = false;
-                    const snapViejo = snapshotViejo[jKey];
+                    const snapViejo = snapshotViejo[matchId];
+                    
                     if (snapViejo) {
-                        if (snapViejo.hash !== matchHash) pending = true; // Cambió la hora/campo
-                        else if (snapViejo.pending) pending = true; // Ya estaba pendiente
+                        if (snapViejo.hash !== matchHash) pending = true; // Ha cambiado
+                        else if (snapViejo.pending) pending = true; // Seguía pendiente
                     }
 
-                    snapshotNuevo[jKey] = { hash: matchHash, pending: pending };
+                    snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
 
                     if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
                         p.CambioLocal = true;
                     }
                 });
 
+                // Limpiar partidos eliminados
                 Object.keys(snapshotNuevo).forEach(k => {
-                    if (!cacheResultados.some(p => (p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : getMatchHash(p)) === k)) {
+                    if (!cacheResultados.some(p => getMatchId(p) === k)) {
                         delete snapshotNuevo[k];
                     }
                 });
@@ -912,14 +920,13 @@
                     cacheClasificacion = JSON.parse(cachedClas);
                     cacheClasificacionPartidos = cacheResultados;
 
-                    const snapshotKey = `snapshot_v1_${equipoActual.id}`;
+                    const snapshotKey = `snapshot_v3_${equipoActual.id}`;
                     let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
                     if (Array.isArray(snapshotViejo)) snapshotViejo = {};
                     
                     cacheResultados.forEach(p => {
-                        const matchHash = getMatchHash(p);
-                        const jKey = p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : matchHash;
-                        if (snapshotViejo[jKey] && snapshotViejo[jKey].pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
+                        const matchId = getMatchId(p);
+                        if (snapshotViejo[matchId] && snapshotViejo[matchId].pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
                             p.CambioLocal = true;
                         }
                     });
@@ -955,25 +962,26 @@
                 
                 if (!cacheResultados || cacheResultados.length === 0) throw new Error("Datos vacíos");
 
-                // LÓGICA DE SNAPSHOT
-                const snapshotKey = `snapshot_v1_${equipoActual.id}`;
+                const snapshotKey = `snapshot_v3_${equipoActual.id}`;
                 let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
                 if (Array.isArray(snapshotViejo)) snapshotViejo = {};
                 const snapshotNuevo = { ...snapshotViejo };
 
                 cacheResultados.forEach(p => {
                     if (!p.EquipoLocal && !p.EquipoVisitante) return;
+                    
+                    const matchId = getMatchId(p);
                     const matchHash = getMatchHash(p);
-                    const jKey = p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : matchHash;
                     
                     let pending = false;
-                    const snapViejo = snapshotViejo[jKey];
+                    const snapViejo = snapshotViejo[matchId];
+                    
                     if (snapViejo) {
                         if (snapViejo.hash !== matchHash) pending = true;
                         else if (snapViejo.pending) pending = true;
                     }
 
-                    snapshotNuevo[jKey] = { hash: matchHash, pending: pending };
+                    snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
 
                     if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
                         p.CambioLocal = true;
@@ -981,7 +989,7 @@
                 });
 
                 Object.keys(snapshotNuevo).forEach(k => {
-                    if (!cacheResultados.some(p => (p.NumeroJornada !== undefined ? `J${p.NumeroJornada}` : getMatchHash(p)) === k)) {
+                    if (!cacheResultados.some(p => getMatchId(p) === k)) {
                         delete snapshotNuevo[k];
                     }
                 });
@@ -1094,7 +1102,7 @@
             const now = Date.now();
             
             misPartidosCambiados.forEach(p => {
-                let hash = getMatchHash(p); // USAMOS EL HASH SEGURO
+                let hash = getMatchHash(p);
                 dismissed[hash] = now;
             });
             
