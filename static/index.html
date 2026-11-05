@@ -799,7 +799,6 @@
             if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
         }
 
-        // MODIFICADO: Añadida la fecha en la tarjeta del equipo que descansa
         function generarHTMLPartido(p, modo = 'calendario') {
             const esCanal = isCanal();
             const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
@@ -816,10 +815,12 @@
 
             if (esDescanso) {
                 const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
+                // Si es calendario, mostramos solo el día (sin hora)
+                const textoFechaDescanso = esResultado ? `${fecha}` : `<i class="far fa-calendar-alt mr-1"></i> ${fecha}`;
                 return `
                     <div class="${claseTarjeta}">
                         <div class="flex justify-between items-center mb-2">
-                            <div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFecha}</div>
+                            <div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFechaDescanso}</div>
                         </div>
                         <div class="flex flex-col items-center justify-center w-full py-2" style="color: var(--primary-color);">
                             ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
