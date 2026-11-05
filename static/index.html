@@ -300,7 +300,6 @@
         function mostrarFormulario() { document.getElementById('screen-equipos').classList.add('hide'); document.getElementById('screen-detalle').classList.add('hide'); document.getElementById('screen-formulario').classList.remove('hide'); }
         function volverInicio() { document.getElementById('screen-formulario').classList.add('hide'); document.getElementById('screen-detalle').classList.add('hide'); document.getElementById('screen-equipos').classList.remove('hide'); renderizarEquipos(); }
 
-        // NUEVO: Función para mover equipos
         function moverEquipo(index, direccion) {
             if (direccion === -1 && index > 0) {
                 [equipos[index - 1], equipos[index]] = [equipos[index], equipos[index - 1]];
@@ -336,16 +335,13 @@
                                 <div id="posicion-${eq.id}" class="text-xs font-bold text-white/80 mt-1"></div>
                             </div>
                         </div>
-                        <div class="flex flex-col gap-2 ml-2 flex-shrink-0 items-center">
-                            <!-- NUEVOS BOTONES DE ORDENACIÓN -->
-                            <div class="flex gap-2">
-                                <button class="text-white/60 hover:text-white" onclick="event.stopPropagation(); moverEquipo(${index}, -1)"><i class="fas fa-arrow-up text-sm"></i></button>
-                                <button class="text-white/60 hover:text-white" onclick="event.stopPropagation(); moverEquipo(${index}, 1)"><i class="fas fa-arrow-down text-sm"></i></button>
-                            </div>
-                            <div class="flex gap-2">
-                                <button class="text-white/60 hover:text-white" onclick="event.stopPropagation(); editarEquipo(${index})"><i class="fas fa-pen text-sm"></i></button>
-                                <button class="text-white/60 hover:text-red-400" onclick="event.stopPropagation(); borrarEquipo(${index})"><i class="fas fa-trash-alt text-sm"></i></button>
-                            </div>
+                        <!-- BOTONES DE ACCIÓN MEJORADOS (TÁCTILES) -->
+                        <div class="flex flex-col items-center justify-center gap-1 ml-2 flex-shrink-0">
+                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-1 transition" onclick="event.stopPropagation(); moverEquipo(${index}, -1)"><i class="fas fa-arrow-up"></i></button>
+                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-3 transition" onclick="event.stopPropagation(); moverEquipo(${index}, 1)"><i class="fas fa-arrow-down"></i></button>
+                            
+                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-1 transition" onclick="event.stopPropagation(); editarEquipo(${index})"><i class="fas fa-pen text-sm"></i></button>
+                            <button class="bg-black/20 hover:bg-red-500/80 rounded-full w-9 h-9 flex items-center justify-center text-red-300 transition" onclick="event.stopPropagation(); borrarEquipo(${index})"><i class="fas fa-trash-alt text-sm"></i></button>
                         </div>
                     </div>
                     <div id="proximo-partido-${eq.id}" class="mt-3 pt-3 border-t border-white/20 w-full text-sm text-white/90"></div>
@@ -402,14 +398,15 @@
                     const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
                     const esLocal = partido.EquipoLocal === eq.equipoFavorito;
                     
+                    // ICONO CASA/FUERA (ALINEADO A LA DERECHA, FONDO BLANCO E ICONO NEGRO)
                     const iconoLocalia = esLocal 
-                        ? `<div class="inline-flex items-center justify-center bg-black text-white rounded w-6 h-6 ml-2 text-xs shadow-sm"><i class="fas fa-home"></i></div>` 
-                        : `<div class="inline-flex items-center justify-center bg-black text-white rounded w-6 h-6 ml-2 text-xs shadow-sm"><i class="fas fa-plane"></i></div>`;
+                        ? `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-home"></i></div>` 
+                        : `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-plane"></i></div>`;
 
                     htmlFinal = `
-                        <div class="flex flex-col gap-1">
-                            <div class="text-lg font-bold flex items-center">
-                                <i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h
+                        <div class="flex flex-col gap-1 w-full">
+                            <div class="text-lg font-bold flex items-center justify-between w-full">
+                                <div><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div>
                                 ${iconoLocalia}
                             </div>
                             <div class="text-lg font-normal">vs. ${acortarNombre(rival)}${rivalPos}</div>
@@ -682,6 +679,7 @@
                 setTimeout(() => {
                     document.getElementById('pantalla-carga').classList.add('oculto');
                     btn.querySelector('i').classList.remove('spin-anim');
+                    // Al llamar a actualizarUIJornadas, los selects se resetean a su vista predefinida
                     actualizarUIJornadas();
                     if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
                     if (!document.getElementById('tab-clasificacion').classList.contains('hide')) renderizarClasificacionUI();
@@ -752,6 +750,9 @@
                 const ultimaJornada = Number(partidosJugados[0].NumeroJornada);
                 const idx = jornadasData.findIndex(j => Number(j.NumeroJornada) === ultimaJornada);
                 if (idx !== -1) indiceSeleccionadoRes = idx;
+            } else {
+                // Si no hay partidos jugados, igualamos Resultados al Calendario (Jornada 1)
+                indiceSeleccionadoRes = indiceSeleccionadoCal;
             }
 
             // Rellenar Select Calendario
@@ -910,9 +911,7 @@
             let partidosBase = cacheResultados;
             if (soloMiEquipo) partidosBase = partidosBase.filter(p => p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito);
 
-            // Filtrar solo los partidos que ya se han jugado (fecha pasada o resultado > 0)
-            const hoy = new Date(); hoy.setHours(0,0,0,0);
-            partidosBase = partidosBase.filter(p => p.FechaHora && new Date(p.FechaHora) < hoy || p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0);
+            // EL FILTRO ESTRICTO SE HA ELIMINADO PARA QUE SE VEAN LOS PARTIDOS NO JUGADOS EN ECM
 
             if (numJornada === 0) {
                 // Vista agrupada por todas las jornadas
