@@ -283,7 +283,6 @@
             try {
                 let lat, lon;
                 
-                // Coordenadas fijas para Canal (Avenida de Filipinas, 11)
                 if (direccion.includes("El Parque Santander") || direccion.includes("Avenida de Filipinas")) {
                     lat = 40.44372331454751;
                     lon = -3.706714444750114;
@@ -490,7 +489,7 @@
                             <div class="text-lg font-bold flex items-center justify-between w-full">
                                 <div><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div>
                                 <div class="flex items-center gap-2">
-                                    <span id="clima-${eq.id}" class="text-lg"></span>
+                                    <div id="clima-${eq.id}" class="inline-flex items-center justify-center bg-white rounded w-6 h-6 text-xs shadow-sm"></div>
                                     ${iconoLocalia}
                                     <button onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')" class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm hover:bg-gray-200 transition"><i class="fas fa-map-marker-alt"></i></button>
                                 </div>
@@ -951,6 +950,10 @@
             let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
             let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
 
+            // Estrella para el equipo favorito
+            const estrellaLocal = esLocalFav ? `<i class="fas fa-star text-[#D6B25A] text-[10px] ml-1"></i>` : '';
+            const estrellaVis = esVisFav ? `<i class="fas fa-star text-[#D6B25A] text-[10px] ml-1"></i>` : '';
+
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             const esPasado = p.FechaHora && new Date(p.FechaHora) < hoy;
             const marcador = (esPasado || p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) 
@@ -961,9 +964,9 @@
                 <div class="${claseTarjeta}">
                     <div class="flex justify-between items-center mb-2"><div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFecha}</div>${htmlCampo}</div>
                     <div class="flex justify-between items-center w-full my-2">
-                        <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}</div></div>
+                        <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}${estrellaLocal}</div></div>
                         <div class="px-2 flex flex-col items-center justify-center h-10">${marcador}</div>
-                        <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}</div></div>
+                        <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}${estrellaVis}</div></div>
                     </div>
                     ${htmlMapa}
                     ${botonesExtra}
@@ -1074,7 +1077,7 @@
                 tbody.innerHTML += `
                     <tr class="${esFavorito ? (isCanal() ? 'bg-[#E0F0FF]' : 'bg-[#e6f2f2]') : ''}" style="border-color: var(--border-color);">
                         <td class="p-2 font-bold ${clasePos} align-middle">${f.Posicion}</td>
-                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${escudoUrl}"></div><span class="leading-tight pr-1 ${textBold}" style="${!esFavorito ? 'color: var(--text-main);' : ''}">${f.NombreEquipo}</span></td>
+                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${escudoUrl}"></div><span class="leading-tight pr-1 ${textBold}" style="${!esFavorito ? 'color: var(--text-main);' : ''}">${f.NombreEquipo}${esFavorito ? ' <i class="fas fa-star text-[10px] text-[#D6B25A]"></i>' : ''}</span></td>
                         <td class="p-2 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
                         <td class="p-2 text-center align-middle">${calcularRacha(f.NombreEquipo)}</td>
                         <td class="p-2 text-right font-black align-middle text-base ${clasePts}">${f.Puntos}</td>
