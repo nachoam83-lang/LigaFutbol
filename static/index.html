@@ -64,9 +64,25 @@
         .escudo-circulo-sm { width: 32px; height: 32px; background-color: white; border-radius: 50%; padding: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; margin-right: 8px; flex-shrink: 0; overflow: hidden; }
         .escudo-circulo-sm img { width: 100%; height: 100%; object-fit: contain; }
         .escudo-main-img { border-radius: 50%; object-fit: cover; width: 100%; height: 100%; }
+
+        /* Modal para elegir mapa */
+        #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
     </style>
 </head>
 <body class="pb-20">
+
+    <!-- MODAL PARA ELEGIR APP DE MAPAS -->
+    <div id="modal-mapa" class="fixed inset-0 bg-black/50 z-50 hide flex items-end justify-center opacity-0 transition-opacity" onclick="cerrarModalMapa()">
+        <div class="bg-white w-full max-w-md rounded-t-2xl p-4 pb-8" onclick="event.stopPropagation()">
+            <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4"></div>
+            <h3 class="text-center font-bold text-gray-800 mb-4">Abrir ruta en...</h3>
+            <div class="space-y-3">
+                <button onclick="abrirRuta('waze')" class="w-full bg-[#00d2ff] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fab fa-waze text-xl"></i> Waze</button>
+                <button onclick="abrirRuta('google')" class="w-full bg-white border border-gray-300 text-gray-800 font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fab fa-google text-red-500 text-xl"></i> Google Maps</button>
+                <button onclick="abrirRuta('apple')" class="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fab fa-apple text-xl"></i> Apple Maps</button>
+            </div>
+        </div>
+    </div>
 
     <div id="pantalla-carga" class="oculto">
         <div class="loader-juego mb-6"><div class="escudo-wrapper"><img id="carga-escudo" src="/static/logo.png" alt="Escudo"></div></div>
@@ -210,6 +226,7 @@
         let cacheProximoPartido = {}; 
         let cacheEquipoAbiertoId = null; 
         let cacheCanal = {}; 
+        let rutaActualMapa = "";
 
         async function fetchWithTimeout(resource, options = {}) {
             const { timeout = 5000 } = options;
@@ -239,6 +256,69 @@
         function refrescarApp() { const icono = document.querySelector('#btn-refresh i'); icono.classList.add('spin-anim'); cacheProximoPartido = {}; setTimeout(() => { renderizarEquipos(); icono.classList.remove('spin-anim'); }, 500); }
         
         document.addEventListener('DOMContentLoaded', () => { renderizarEquipos(); cargarCompeticiones(2); });
+
+        // --- FUNCIONES DEL MAPA ---
+        function abrirModalMapa(dir) {
+            rutaActualMapa = dir;
+            const modal = document.getElementById('modal-mapa');
+            modal.classList.remove('hide');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function cerrarModalMapa() {
+            const modal = document.getElementById('modal-mapa');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hide'), 300);
+        }
+
+        function abrirRuta(app) {
+            let url = "";
+            const destino = encodeURIComponent(rutaActualMapa);
+            if (app === 'waze') url = `https://waze.com/ul?q=${destino}`;
+            else if (app === 'google') url = `https://www.google.com/maps/dir/?api=1&destination=${destino}`;
+            else if (app === 'apple') url = `http://maps.apple.com/?daddr=${destino}`;
+            
+            window.open(url, '_blank');
+            cerrarModalMapa();
+        }
+
+        // --- FUNCIÓN DEL CLIMA ---
+        async function obtenerClimaIcono(direccion, fechaHora) {
+            try {
+                // 1. Geocodificar dirección
+                const resGeo = await fetchWithTimeout(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(direccion)}`, { headers: { 'User-Agent': 'LigasInfantilesApp/1.0' } });
+                const geoData = await resGeo.json();
+                if (!geoData || geoData.length === 0) return '';
+
+                const lat = geoData[0].lat;
+                const lon = geoData[0].lon;
+                const fecha = fechaHora.split('T')[0];
+
+                // 2. Obtener clima para esa fecha
+                const resClima = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code&start_date=${fecha}&end_date=${fecha}`);
+                const climaData = await resClima.json();
+                
+                // 3. Mapear código WMO a FontAwesome
+                // Tomamos el código de la hora del partido (o el mediodía si falla)
+                const horaObj = fechaHora.split('T')[1];
+                const horaStr = horaObj ? horaObj.substring(0, 2) + ":00" : "12:00";
+                const index = climaData.hourly.time.findIndex(t => t.endsWith(horaStr));
+                const code = index !== -1 ? climaData.hourly.weather_code[index] : climaData.hourly.weather_code[12];
+
+                if (code === 0) return 'fa-sun text-yellow-500';
+                if (code === 1 || code === 2) return 'fa-cloud-sun text-yellow-600';
+                if (code === 3) return 'fa-cloud text-gray-400';
+                if (code >= 45 && code <= 48) return 'fa-smog text-gray-500';
+                if (code >= 51 && code <= 67) return 'fa-cloud-rain text-blue-500';
+                if (code >= 71 && code <= 77) return 'fa-snowflake text-blue-300';
+                if (code >= 80 && code <= 82) return 'fa-cloud-showers-heavy text-blue-600';
+                if (code >= 95) return 'fa-cloud-bolt text-yellow-500';
+
+            } catch (e) {
+                console.log("Error clima", e);
+            }
+            return '';
+        }
 
         function prepararNuevoEquipo() {
             editandoEquipoId = null;
@@ -400,6 +480,7 @@
                     const hora = partido.FechaHora ? partido.FechaHora.split('T')[1].substring(0,5) : '';
                     const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
                     const esLocal = partido.EquipoLocal === eq.equipoFavorito;
+                    const dirCompleta = (eq.idDeporte === "4") ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(partido);
                     
                     const iconoLocalia = esLocal 
                         ? `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-home"></i></div>` 
@@ -409,10 +490,23 @@
                         <div class="flex flex-col gap-1 w-full">
                             <div class="text-lg font-bold flex items-center justify-between w-full">
                                 <div><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div>
-                                ${iconoLocalia}
+                                <div class="flex items-center gap-2">
+                                    <span id="clima-${eq.id}" class="text-lg"></span>
+                                    ${iconoLocalia}
+                                    <button onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')" class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm hover:bg-gray-200 transition"><i class="fas fa-map-marker-alt"></i></button>
+                                </div>
                             </div>
                             <div class="text-lg font-normal">vs. ${acortarNombre(rival)}${rivalPos}</div>
                         </div>`;
+                    
+                    // Cargar clima asíncronamente
+                    setTimeout(async () => {
+                        const elClima = document.getElementById(`clima-${eq.id}`);
+                        if (elClima) {
+                            const iconoClima = await obtenerClimaIcono(dirCompleta, partido.FechaHora);
+                            if (iconoClima) elClima.innerHTML = `<i class="fas ${iconoClima}"></i>`;
+                        }
+                    }, 100);
                 }
 
                 divProximo.innerHTML = htmlFinal;
@@ -815,7 +909,6 @@
 
             if (esDescanso) {
                 const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
-                // Si es calendario, mostramos solo el día (sin hora)
                 const textoFechaDescanso = esResultado ? `${fecha}` : `<i class="far fa-calendar-alt mr-1"></i> ${fecha}`;
                 return `
                     <div class="${claseTarjeta}">
