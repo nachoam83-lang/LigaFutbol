@@ -799,7 +799,7 @@
             if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
         }
 
-        // MODIFICADO: Añadido el parámetro 'modo'
+        // MODIFICADO: Añadida la fecha en la tarjeta del equipo que descansa
         function generarHTMLPartido(p, modo = 'calendario') {
             const esCanal = isCanal();
             const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
@@ -810,10 +810,17 @@
             const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
             const esResultado = (modo === 'resultados');
 
+            const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
+            const hora = p.FechaHora ? p.FechaHora.split('T')[1].substring(0,5) : '';
+            const textoFecha = esResultado ? `${fecha}` : `<i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h`;
+
             if (esDescanso) {
                 const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
                 return `
                     <div class="${claseTarjeta}">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFecha}</div>
+                        </div>
                         <div class="flex flex-col items-center justify-center w-full py-2" style="color: var(--primary-color);">
                             ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
                             <div class="text-sm font-bold text-center"><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div>
@@ -821,12 +828,8 @@
                     </div>`;
             }
 
-            const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
-            const hora = p.FechaHora ? p.FechaHora.split('T')[1].substring(0,5) : '';
             const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
             
-            // En resultados no mostramos la hora ni el campo
-            const textoFecha = esResultado ? `${fecha}` : `<i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h`;
             let htmlCampo = '';
             if (!esResultado) {
                 htmlCampo = esCanal ? `<span class="inline-flex items-center text-white font-bold bg-[#00509E] px-2 py-0.5 rounded text-sm">${p.Campo || 'Campo'}</span>` 
@@ -834,13 +837,11 @@
                                           : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-sm"><i class="fas fa-building mr-1"></i> Pabellón</span>`);
             }
             
-            // En resultados no mostramos la dirección
             let htmlMapa = '';
             if (!esResultado) {
                 htmlMapa = `<div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: #f87171;"></i><a href="http://maps.apple.com/?q=${encodeURIComponent(dirCompleta)}" target="_blank" class="font-bold text-blue-500 hover:underline">${dirCompleta}</a></div>`;
             }
 
-            // En resultados no mostramos botones extra
             let botonesExtra = '';
             if (!esResultado && esFavorito) {
                 const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
@@ -899,13 +900,11 @@
                                 Jornada ${j}
                             </span>
                         </div>`;
-                    // Llamada con 'calendario'
                     agrupados[j].forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'calendario'); });
                 });
             } else {
                 let partidos = partidosBase.filter(p => p.NumeroJornada == numJornada);
                 if (partidos.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay partidos.</p>';
-                // Llamada con 'calendario'
                 partidos.forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'calendario'); });
             }
         }
@@ -932,13 +931,11 @@
                                 Jornada ${j}
                             </span>
                         </div>`;
-                    // Llamada con 'resultados'
                     agrupados[j].forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'resultados'); });
                 });
             } else {
                 let partidos = partidosBase.filter(p => p.NumeroJornada == numJornada);
                 if (partidos.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay resultados.</p>';
-                // Llamada con 'resultados'
                 partidos.forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'resultados'); });
             }
         }
