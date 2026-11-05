@@ -1237,4 +1237,171 @@
             let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
             let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
 
-            const hoy = new Date();
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            const esPasado = p.FechaHora && new Date(p.FechaHora) < hoy;
+            const marcador = (esPasado || p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) 
+                ? `<span class="text-xl font-black" style="color: var(--primary-color);">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>`
+                : `<span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>`;
+
+            return `
+                <div class="${claseTarjeta}">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFecha}</div>
+                        ${htmlCampo}
+                    </div>
+                    <div class="flex justify-between items-center w-full my-2">
+                        <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}</div></div>
+                        <div class="px-2 flex flex-col items-center justify-center">
+                            ${haCambiado && esFavorito ? warningSvg : ''}
+                            <div class="h-10 flex items-center">${marcador}</div>
+                        </div>
+                        <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}</div></div>
+                    </div>
+                    ${htmlMapa}
+                    ${botonesExtra}
+                </div>`;
+        }
+
+        function renderizarCalendarioUI() {
+            const numJornada = parseInt(document.getElementById('select-jornada-cal').value);
+            const contenedor = document.getElementById('lista-calendario');
+            contenedor.innerHTML = '';
+
+            let partidosBase = cacheResultados;
+            if (soloMiEquipo) partidosBase = partidosBase.filter(p => p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito);
+
+            if (numJornada === 0) {
+                const agrupados = {};
+                partidosBase.forEach(p => { const j = p.NumeroJornada || 0; if(!agrupados[j]) agrupados[j] = []; agrupados[j].push(p); });
+                
+                const jornadasOrdenadas = Object.keys(agrupados).sort((a,b) => Number(a) - Number(b));
+                if (jornadasOrdenadas.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay partidos.</p>';
+
+                jornadasOrdenadas.forEach(j => {
+                    contenedor.innerHTML += `
+                        <div class="flex justify-center mt-8 mb-4">
+                            <span class="px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest shadow-md text-white" style="background-color: var(--primary-color);">
+                                Jornada ${j}
+                            </span>
+                        </div>`;
+                    agrupados[j].forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'calendario'); });
+                });
+            } else {
+                let partidos = partidosBase.filter(p => p.NumeroJornada == numJornada);
+                if (partidos.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay partidos.</p>';
+                partidos.forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'calendario'); });
+            }
+        }
+
+        function renderizarResultadosUI() {
+            const numJornada = parseInt(document.getElementById('select-jornada-res').value);
+            const contenedor = document.getElementById('lista-resultados');
+            contenedor.innerHTML = '';
+
+            let partidosBase = cacheResultados;
+            if (soloMiEquipo) partidosBase = partidosBase.filter(p => p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito);
+
+            if (numJornada === 0) {
+                const agrupados = {};
+                partidosBase.forEach(p => { const j = p.NumeroJornada || 0; if(!agrupados[j]) agrupados[j] = []; agrupados[j].push(p); });
+                
+                const jornadasOrdenadas = Object.keys(agrupados).sort((a,b) => Number(a) - Number(b));
+                if (jornadasOrdenadas.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay resultados.</p>';
+
+                jornadasOrdenadas.forEach(j => {
+                    contenedor.innerHTML += `
+                        <div class="flex justify-center mt-8 mb-4">
+                            <span class="px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest shadow-md text-white" style="background-color: var(--primary-color);">
+                                Jornada ${j}
+                            </span>
+                        </div>`;
+                    agrupados[j].forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'resultados'); });
+                });
+            } else {
+                let partidos = partidosBase.filter(p => p.NumeroJornada == numJornada);
+                if (partidos.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay resultados.</p>';
+                partidos.forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'resultados'); });
+            }
+        }
+
+        function renderizarClasificacionUI() {
+            const tbody = document.getElementById('tabla-clasificacion');
+            const filas = cacheClasificacion;
+            const todosLosPartidos = cacheClasificacionPartidos;
+            tbody.innerHTML = '';
+            
+            const btnComp = document.getElementById('btn-compartir-clasificacion');
+            if(btnComp) {
+                const primaryRgb = isCanal() ? '0, 80, 158' : '0, 109, 111';
+                btnComp.style.backgroundColor = `rgba(${primaryRgb}, 0.05)`;
+                btnComp.style.borderColor = `rgba(${primaryRgb}, 0.2)`;
+                btnComp.style.color = 'var(--primary-color)';
+            }
+
+            if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
+
+            function calcularRacha(nombreEquipo) {
+                const partidosEquipo = todosLosPartidos.filter(p => 
+                    (p.EquipoLocal === nombreEquipo || p.EquipoVisitante === nombreEquipo) && 
+                    (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) &&
+                    p.NumeroJornada !== 12
+                ).sort((a, b) => a.NumeroJornada - b.NumeroJornada);
+                
+                const ultimos5 = partidosEquipo.slice(-5);
+                if (ultimos5.length === 0) return '<span class="text-xs" style="color:var(--text-sec)">-</span>';
+                return ultimos5.map(p => {
+                    const isLocal = p.EquipoLocal === nombreEquipo; const gf = isLocal ? p.ResultadoEquipoLocal : p.ResultadoEquipoVisitante; const gc = isLocal ? p.ResultadoEquipoVisitante : p.ResultadoEquipoLocal;
+                    if (gf > gc) return '<span class="streak-dot streak-v"></span>'; if (gf < gc) return '<span class="streak-dot streak-d"></span>'; return '<span class="streak-dot streak-e"></span>';
+                }).join('');
+            }
+
+            filas.forEach(f => {
+                const esPrimero = f.Posicion === 1;
+                const esFavorito = f.NombreEquipo === equipoActual.equipoFavorito;
+                const partidosJugados = f.Jugados !== undefined ? f.Jugados : (f.PJ !== undefined ? f.PJ : 0);
+
+                let escudoUrl = f.URLEscudo || '/static/logo.png';
+                if (isCanal()) {
+                    if (esFavorito) {
+                        escudoUrl = equipoActual.escudoFavorito || '/static/logo.png';
+                    } else {
+                        escudoUrl = '/static/Equipo_Canal.png';
+                    }
+                }
+
+                let rowStyle = "border-color: var(--border-color);";
+                let posColor = esPrimero ? 'text-[#997A00] font-black' : 'text-gray-600';
+                let ptsColor = esPrimero ? 'text-[#997A00]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
+                let nameColor = esPrimero ? 'style="color: #997A00; font-weight: 900;"' : (esFavorito ? `style="color: ${isCanal() ? '#00509E' : '#006D6F'}; font-weight: 900;"` : 'style="color: var(--text-main);"');
+                let crownIcon = esPrimero ? ' <i class="fas fa-crown text-[#D6B25A] text-xs ml-1"></i>' : '';
+                let rowClass = '';
+
+                if (esPrimero) {
+                    rowStyle = "background-color: rgba(214, 178, 90, 0.15); border-left: 4px solid #D6B25A;";
+                } else if (esFavorito) {
+                    rowClass = isCanal() ? 'bg-[#E0F0FF]' : 'bg-[#e6f2f2]';
+                }
+
+                tbody.innerHTML += `
+                    <tr class="${rowClass}" style="${rowStyle}">
+                        <td class="p-2 font-bold ${posColor} align-middle">${f.Posicion}</td>
+                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${escudoUrl}"></div><span class="leading-tight pr-1 ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></td>
+                        <td class="p-2 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
+                        <td class="p-2 text-center align-middle">${calcularRacha(f.NombreEquipo)}</td>
+                        <td class="p-2 text-right font-black align-middle text-base ${ptsColor}">${f.Puntos}</td>
+                    </tr>`;
+            });
+        }
+
+        function compartirClasificacion() {
+            if (!cacheClasificacion || cacheClasificacion.length === 0) return;
+            let texto = `🏆 Clasificación - ${equipoActual.nombre} (${equipoActual.nombreCompeticion})\n\n`;
+            cacheClasificacion.forEach(f => { 
+                const pj = f.Jugados !== undefined ? f.Jugados : (f.PJ !== undefined ? f.PJ : 0);
+                texto += `${f.Posicion}. ${f.NombreEquipo} - ${f.Puntos} pts (${pj} PJ)\n`; 
+            });
+            window.location.href = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+        }
+    </script>
+</body>
+</html>
