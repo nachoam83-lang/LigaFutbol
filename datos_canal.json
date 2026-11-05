@@ -2402,7 +2402,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 2,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 6,
