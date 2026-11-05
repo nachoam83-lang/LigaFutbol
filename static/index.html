@@ -336,6 +336,14 @@
             return '';
         }
 
+        async function cargarClimaTarjeta(id, dir, fecha) {
+            const elClima = document.getElementById(`clima-${id}`);
+            if (elClima) {
+                const iconoClima = await obtenerClimaIcono(dir, fecha);
+                if (iconoClima) elClima.innerHTML = `<i class="fas ${iconoClima}"></i>`;
+            }
+        }
+
         function prepararNuevoEquipo() {
             editandoEquipoId = null;
             document.getElementById('titulo-formulario').innerText = "Añadir Jugador";
@@ -449,6 +457,9 @@
                 if (cacheProximoPartido[eq.id]) {
                     document.getElementById(`proximo-partido-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].html;
                     document.getElementById(`posicion-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].pos;
+                    if (cacheProximoPartido[eq.id].dir && cacheProximoPartido[eq.id].fecha) {
+                        cargarClimaTarjeta(eq.id, cacheProximoPartido[eq.id].dir, cacheProximoPartido[eq.id].fecha);
+                    }
                 } else {
                     cargarProximoPartido(eq);
                 }
@@ -491,12 +502,16 @@
                 }
 
                 let htmlFinal = `<i class="far fa-calendar-alt mr-1"></i> Sin partidos próximos`;
+                let dirCompleta = "";
+                let fechaHoraPartido = "";
+
                 if (partido) {
                     const fecha = partido.FechaHora ? partido.FechaHora.split('T')[0].split('-').reverse().join('/') : '';
                     const hora = partido.FechaHora ? partido.FechaHora.split('T')[1].substring(0,5) : '';
                     const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
                     const esLocal = partido.EquipoLocal === eq.equipoFavorito;
-                    const dirCompleta = (eq.idDeporte === "4") ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(partido);
+                    dirCompleta = (eq.idDeporte === "4") ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(partido);
+                    fechaHoraPartido = partido.FechaHora;
                     
                     const iconoLocalia = esLocal 
                         ? `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-home"></i></div>` 
@@ -514,20 +529,17 @@
                             </div>
                             <div class="text-lg font-normal">vs. ${acortarNombre(rival)}${rivalPos}</div>
                         </div>`;
-                    
-                    setTimeout(async () => {
-                        const elClima = document.getElementById(`clima-${eq.id}`);
-                        if (elClima) {
-                            const iconoClima = await obtenerClimaIcono(dirCompleta, partido.FechaHora);
-                            if (iconoClima) elClima.innerHTML = `<i class="fas ${iconoClima}"></i>`;
-                        }
-                    }, 100);
                 }
 
                 divProximo.innerHTML = htmlFinal;
                 divPos.innerHTML = statsHTML;
                 
-                cacheProximoPartido[eq.id] = { html: htmlFinal, pos: statsHTML };
+                cacheProximoPartido[eq.id] = { html: htmlFinal, pos: statsHTML, dir: dirCompleta, fecha: fechaHoraPartido };
+                
+                if (dirCompleta && fechaHoraPartido) {
+                    setTimeout(() => { cargarClimaTarjeta(eq.id, dirCompleta, fechaHoraPartido); }, 100);
+                }
+
             } catch (e) { 
                 const cachedPos = localStorage.getItem(`pos_${eq.id}`);
                 if (cachedPos) {
@@ -619,7 +631,7 @@
             if (!idGrupo) { panel.classList.add('hide'); return; }
 
             if (idDep === "4") {
-                equipoSeleccionadoVisual = { nombre: idGrupo, escudo: "/static/escudo_canal.png" };
+                equipoSeleccionadoVisual = { nombre: idGrupo, escudo: "/static/Equipo_Canal.png" };
                 document.getElementById('btn-guardar').disabled = false;
                 panel.classList.add('hide');
                 return;
@@ -964,8 +976,16 @@
                     </div>`;
             }
 
-            let htmlEscLocal = esCanal ? `<div class="escudo-circulo"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoLocal || '/static/logo.png'}"></div>`;
-            let htmlEscVis = esCanal ? `<div class="escudo-circulo" style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"><img src="/static/escudo_canal.png"></div>` : `<div class="escudo-circulo"><img src="${p.URLEscudoEquipoVisitante || '/static/logo.png'}"></div>`;
+            let escudoLocal = p.URLEscudoEquipoLocal || '/static/logo.png';
+            let escudoVisitante = p.URLEscudoEquipoVisitante || '/static/logo.png';
+
+            if (esCanal) {
+                escudoLocal = esLocalFav ? (equipoActual.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
+                escudoVisitante = esVisFav ? (equipoActual.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
+            }
+
+            let htmlEscLocal = `<div class="escudo-circulo"><img src="${escudoLocal}"></div>`;
+            let htmlEscVis = `<div class="escudo-circulo" ${esCanal && !esVisFav ? 'style="background-color: rgba(0, 80, 158, 0.3); border: 1px solid #00509E;"' : ''}><img src="${escudoVisitante}"></div>`;
             
             let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
             let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
@@ -1087,7 +1107,15 @@
                 const clasePos = f.Posicion === 1 ? 'text-[#D6B25A]' : 'text-gray-600'; const clasePts = f.Posicion === 1 ? 'text-[#D6B25A]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
                 const partidosJugados = f.Jugados !== undefined ? f.Jugados : (f.PJ !== undefined ? f.PJ : 0);
 
-                const escudoUrl = isCanal() ? '/static/escudo_canal.png' : (f.URLEscudo || '/static/logo.png');
+                let escudoUrl = f.URLEscudo || '/static/logo.png';
+                if (isCanal()) {
+                    if (esFavorito) {
+                        escudoUrl = equipoActual.escudoFavorito || '/static/logo.png';
+                    } else {
+                        escudoUrl = '/static/Equipo_Canal.png';
+                    }
+                }
+
                 const textBold = esFavorito ? (isCanal() ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : 'font-bold';
 
                 tbody.innerHTML += `
