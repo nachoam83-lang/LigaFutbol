@@ -238,7 +238,6 @@
         let cacheResultados = null;
         let cacheClasificacion = null;
         let cacheClasificacionPartidos = null;
-        // GUARDAR CACHÉ DE PARTIDOS EN LOCALSTORAGE
         let cacheProximoPartido = JSON.parse(localStorage.getItem('cache_proximo_partido')) || {}; 
         let cacheEquipoAbiertoId = null; 
         let cacheCanal = {}; 
@@ -391,7 +390,6 @@
             }
         }
 
-        // --- LÓGICA DE ORDENACIÓN AUTOMÁTICA ---
         function toggleAutoOrden() {
             autoOrden = !autoOrden;
             localStorage.setItem('auto_orden', autoOrden);
@@ -402,8 +400,8 @@
         function actualizarBotonOrden() {
             const icon = document.getElementById('icono-auto-orden');
             if (icon) {
-                if (autoOrden) icon.style.color = '#D6B25A'; // Dorado
-                else icon.style.color = 'rgba(255,255,255,0.5)'; // Blanco translúcido
+                if (autoOrden) icon.style.color = '#D6B25A';
+                else icon.style.color = 'rgba(255,255,255,0.5)';
             }
         }
 
@@ -508,7 +506,6 @@
                 return; 
             }
 
-            // Si el orden automático está activo, ordenamos una copia para pintar
             let equiposAMostrar = [...equipos];
             if (autoOrden) {
                 equiposAMostrar.sort((a, b) => {
@@ -528,7 +525,6 @@
                 div.style.backgroundColor = colorFondo;
                 div.onclick = () => abrirEquipo(realIndex);
                 
-                // Ocultar flechas si el auto-orden está activo
                 const flechasHTML = autoOrden ? '' : `
                     <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-1 transition" onclick="event.stopPropagation(); moverEquipo(${realIndex}, -1)"><i class="fas fa-arrow-up"></i></button>
                     <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-2 transition" onclick="event.stopPropagation(); moverEquipo(${realIndex}, 1)"><i class="fas fa-arrow-down"></i></button>
@@ -558,7 +554,6 @@
                 `;
                 contenedor.appendChild(div);
                 
-                // PINTAR DESDE CACHÉ (ESTO ARREGLA EL MODO OFFLINE)
                 if (cacheProximoPartido[eq.id]) {
                     document.getElementById(`proximo-partido-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].html;
                     document.getElementById(`posicion-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].pos;
@@ -576,7 +571,6 @@
             const divPos = document.getElementById(`posicion-${eq.id}`);
             if (!divProximo) return;
             
-            // Si ya hay datos, no mostramos el spinner, así no parpadea en offline
             if (!cacheProximoPartido[eq.id]) {
                 divProximo.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Buscando datos...';
             }
@@ -647,7 +641,6 @@
                 divPos.innerHTML = statsHTML;
                 
                 cacheProximoPartido[eq.id] = { html: htmlFinal, pos: statsHTML, dir: dirCompleta, fecha: fechaHoraPartido, timestamp: timestampPartido };
-                // GUARDAR EN LOCALSTORAGE PARA QUE SOBREVIVA AL MODO OFFLINE
                 localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido));
                 
                 if (dirCompleta && fechaHoraPartido) {
@@ -657,7 +650,6 @@
                 ordenarEquiposVisualmente();
 
             } catch (e) { 
-                // Si falla (offline) y ya tenemos datos en caché, no hacemos nada (se queda lo que ya había)
                 if (!cacheProximoPartido[eq.id]) {
                     divProximo.innerHTML = `No se pudo cargar el próximo partido`; 
                 }
@@ -1051,6 +1043,9 @@
             const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
             const hora = p.FechaHora ? p.FechaHora.split('T')[1].substring(0,5) : '';
             const textoFecha = esResultado ? `${fecha}` : `<i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h`;
+            
+            // NUEVO ICONO DE CAMBIO
+            const htmlCambio = p.Cambio ? `<i class="fas fa-exclamation-triangle text-red-500 ml-2" title="Horario o campo modificado"></i>` : '';
 
             if (esDescanso) {
                 const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
@@ -1058,7 +1053,10 @@
                 return `
                     <div class="${claseTarjeta}">
                         <div class="flex justify-between items-center mb-2">
-                            <div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFechaDescanso}</div>
+                            <div class="font-extrabold text-[13px] uppercase flex items-center" style="color: var(--primary-color);">
+                                ${textoFechaDescanso}
+                                ${htmlCambio}
+                            </div>
                         </div>
                         <div class="flex flex-col items-center justify-center w-full py-2" style="color: var(--primary-color);">
                             ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
@@ -1123,7 +1121,13 @@
 
             return `
                 <div class="${claseTarjeta}">
-                    <div class="flex justify-between items-center mb-2"><div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFecha}</div>${htmlCampo}</div>
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="font-extrabold text-[13px] uppercase flex items-center" style="color: var(--primary-color);">
+                            ${textoFecha}
+                            ${htmlCambio}
+                        </div>
+                        ${htmlCampo}
+                    </div>
                     <div class="flex justify-between items-center w-full my-2">
                         <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}</div></div>
                         <div class="px-2 flex flex-col items-center justify-center h-10">${marcador}</div>
