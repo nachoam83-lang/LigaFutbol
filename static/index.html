@@ -158,23 +158,25 @@
                 <button onclick="cerrarBanner()" class="text-red-700 hover:text-red-900 ml-2"><i class="fas fa-times text-lg"></i></button>
             </div>
             <div class="flex gap-2 mb-2">
-                <select id="select-jornada-cal" onchange="renderizarCalendarioUI()" class="flex-1 p-3 rounded-full shadow-md text-sm font-black uppercase tracking-widest text-white text-center appearance-none" style="background-color: var(--primary-color); border: none; outline: none;"></select>
-                <button onclick="toggleFiltro()" id="btn-filtro-cal" class="px-4 py-3 rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);"><i class="fas fa-filter mr-1"></i> Todos</button>
+                <select id="select-jornada-cal" onchange="renderizarCalendarioUI()" class="flex-1 h-[46px] px-4 rounded-full shadow-md text-sm font-black uppercase tracking-widest text-white text-center appearance-none" style="background-color: var(--primary-color); border: none; outline: none;"></select>
+                <button onclick="toggleFiltro()" id="btn-filtro-cal" class="h-[46px] px-4 rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);"><i class="fas fa-filter mr-1"></i> Todos</button>
             </div>
             <div id="lista-calendario" class="space-y-3"></div>
         </div>
 
         <div id="tab-resultados" class="hide p-4 space-y-4">
             <div class="flex gap-2 mb-2">
-                <select id="select-jornada-res" onchange="renderizarResultadosUI()" class="flex-1 p-3 rounded-full shadow-md text-sm font-black uppercase tracking-widest text-white text-center appearance-none" style="background-color: var(--primary-color); border: none; outline: none;"></select>
-                <button onclick="toggleFiltro()" id="btn-filtro-res" class="px-4 py-3 rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);"><i class="fas fa-filter mr-1"></i> Todos</button>
+                <select id="select-jornada-res" onchange="renderizarResultadosUI()" class="flex-1 h-[46px] px-4 rounded-full shadow-md text-sm font-black uppercase tracking-widest text-white text-center appearance-none" style="background-color: var(--primary-color); border: none; outline: none;"></select>
+                <button onclick="toggleFiltro()" id="btn-filtro-res" class="h-[46px] px-4 rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);"><i class="fas fa-filter mr-1"></i> Todos</button>
             </div>
             <div id="lista-resultados" class="space-y-3"></div>
         </div>
 
         <div id="tab-clasificacion" class="hide p-4">
-            <div class="flex justify-end mb-2">
-                <button onclick="compartirClasificacion()" class="flex items-center gap-2 bg-white px-3 py-1.5 rounded-lg shadow-sm border text-xs font-bold" style="border-color: var(--border-color); color: var(--primary-color);"><i class="fas fa-share-alt"></i> Compartir Clasificación</button>
+            <div class="flex justify-center mb-4">
+                <button onclick="compartirClasificacion()" id="btn-compartir-clasificacion" class="w-full h-[46px] rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center gap-2" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);">
+                    <i class="fas fa-share-alt"></i> Compartir Clasificación
+                </button>
             </div>
             <div class="card overflow-hidden">
                 <table class="w-full text-left border-collapse">
@@ -319,29 +321,33 @@
                 const esCanal = (eq.idDeporte === "4");
                 const colorFondo = esCanal ? '#00509E' : '#006D6F';
                 const div = document.createElement('div');
-                div.className = 'text-white p-4 rounded-xl shadow-md flex flex-col cursor-pointer transition hover:opacity-90';
+                // Añadido relative para posicionar la papelera
+                div.className = 'text-white p-4 rounded-xl shadow-md flex flex-col cursor-pointer transition hover:opacity-90 relative';
                 div.style.backgroundColor = colorFondo;
                 div.onclick = () => abrirEquipo(index);
+                
                 div.innerHTML = `
-                    <div class="flex items-center justify-between w-full">
+                    <!-- Botón de papelera arriba a la izquierda -->
+                    <button class="absolute top-2 left-2 bg-black/20 hover:bg-red-500/80 rounded-full w-8 h-8 flex items-center justify-center text-red-300 transition z-10" onclick="event.stopPropagation(); borrarEquipo(${index})"><i class="fas fa-trash-alt text-xs"></i></button>
+
+                    <div class="flex items-center justify-between w-full mt-2">
                         <div class="flex items-center flex-1">
                             <div class="w-14 h-14 mr-4 flex items-center justify-center bg-white rounded-full p-1 shadow-sm flex-shrink-0 overflow-hidden">
                                 ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="escudo-main-img">` : '<i class="fas fa-shield-alt text-gray-500 text-2xl"></i>'}
                             </div>
-                            <div class="flex flex-col flex-1 min-w-0">
+                            <div class="flex flex-col flex-1 min-w-0 pr-2">
                                 <h3 class="font-black text-2xl leading-tight">${eq.nombre}</h3>
                                 <p class="text-sm text-white/90 font-bold uppercase tracking-wider mt-1">${eq.nombreCompeticion}</p>
-                                <p class="text-base font-black text-[#D6B25A] tracking-wide mt-1 pr-2">${acortarNombre(eq.equipoFavorito)}</p>
+                                <p class="text-base font-black text-[#D6B25A] tracking-wide mt-1">${acortarNombre(eq.equipoFavorito)}</p>
                                 <div id="posicion-${eq.id}" class="text-xs font-bold text-white/80 mt-1"></div>
                             </div>
                         </div>
-                        <!-- BOTONES DE ACCIÓN MEJORADOS (TÁCTILES) -->
+                        <!-- Botones de acción sin la papelera -->
                         <div class="flex flex-col items-center justify-center gap-1 ml-2 flex-shrink-0">
                             <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-1 transition" onclick="event.stopPropagation(); moverEquipo(${index}, -1)"><i class="fas fa-arrow-up"></i></button>
-                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-3 transition" onclick="event.stopPropagation(); moverEquipo(${index}, 1)"><i class="fas fa-arrow-down"></i></button>
+                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-2 transition" onclick="event.stopPropagation(); moverEquipo(${index}, 1)"><i class="fas fa-arrow-down"></i></button>
                             
-                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-1 transition" onclick="event.stopPropagation(); editarEquipo(${index})"><i class="fas fa-pen text-sm"></i></button>
-                            <button class="bg-black/20 hover:bg-red-500/80 rounded-full w-9 h-9 flex items-center justify-center text-red-300 transition" onclick="event.stopPropagation(); borrarEquipo(${index})"><i class="fas fa-trash-alt text-sm"></i></button>
+                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white transition" onclick="event.stopPropagation(); editarEquipo(${index})"><i class="fas fa-pen text-sm"></i></button>
                         </div>
                     </div>
                     <div id="proximo-partido-${eq.id}" class="mt-3 pt-3 border-t border-white/20 w-full text-sm text-white/90"></div>
@@ -398,7 +404,7 @@
                     const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
                     const esLocal = partido.EquipoLocal === eq.equipoFavorito;
                     
-                    // ICONO CASA/FUERA (ALINEADO A LA DERECHA, FONDO BLANCO E ICONO NEGRO)
+                    // ICONO CASA/FUERA (FONDO BLANCO, ICONO NEGRO)
                     const iconoLocalia = esLocal 
                         ? `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-home"></i></div>` 
                         : `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-plane"></i></div>`;
@@ -911,8 +917,6 @@
             let partidosBase = cacheResultados;
             if (soloMiEquipo) partidosBase = partidosBase.filter(p => p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito);
 
-            // EL FILTRO ESTRICTO SE HA ELIMINADO PARA QUE SE VEAN LOS PARTIDOS NO JUGADOS EN ECM
-
             if (numJornada === 0) {
                 // Vista agrupada por todas las jornadas
                 const agrupados = {};
@@ -943,6 +947,16 @@
             const filas = cacheClasificacion;
             const todosLosPartidos = cacheClasificacionPartidos;
             tbody.innerHTML = '';
+            
+            // Actualizar estilos del botón de compartir para que coincida con el filtro
+            const btnComp = document.getElementById('btn-compartir-clasificacion');
+            if(btnComp) {
+                const primaryRgb = isCanal() ? '0, 80, 158' : '0, 109, 111';
+                btnComp.style.backgroundColor = `rgba(${primaryRgb}, 0.05)`;
+                btnComp.style.borderColor = `rgba(${primaryRgb}, 0.2)`;
+                btnComp.style.color = 'var(--primary-color)';
+            }
+
             if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
 
             function calcularRacha(nombreEquipo) {
