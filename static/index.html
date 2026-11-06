@@ -74,20 +74,14 @@
 </head>
 <body class="pb-20">
 
-    <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-40 hide opacity-0" onclick="toggleDrawer()"></div>
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-[55] hide opacity-0" onclick="toggleDrawer()"></div>
 
-    <div id="drawer-menu" class="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-gray-50 z-50 shadow-2xl flex flex-col">
-        <div class="text-white p-4 flex justify-between items-center shadow-md" style="background-color: var(--header-bg);">
-            <h2 class="text-xl font-bold" id="drawer-title">Mis Equipos</h2>
-            <div class="flex gap-4">
-                <button onclick="prepararNuevoEquipo()" class="text-white hover:text-gray-200"><i class="fas fa-plus-circle text-2xl"></i></button>
-                <button onclick="toggleDrawer()" class="text-white hover:text-red-300"><i class="fas fa-times-circle text-2xl"></i></button>
-            </div>
-        </div>
-        <div id="lista-equipos-lateral" class="p-4 space-y-4 overflow-y-auto flex-1"></div>
+    <div id="drawer-menu" class="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-gray-50 z-[60] shadow-2xl flex flex-col pt-[88px]">
+        <!-- pt-[88px] para que no se pise con la cabecera -->
+        <div class="p-4 space-y-4 overflow-y-auto flex-1" id="lista-equipos-lateral"></div>
     </div>
 
-    <div id="modal-mapa" class="fixed inset-0 bg-black/50 z-50 hide flex items-end justify-center opacity-0 transition-opacity" onclick="cerrarModalMapa()">
+    <div id="modal-mapa" class="fixed inset-0 bg-black/50 z-[70] hide flex items-end justify-center opacity-0 transition-opacity" onclick="cerrarModalMapa()">
         <div class="bg-white w-full max-w-md rounded-t-2xl p-4 pb-8" onclick="event.stopPropagation()">
             <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4"></div>
             <h3 class="text-center font-bold text-gray-800 mb-4">Abrir ruta en...</h3>
@@ -107,9 +101,8 @@
 
     <!-- PANTALLA PRINCIPAL (AGENDA) -->
     <div id="screen-agenda" class="max-w-md mx-auto min-h-screen">
-        <!-- CABECERA SUPERIOR (Fija y con altura igualada a la del detalle) -->
         <div class="text-white h-[88px] px-4 flex justify-between items-center shadow-md sticky top-0 z-50" style="background-color: var(--header-bg);">
-            <button onclick="alert('Próximamente: Ajustes y Dirección de Casa')" class="text-white hover:opacity-80 transition"><i class="fas fa-cog text-2xl"></i></button>
+            <button onclick="abrirAjustes()" class="text-white hover:opacity-80 transition"><i class="fas fa-cog text-2xl"></i></button>
             <h1 id="main-title" class="text-xl font-bold tracking-wide">Agenda Familiar</h1>
             <button onclick="toggleDrawer()" class="text-white hover:opacity-80 transition"><i class="fas fa-user text-2xl"></i></button>
         </div>
@@ -123,6 +116,41 @@
         </div>
 
         <div id="lista-agenda" class="p-4 space-y-4"></div>
+    </div>
+
+    <!-- PANTALLA DE AJUSTES -->
+    <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen">
+        <div class="text-white h-[88px] px-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
+            <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
+            <h1 class="text-xl font-bold">Ajustes</h1>
+        </div>
+        <div class="p-4 space-y-4">
+            <div class="card p-4">
+                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Dirección de Casa</label>
+                <p class="text-xs text-gray-500 mb-2">Se usará para calcular el tiempo de viaje a los partidos.</p>
+                <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+            </div>
+
+            <div class="card p-4">
+                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">App de Mapas por Defecto</label>
+                <select id="select-mapa-defecto" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                    <option value="ask">Preguntar siempre</option>
+                    <option value="waze">Waze</option>
+                    <option value="google">Google Maps</option>
+                    <option value="apple">Apple Maps</option>
+                </select>
+            </div>
+
+            <div class="card p-4">
+                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Mantenimiento</label>
+                <p class="text-xs text-gray-500 mb-2">Si la app va lenta o ves datos erróneos, limpia la caché.</p>
+                <button onclick="limpiarCacheApp()" class="w-full bg-red-100 text-red-600 font-bold py-3 rounded-lg shadow-sm border border-red-200 transition hover:bg-red-200">
+                    <i class="fas fa-broom mr-2"></i> Limpiar Caché y Actualizar
+                </button>
+            </div>
+
+            <button onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
+        </div>
     </div>
 
     <!-- FORMULARIO DE EQUIPO -->
@@ -257,11 +285,14 @@
         });
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
+        // AJUSTES Y CACHÉ
+        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', defaultMap: 'ask' };
+        let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
+
         let equipoActual = null;
         let equipoSeleccionadoVisual = null; 
         let editandoEquipoId = null; 
         let soloMiEquipo = false;
-        let autoOrden = localStorage.getItem('auto_orden') === 'true';
         
         let cacheCalendarioGlobal = null;
         let cacheResultados = null;
@@ -317,6 +348,37 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
+        // --- AJUSTES Y NAVEGACIÓN ---
+        function abrirAjustes() {
+            document.getElementById('screen-agenda').classList.add('hide');
+            document.getElementById('screen-ajustes').classList.remove('hide');
+            document.getElementById('input-casa').value = userSettings.homeAddress || '';
+            document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
+        }
+
+        function guardarAjustes() {
+            userSettings.homeAddress = document.getElementById('input-casa').value.trim();
+            userSettings.defaultMap = document.getElementById('select-mapa-defecto').value;
+            localStorage.setItem('user_settings', JSON.stringify(userSettings));
+            alert('Ajustes guardados correctamente.');
+            volverInicio();
+        }
+
+        function limpiarCacheApp() {
+            if(confirm('¿Seguro que quieres borrar la caché? La app se reiniciará.')) {
+                localStorage.removeItem('cache_proximo_partido');
+                localStorage.removeItem('cache_clima');
+                localStorage.removeItem('cache_geo');
+                localStorage.removeItem('dismissed_changes');
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+                location.reload();
+            }
+        }
+
         function toggleDrawer() {
             const overlay = document.getElementById('drawer-overlay');
             const menu = document.getElementById('drawer-menu');
@@ -348,9 +410,7 @@
                 const deporteNombre = eq.nombreDeporte || (esCanal ? 'Fútbol Sala' : 'Deporte');
                 
                 let categoriaNombre = eq.nombreCompeticion || '';
-                if (categoriaNombre === "0" || categoriaNombre.trim() === "") {
-                    categoriaNombre = eq.nombreGrupo || '';
-                }
+                if (categoriaNombre === "0" || categoriaNombre.trim() === "") categoriaNombre = eq.nombreGrupo || '';
 
                 contenedor.innerHTML += `
                     <div class="rounded-xl shadow-md p-4 text-white flex flex-col relative" style="background-color: ${colorFondo};">
@@ -524,7 +584,6 @@
                         </svg>
                     `;
 
-                    // ESTILOS DE COLOR DORADO Y TAMAÑOS MAS GRANDES
                     const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
                     const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
                     
@@ -557,13 +616,11 @@
                                     </div>
                                 </div>
 
-                                <!-- Nombres de equipos -->
                                 <div class="text-center mb-2">
                                     <div class="text-sm font-bold ${esLocalFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esLocalFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoLocal)}</div>
                                     <div class="text-sm font-bold ${esVisFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esVisFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoVisitante)}</div>
                                 </div>
 
-                                <!-- Clasificación y Escudos CENTRADOS Y MAS GRANDES -->
                                 <div class="flex justify-center items-center gap-4 mb-3">
                                     <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posLocal}</span>
                                     <div class="w-12 h-12 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
@@ -576,7 +633,6 @@
                                     <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posVis}</span>
                                 </div>
 
-                                <!-- Fila de Iconos Inferior -->
                                 <div class="mt-2 flex justify-between items-center border-t border-gray-200/50 pt-2">
                                     <div class="flex-1 flex justify-start">
                                         <div id="clima-agenda-${index}" class="text-xl w-8 h-8 flex items-center justify-center"></div>
@@ -614,6 +670,11 @@
 
         // --- LÓGICA DE MAPA Y CLIMA ---
         function abrirModalMapa(dir) {
+            if (userSettings.defaultMap && userSettings.defaultMap !== 'ask') {
+                rutaActualMapa = dir;
+                abrirRuta(userSettings.defaultMap);
+                return;
+            }
             rutaActualMapa = dir;
             const modal = document.getElementById('modal-mapa');
             modal.classList.remove('hide');
@@ -646,12 +707,18 @@
                 if (direccion.includes("El Parque Santander") || direccion.includes("Avenida de Filipinas")) {
                     lat = 40.44372331454751;
                     lon = -3.706714444750114;
+                } else if (cacheGeo[direccion]) {
+                    lat = cacheGeo[direccion].lat;
+                    lon = cacheGeo[direccion].lon;
                 } else {
+                    // Límite de peticiones: Añadimos un pequeño retraso o usamos caché estricta
                     const resGeo = await fetchWithTimeout(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(direccion)}`, { headers: { 'User-Agent': 'LigasInfantilesApp/1.0' } });
                     const geoData = await resGeo.json();
                     if (!geoData || geoData.length === 0) return '';
                     lat = geoData[0].lat;
                     lon = geoData[0].lon;
+                    cacheGeo[direccion] = { lat, lon };
+                    localStorage.setItem('cache_geo', JSON.stringify(cacheGeo));
                 }
 
                 const fecha = fechaHora.split('T')[0];
@@ -757,12 +824,14 @@
 
         function mostrarFormulario() { 
             document.getElementById('screen-agenda').classList.add('hide'); 
+            document.getElementById('screen-ajustes').classList.add('hide');
             document.getElementById('screen-detalle').classList.add('hide'); 
             document.getElementById('screen-formulario').classList.remove('hide'); 
         }
         
         function volverInicio() { 
             document.getElementById('screen-formulario').classList.add('hide'); 
+            document.getElementById('screen-ajustes').classList.add('hide');
             document.getElementById('screen-detalle').classList.add('hide'); 
             document.getElementById('screen-agenda').classList.remove('hide'); 
             cargarAgendaFamiliar(); 
@@ -958,6 +1027,7 @@
 
             if (cacheEquipoAbiertoId === equipoActual.id && cacheCalendarioGlobal) {
                 document.getElementById('screen-agenda').classList.add('hide');
+                document.getElementById('screen-ajustes').classList.add('hide');
                 document.getElementById('screen-detalle').classList.remove('hide');
                 cambiarTab('calendario');
                 return;
@@ -1014,6 +1084,7 @@
                 setTimeout(() => {
                     document.getElementById('pantalla-carga').classList.add('oculto');
                     document.getElementById('screen-agenda').classList.add('hide');
+                    document.getElementById('screen-ajustes').classList.add('hide');
                     document.getElementById('screen-detalle').classList.remove('hide');
                     actualizarUIJornadas();
                     cambiarTab('calendario');
@@ -1043,6 +1114,7 @@
                     setTimeout(() => {
                         document.getElementById('pantalla-carga').classList.add('oculto');
                         document.getElementById('screen-agenda').classList.add('hide');
+                        document.getElementById('screen-ajustes').classList.add('hide');
                         document.getElementById('screen-detalle').classList.remove('hide');
                         actualizarUIJornadas();
                         cambiarTab('calendario');
