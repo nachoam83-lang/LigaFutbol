@@ -16,7 +16,7 @@
     <style>
         :root {
             --primary-color: #006D6F;
-            --secondary-color: #D6B25A;
+            --secondary-color: #C89B3C; /* Nuevo Dorado más elegante */
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
             --text-main: #1f2937;
@@ -80,7 +80,7 @@
 
     <!-- MENÚ LATERAL (MIS EQUIPOS) -->
     <div id="drawer-menu" class="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-gray-50 z-50 shadow-2xl flex flex-col">
-        <div class="bg-gray-600 text-white p-4 flex justify-between items-center shadow-md">
+        <div class="text-white p-4 flex justify-between items-center shadow-md" style="background-color: var(--header-bg);">
             <h2 class="text-xl font-bold" id="drawer-title">Mis Equipos</h2>
             <div class="flex gap-4">
                 <button onclick="prepararNuevoEquipo()" class="text-white hover:text-gray-200"><i class="fas fa-plus-circle text-2xl"></i></button>
@@ -168,8 +168,8 @@
                     </select>
                 </div>
             </div>
-            <div id="panel-seleccion-equipo" class="hide card p-4 border-2 border-[#D6B25A]">
-                <label class="block text-xs font-bold text-[#D6B25A] uppercase mb-3 text-center">👇 Toca el escudo de tu equipo</label>
+            <div id="panel-seleccion-equipo" class="hide card p-4 border-2 border-[#C89B3C]">
+                <label class="block text-xs font-bold text-[#C89B3C] uppercase mb-3 text-center">👇 Toca el escudo de tu equipo</label>
                 <div id="grid-equipos" class="grid grid-cols-3 gap-2"></div>
             </div>
             <button onclick="guardarEquipo()" id="btn-guardar" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition disabled:opacity-50 disabled:bg-gray-400 text-sm" disabled>Guardar Equipo</button>
@@ -178,7 +178,7 @@
 
     <!-- PANTALLA DETALLE DEL EQUIPO -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
-        <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
+        <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <div class="flex items-center p-4">
                 <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
                 <div class="flex items-center flex-1">
@@ -349,7 +349,8 @@
                 const esCanal = (eq.idDeporte === "4");
                 const colorFondo = esCanal ? '#00509E' : '#006D6F';
                 const deporteNombre = eq.nombreDeporte || (esCanal ? 'Fútbol Sala' : 'Deporte');
-                const categoriaNombre = eq.idCategoria || eq.nombreCompeticion || '';
+                // ARREGLADO: Usar nombreCompeticion para evitar el "0" en Mateo
+                const categoriaNombre = eq.nombreCompeticion || eq.nombreGrupo || ''; 
 
                 contenedor.innerHTML += `
                     <div class="rounded-xl shadow-md p-4 text-white flex flex-col relative" style="background-color: ${colorFondo};">
@@ -377,8 +378,8 @@
         }
 
         function abrirEquipoDesdeMenu(index) {
-            toggleDrawer(); // Cierra el menú
-            setTimeout(() => abrirEquipo(index), 300); // Espera a que termine la animación para abrir
+            toggleDrawer(); 
+            setTimeout(() => abrirEquipo(index), 300); 
         }
 
         document.addEventListener('DOMContentLoaded', () => { 
@@ -416,7 +417,6 @@
                             copiaP._equipoRef = eq;
                             copiaP._clasifRef = clasif;
                             
-                            // Lógica de Cambio (Snapshot)
                             const matchId = getMatchId(p);
                             const matchHash = getMatchHash(p);
                             const snapshotKey = `snapshot_v3_${eq.id}`;
@@ -443,17 +443,13 @@
 
                 if (hasNewChanges) banner.classList.remove('hide');
 
-                const hoy = new Date(); hoy.setHours(0,0,0,0);
-                
-                // Filtrar TODOS los futuros (sin límite de 30 días) y ordenar
-                const proximosPartidos = todosLosPartidos
-                    .filter(p => new Date(p.FechaHora) >= hoy)
-                    .sort((a, b) => new Date(a.FechaHora) - new Date(b.FechaHora));
+                // ELIMINADO EL FILTRO DE FECHA PARA MOSTRAR TODOS LOS PARTIDOS
+                const proximosPartidos = todosLosPartidos.sort((a, b) => new Date(a.FechaHora) - new Date(b.FechaHora));
 
                 contenedor.innerHTML = '';
 
                 if (proximosPartidos.length === 0) {
-                    contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos próximos programados.</p>';
+                    contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos programados.</p>';
                     return;
                 }
 
@@ -463,8 +459,10 @@
                     const esLocalFav = p.EquipoLocal === eq.equipoFavorito;
                     const esVisFav = p.EquipoVisitante === eq.equipoFavorito;
                     const esCanal = (eq.idDeporte === "4");
+                    
+                    // COLORES
                     const colorFondo = esCanal ? '#00509E' : '#006D6F';
-                    const colorFondoTrans = esCanal ? 'rgba(0, 80, 158, 0.25)' : 'rgba(0, 109, 111, 0.25)';
+                    const colorFondoTrans = esCanal ? 'rgba(0, 80, 158, 0.05)' : 'rgba(0, 109, 111, 0.05)'; // Transparencia 95%
                     
                     // Fechas
                     const dateObj = new Date(p.FechaHora);
@@ -484,7 +482,6 @@
                         if (vStats) posVis = vStats.Posicion;
                     }
 
-                    // Direccion
                     const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
                     
                     // Escudos
@@ -501,11 +498,11 @@
                         iconCampo = `<span class="text-[11px] font-bold bg-[#00509E] text-white px-2 py-0.5 rounded shadow-sm">${p.Campo || 'Campo'}</span>`;
                     } else {
                         iconCampo = esCampoExterior(p) 
-                            ? `<i class="fas fa-cloud-sun text-orange-500 text-xl"></i>` 
-                            : `<i class="fas fa-building text-blue-500 text-xl"></i>`;
+                            ? `<i class="fas fa-cloud-sun text-orange-500 text-xl" title="Exterior"></i>` 
+                            : `<i class="fas fa-building text-blue-500 text-xl" title="Pabellón"></i>`;
                     }
 
-                    // Alerta de cambio (1h regla)
+                    // Alerta de cambio
                     let haCambiado = p.Cambio || p.CambioLocal;
                     const matchHash = getMatchHash(p);
                     if (haCambiado && dismissed[matchHash]) {
@@ -519,14 +516,14 @@
                         </svg>
                     `;
 
-                    // Estilos de texto equipo
-                    const styleFav = `style="color: #D6B25A; font-weight: 900; font-size: 15px;"`;
+                    // ESTILOS DE COLOR DORADO MEJORADOS
+                    const styleFav = `style="color: #C89B3C; font-weight: 900; font-size: 15px;"`;
                     const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 15px;"`;
                     
                     contenedor.innerHTML += `
-                        <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})" style="background-color: ${colorFondoTrans};">
+                        <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
                             
-                            <!-- Franja Izquierda (Fecha y Escudo) -->
+                            <!-- Franja Izquierda -->
                             <div class="w-24 flex flex-col items-center justify-center text-white py-4 flex-shrink-0" style="background-color: ${colorFondo};">
                                 <div class="mb-2">${getDeporteIcon(eq.idDeporte)}</div>
                                 <div class="text-sm font-bold uppercase tracking-widest opacity-90">${diaStr}</div>
@@ -538,7 +535,7 @@
                             </div>
 
                             <!-- Contenido Derecha -->
-                            <div class="p-3 flex-1 flex flex-col justify-between" style="background-color: ${colorFondo}40;">
+                            <div class="p-3 flex-1 flex flex-col justify-between" style="background-color: ${colorFondoTrans};">
                                 <div class="flex justify-between items-start border-b border-gray-200/50 pb-2 mb-2">
                                     <div class="flex flex-col">
                                         <div class="flex items-center gap-2">
@@ -552,27 +549,23 @@
                                     </div>
                                 </div>
 
-                                <!-- Nombres sin escudos -->
-                                <div class="flex flex-col gap-1 mb-2 mt-1">
-                                    <div class="flex justify-between items-center">
-                                        <div class="text-sm font-bold ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${acortarNombre(p.EquipoLocal)}</div>
+                                <!-- Nombres de equipos -->
+                                <div class="text-center mb-2">
+                                    <div class="text-sm font-bold ${esLocalFav ? 'text-gold' : 'text-gray-800'}" ${esLocalFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoLocal)}</div>
+                                    <div class="text-sm font-bold ${esVisFav ? 'text-gold' : 'text-gray-800'}" ${esVisFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoVisitante)}</div>
+                                </div>
+
+                                <!-- Clasificación y Escudos CENTRADOS -->
+                                <div class="flex justify-center items-center gap-3 mb-3">
+                                    <span class="text-xs font-bold text-gray-700">🏆 ${posLocal}</span>
+                                    <div class="w-10 h-10 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
+                                        <img src="${escLocal}" class="w-full h-full object-contain p-0.5">
                                     </div>
-                                    <div class="flex justify-between items-center">
-                                        <div class="text-sm font-bold ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${acortarNombre(p.EquipoVisitante)}</div>
+                                    <span class="text-[10px] font-bold text-gray-400">VS</span>
+                                    <div class="w-10 h-10 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
+                                        <img src="${escVis}" class="w-full h-full object-contain p-0.5">
                                     </div>
-                                    
-                                    <!-- Posiciones y Escudos -->
-                                    <div class="flex justify-between items-center mt-1">
-                                        <div class="text-[11px] font-bold text-gray-700 flex gap-2">
-                                            <span>🏆 ${posLocal}</span>
-                                            <span>🏆 ${posVis}</span>
-                                        </div>
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-6 h-6 bg-white rounded-full border border-gray-200 overflow-hidden"><img src="${escLocal}" class="w-full h-full object-contain p-0.5"></div>
-                                            <span class="text-[10px] font-bold text-gray-500">vs</span>
-                                            <div class="w-6 h-6 bg-white rounded-full border border-gray-200 overflow-hidden"><img src="${escVis}" class="w-full h-full object-contain p-0.5"></div>
-                                        </div>
-                                    </div>
+                                    <span class="text-xs font-bold text-gray-700">🏆 ${posVis}</span>
                                 </div>
 
                                 <!-- Fila de Iconos Inferior -->
@@ -592,7 +585,6 @@
                         </div>
                     `;
                     
-                    // Cargar clima asíncronamente después de pintar
                     setTimeout(() => {
                         cargarClimaAgenda(p.id || matchHash, dirCompleta, p.FechaHora);
                     }, 100);
@@ -607,22 +599,9 @@
         function cerrarBannerAgenda() {
             const now = Date.now();
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-            
-            // Recorremos los datos de la agenda para guardar los hashes de los partidos con cambios
-            const tarjetas = document.querySelectorAll('#lista-agenda > div');
-            // En lugar de buscar en el DOM (que es complejo por los SVGs), recargamos la agenda
-            // y guardamos los dismissed de los partidos que estaban visibles.
-            // Como no tenemos el array a mano, simplemente ocultamos y recargamos.
-            // En la próxima recarga, el sistema de snapshot se encargará de aplicar la regla de 1h.
-            
-            // Para hacerlo perfecto, debemos guardar los hashes. Como no los tenemos fuera del bucle,
-            // guardaremos un "dismiss general" en el localStorage.
             localStorage.setItem('last_banner_close', now.toString());
-            
-            // Actualizamos la UI
             document.getElementById('banner-alerta-agenda').classList.add('hide');
-            // Forzamos una recarga visual para que los iconos de peligro desaparezcan si ha pasado 1h
-            // (No recargamos los datos de red, solo recalculamos la vista)
+            setTimeout(() => { cargarAgendaFamiliar(); }, 100);
         }
 
         // --- LÓGICA DE MAPA Y CLIMA ---
@@ -708,7 +687,7 @@
 
         // --- FORMULARIO DE EQUIPOS ---
         function prepararNuevoEquipo() {
-            toggleDrawer(); // Cierra menú si estaba abierto
+            toggleDrawer(); 
             editandoEquipoId = null;
             document.getElementById('titulo-formulario').innerText = "Añadir Jugador";
             document.getElementById('input-nombre').value = "";
@@ -764,7 +743,7 @@
                     });
                 });
             }
-            toggleDrawer(); // Cierra el menú
+            toggleDrawer(); 
             setTimeout(() => mostrarFormulario(), 300);
         }
 
@@ -778,7 +757,7 @@
             document.getElementById('screen-formulario').classList.add('hide'); 
             document.getElementById('screen-detalle').classList.add('hide'); 
             document.getElementById('screen-agenda').classList.remove('hide'); 
-            cargarAgendaFamiliar(); // Recarga la agenda al volver
+            cargarAgendaFamiliar(); 
         }
 
         function moverEquipo(index, direccion) {
@@ -788,8 +767,8 @@
                 [equipos[index + 1], equipos[index]] = [equipos[index], equipos[index + 1]];
             }
             localStorage.setItem('equipos_liga', JSON.stringify(equipos));
-            renderizarMenuLateral(); // Recarga solo el menú
-            cargarAgendaFamiliar(); // Recarga la agenda con el nuevo orden
+            renderizarMenuLateral(); 
+            cargarAgendaFamiliar(); 
         }
 
         function borrarEquipo(index) { 
@@ -1489,14 +1468,14 @@
                 }
 
                 let rowStyle = "border-color: var(--border-color);";
-                let posColor = esPrimero ? 'text-[#997A00] font-black' : 'text-gray-600';
-                let ptsColor = esPrimero ? 'text-[#997A00]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
-                let nameColor = esPrimero ? 'style="color: #997A00; font-weight: 900;"' : (esFavorito ? `style="color: ${isCanal() ? '#00509E' : '#006D6F'}; font-weight: 900;"` : 'style="color: var(--text-main);"');
-                let crownIcon = esPrimero ? ' <i class="fas fa-crown text-[#D6B25A] text-xs ml-1"></i>' : '';
+                let posColor = esPrimero ? 'text-[#C89B3C] font-black' : 'text-gray-600';
+                let ptsColor = esPrimero ? 'text-[#C89B3C]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
+                let nameColor = esPrimero ? 'style="color: #C89B3C; font-weight: 900;"' : (esFavorito ? `style="color: ${isCanal() ? '#00509E' : '#006D6F'}; font-weight: 900;"` : 'style="color: var(--text-main);"');
+                let crownIcon = esPrimero ? ' <i class="fas fa-crown text-[#C89B3C] text-xs ml-1"></i>' : '';
                 let rowClass = '';
 
                 if (esPrimero) {
-                    rowStyle = "background-color: rgba(214, 178, 90, 0.15); border-left: 4px solid #D6B25A;";
+                    rowStyle = "background-color: rgba(200, 155, 60, 0.15); border-left: 4px solid #C89B3C;";
                 } else if (esFavorito) {
                     rowClass = isCanal() ? 'bg-[#E0F0FF]' : 'bg-[#e6f2f2]';
                 }
