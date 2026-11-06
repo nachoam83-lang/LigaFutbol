@@ -143,6 +143,18 @@
                 <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
             </div>
 
+            <!-- TOGGLE TIEMPO DE VIAJE -->
+            <div class="card p-4 flex justify-between items-center">
+                <div>
+                    <label class="block text-sm font-bold text-gray-800">Tiempo de Viaje</label>
+                    <p class="text-xs text-gray-500">Mostrar hora de salida recomendada</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-ruta" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                </label>
+            </div>
+
             <div class="card p-4">
                 <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">App de Mapas por Defecto</label>
                 <select id="select-mapa-defecto" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
@@ -298,7 +310,9 @@
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
         // AJUSTES Y CACHÉ
-        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask' };
+        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: true };
+        if (userSettings.showRoute === undefined) userSettings.showRoute = true; // Valor por defecto para usuarios existentes
+        
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
         let equipoActual = null;
@@ -325,7 +339,6 @@
             return response;
         }
 
-        // --- NUEVA FUNCIÓN DE GEOCODIFICACIÓN (PHOTON) ---
         async function geocodificar(dir) {
             try {
                 const res = await fetchWithTimeout(`https://photon.komoot.io/api/?q=${encodeURIComponent(dir)}&limit=1`);
@@ -407,12 +420,14 @@
             document.getElementById('screen-ajustes').classList.remove('hide');
             document.getElementById('input-casa').value = userSettings.homeAddress || '';
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
+            document.getElementById('toggle-ruta').checked = userSettings.showRoute !== false;
         }
 
         async function guardarAjustes() {
             const dir = document.getElementById('input-casa').value.trim();
             userSettings.homeAddress = dir;
             userSettings.defaultMap = document.getElementById('select-mapa-defecto').value;
+            userSettings.showRoute = document.getElementById('toggle-ruta').checked;
             
             if (dir !== "") {
                 document.getElementById('btn-guardar-ajustes').innerText = "Buscando dirección...";
@@ -661,6 +676,14 @@
                     const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
                     const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
                     
+                    // COMPROBAR SI MOSTRAR RUTA
+                    const htmlRuta = userSettings.showRoute !== false ? `
+                        <div class="flex items-center justify-start gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
+                            <i class="fas fa-car text-gray-800"></i>
+                            <span id="ruta-agenda-${index}" class="text-blue-600"></span>
+                        </div>
+                    ` : '';
+
                     contenedor.innerHTML += `
                         <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
                             
@@ -707,17 +730,20 @@
                                     <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posVis}</span>
                                 </div>
 
-                                <div class="mt-2 flex justify-between items-center border-t border-gray-200/50 pt-2">
-                                    <div class="flex-1 flex justify-start gap-2 items-center">
+                                <!-- NUEVA LÍNEA DE RUTA -->
+                                ${htmlRuta}
+
+                                <!-- Fila de Iconos Inferior -->
+                                <div class="mt-1 flex justify-between items-center border-t border-gray-200/50 pt-2">
+                                    <div class="flex-1 flex justify-start">
                                         <div id="clima-agenda-${index}" class="text-xl w-6 h-6 flex items-center justify-center"></div>
-                                        <div id="ruta-agenda-${index}" class="text-[11px] font-bold text-gray-700"></div>
                                     </div>
                                     <div class="flex-1 flex justify-center">
                                         ${iconCampo}
                                     </div>
-                                    <div class="flex-1 flex justify-end gap-3 text-gray-400 text-xl">
-                                        ${esLocalFav ? '<i class="fas fa-home text-gray-800"></i>' : '<i class="fas fa-plane text-gray-800"></i>'}
-                                        <i class="fas fa-map-marker-alt text-gray-800" onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')"></i>
+                                    <div class="flex-1 flex justify-end gap-3 text-gray-800 text-xl">
+                                        ${esLocalFav ? '<i class="fas fa-home"></i>' : '<i class="fas fa-plane"></i>'}
+                                        <i class="fas fa-map-marker-alt" onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')"></i>
                                     </div>
                                 </div>
                             </div>
@@ -808,9 +834,9 @@
                             }
 
                             // 3. RUTA Y TIEMPO DE VIAJE
-                            const elRuta = document.getElementById(`ruta-agenda-${i}`);
-                            if (userSettings.homeLat && userSettings.homeLon) {
-                                if (elRuta && !elRuta.innerHTML) elRuta.innerHTML = `🚗 <span class="text-gray-400 text-[10px]">...</span>`;
+                            if (userSettings.showRoute !== false && userSettings.homeLat && userSettings.homeLon) {
+                                const elRuta = document.getElementById(`ruta-agenda-${i}`);
+                                if (elRuta && !elRuta.innerHTML) elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
                                 try {
                                     const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/driving/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
                                     const routeData = await resRoute.json();
@@ -830,13 +856,14 @@
                                         const hh = String(datePartido.getHours()).padStart(2, '0');
                                         const mm = String(datePartido.getMinutes()).padStart(2, '0');
 
-                                        if (elRuta) elRuta.innerHTML = `🚗 <span class="text-blue-600">Sal a las ${hh}:${mm}</span>`;
+                                        if (elRuta) elRuta.innerHTML = `Sal a las ${hh}:${mm}`;
                                     }
                                 } catch(e) {
                                     console.log("Error calculando ruta", e);
                                 }
-                            } else {
-                                if (elRuta) elRuta.innerHTML = `🚗 <span class="text-gray-400 text-[10px]">Configura tu casa</span>`;
+                            } else if (userSettings.showRoute !== false && (!userSettings.homeLat || !userSettings.homeLon)) {
+                                const elRuta = document.getElementById(`ruta-agenda-${i}`);
+                                if (elRuta) elRuta.innerHTML = `<span class="text-gray-400 text-[11px]">Configura tu casa</span>`;
                             }
                         }
                     })()
