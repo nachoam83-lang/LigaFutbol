@@ -16,7 +16,7 @@
     <style>
         :root {
             --primary-color: #006D6F;
-            --secondary-color: #C89B3C; /* Nuevo Dorado más elegante */
+            --secondary-color: #A67C00; /* Dorado oscuro que se lee bien */
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
             --text-main: #1f2937;
@@ -49,7 +49,7 @@
         .btn-primary:active { background-color: #005a5c; }
         
         .team-select-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 10px 5px; border-radius: 10px; background: var(--card-bg); border: 2px solid var(--border-color); cursor: pointer; transition: all 0.2s; }
-        .team-select-card.selected { border-color: var(--secondary-color); background-color: rgba(214, 178, 90, 0.1); box-shadow: 0 0 10px rgba(214, 178, 90, 0.4); transform: scale(1.05); }
+        .team-select-card.selected { border-color: var(--secondary-color); background-color: rgba(166, 124, 0, 0.1); box-shadow: 0 0 10px rgba(166, 124, 0, 0.4); transform: scale(1.05); }
         .team-select-card img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 6px; }
         .team-select-card span { font-size: 11px; text-align: center; font-weight: 700; color: var(--text-main); line-height: 1.1; }
 
@@ -67,7 +67,6 @@
 
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
         
-        /* ESTILOS DEL MENÚ LATERAL (DRAWER) */
         #drawer-overlay { transition: opacity 0.3s; }
         #drawer-menu { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
         #drawer-menu.open { transform: translateX(0); }
@@ -75,10 +74,8 @@
 </head>
 <body class="pb-20">
 
-    <!-- OVERLAY OSCURO DEL MENÚ LATERAL -->
     <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-40 hide opacity-0" onclick="toggleDrawer()"></div>
 
-    <!-- MENÚ LATERAL (MIS EQUIPOS) -->
     <div id="drawer-menu" class="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-gray-50 z-50 shadow-2xl flex flex-col">
         <div class="text-white p-4 flex justify-between items-center shadow-md" style="background-color: var(--header-bg);">
             <h2 class="text-xl font-bold" id="drawer-title">Mis Equipos</h2>
@@ -110,7 +107,6 @@
 
     <!-- PANTALLA PRINCIPAL (AGENDA) -->
     <div id="screen-agenda" class="max-w-md mx-auto min-h-screen">
-        <!-- CABECERA SUPERIOR -->
         <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-30" style="background-color: var(--header-bg);">
             <button onclick="alert('Próximamente: Ajustes y Dirección de Casa')" class="text-white hover:opacity-80 transition"><i class="fas fa-cog text-2xl"></i></button>
             <h1 id="main-title" class="text-xl font-bold tracking-wide">Agenda Familiar</h1>
@@ -168,8 +164,8 @@
                     </select>
                 </div>
             </div>
-            <div id="panel-seleccion-equipo" class="hide card p-4 border-2 border-[#C89B3C]">
-                <label class="block text-xs font-bold text-[#C89B3C] uppercase mb-3 text-center">👇 Toca el escudo de tu equipo</label>
+            <div id="panel-seleccion-equipo" class="hide card p-4 border-2 border-[#A67C00]">
+                <label class="block text-xs font-bold text-[#A67C00] uppercase mb-3 text-center">👇 Toca el escudo de tu equipo</label>
                 <div id="grid-equipos" class="grid grid-cols-3 gap-2"></div>
             </div>
             <button onclick="guardarEquipo()" id="btn-guardar" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition disabled:opacity-50 disabled:bg-gray-400 text-sm" disabled>Guardar Equipo</button>
@@ -349,13 +345,16 @@
                 const esCanal = (eq.idDeporte === "4");
                 const colorFondo = esCanal ? '#00509E' : '#006D6F';
                 const deporteNombre = eq.nombreDeporte || (esCanal ? 'Fútbol Sala' : 'Deporte');
-                // ARREGLADO: Usar nombreCompeticion para evitar el "0" en Mateo
-                const categoriaNombre = eq.nombreCompeticion || eq.nombreGrupo || ''; 
+                
+                // CORRECCIÓN: Evitar el "0" en las tarjetas de Mateo
+                let categoriaNombre = eq.nombreCompeticion || '';
+                if (categoriaNombre === "0" || categoriaNombre.trim() === "") {
+                    categoriaNombre = eq.nombreGrupo || '';
+                }
 
                 contenedor.innerHTML += `
                     <div class="rounded-xl shadow-md p-4 text-white flex flex-col relative" style="background-color: ${colorFondo};">
                         
-                        <!-- Botones de acción -->
                         <button onclick="event.stopPropagation(); borrarEquipo(${index})" class="absolute top-2 left-2 bg-black/20 hover:bg-red-500/80 rounded-full w-8 h-8 flex items-center justify-center text-red-300 transition"><i class="fas fa-trash-alt text-xs"></i></button>
                         <button onclick="event.stopPropagation(); editarEquipo(${index})" class="absolute bottom-2 left-2 bg-black/20 hover:bg-black/40 rounded-full w-8 h-8 flex items-center justify-center text-white transition"><i class="fas fa-pen text-xs"></i></button>
                         
@@ -443,13 +442,22 @@
 
                 if (hasNewChanges) banner.classList.remove('hide');
 
-                // ELIMINADO EL FILTRO DE FECHA PARA MOSTRAR TODOS LOS PARTIDOS
-                const proximosPartidos = todosLosPartidos.sort((a, b) => new Date(a.FechaHora) - new Date(b.FechaHora));
+                // FILTRO DE 1 MES VISTA (Desde hoy hasta dentro de 1 mes)
+                const hoy = new Date(); hoy.setHours(0,0,0,0);
+                const dentroDeUnMes = new Date(hoy); dentroDeUnMes.setMonth(dentroDeUnMes.getMonth() + 1);
+                
+                const proximosPartidos = todosLosPartidos
+                    .filter(p => {
+                        if (!p.FechaHora) return false;
+                        const d = new Date(p.FechaHora);
+                        return d >= hoy && d <= dentroDeUnMes;
+                    })
+                    .sort((a, b) => new Date(a.FechaHora) - new Date(b.FechaHora));
 
                 contenedor.innerHTML = '';
 
                 if (proximosPartidos.length === 0) {
-                    contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos programados.</p>';
+                    contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos en el próximo mes.</p>';
                     return;
                 }
 
@@ -462,7 +470,7 @@
                     
                     // COLORES
                     const colorFondo = esCanal ? '#00509E' : '#006D6F';
-                    const colorFondoTrans = esCanal ? 'rgba(0, 80, 158, 0.05)' : 'rgba(0, 109, 111, 0.05)'; // Transparencia 95%
+                    const colorFondoTrans = esCanal ? 'rgba(0, 80, 158, 0.05)' : 'rgba(0, 109, 111, 0.05)'; 
                     
                     // Fechas
                     const dateObj = new Date(p.FechaHora);
@@ -492,14 +500,14 @@
                         escVis = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
                     }
 
-                    // Tipo campo
+                    // Tipo campo (TEXTO CLARO PARA NO CONFUNDIR CON EL CLIMA)
                     let iconCampo = '';
                     if (esCanal) {
                         iconCampo = `<span class="text-[11px] font-bold bg-[#00509E] text-white px-2 py-0.5 rounded shadow-sm">${p.Campo || 'Campo'}</span>`;
                     } else {
                         iconCampo = esCampoExterior(p) 
-                            ? `<i class="fas fa-cloud-sun text-orange-500 text-xl" title="Exterior"></i>` 
-                            : `<i class="fas fa-building text-blue-500 text-xl" title="Pabellón"></i>`;
+                            ? `<span class="text-[11px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded shadow-sm">Exterior</span>` 
+                            : `<span class="text-[11px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded shadow-sm">Pabellón</span>`;
                     }
 
                     // Alerta de cambio
@@ -516,8 +524,8 @@
                         </svg>
                     `;
 
-                    // ESTILOS DE COLOR DORADO MEJORADOS
-                    const styleFav = `style="color: #C89B3C; font-weight: 900; font-size: 15px;"`;
+                    // ESTILOS DE COLOR DORADO MEJORADOS ( #A67C00 )
+                    const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 15px;"`;
                     const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 15px;"`;
                     
                     contenedor.innerHTML += `
@@ -551,12 +559,12 @@
 
                                 <!-- Nombres de equipos -->
                                 <div class="text-center mb-2">
-                                    <div class="text-sm font-bold ${esLocalFav ? 'text-gold' : 'text-gray-800'}" ${esLocalFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoLocal)}</div>
-                                    <div class="text-sm font-bold ${esVisFav ? 'text-gold' : 'text-gray-800'}" ${esVisFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoVisitante)}</div>
+                                    <div class="text-sm font-bold ${esLocalFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esLocalFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoLocal)}</div>
+                                    <div class="text-sm font-bold ${esVisFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esVisFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoVisitante)}</div>
                                 </div>
 
                                 <!-- Clasificación y Escudos CENTRADOS -->
-                                <div class="flex justify-center items-center gap-3 mb-3">
+                                <div class="flex justify-center items-center gap-4 mb-3">
                                     <span class="text-xs font-bold text-gray-700">🏆 ${posLocal}</span>
                                     <div class="w-10 h-10 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
                                         <img src="${escLocal}" class="w-full h-full object-contain p-0.5">
@@ -1468,14 +1476,14 @@
                 }
 
                 let rowStyle = "border-color: var(--border-color);";
-                let posColor = esPrimero ? 'text-[#C89B3C] font-black' : 'text-gray-600';
-                let ptsColor = esPrimero ? 'text-[#C89B3C]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
-                let nameColor = esPrimero ? 'style="color: #C89B3C; font-weight: 900;"' : (esFavorito ? `style="color: ${isCanal() ? '#00509E' : '#006D6F'}; font-weight: 900;"` : 'style="color: var(--text-main);"');
-                let crownIcon = esPrimero ? ' <i class="fas fa-crown text-[#C89B3C] text-xs ml-1"></i>' : '';
+                let posColor = esPrimero ? 'text-[#A67C00] font-black' : 'text-gray-600';
+                let ptsColor = esPrimero ? 'text-[#A67C00]' : (isCanal() ? 'text-[#00509E]' : 'text-[#006D6F]');
+                let nameColor = esPrimero ? 'style="color: #A67C00; font-weight: 900;"' : (esFavorito ? `style="color: ${isCanal() ? '#00509E' : '#006D6F'}; font-weight: 900;"` : 'style="color: var(--text-main);"');
+                let crownIcon = esPrimero ? ' <i class="fas fa-crown text-[#A67C00] text-xs ml-1"></i>' : '';
                 let rowClass = '';
 
                 if (esPrimero) {
-                    rowStyle = "background-color: rgba(200, 155, 60, 0.15); border-left: 4px solid #C89B3C;";
+                    rowStyle = "background-color: rgba(166, 124, 0, 0.15); border-left: 4px solid #A67C00;";
                 } else if (esFavorito) {
                     rowClass = isCanal() ? 'bg-[#E0F0FF]' : 'bg-[#e6f2f2]';
                 }
