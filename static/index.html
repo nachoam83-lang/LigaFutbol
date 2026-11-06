@@ -70,9 +70,15 @@
         #drawer-overlay { transition: opacity 0.3s; }
         #drawer-menu { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
         #drawer-menu.open { transform: translateX(0); }
+
+        /* Estilos para Pull to Refresh */
+        #ptr-indicator { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); background: white; padding: 12px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; transition: top 0.3s ease-out; }
+        #ptr-indicator.active { top: 100px; }
     </style>
 </head>
 <body class="pb-20">
+
+    <div id="ptr-indicator" class="text-gray-500 text-xl"><i class="fas fa-sync-alt spin-anim" style="color: var(--primary-color);"></i></div>
 
     <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-[55] hide opacity-0" onclick="toggleDrawer()"></div>
 
@@ -353,6 +359,30 @@
             }
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
+
+        // --- PULL TO REFRESH (Tirar hacia abajo) ---
+        let touchStartY = 0;
+        let touchEndY = 0;
+        const screenAgenda = document.getElementById('screen-agenda');
+        const ptrIndicator = document.getElementById('ptr-indicator');
+
+        screenAgenda.addEventListener('touchstart', e => {
+            if (window.scrollY === 0) {
+                touchStartY = e.changedTouches[0].screenY;
+            }
+        }, { passive: true });
+
+        screenAgenda.addEventListener('touchend', e => {
+            if (window.scrollY === 0 && touchStartY > 0) {
+                touchEndY = e.changedTouches[0].screenY;
+                if (touchEndY - touchStartY > 100) {
+                    ptrIndicator.classList.add('active');
+                    cargarAgendaFamiliar();
+                    setTimeout(() => ptrIndicator.classList.remove('active'), 1500);
+                }
+            }
+            touchStartY = 0;
+        }, { passive: true });
 
         // --- AJUSTES Y NAVEGACIÓN ---
         function abrirAjustes() {
@@ -659,7 +689,7 @@
                     `;
                 });
 
-                // CARGAR CLIMA DE FORMA SECUENCIAL PARA EVITAR BLOQUEOS
+                // CARGAR CLIMA USANDO OPEN-METEO GEOCODING (Mucho más rápido y sin bloqueos)
                 cargarTodosLosClimas();
 
             } catch (e) {
@@ -671,6 +701,7 @@
         async function cargarTodosLosClimas() {
             if (!window._partidosAgenda) return;
             const partidos = window._partidosAgenda;
+            const promesasClima = [];
 
             for (let i = 0; i < partidos.length; i++) {
                 const p = partidos[i];
@@ -678,21 +709,21 @@
                 const esCanal = (eq.idDeporte === "4");
                 const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
                 
-                // Comprobar si ya está en caché para no hacer esperar
-                const cacheKey = dirCompleta + '_' + p.FechaHora;
-                if (cacheClima[cacheKey]) {
-                    const el = document.getElementById(`clima-agenda-${i}`);
-                    if (el) el.innerHTML = `<i class="fas ${cacheClima[cacheKey]} text-xl"></i>`;
-                } else {
-                    // Si no está, pedirlo secuencialmente
-                    const icono = await obtenerClimaIcono(dirCompleta, p.FechaHora);
-                    const el = document.getElementById(`clima-agenda-${i}`);
-                    if (el && icono) el.innerHTML = `<i class="fas ${icono} text-xl"></i>`;
-                    
-                    // Pequeña pausa para no saturar la API
-                    await new Promise(r => setTimeout(r, 500));
-                }
+                promesasClima.push(
+                    (async () => {
+                        const cacheKey = dirCompleta + '_' + p.FechaHora;
+                        if (cacheClima[cacheKey]) {
+                            const el = document.getElementById(`clima-agenda-${i}`);
+                            if (el) el.innerHTML = `<i class="fas ${cacheClima[cacheKey]} text-xl"></i>`;
+                        } else {
+                            const icono = await obtenerClimaIcono(dirCompleta, p.FechaHora);
+                            const el = document.getElementById(`clima-agenda-${i}`);
+                            if (el && icono) el.innerHTML = `<i class="fas ${icono} text-xl"></i>`;
+                        }
+                    })()
+                );
             }
+            await Promise.all(promesasClima);
         }
 
         function cerrarBannerAgenda() {
@@ -746,11 +777,12 @@
                     lat = cacheGeo[direccion].lat;
                     lon = cacheGeo[direccion].lon;
                 } else {
-                    const resGeo = await fetchWithTimeout(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(direccion)}`, { headers: { 'User-Agent': 'LigasInfantilesApp/1.0' } });
+                    // CAMBIO CRUCIAL: Uso de Open-Meteo Geocoding API (no bloquea)
+                    const resGeo = await fetchWithTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(direccion)}&count=1&language=es&format=json`);
                     const geoData = await resGeo.json();
-                    if (!geoData || geoData.length === 0) return '';
-                    lat = geoData[0].lat;
-                    lon = geoData[0].lon;
+                    if (!geoData.results || geoData.results.length === 0) return '';
+                    lat = geoData.results[0].latitude;
+                    lon = geoData.results[0].longitude;
                     cacheGeo[direccion] = { lat, lon };
                     localStorage.setItem('cache_geo', JSON.stringify(cacheGeo));
                 }
