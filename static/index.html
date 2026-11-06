@@ -76,9 +76,16 @@
 
     <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-[55] hide opacity-0" onclick="toggleDrawer()"></div>
 
-    <div id="drawer-menu" class="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-gray-50 z-[60] shadow-2xl flex flex-col pt-[88px]">
-        <!-- pt-[88px] para que no se pise con la cabecera -->
-        <div class="p-4 space-y-4 overflow-y-auto flex-1" id="lista-equipos-lateral"></div>
+    <!-- MENÚ LATERAL ARREGLADO: Cabecera interna restaurada -->
+    <div id="drawer-menu" class="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-gray-50 z-[60] shadow-2xl flex flex-col">
+        <div class="text-white p-4 flex justify-between items-center shadow-md h-[88px]" style="background-color: var(--header-bg);">
+            <h2 class="text-xl font-bold" id="drawer-title">Mis Equipos</h2>
+            <div class="flex gap-4">
+                <button onclick="prepararNuevoEquipo()" class="text-white hover:text-gray-200"><i class="fas fa-plus-circle text-2xl"></i></button>
+                <button onclick="toggleDrawer()" class="text-white hover:text-red-300"><i class="fas fa-times-circle text-2xl"></i></button>
+            </div>
+        </div>
+        <div id="lista-equipos-lateral" class="p-4 space-y-4 overflow-y-auto flex-1"></div>
     </div>
 
     <div id="modal-mapa" class="fixed inset-0 bg-black/50 z-[70] hide flex items-end justify-center opacity-0 transition-opacity" onclick="cerrarModalMapa()">
@@ -711,7 +718,6 @@
                     lat = cacheGeo[direccion].lat;
                     lon = cacheGeo[direccion].lon;
                 } else {
-                    // Límite de peticiones: Añadimos un pequeño retraso o usamos caché estricta
                     const resGeo = await fetchWithTimeout(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(direccion)}`, { headers: { 'User-Agent': 'LigasInfantilesApp/1.0' } });
                     const geoData = await resGeo.json();
                     if (!geoData || geoData.length === 0) return '';
