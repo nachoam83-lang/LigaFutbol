@@ -222,11 +222,24 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/static/sw2.js').catch(err => console.log('SW fallo:', err));
+                navigator.serviceWorker.register('/static/sw.js').catch(err => console.log('SW fallo:', err));
             });
         }
 
         let equipos = JSON.parse(localStorage.getItem('equipos_liga')) || [];
+        
+        // ARREGLO AUTOMÁTICO DE ESCUDOS PARA CANAL (Evita que el iPad muestre el logo genérico para tu equipo)
+        let equiposModificados = false;
+        equipos.forEach(eq => {
+            if (eq.idDeporte === "4" && (eq.escudoFavorito === "/static/Equipo_Canal.png" || !eq.escudoFavorito)) {
+                eq.escudoFavorito = "/static/escudo_canal.png"; // Usamos el logo antiguo de tu equipo
+                equiposModificados = true;
+            }
+        });
+        if (equiposModificados) {
+            localStorage.setItem('equipos_liga', JSON.stringify(equipos));
+        }
+
         let equipoActual = null;
         let equipoSeleccionadoVisual = null; 
         let editandoEquipoId = null; 
@@ -268,12 +281,10 @@
         function esCampoExterior(p) { const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase(); return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')); }
         function isCanal() { return equipoActual && equipoActual.idDeporte === "4"; }
 
-        // Identificador único y seguro para cada partido
         function getMatchId(p) {
             return `${p.NumeroJornada || 0}_${p.EquipoLocal}_${p.EquipoVisitante}`;
         }
 
-        // Huella digital del estado actual del partido
         function getMatchHash(p) {
             let dateMs = 0;
             if (p.FechaHora) {
@@ -750,7 +761,7 @@
             if (!idGrupo) { panel.classList.add('hide'); return; }
 
             if (idDep === "4") {
-                equipoSeleccionadoVisual = { nombre: idGrupo, escudo: "/static/Equipo_Canal.png" };
+                equipoSeleccionadoVisual = { nombre: idGrupo, escudo: "/static/escudo_canal.png" }; // ARREGLADO AQUÍ TAMBIÉN
                 document.getElementById('btn-guardar').disabled = false;
                 panel.classList.add('hide');
                 return;
@@ -860,7 +871,7 @@
                 
                 if (!cacheResultados || cacheResultados.length === 0) throw new Error("Datos vacíos");
 
-                // LÓGICA DE SNAPSHOT (VERSIÓN 3 PARA LIMPIAR ERRORES)
+                // LÓGICA DE SNAPSHOT
                 const snapshotKey = `snapshot_v3_${equipoActual.id}`;
                 let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
                 if (Array.isArray(snapshotViejo)) snapshotViejo = {};
@@ -876,8 +887,8 @@
                     const snapViejo = snapshotViejo[matchId];
                     
                     if (snapViejo) {
-                        if (snapViejo.hash !== matchHash) pending = true; // Ha cambiado
-                        else if (snapViejo.pending) pending = true; // Seguía pendiente
+                        if (snapViejo.hash !== matchHash) pending = true; 
+                        else if (snapViejo.pending) pending = true; 
                     }
 
                     snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
@@ -887,7 +898,6 @@
                     }
                 });
 
-                // Limpiar partidos eliminados
                 Object.keys(snapshotNuevo).forEach(k => {
                     if (!cacheResultados.some(p => getMatchId(p) === k)) {
                         delete snapshotNuevo[k];
@@ -1114,7 +1124,7 @@
                     if (!document.getElementById('tab-calendario').classList.contains('hide')) renderizarCalendarioUI();
                     if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
                 }
-            }, 3600000); // 1 hora
+            }, 3600000); 
         }
 
         function toggleFiltro() {
