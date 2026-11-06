@@ -397,7 +397,6 @@
             userSettings.homeAddress = dir;
             userSettings.defaultMap = document.getElementById('select-mapa-defecto').value;
             
-            // Geocodificar dirección de casa
             if (dir !== "") {
                 try {
                     const res = await fetchWithTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(dir)}&count=1&language=es&format=json`);
@@ -708,7 +707,7 @@
                     `;
                 });
 
-                // CARGAR CLIMA Y RUTAS (Fase 3) - CORREGIDO
+                // CARGAR CLIMA Y RUTAS (Fase 3)
                 cargarClimaYRutas();
 
             } catch (e) {
@@ -717,7 +716,6 @@
             }
         }
 
-        // --- FUNCIÓN CORREGIDA (SIN ESPACIOS EN EL NOMBRE) ---
         async function cargarClimaYRutas() {
             if (!window._partidosAgenda) return;
             const partidos = window._partidosAgenda;
@@ -734,8 +732,12 @@
                         // 1. OBTENER COORDENADAS DEL CAMPO
                         let lat = p.CampoJuego?.Latitud || p.Latitud;
                         let lon = p.CampoJuego?.Longitud || p.Longitud;
-                        
-                        if (!lat || !lon) {
+
+                        // TRUCO PARA CANAL: Coordenadas fijas
+                        if (esCanal || dirCompleta.includes("El Parque Santander")) {
+                            lat = 40.44372331454751;
+                            lon = -3.706714444750114;
+                        } else if (!lat || !lon) {
                             const cacheKey = dirCompleta;
                             if (cacheGeo[cacheKey]) {
                                 lat = cacheGeo[cacheKey].lat;
@@ -817,6 +819,10 @@
                                 } catch(e) {
                                     console.log("Error calculando ruta", e);
                                 }
+                            } else {
+                                // Si no hay dirección de casa
+                                const elRuta = document.getElementById(`ruta-agenda-${i}`);
+                                if (elRuta) elRuta.innerHTML = `🚗 <span class="text-gray-400 text-[10px]">Configura tu casa</span>`;
                             }
                         }
                     })()
