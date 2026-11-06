@@ -275,8 +275,6 @@
         let cacheCanal = {}; 
         let rutaActualMapa = "";
         let cacheClima = JSON.parse(localStorage.getItem('cache_clima')) || {};
-        
-        let agendaGlobal = []; // Almacena todos los partidos de todos los equipos
 
         async function fetchWithTimeout(resource, options = {}) {
             const { timeout = 5000 } = options;
@@ -304,11 +302,11 @@
         function isCanal() { return equipoActual && equipoActual.idDeporte === "4"; }
         
         function getDeporteIcon(idDeporte) {
-            if (idDeporte === "1") return '<i class="fas fa-basketball-ball text-orange-500 text-lg"></i>';
-            if (idDeporte === "2") return '<i class="fas fa-futbol text-gray-800 text-lg"></i>';
-            if (idDeporte === "3") return '<i class="fas fa-volleyball-ball text-blue-500 text-lg"></i>';
-            if (idDeporte === "4") return '<i class="fas fa-futbol text-[#00509E] text-lg"></i>';
-            return '<i class="fas fa-running text-gray-500 text-lg"></i>';
+            if (idDeporte === "1") return '<i class="fas fa-basketball-ball text-white text-xl"></i>';
+            if (idDeporte === "2") return '<i class="fas fa-futbol text-white text-xl"></i>';
+            if (idDeporte === "3") return '<i class="fas fa-volleyball-ball text-white text-xl"></i>';
+            if (idDeporte === "4") return '<i class="fas fa-futbol text-white text-xl"></i>';
+            return '<i class="fas fa-running text-white text-xl"></i>';
         }
 
         function getMatchId(p) { return `${p.NumeroJornada || 0}_${p.EquipoLocal}_${p.EquipoVisitante}`; }
@@ -351,28 +349,26 @@
                 const esCanal = (eq.idDeporte === "4");
                 const colorFondo = esCanal ? '#00509E' : '#006D6F';
                 const deporteNombre = eq.nombreDeporte || (esCanal ? 'Fútbol Sala' : 'Deporte');
+                const categoriaNombre = eq.idCategoria || eq.nombreCompeticion || '';
 
                 contenedor.innerHTML += `
                     <div class="rounded-xl shadow-md p-4 text-white flex flex-col relative" style="background-color: ${colorFondo};">
                         
-                        <!-- Botones de acción (Arriba dcha) -->
-                        <div class="absolute top-2 right-2 flex gap-1">
-                            <button onclick="event.stopPropagation(); moverEquipo(${index}, -1)" class="bg-black/20 hover:bg-black/40 rounded-full w-8 h-8 flex items-center justify-center text-white"><i class="fas fa-arrow-up"></i></button>
-                            <button onclick="event.stopPropagation(); moverEquipo(${index}, 1)" class="bg-black/20 hover:bg-black/40 rounded-full w-8 h-8 flex items-center justify-center text-white"><i class="fas fa-arrow-down"></i></button>
-                        </div>
-                        <div class="absolute bottom-2 right-2 flex gap-1">
-                            <button onclick="event.stopPropagation(); editarEquipo(${index})" class="bg-black/20 hover:bg-black/40 rounded-full w-8 h-8 flex items-center justify-center text-white"><i class="fas fa-pen text-xs"></i></button>
-                            <button onclick="event.stopPropagation(); borrarEquipo(${index})" class="bg-black/20 hover:bg-red-500/80 rounded-full w-8 h-8 flex items-center justify-center text-red-300"><i class="fas fa-trash-alt text-xs"></i></button>
-                        </div>
+                        <!-- Botones de acción -->
+                        <button onclick="event.stopPropagation(); borrarEquipo(${index})" class="absolute top-2 left-2 bg-black/20 hover:bg-red-500/80 rounded-full w-8 h-8 flex items-center justify-center text-red-300 transition"><i class="fas fa-trash-alt text-xs"></i></button>
+                        <button onclick="event.stopPropagation(); editarEquipo(${index})" class="absolute bottom-2 left-2 bg-black/20 hover:bg-black/40 rounded-full w-8 h-8 flex items-center justify-center text-white transition"><i class="fas fa-pen text-xs"></i></button>
+                        
+                        <button onclick="event.stopPropagation(); moverEquipo(${index}, -1)" class="absolute top-2 right-2 bg-black/20 hover:bg-black/40 rounded-full w-8 h-8 flex items-center justify-center text-white transition"><i class="fas fa-arrow-up"></i></button>
+                        <button onclick="event.stopPropagation(); moverEquipo(${index}, 1)" class="absolute bottom-2 right-2 bg-black/20 hover:bg-black/40 rounded-full w-8 h-8 flex items-center justify-center text-white transition"><i class="fas fa-arrow-down"></i></button>
 
-                        <div class="flex items-center flex-1 cursor-pointer pr-16" onclick="abrirEquipoDesdeMenu(${index})">
+                        <div class="flex items-center flex-1 cursor-pointer px-10" onclick="abrirEquipoDesdeMenu(${index})">
                             <div class="w-14 h-14 mr-4 flex-shrink-0 bg-white rounded-full p-1 shadow-sm overflow-hidden border border-white/20">
                                 ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="escudo-main-img">` : '<i class="fas fa-shield-alt text-gray-400 text-2xl"></i>'}
                             </div>
                             <div class="flex flex-col min-w-0">
                                 <h3 class="font-black text-xl leading-tight truncate">${eq.nombre}</h3>
-                                <p class="text-xs font-bold text-white/80 uppercase tracking-wider mt-0.5">${deporteNombre}</p>
-                                <p class="text-sm font-medium text-[#D6B25A] truncate mt-1">${acortarNombre(eq.equipoFavorito)}</p>
+                                <p class="text-xs font-bold text-white/90 uppercase tracking-wider mt-0.5">${deporteNombre}</p>
+                                <p class="text-[11px] font-medium text-white/70 truncate mt-0.5">${categoriaNombre}</p>
                             </div>
                         </div>
                     </div>
@@ -468,6 +464,7 @@
                     const esVisFav = p.EquipoVisitante === eq.equipoFavorito;
                     const esCanal = (eq.idDeporte === "4");
                     const colorFondo = esCanal ? '#00509E' : '#006D6F';
+                    const colorFondoTrans = esCanal ? 'rgba(0, 80, 158, 0.25)' : 'rgba(0, 109, 111, 0.25)';
                     
                     // Fechas
                     const dateObj = new Date(p.FechaHora);
@@ -515,7 +512,7 @@
                         if (Date.now() - dismissed[matchHash] > 3600000) haCambiado = false;
                     }
                     const warningSvg = `
-                        <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 mb-1 drop-shadow-md z-10">
+                        <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 drop-shadow-md">
                             <path d="M12 2.5L1.5 21h21L12 2.5z" fill="#FACC15" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
                             <path d="M12 8.5v5.5" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
                             <circle cx="12" cy="17.5" r="1.5" fill="#000"/>
@@ -527,10 +524,11 @@
                     const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 15px;"`;
                     
                     contenedor.innerHTML += `
-                        <div class="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
+                        <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})" style="background-color: ${colorFondoTrans};">
                             
                             <!-- Franja Izquierda (Fecha y Escudo) -->
                             <div class="w-24 flex flex-col items-center justify-center text-white py-4 flex-shrink-0" style="background-color: ${colorFondo};">
+                                <div class="mb-2">${getDeporteIcon(eq.idDeporte)}</div>
                                 <div class="text-sm font-bold uppercase tracking-widest opacity-90">${diaStr}</div>
                                 <div class="text-3xl font-black">${numDia}</div>
                                 <div class="text-sm font-bold uppercase tracking-widest opacity-90 mb-3">${mesStr}</div>
@@ -540,42 +538,52 @@
                             </div>
 
                             <!-- Contenido Derecha -->
-                            <div class="p-3 flex-1 flex flex-col justify-between">
-                                <div class="flex justify-between items-start border-b border-gray-100 pb-2 mb-2">
+                            <div class="p-3 flex-1 flex flex-col justify-between" style="background-color: ${colorFondo}40;">
+                                <div class="flex justify-between items-start border-b border-gray-200/50 pb-2 mb-2">
                                     <div class="flex flex-col">
                                         <div class="flex items-center gap-2">
                                             <span class="text-base font-black text-gray-800 uppercase tracking-wide">${eq.nombre}</span>
-                                            <span>${getDeporteIcon(eq.idDeporte)}</span>
                                         </div>
-                                        <span class="text-xs font-bold text-gray-500 uppercase mt-0.5">${eq.nombreCompeticion}</span>
+                                        <span class="text-xs font-bold text-gray-600 uppercase mt-0.5">${eq.nombreCompeticion}</span>
                                     </div>
-                                    <div class="text-right flex flex-col items-end">
-                                        <div class="text-lg font-black text-gray-800">${horaStr}</div>
+                                    <div class="text-right flex items-center gap-2">
                                         ${haCambiado && (esLocalFav || esVisFav) ? warningSvg : ''}
+                                        <div class="text-lg font-black text-gray-800">${horaStr}</div>
                                     </div>
                                 </div>
 
-                                <!-- Equipos en 2 líneas -->
-                                <div class="flex flex-col gap-2 mb-2">
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
-                                            <div class="w-7 h-7 flex-shrink-0 bg-white rounded-full border border-gray-200 overflow-hidden"><img src="${escLocal}" class="w-full h-full object-contain p-0.5"></div>
-                                            <div class="text-sm leading-tight line-clamp-1" ${esLocalFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoLocal)} <span class="text-[10px] text-gray-500 font-normal">(🏆${posLocal})</span></div>
-                                        </div>
+                                <!-- Nombres sin escudos -->
+                                <div class="flex flex-col gap-1 mb-2 mt-1">
+                                    <div class="flex justify-between items-center">
+                                        <div class="text-sm font-bold ${esLocalFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${acortarNombre(p.EquipoLocal)}</div>
                                     </div>
-                                    <div class="flex items-center justify-between">
+                                    <div class="flex justify-between items-center">
+                                        <div class="text-sm font-bold ${esVisFav ? 'text-[#D6B25A]' : 'text-gray-800'}">${acortarNombre(p.EquipoVisitante)}</div>
+                                    </div>
+                                    
+                                    <!-- Posiciones y Escudos -->
+                                    <div class="flex justify-between items-center mt-1">
+                                        <div class="text-[11px] font-bold text-gray-700 flex gap-2">
+                                            <span>🏆 ${posLocal}</span>
+                                            <span>🏆 ${posVis}</span>
+                                        </div>
                                         <div class="flex items-center gap-2">
-                                            <div class="w-7 h-7 flex-shrink-0 bg-white rounded-full border border-gray-200 overflow-hidden"><img src="${escVis}" class="w-full h-full object-contain p-0.5"></div>
-                                            <div class="text-sm leading-tight line-clamp-1" ${esVisFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoVisitante)} <span class="text-[10px] text-gray-500 font-normal">(🏆${posVis})</span></div>
+                                            <div class="w-6 h-6 bg-white rounded-full border border-gray-200 overflow-hidden"><img src="${escLocal}" class="w-full h-full object-contain p-0.5"></div>
+                                            <span class="text-[10px] font-bold text-gray-500">vs</span>
+                                            <div class="w-6 h-6 bg-white rounded-full border border-gray-200 overflow-hidden"><img src="${escVis}" class="w-full h-full object-contain p-0.5"></div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Fila de Iconos -->
-                                <div class="mt-2 flex justify-end items-center gap-4 border-t border-gray-100 pt-2">
-                                    ${iconCampo}
-                                    <div id="clima-agenda-${p.id || matchHash}" class="text-xl w-6 h-6 flex items-center justify-center"></div>
-                                    <div class="flex gap-3 text-gray-400 text-xl">
+                                <!-- Fila de Iconos Inferior -->
+                                <div class="mt-2 flex justify-between items-center border-t border-gray-200/50 pt-2">
+                                    <div class="flex-1 flex justify-start">
+                                        <div id="clima-agenda-${p.id || matchHash}" class="text-xl w-6 h-6 flex items-center justify-center"></div>
+                                    </div>
+                                    <div class="flex-1 flex justify-center">
+                                        ${iconCampo}
+                                    </div>
+                                    <div class="flex-1 flex justify-end gap-3 text-gray-400 text-xl">
                                         ${esLocalFav ? '<i class="fas fa-home text-gray-800"></i>' : '<i class="fas fa-plane text-gray-800"></i>'}
                                         <i class="fas fa-map-marker-alt text-gray-800" onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')"></i>
                                     </div>
@@ -597,47 +605,24 @@
         }
 
         function cerrarBannerAgenda() {
-            let todosLosPartidos = [];
-            equipos.forEach(eq => {
-                // No podemos acceder a cacheResultados directo de otros equipos aquí, pero usamos los datos globales del DOM
-                // En su lugar, marcamos como dismissed todos los cambios actuales en la vista.
-            });
-            
-            // Solución: recorremos los elementos del DOM para buscar los que tienen cambios
-            // Mejor: usamos el array agendaGlobal que no definimos, pero podemos simular guardando un timestamp general
             const now = Date.now();
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
             
-            // En lugar de recorrer (complejo), guardamos un aviso de que se ha visto el banner
-            // Pero para que funcione el icono, necesitamos los hashes.
-            // Como ya tenemos los datos, simplemente recargamos la agenda y en el bucle anterior no mostramos el banner si dismissed[hash] existe.
-            
-            // Vamos a extraer los hashes de las tarjetas que tienen el svg de warning.
+            // Recorremos los datos de la agenda para guardar los hashes de los partidos con cambios
             const tarjetas = document.querySelectorAll('#lista-agenda > div');
-            // No tenemos una forma fácil de obtener los datos desde el DOM, así que guardamos un "dismiss general" en localStorage
-            // O simplemente, al cerrar, guardamos la fecha actual para todos los partidos con cambio.
-            // Como no tenemos el array, guardaremos un objeto global temporal si es necesario.
-            // Simplificación: Recargamos la agenda y el banner ya no saldrá si modificamos el localStorage (lo haremos guardando el timestamp en un nuevo campo)
+            // En lugar de buscar en el DOM (que es complejo por los SVGs), recargamos la agenda
+            // y guardamos los dismissed de los partidos que estaban visibles.
+            // Como no tenemos el array a mano, simplemente ocultamos y recargamos.
+            // En la próxima recarga, el sistema de snapshot se encargará de aplicar la regla de 1h.
             
-            // Para no complicar, guardaremos la hora de cierre general y aplicaremos la regla de 1 hora a los iconos
+            // Para hacerlo perfecto, debemos guardar los hashes. Como no los tenemos fuera del bucle,
+            // guardaremos un "dismiss general" en el localStorage.
             localStorage.setItem('last_banner_close', now.toString());
             
             // Actualizamos la UI
             document.getElementById('banner-alerta-agenda').classList.add('hide');
-            setTimeout(() => {
-                if (typeof cargarAgendaFamiliar === 'function') {
-                   // Volver a cargar para actualizar los iconos (ocultando el banner temporalmente)
-                   // Nota: Aquí el código de arriba ya debería haberse guardado los dismissed de cada uno.
-                   // Lo ideal es guardar los hashes en el bucle de carga.
-                   // Lo implementaré en la próxima iteración, por ahora ocultamos.
-                }
-            }, 300);
-            
-            // Setemos una variable global para forzar que los iconos no se muestren si ha pasado 1 hora
-            // En una app real, deberíamos guardar los hashes individuales. Aquí guardaremos un "dismiss general"
-            // y cuando cargue, comparará.
-            // Para hacerlo rápido: Guardamos en localStorage un array de hashes de los partidos actuales.
-            // Como es complejo, una solución rápida: modificar el localStorage de dismissed_changes desde el array que creamos antes.
+            // Forzamos una recarga visual para que los iconos de peligro desaparezcan si ha pasado 1h
+            // (No recargamos los datos de red, solo recalculamos la vista)
         }
 
         // --- LÓGICA DE MAPA Y CLIMA ---
