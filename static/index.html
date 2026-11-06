@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ligas Infantiles</title>
+    <title>Agenda Familiar</title>
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -66,14 +66,29 @@
         .escudo-main-img { border-radius: 50%; object-fit: cover; width: 100%; height: 100%; }
 
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
-
-        #ptr-indicator { position: fixed; top: -50px; left: 50%; transform: translateX(-50%); background: white; padding: 10px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; transition: top 0.3s; }
-        #ptr-indicator.active { top: 20px; }
+        
+        /* ESTILOS DEL MENÚ LATERAL (DRAWER) */
+        #drawer-overlay { transition: opacity 0.3s; }
+        #drawer-menu { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
+        #drawer-menu.open { transform: translateX(0); }
     </style>
 </head>
 <body class="pb-20">
 
-    <div id="ptr-indicator" class="text-gray-500 text-xl"><i class="fas fa-sync-alt spin-anim"></i></div>
+    <!-- OVERLAY OSCURO DEL MENÚ LATERAL -->
+    <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-40 hide opacity-0" onclick="toggleDrawer()"></div>
+
+    <!-- MENÚ LATERAL (MIS EQUIPOS) -->
+    <div id="drawer-menu" class="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-gray-50 z-50 shadow-2xl flex flex-col">
+        <div class="bg-gray-600 text-white p-4 flex justify-between items-center shadow-md">
+            <h2 class="text-xl font-bold" id="drawer-title">Mis Equipos</h2>
+            <div class="flex gap-4">
+                <button onclick="prepararNuevoEquipo()" class="text-white hover:text-gray-200"><i class="fas fa-plus-circle text-2xl"></i></button>
+                <button onclick="toggleDrawer()" class="text-white hover:text-red-300"><i class="fas fa-times-circle text-2xl"></i></button>
+            </div>
+        </div>
+        <div id="lista-equipos-lateral" class="p-4 space-y-3 overflow-y-auto flex-1"></div>
+    </div>
 
     <div id="modal-mapa" class="fixed inset-0 bg-black/50 z-50 hide flex items-end justify-center opacity-0 transition-opacity" onclick="cerrarModalMapa()">
         <div class="bg-white w-full max-w-md rounded-t-2xl p-4 pb-8" onclick="event.stopPropagation()">
@@ -89,24 +104,22 @@
 
     <div id="pantalla-carga" class="oculto">
         <div class="loader-juego mb-6"><div class="escudo-wrapper"><img id="carga-escudo" src="/static/logo.png" alt="Escudo"></div></div>
-        <h2 id="carga-texto" class="text-2xl font-black mb-2 tracking-wider">CARGANDO EQUIPO</h2>
-        <p class="text-sm text-white/70">Obteniendo calendario, resultados y clasificación...</p>
+        <h2 id="carga-texto" class="text-2xl font-black mb-2 tracking-wider">CARGANDO AGENDA</h2>
+        <p class="text-sm text-white/70">Obteniendo partidos y clasificaciones...</p>
     </div>
 
-    <div id="screen-equipos" class="max-w-md mx-auto min-h-screen">
-        <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
-            <h1 class="text-xl font-bold tracking-wide">Mis Equipos</h1>
-            <div class="flex gap-3 items-center">
-                <button onclick="toggleAutoOrden()" id="btn-auto-orden" class="hover:opacity-80 transition flex items-center justify-center w-8 h-8">
-                    <i class="fas fa-hourglass-half text-lg" id="icono-auto-orden"></i>
-                </button>
-                <button onclick="refrescarApp()" id="btn-refresh" class="text-white hover:opacity-80 transition"><i class="fas fa-sync-alt text-lg"></i></button>
-                <button onclick="prepararNuevoEquipo()" class="bg-white text-gray-800 rounded-full w-8 h-8 flex items-center justify-center shadow-sm text-lg font-bold">+</button>
-            </div>
+    <!-- PANTALLA PRINCIPAL (AGENDA) -->
+    <div id="screen-agenda" class="max-w-md mx-auto min-h-screen">
+        <!-- CABECERA SUPERIOR -->
+        <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-30" style="background-color: var(--header-bg);">
+            <button onclick="alert('Próximamente: Ajustes y Dirección de Casa')" class="text-white hover:opacity-80 transition"><i class="fas fa-cog text-2xl"></i></button>
+            <h1 id="main-title" class="text-xl font-bold tracking-wide">Agenda Familiar</h1>
+            <button onclick="toggleDrawer()" class="text-white hover:opacity-80 transition"><i class="fas fa-user text-2xl"></i></button>
         </div>
-        <div id="lista-equipos" class="p-4 space-y-4"></div>
+        <div id="lista-agenda" class="p-4 space-y-4"></div>
     </div>
 
+    <!-- FORMULARIO DE EQUIPO -->
     <div id="screen-formulario" class="hide max-w-md mx-auto min-h-screen" style="background-color: var(--bg-color);">
         <div class="text-white p-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left"></i></button>
@@ -154,6 +167,7 @@
         </div>
     </div>
 
+    <!-- PANTALLA DETALLE DEL EQUIPO -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
         <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--primary-color);">
             <div class="flex items-center p-4">
@@ -228,17 +242,14 @@
 
         let equipos = JSON.parse(localStorage.getItem('equipos_liga')) || [];
         
-        // ARREGLO AUTOMÁTICO DE ESCUDOS PARA CANAL (Evita que el iPad muestre el logo genérico para tu equipo)
         let equiposModificados = false;
         equipos.forEach(eq => {
             if (eq.idDeporte === "4" && (eq.escudoFavorito === "/static/Equipo_Canal.png" || !eq.escudoFavorito)) {
-                eq.escudoFavorito = "/static/escudo_canal.png"; // Usamos el logo antiguo de tu equipo
+                eq.escudoFavorito = "/static/escudo_canal.png";
                 equiposModificados = true;
             }
         });
-        if (equiposModificados) {
-            localStorage.setItem('equipos_liga', JSON.stringify(equipos));
-        }
+        if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
         let equipoActual = null;
         let equipoSeleccionadoVisual = null; 
@@ -255,6 +266,8 @@
         let cacheCanal = {}; 
         let rutaActualMapa = "";
         let cacheClima = JSON.parse(localStorage.getItem('cache_clima')) || {};
+        
+        let agendaGlobal = []; // Almacena todos los partidos de todos los equipos
 
         async function fetchWithTimeout(resource, options = {}) {
             const { timeout = 5000 } = options;
@@ -280,10 +293,16 @@
         
         function esCampoExterior(p) { const texto = ((p.Campo || '') + ' ' + (p.CampoJuego?.Nombre || '')).toUpperCase(); return (texto.includes('EXTERIOR') || texto.includes('AIRE LIBRE')); }
         function isCanal() { return equipoActual && equipoActual.idDeporte === "4"; }
-
-        function getMatchId(p) {
-            return `${p.NumeroJornada || 0}_${p.EquipoLocal}_${p.EquipoVisitante}`;
+        
+        function getDeporteIcon(idDeporte) {
+            if (idDeporte === "1") return '<i class="fas fa-basketball-ball text-orange-500"></i>';
+            if (idDeporte === "2") return '<i class="fas fa-futbol text-gray-800"></i>';
+            if (idDeporte === "3") return '<i class="fas fa-volleyball-ball text-blue-500"></i>';
+            if (idDeporte === "4") return '<i class="fas fa-futbol text-[#00509E]"></i>';
+            return '<i class="fas fa-running text-gray-500"></i>';
         }
+
+        function getMatchId(p) { return `${p.NumeroJornada || 0}_${p.EquipoLocal}_${p.EquipoVisitante}`; }
 
         function getMatchHash(p) {
             let dateMs = 0;
@@ -294,46 +313,230 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
-        function refrescarApp() { 
-            const icono = document.querySelector('#btn-refresh i'); 
-            icono.classList.add('spin-anim'); 
-            cacheProximoPartido = {}; 
-            cacheClima = {};
-            localStorage.removeItem('cache_proximo_partido');
-            localStorage.removeItem('cache_clima');
-            setTimeout(() => { renderizarEquipos(); icono.classList.remove('spin-anim'); }, 500); 
+        function toggleDrawer() {
+            const overlay = document.getElementById('drawer-overlay');
+            const menu = document.getElementById('drawer-menu');
+            const title = document.getElementById('main-title');
+            
+            if (menu.classList.contains('open')) {
+                menu.classList.remove('open');
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hide'), 300);
+                title.innerText = "Agenda Familiar";
+            } else {
+                renderizarMenuLateral();
+                overlay.classList.remove('hide');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                menu.classList.add('open');
+                title.innerText = "Mis Equipos";
+            }
         }
-        
+
+        function renderizarMenuLateral() {
+            const contenedor = document.getElementById('lista-equipos-lateral');
+            contenedor.innerHTML = '';
+            
+            if (equipos.length === 0) {
+                contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No tienes equipos guardados.</p>';
+                return;
+            }
+
+            equipos.forEach((eq, index) => {
+                const esCanal = (eq.idDeporte === "4");
+                const colorFondo = esCanal ? '#00509E' : '#006D6F';
+                const deporteNombre = eq.nombreDeporte || (esCanal ? 'Fútbol Sala' : 'Deporte');
+
+                contenedor.innerHTML += `
+                    <div class="bg-white rounded-xl shadow-sm p-3 flex relative items-center border border-gray-200">
+                        
+                        <!-- Botones de acción -->
+                        <div class="absolute top-2 right-2 flex gap-2">
+                            <button onclick="moverEquipo(${index}, -1)" class="text-gray-400 hover:text-gray-700 w-6 h-6 flex items-center justify-center"><i class="fas fa-arrow-up text-xs"></i></button>
+                            <button onclick="moverEquipo(${index}, 1)" class="text-gray-400 hover:text-gray-700 w-6 h-6 flex items-center justify-center"><i class="fas fa-arrow-down text-xs"></i></button>
+                            <button onclick="editarEquipo(${index})" class="text-gray-400 hover:text-blue-500 w-6 h-6 flex items-center justify-center"><i class="fas fa-pen text-xs"></i></button>
+                            <button onclick="borrarEquipo(${index})" class="text-gray-400 hover:text-red-500 w-6 h-6 flex items-center justify-center"><i class="fas fa-trash-alt text-xs"></i></button>
+                        </div>
+
+                        <div class="flex items-center flex-1" onclick="abrirEquipoDesdeMenu(${index})">
+                            <div class="w-12 h-12 mr-3 flex-shrink-0 bg-white rounded-full p-1 shadow-sm overflow-hidden border border-gray-100">
+                                ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="escudo-main-img">` : '<i class="fas fa-shield-alt text-gray-400 text-xl"></i>'}
+                            </div>
+                            <div class="flex flex-col min-w-0 pr-16">
+                                <h3 class="font-black text-lg leading-tight truncate" style="color: ${colorFondo};">${eq.nombre}</h3>
+                                <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">${deporteNombre}</p>
+                                <p class="text-xs font-medium text-gray-600 truncate mt-0.5">${acortarNombre(eq.equipoFavorito)}</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-300 absolute right-3"></i>
+                    </div>
+                `;
+            });
+        }
+
+        function abrirEquipoDesdeMenu(index) {
+            toggleDrawer(); // Cierra el menú
+            setTimeout(() => abrirEquipo(index), 300); // Espera a que termine la animación para abrir
+        }
+
         document.addEventListener('DOMContentLoaded', () => { 
-            actualizarBotonOrden();
-            renderizarEquipos(); 
+            cargarAgendaFamiliar(); 
             cargarCompeticiones(2); 
         });
 
-        // LÓGICA PULL TO REFRESH
-        let touchStartY = 0;
-        let touchEndY = 0;
-        const screenEquipos = document.getElementById('screen-equipos');
-        const ptrIndicator = document.getElementById('ptr-indicator');
-
-        screenEquipos.addEventListener('touchstart', e => {
-            if (window.scrollY === 0) {
-                touchStartY = e.changedTouches[0].screenY;
+        // --- LÓGICA DE LA AGENDA FAMILIAR ---
+        async function cargarAgendaFamiliar() {
+            const contenedor = document.getElementById('lista-agenda');
+            contenedor.innerHTML = '<div class="text-center mt-10"><div class="loader-sm mx-auto mb-2"></div><p class="text-gray-500 text-sm">Cargando agenda...</p></div>';
+            
+            if (equipos.length === 0) {
+                contenedor.innerHTML = `<div class="text-center text-gray-400 mt-16"><i class="fas fa-calendar-alt text-6xl mb-4 text-gray-200"></i><p class="font-medium">No hay equipos guardados.</p><p class="text-sm mt-2">Toca el icono de usuario arriba a la derecha para añadir uno.</p></div>`;
+                return;
             }
-        }, { passive: true });
 
-        screenEquipos.addEventListener('touchend', e => {
-            if (window.scrollY === 0 && touchStartY > 0) {
-                touchEndY = e.changedTouches[0].screenY;
-                if (touchEndY - touchStartY > 100) {
-                    ptrIndicator.classList.add('active');
-                    refrescarApp();
-                    setTimeout(() => ptrIndicator.classList.remove('active'), 1000);
+            let todosLosPartidos = [];
+
+            try {
+                const promesas = equipos.map(async (eq) => {
+                    // Usamos los resultados cacheados o pedimos a la API
+                    let res = await fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
+                    let partidos = await res.json();
+                    
+                    let resClasif = await fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
+                    let clasif = await resClasif.json();
+
+                    partidos.forEach(p => {
+                        if (p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito) {
+                            let copiaP = { ...p };
+                            copiaP._equipoRef = eq;
+                            copiaP._clasifRef = clasif;
+                            todosLosPartidos.push(copiaP);
+                        }
+                    });
+                });
+
+                await Promise.all(promesas);
+
+                // Filtrar solo futuros o de hoy en adelante (opcional, aquí mostramos los próximos)
+                const hoy = new Date(); hoy.setHours(0,0,0,0);
+                
+                // Ordenar por fecha
+                todosLosPartidos.sort((a, b) => new Date(a.FechaHora) - new Date(b.FechaHora));
+
+                // Para no saturar, mostramos los próximos 30 días (o un límite de partidos)
+                const proximosPartidos = todosLosPartidos.filter(p => new Date(p.FechaHora) >= hoy);
+
+                contenedor.innerHTML = '';
+
+                if (proximosPartidos.length === 0) {
+                    contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos próximos programados.</p>';
+                    return;
                 }
-            }
-            touchStartY = 0;
-        }, { passive: true });
 
+                proximosPartidos.forEach(p => {
+                    const eq = p._equipoRef;
+                    const clasif = p._clasifRef;
+                    const esLocalFav = p.EquipoLocal === eq.equipoFavorito;
+                    const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
+                    const esCanal = (eq.idDeporte === "4");
+                    const colorFondo = esCanal ? '#00509E' : '#006D6F';
+                    
+                    // Fechas
+                    const dateObj = new Date(p.FechaHora);
+                    const dias = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+                    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                    const diaStr = dias[dateObj.getDay()];
+                    const numDia = dateObj.getDate();
+                    const mesStr = meses[dateObj.getMonth()];
+                    const horaStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                    // Posiciones
+                    let posLocal = "-", posVis = "-";
+                    if (clasif && Array.isArray(clasif)) {
+                        const lStats = clasif.find(c => c.NombreEquipo === p.EquipoLocal);
+                        const vStats = clasif.find(c => c.NombreEquipo === p.EquipoVisitante);
+                        if (lStats) posLocal = lStats.Posicion;
+                        if (vStats) posVis = vStats.Posicion;
+                    }
+
+                    // Direccion/Mapa
+                    const dirCompleta = esCanal ? "El Parque Santander" : construirDireccion(p);
+                    
+                    // Escudos
+                    let escLocal = p.URLEscudoEquipoLocal || '/static/logo.png';
+                    let escVis = p.URLEscudoEquipoVisitante || '/static/logo.png';
+                    if (esCanal) {
+                        escLocal = esLocalFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
+                        escVis = !esLocalFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
+                    }
+
+                    // Tipo campo
+                    let iconCampo = '';
+                    if (esCanal) {
+                        iconCampo = `<span class="text-[10px] font-bold bg-[#00509E] text-white px-1.5 py-0.5 rounded">${p.Campo || 'Campo'}</span>`;
+                    } else {
+                        iconCampo = esCampoExterior(p) 
+                            ? `<i class="fas fa-cloud-sun text-orange-500 text-lg"></i>` 
+                            : `<i class="fas fa-building text-blue-500 text-lg"></i>`;
+                    }
+
+                    contenedor.innerHTML += `
+                        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipoDesdeMenu(${equipos.indexOf(eq)})">
+                            <!-- Franja Izquierda (Fecha y Escudo) -->
+                            <div class="w-20 flex flex-col items-center justify-center text-white py-3 flex-shrink-0" style="background-color: ${colorFondo};">
+                                <div class="text-xs font-semibold uppercase tracking-wider">${diaStr}</div>
+                                <div class="text-2xl font-black">${numDia}</div>
+                                <div class="text-xs font-semibold uppercase tracking-wider mb-2">${mesStr}</div>
+                                <div class="w-10 h-10 bg-white rounded-full p-1 shadow-sm overflow-hidden">
+                                    <img src="${eq.escudoFavorito || '/static/logo.png'}" class="w-full h-full object-contain">
+                                </div>
+                            </div>
+
+                            <!-- Contenido Derecha -->
+                            <div class="p-3 flex-1 flex flex-col justify-between">
+                                <div class="flex justify-between items-start">
+                                    <div class="flex flex-col">
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-black text-gray-800 uppercase tracking-wide">${eq.nombre}</span>
+                                            <span class="text-xs text-gray-400">${getDeporteIcon(eq.idDeporte)}</span>
+                                        </div>
+                                        <span class="text-[10px] font-bold text-gray-500 uppercase">${eq.nombreCompeticion}</span>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm font-black text-gray-800">${horaStr}</div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2 flex items-center justify-between border-t border-gray-100 pt-2">
+                                    <div class="flex items-center gap-2 flex-1">
+                                        <div class="w-6 h-6 flex-shrink-0"><img src="${escLocal}" class="w-full h-full object-contain"></div>
+                                        <div class="text-[11px] font-bold text-gray-700 leading-tight line-clamp-1">${acortarNombre(p.EquipoLocal)} <span class="text-[9px] text-gray-400">(🏆${posLocal})</span></div>
+                                    </div>
+                                    <div class="text-[10px] text-gray-400 px-1 font-bold">VS</div>
+                                    <div class="flex items-center justify-end gap-2 flex-1 text-right">
+                                        <div class="text-[11px] font-bold text-gray-700 leading-tight line-clamp-1">${acortarNombre(p.EquipoVisitante)} <span class="text-[9px] text-gray-400">(🏆${posVis})</span></div>
+                                        <div class="w-6 h-6 flex-shrink-0"><img src="${escVis}" class="w-full h-full object-contain"></div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-2 flex justify-end items-center gap-3">
+                                    ${iconCampo}
+                                    <div class="flex gap-2 text-gray-400">
+                                        <i class="fas fa-home text-gray-800"></i>
+                                        <i class="fas fa-map-marker-alt" onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+            } catch (e) {
+                contenedor.innerHTML = '<p class="text-center text-red-500 mt-10">Error al cargar la agenda. Comprueba tu conexión.</p>';
+                console.error(e);
+            }
+        }
+
+        // --- LÓGICA DE MAPA Y CLIMA ---
         function abrirModalMapa(dir) {
             rutaActualMapa = dir;
             const modal = document.getElementById('modal-mapa');
@@ -353,84 +556,13 @@
             if (app === 'waze') url = `https://waze.com/ul?q=${destino}`;
             else if (app === 'google') url = `https://www.google.com/maps/dir/?api=1&destination=${destino}`;
             else if (app === 'apple') url = `http://maps.apple.com/?daddr=${destino}`;
-            
             window.open(url, '_blank');
             cerrarModalMapa();
         }
 
-        async function obtenerClimaIcono(direccion, fechaHora) {
-            const cacheKey = direccion + '_' + fechaHora;
-            if (cacheClima[cacheKey]) return cacheClima[cacheKey];
-
-            try {
-                let lat, lon;
-                
-                if (direccion.includes("El Parque Santander") || direccion.includes("Avenida de Filipinas")) {
-                    lat = 40.44372331454751;
-                    lon = -3.706714444750114;
-                } else {
-                    const resGeo = await fetchWithTimeout(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(direccion)}`, { headers: { 'User-Agent': 'LigasInfantilesApp/1.0' } });
-                    const geoData = await resGeo.json();
-                    if (!geoData || geoData.length === 0) return '';
-                    lat = geoData[0].lat;
-                    lon = geoData[0].lon;
-                }
-
-                const fecha = fechaHora.split('T')[0];
-                const resClima = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code&start_date=${fecha}&end_date=${fecha}`);
-                const climaData = await resClima.json();
-                
-                const horaObj = fechaHora.split('T')[1];
-                const horaStr = horaObj ? horaObj.substring(0, 2) + ":00" : "12:00";
-                const index = climaData.hourly.time.findIndex(t => t.endsWith(horaStr));
-                const code = index !== -1 ? climaData.hourly.weather_code[index] : climaData.hourly.weather_code[12];
-
-                let iconoResultado = '';
-                if (code === 0) iconoResultado = 'fa-sun text-yellow-500';
-                else if (code === 1 || code === 2) iconoResultado = 'fa-cloud-sun text-yellow-600';
-                else if (code === 3) iconoResultado = 'fa-cloud text-gray-400';
-                else if (code >= 45 && code <= 48) iconoResultado = 'fa-smog text-gray-500';
-                else if (code >= 51 && code <= 67) iconoResultado = 'fa-cloud-rain text-blue-500';
-                else if (code >= 71 && code <= 77) iconoResultado = 'fa-snowflake text-blue-300';
-                else if (code >= 80 && code <= 82) iconoResultado = 'fa-cloud-showers-heavy text-blue-600';
-                else if (code >= 95) iconoResultado = 'fa-cloud-bolt text-yellow-500';
-
-                if (iconoResultado) {
-                    cacheClima[cacheKey] = iconoResultado;
-                    localStorage.setItem('cache_clima', JSON.stringify(cacheClima));
-                }
-                return iconoResultado;
-
-            } catch (e) {
-                console.log("Error clima", e);
-            }
-            return '';
-        }
-
-        async function cargarClimaTarjeta(id, dir, fecha) {
-            const elClima = document.getElementById(`clima-${id}`);
-            if (elClima) {
-                const iconoClima = await obtenerClimaIcono(dir, fecha);
-                if (iconoClima) elClima.innerHTML = `<i class="fas ${iconoClima}"></i>`;
-            }
-        }
-
-        function toggleAutoOrden() {
-            autoOrden = !autoOrden;
-            localStorage.setItem('auto_orden', autoOrden);
-            actualizarBotonOrden();
-            renderizarEquipos();
-        }
-
-        function actualizarBotonOrden() {
-            const icon = document.getElementById('icono-auto-orden');
-            if (icon) {
-                if (autoOrden) icon.style.color = '#D6B25A';
-                else icon.style.color = 'rgba(255,255,255,0.5)';
-            }
-        }
-
+        // --- FORMULARIO DE EQUIPOS ---
         function prepararNuevoEquipo() {
+            toggleDrawer(); // Cierra menú si estaba abierto
             editandoEquipoId = null;
             document.getElementById('titulo-formulario').innerText = "Añadir Jugador";
             document.getElementById('input-nombre').value = "";
@@ -486,11 +618,22 @@
                     });
                 });
             }
-            mostrarFormulario();
+            toggleDrawer(); // Cierra el menú
+            setTimeout(() => mostrarFormulario(), 300);
         }
 
-        function mostrarFormulario() { document.getElementById('screen-equipos').classList.add('hide'); document.getElementById('screen-detalle').classList.add('hide'); document.getElementById('screen-formulario').classList.remove('hide'); }
-        function volverInicio() { document.getElementById('screen-formulario').classList.add('hide'); document.getElementById('screen-detalle').classList.add('hide'); document.getElementById('screen-equipos').classList.remove('hide'); renderizarEquipos(); }
+        function mostrarFormulario() { 
+            document.getElementById('screen-agenda').classList.add('hide'); 
+            document.getElementById('screen-detalle').classList.add('hide'); 
+            document.getElementById('screen-formulario').classList.remove('hide'); 
+        }
+        
+        function volverInicio() { 
+            document.getElementById('screen-formulario').classList.add('hide'); 
+            document.getElementById('screen-detalle').classList.add('hide'); 
+            document.getElementById('screen-agenda').classList.remove('hide'); 
+            cargarAgendaFamiliar(); // Recarga la agenda al volver
+        }
 
         function moverEquipo(index, direccion) {
             if (direccion === -1 && index > 0) {
@@ -499,189 +642,21 @@
                 [equipos[index + 1], equipos[index]] = [equipos[index], equipos[index + 1]];
             }
             localStorage.setItem('equipos_liga', JSON.stringify(equipos));
-            renderizarEquipos();
+            renderizarMenuLateral(); // Recarga solo el menú
+            cargarAgendaFamiliar(); // Recarga la agenda con el nuevo orden
         }
 
-        function ordenarEquiposVisualmente() {
-            if (!autoOrden) return;
-            const contenedor = document.getElementById('lista-equipos');
-            const tarjetas = Array.from(contenedor.children);
-            
-            tarjetas.sort((a, b) => {
-                const idA = a.querySelector('[id^="proximo-partido-"]').id.replace('proximo-partido-', '');
-                const idB = b.querySelector('[id^="proximo-partido-"]').id.replace('proximo-partido-', '');
-                
-                const fechaA = cacheProximoPartido[idA]?.timestamp || Infinity;
-                const fechaB = cacheProximoPartido[idB]?.timestamp || Infinity;
-                
-                return fechaA - fechaB;
-            });
-
-            contenedor.innerHTML = '';
-            tarjetas.forEach(t => contenedor.appendChild(t));
+        function borrarEquipo(index) { 
+            if (confirm('¿Borrar este equipo?')) { 
+                const eqId = equipos[index].id; 
+                delete cacheProximoPartido[eqId]; 
+                localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido)); 
+                equipos.splice(index, 1); 
+                localStorage.setItem('equipos_liga', JSON.stringify(equipos)); 
+                renderizarMenuLateral(); 
+                cargarAgendaFamiliar();
+            } 
         }
-
-        async function renderizarEquipos() {
-            const contenedor = document.getElementById('lista-equipos');
-            contenedor.innerHTML = '';
-            actualizarBotonOrden();
-            
-            if (equipos.length === 0) { 
-                contenedor.innerHTML = `<div class="text-center text-gray-400 mt-16"><i class="fas fa-shield-alt text-6xl mb-4 text-gray-200"></i><p class="font-medium">No tienes equipos guardados.</p></div>`; 
-                return; 
-            }
-
-            let equiposAMostrar = [...equipos];
-            if (autoOrden) {
-                equiposAMostrar.sort((a, b) => {
-                    const dateA = cacheProximoPartido[a.id]?.timestamp || Infinity;
-                    const dateB = cacheProximoPartido[b.id]?.timestamp || Infinity;
-                    return dateA - dateB;
-                });
-            }
-            
-            for (let i = 0; i < equiposAMostrar.length; i++) {
-                const eq = equiposAMostrar[i];
-                const realIndex = equipos.indexOf(eq);
-                const esCanal = (eq.idDeporte === "4");
-                const colorFondo = esCanal ? '#00509E' : '#006D6F';
-                const div = document.createElement('div');
-                div.className = 'text-white p-4 rounded-xl shadow-md flex flex-col cursor-pointer transition hover:opacity-90 relative';
-                div.style.backgroundColor = colorFondo;
-                div.onclick = () => abrirEquipo(realIndex);
-                
-                const flechasHTML = autoOrden ? '' : `
-                    <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-1 transition" onclick="event.stopPropagation(); moverEquipo(${realIndex}, -1)"><i class="fas fa-arrow-up"></i></button>
-                    <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white mb-2 transition" onclick="event.stopPropagation(); moverEquipo(${realIndex}, 1)"><i class="fas fa-arrow-down"></i></button>
-                `;
-
-                div.innerHTML = `
-                    <button class="absolute top-2 left-2 bg-black/20 hover:bg-red-500/80 rounded-full w-8 h-8 flex items-center justify-center text-red-300 transition z-10" onclick="event.stopPropagation(); borrarEquipo(${realIndex})"><i class="fas fa-trash-alt text-xs"></i></button>
-
-                    <div class="flex items-center justify-between w-full mt-2">
-                        <div class="flex items-center flex-1">
-                            <div class="w-14 h-14 mr-4 flex items-center justify-center bg-white rounded-full p-1 shadow-sm flex-shrink-0 overflow-hidden">
-                                ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="escudo-main-img">` : '<i class="fas fa-shield-alt text-gray-500 text-2xl"></i>'}
-                            </div>
-                            <div class="flex flex-col flex-1 min-w-0 pr-2">
-                                <h3 class="font-black text-2xl leading-tight">${eq.nombre}</h3>
-                                <p class="text-sm text-white/90 font-bold uppercase tracking-wider mt-1">${eq.nombreCompeticion}</p>
-                                <p class="text-base font-black text-[#D6B25A] tracking-wide mt-1">${acortarNombre(eq.equipoFavorito)}</p>
-                                <div id="posicion-${eq.id}" class="text-xs font-bold text-white/80 mt-1"></div>
-                            </div>
-                        </div>
-                        <div class="flex flex-col items-center justify-center gap-1 ml-2 flex-shrink-0">
-                            ${flechasHTML}
-                            <button class="bg-black/20 hover:bg-black/40 rounded-full w-9 h-9 flex items-center justify-center text-white transition" onclick="event.stopPropagation(); editarEquipo(${realIndex})"><i class="fas fa-pen text-sm"></i></button>
-                        </div>
-                    </div>
-                    <div id="proximo-partido-${eq.id}" class="mt-3 pt-3 border-t border-white/20 w-full text-sm text-white/90"></div>
-                `;
-                contenedor.appendChild(div);
-                
-                if (cacheProximoPartido[eq.id]) {
-                    document.getElementById(`proximo-partido-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].html;
-                    document.getElementById(`posicion-${eq.id}`).innerHTML = cacheProximoPartido[eq.id].pos;
-                    if (cacheProximoPartido[eq.id].dir && cacheProximoPartido[eq.id].fecha) {
-                        cargarClimaTarjeta(eq.id, cacheProximoPartido[eq.id].dir, cacheProximoPartido[eq.id].fecha);
-                    }
-                } else {
-                    cargarProximoPartido(eq);
-                }
-            }
-        }
-
-        async function cargarProximoPartido(eq) {
-            const divProximo = document.getElementById(`proximo-partido-${eq.id}`);
-            const divPos = document.getElementById(`posicion-${eq.id}`);
-            if (!divProximo) return;
-            
-            if (!cacheProximoPartido[eq.id]) {
-                divProximo.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-1"></i> Buscando datos...';
-            }
-            
-            try {
-                const resCal = await fetchWithTimeout(`/api/calendario/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}/0`);
-                const dataCal = await resCal.json();
-                
-                let todosLosPartidos = dataCal.jornada?.Enfrentamientos?.filter(p => p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito) || [];
-                
-                const hoy = new Date(); hoy.setHours(0,0,0,0);
-                let partido = todosLosPartidos.filter(p => new Date(p.FechaHora) >= hoy).sort((a,b) => new Date(a.FechaHora) - new Date(b.FechaHora))[0];
-                
-                if (!partido && todosLosPartidos.length > 0) {
-                    partido = todosLosPartidos.sort((a,b) => new Date(b.FechaHora) - new Date(a.FechaHora))[0];
-                }
-
-                let statsHTML = '';
-                let rivalPos = "";
-                
-                const resClasif = await fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
-                const clasif = await resClasif.json();
-                
-                if (clasif && Array.isArray(clasif)) {
-                    const stats = clasif.find(c => c.NombreEquipo === eq.equipoFavorito);
-                    if (stats) statsHTML = `<div class="mt-2 text-sm font-bold text-[#D6B25A]"><i class="fas fa-trophy mr-1"></i> ${stats.Posicion}º Clasificado</div>`;
-                    
-                    if (partido) {
-                        const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
-                        const rivalStats = clasif.find(c => c.NombreEquipo === rival);
-                        if (rivalStats) rivalPos = ` (Pos. ${rivalStats.Posicion})`;
-                    }
-                }
-
-                let htmlFinal = `<i class="far fa-calendar-alt mr-1"></i> Sin partidos próximos`;
-                let dirCompleta = "";
-                let fechaHoraPartido = "";
-                let timestampPartido = Infinity;
-
-                if (partido) {
-                    const fecha = partido.FechaHora ? partido.FechaHora.split('T')[0].split('-').reverse().join('/') : '';
-                    const hora = partido.FechaHora ? partido.FechaHora.split('T')[1].substring(0,5) : '';
-                    const rival = partido.EquipoLocal === eq.equipoFavorito ? partido.EquipoVisitante : partido.EquipoLocal;
-                    const esLocal = partido.EquipoLocal === eq.equipoFavorito;
-                    dirCompleta = (eq.idDeporte === "4") ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(partido);
-                    fechaHoraPartido = partido.FechaHora;
-                    timestampPartido = new Date(partido.FechaHora).getTime();
-                    
-                    const iconoLocalia = esLocal 
-                        ? `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-home"></i></div>` 
-                        : `<div class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm"><i class="fas fa-plane"></i></div>`;
-
-                    htmlFinal = `
-                        <div class="flex flex-col gap-1 w-full">
-                            <div class="text-lg font-bold flex items-center justify-between w-full">
-                                <div><i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h</div>
-                                <div class="flex items-center gap-2">
-                                    <div id="clima-${eq.id}" class="inline-flex items-center justify-center bg-white rounded w-6 h-6 text-xs shadow-sm"></div>
-                                    ${iconoLocalia}
-                                    <button onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')" class="inline-flex items-center justify-center bg-white text-black rounded w-6 h-6 text-xs shadow-sm hover:bg-gray-200 transition"><i class="fas fa-map-marker-alt"></i></button>
-                                </div>
-                            </div>
-                            <div class="text-lg font-normal">vs. ${acortarNombre(rival)}${rivalPos}</div>
-                        </div>`;
-                }
-
-                divProximo.innerHTML = htmlFinal;
-                divPos.innerHTML = statsHTML;
-                
-                cacheProximoPartido[eq.id] = { html: htmlFinal, pos: statsHTML, dir: dirCompleta, fecha: fechaHoraPartido, timestamp: timestampPartido };
-                localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido));
-                
-                if (dirCompleta && fechaHoraPartido) {
-                    setTimeout(() => { cargarClimaTarjeta(eq.id, dirCompleta, fechaHoraPartido); }, 100);
-                }
-
-                ordenarEquiposVisualmente();
-
-            } catch (e) { 
-                if (!cacheProximoPartido[eq.id]) {
-                    divProximo.innerHTML = `No se pudo cargar el próximo partido`; 
-                }
-            }
-        }
-
-        function borrarEquipo(index) { if (confirm('¿Borrar este equipo?')) { const eqId = equipos[index].id; delete cacheProximoPartido[eqId]; localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido)); equipos.splice(index, 1); localStorage.setItem('equipos_liga', JSON.stringify(equipos)); renderizarEquipos(); } }
         
         async function cargarCompeticiones(idDeporte) {
             const select = document.getElementById('select-competicion');
@@ -761,7 +736,7 @@
             if (!idGrupo) { panel.classList.add('hide'); return; }
 
             if (idDep === "4") {
-                equipoSeleccionadoVisual = { nombre: idGrupo, escudo: "/static/escudo_canal.png" }; // ARREGLADO AQUÍ TAMBIÉN
+                equipoSeleccionadoVisual = { nombre: idGrupo, escudo: "/static/escudo_canal.png" };
                 document.getElementById('btn-guardar').disabled = false;
                 panel.classList.add('hide');
                 return;
@@ -835,6 +810,7 @@
             volverInicio();
         }
 
+        // --- LÓGICA DE LA PANTALLA DE DETALLE (COMO ANTES) ---
         async function abrirEquipo(index) {
             equipoActual = equipos[index];
             if (equipoActual.idDeporte === "4") document.body.classList.add('theme-canal');
@@ -848,7 +824,7 @@
             document.getElementById('carga-escudo').src = equipoActual.escudoFavorito || '/static/logo.png';
 
             if (cacheEquipoAbiertoId === equipoActual.id && cacheCalendarioGlobal) {
-                document.getElementById('screen-equipos').classList.add('hide');
+                document.getElementById('screen-agenda').classList.add('hide');
                 document.getElementById('screen-detalle').classList.remove('hide');
                 cambiarTab('calendario');
                 return;
@@ -871,7 +847,6 @@
                 
                 if (!cacheResultados || cacheResultados.length === 0) throw new Error("Datos vacíos");
 
-                // LÓGICA DE SNAPSHOT
                 const snapshotKey = `snapshot_v3_${equipoActual.id}`;
                 let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
                 if (Array.isArray(snapshotViejo)) snapshotViejo = {};
@@ -879,31 +854,22 @@
 
                 cacheResultados.forEach(p => {
                     if (!p.EquipoLocal && !p.EquipoVisitante) return;
-                    
                     const matchId = getMatchId(p);
                     const matchHash = getMatchHash(p);
-                    
                     let pending = false;
                     const snapViejo = snapshotViejo[matchId];
-                    
                     if (snapViejo) {
                         if (snapViejo.hash !== matchHash) pending = true; 
                         else if (snapViejo.pending) pending = true; 
                     }
-
                     snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
-
                     if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
                         p.CambioLocal = true;
                     }
                 });
-
                 Object.keys(snapshotNuevo).forEach(k => {
-                    if (!cacheResultados.some(p => getMatchId(p) === k)) {
-                        delete snapshotNuevo[k];
-                    }
+                    if (!cacheResultados.some(p => getMatchId(p) === k)) delete snapshotNuevo[k];
                 });
-
                 localStorage.setItem(snapshotKey, JSON.stringify(snapshotNuevo));
 
                 localStorage.setItem(`cache_cal_${equipoActual.id}`, JSON.stringify(cacheCalendarioGlobal));
@@ -914,7 +880,7 @@
                 
                 setTimeout(() => {
                     document.getElementById('pantalla-carga').classList.add('oculto');
-                    document.getElementById('screen-equipos').classList.add('hide');
+                    document.getElementById('screen-agenda').classList.add('hide');
                     document.getElementById('screen-detalle').classList.remove('hide');
                     actualizarUIJornadas();
                     cambiarTab('calendario');
@@ -943,19 +909,20 @@
                     
                     setTimeout(() => {
                         document.getElementById('pantalla-carga').classList.add('oculto');
-                        document.getElementById('screen-equipos').classList.add('hide');
+                        document.getElementById('screen-agenda').classList.add('hide');
                         document.getElementById('screen-detalle').classList.remove('hide');
                         actualizarUIJornadas();
                         cambiarTab('calendario');
                     }, 500);
                 } else {
                     document.getElementById('pantalla-carga').classList.add('oculto');
-                    document.getElementById('screen-equipos').classList.remove('hide');
+                    document.getElementById('screen-agenda').classList.remove('hide');
                     document.getElementById('screen-detalle').classList.add('hide');
                 }
             }
         }
 
+        // --- RESTO DE FUNCIONES DE LA PANTALLA DETALLE (Se mantienen igual) ---
         async function refrescarPantallaJugador(btn) {
             btn.querySelector('i').classList.add('spin-anim');
             document.getElementById('pantalla-carga').classList.remove('oculto');
@@ -979,31 +946,22 @@
 
                 cacheResultados.forEach(p => {
                     if (!p.EquipoLocal && !p.EquipoVisitante) return;
-                    
                     const matchId = getMatchId(p);
                     const matchHash = getMatchHash(p);
-                    
                     let pending = false;
                     const snapViejo = snapshotViejo[matchId];
-                    
                     if (snapViejo) {
                         if (snapViejo.hash !== matchHash) pending = true;
                         else if (snapViejo.pending) pending = true;
                     }
-
                     snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
-
                     if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
                         p.CambioLocal = true;
                     }
                 });
-
                 Object.keys(snapshotNuevo).forEach(k => {
-                    if (!cacheResultados.some(p => getMatchId(p) === k)) {
-                        delete snapshotNuevo[k];
-                    }
+                    if (!cacheResultados.some(p => getMatchId(p) === k)) delete snapshotNuevo[k];
                 });
-
                 localStorage.setItem(snapshotKey, JSON.stringify(snapshotNuevo));
 
                 localStorage.setItem(`cache_cal_${equipoActual.id}`, JSON.stringify(cacheCalendarioGlobal));
@@ -1164,9 +1122,7 @@
             let haCambiado = p.Cambio || p.CambioLocal;
             
             if (haCambiado && dismissedChanges[matchHash]) {
-                if (Date.now() - dismissedChanges[matchHash] > 3600000) {
-                    haCambiado = false;
-                }
+                if (Date.now() - dismissedChanges[matchHash] > 3600000) haCambiado = false;
             }
 
             const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
