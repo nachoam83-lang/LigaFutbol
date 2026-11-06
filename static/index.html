@@ -311,7 +311,7 @@
 
         // AJUSTES Y CACHÉ
         let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: true };
-        if (userSettings.showRoute === undefined) userSettings.showRoute = true; // Valor por defecto para usuarios existentes
+        if (userSettings.showRoute === undefined) userSettings.showRoute = true; 
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
@@ -676,9 +676,9 @@
                     const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
                     const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
                     
-                    // COMPROBAR SI MOSTRAR RUTA
+                    // COMPROBAR SI MOSTRAR RUTA (AHORA CENTRADO)
                     const htmlRuta = userSettings.showRoute !== false ? `
-                        <div class="flex items-center justify-start gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
+                        <div class="flex items-center justify-center gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
                             <i class="fas fa-car text-gray-800"></i>
                             <span id="ruta-agenda-${index}" class="text-blue-600"></span>
                         </div>
@@ -730,7 +730,7 @@
                                     <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posVis}</span>
                                 </div>
 
-                                <!-- NUEVA LÍNEA DE RUTA -->
+                                <!-- LÍNEA DE RUTA CENTRADA -->
                                 ${htmlRuta}
 
                                 <!-- Fila de Iconos Inferior -->
