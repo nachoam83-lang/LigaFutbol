@@ -161,7 +161,7 @@
                 </button>
             </div>
 
-            <button onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
+            <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
         </div>
     </div>
 
@@ -325,6 +325,23 @@
             return response;
         }
 
+        // --- NUEVA FUNCIÓN DE GEOCODIFICACIÓN (PHOTON) ---
+        async function geocodificar(dir) {
+            try {
+                const res = await fetchWithTimeout(`https://photon.komoot.io/api/?q=${encodeURIComponent(dir)}&limit=1`);
+                const data = await res.json();
+                if (data.features && data.features.length > 0) {
+                    return {
+                        lon: data.features[0].geometry.coordinates[0],
+                        lat: data.features[0].geometry.coordinates[1]
+                    };
+                }
+            } catch (e) {
+                console.log("Error en Photon", e);
+            }
+            return null;
+        }
+
         function acortarNombre(nombre) { return !nombre ? "" : (nombre.length > 35 ? nombre.substring(0, 35) + "..." : nombre); }
         
         function construirDireccion(p) {
@@ -398,16 +415,17 @@
             userSettings.defaultMap = document.getElementById('select-mapa-defecto').value;
             
             if (dir !== "") {
-                try {
-                    const res = await fetchWithTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(dir)}&count=1&language=es&format=json`);
-                    const data = await res.json();
-                    if (data.results && data.results.length > 0) {
-                        userSettings.homeLat = data.results[0].latitude;
-                        userSettings.homeLon = data.results[0].longitude;
-                    }
-                } catch(e) {
-                    console.log("Error geocodificando casa", e);
+                document.getElementById('btn-guardar-ajustes').innerText = "Buscando dirección...";
+                const coords = await geocodificar(dir);
+                if (coords) {
+                    userSettings.homeLat = coords.lat;
+                    userSettings.homeLon = coords.lon;
+                } else {
+                    alert("No se ha encontrado la dirección exacta. Prueba a poner solo la calle y la ciudad, sin el número de portal, o comprueba si está bien escrita.");
+                    userSettings.homeLat = null;
+                    userSettings.homeLon = null;
                 }
+                document.getElementById('btn-guardar-ajustes').innerText = "Guardar Cambios";
             } else {
                 userSettings.homeLat = null;
                 userSettings.homeLon = null;
@@ -743,16 +761,13 @@
                                 lat = cacheGeo[cacheKey].lat;
                                 lon = cacheGeo[cacheKey].lon;
                             } else {
-                                try {
-                                    const resGeo = await fetchWithTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(dirCompleta)}&count=1&language=es&format=json`);
-                                    const geoData = await resGeo.json();
-                                    if (geoData.results && geoData.results.length > 0) {
-                                        lat = geoData.results[0].latitude;
-                                        lon = geoData.results[0].longitude;
-                                        cacheGeo[dirCompleta] = { lat, lon };
-                                        localStorage.setItem('cache_geo', JSON.stringify(cacheGeo));
-                                    }
-                                } catch(e) {}
+                                const coords = await geocodificar(dirCompleta);
+                                if (coords) {
+                                    lat = coords.lat;
+                                    lon = coords.lon;
+                                    cacheGeo[dirCompleta] = { lat, lon };
+                                    localStorage.setItem('cache_geo', JSON.stringify(cacheGeo));
+                                }
                             }
                         }
 
@@ -793,7 +808,9 @@
                             }
 
                             // 3. RUTA Y TIEMPO DE VIAJE
+                            const elRuta = document.getElementById(`ruta-agenda-${i}`);
                             if (userSettings.homeLat && userSettings.homeLon) {
+                                if (elRuta && !elRuta.innerHTML) elRuta.innerHTML = `🚗 <span class="text-gray-400 text-[10px]">...</span>`;
                                 try {
                                     const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/driving/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
                                     const routeData = await resRoute.json();
@@ -813,15 +830,12 @@
                                         const hh = String(datePartido.getHours()).padStart(2, '0');
                                         const mm = String(datePartido.getMinutes()).padStart(2, '0');
 
-                                        const elRuta = document.getElementById(`ruta-agenda-${i}`);
                                         if (elRuta) elRuta.innerHTML = `🚗 <span class="text-blue-600">Sal a las ${hh}:${mm}</span>`;
                                     }
                                 } catch(e) {
                                     console.log("Error calculando ruta", e);
                                 }
                             } else {
-                                // Si no hay dirección de casa
-                                const elRuta = document.getElementById(`ruta-agenda-${i}`);
                                 if (elRuta) elRuta.innerHTML = `🚗 <span class="text-gray-400 text-[10px]">Configura tu casa</span>`;
                             }
                         }
