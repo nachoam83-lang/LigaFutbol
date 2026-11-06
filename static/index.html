@@ -16,7 +16,7 @@
     <style>
         :root {
             --primary-color: #006D6F;
-            --secondary-color: #A67C00; /* Dorado oscuro que se lee bien */
+            --secondary-color: #A67C00; 
             --bg-color: #f0f2f5;
             --card-bg: #ffffff;
             --text-main: #1f2937;
@@ -26,7 +26,7 @@
         }
         .theme-canal { --primary-color: #00509E; --secondary-color: #E0F0FF; }
         
-        html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); overscroll-behavior-y: none; overflow-x: hidden; color: var(--text-main); }
+        html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); overscroll-behavior-y: none; overflow-x: clip; color: var(--text-main); }
         .hide { display: none !important; }
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
@@ -107,7 +107,8 @@
 
     <!-- PANTALLA PRINCIPAL (AGENDA) -->
     <div id="screen-agenda" class="max-w-md mx-auto min-h-screen">
-        <div class="text-white p-4 flex justify-between items-center shadow-md sticky top-0 z-30" style="background-color: var(--header-bg);">
+        <!-- CABECERA SUPERIOR (Fija y con altura igualada a la del detalle) -->
+        <div class="text-white h-[88px] px-4 flex justify-between items-center shadow-md sticky top-0 z-50" style="background-color: var(--header-bg);">
             <button onclick="alert('Próximamente: Ajustes y Dirección de Casa')" class="text-white hover:opacity-80 transition"><i class="fas fa-cog text-2xl"></i></button>
             <h1 id="main-title" class="text-xl font-bold tracking-wide">Agenda Familiar</h1>
             <button onclick="toggleDrawer()" class="text-white hover:opacity-80 transition"><i class="fas fa-user text-2xl"></i></button>
@@ -126,7 +127,7 @@
 
     <!-- FORMULARIO DE EQUIPO -->
     <div id="screen-formulario" class="hide max-w-md mx-auto min-h-screen" style="background-color: var(--bg-color);">
-        <div class="text-white p-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
+        <div class="text-white h-[88px] px-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left"></i></button>
             <h1 id="titulo-formulario" class="text-lg font-bold">Añadir Jugador</h1>
         </div>
@@ -175,7 +176,7 @@
     <!-- PANTALLA DETALLE DEL EQUIPO -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
         <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
-            <div class="flex items-center p-4">
+            <div class="flex items-center p-4 h-[88px]">
                 <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
                 <div class="flex items-center flex-1">
                     <div class="w-14 h-14 bg-white rounded-full p-1 shadow-sm mr-4 flex-shrink-0 flex items-center justify-center overflow-hidden">
@@ -346,7 +347,6 @@
                 const colorFondo = esCanal ? '#00509E' : '#006D6F';
                 const deporteNombre = eq.nombreDeporte || (esCanal ? 'Fútbol Sala' : 'Deporte');
                 
-                // CORRECCIÓN: Evitar el "0" en las tarjetas de Mateo
                 let categoriaNombre = eq.nombreCompeticion || '';
                 if (categoriaNombre === "0" || categoriaNombre.trim() === "") {
                     categoriaNombre = eq.nombreGrupo || '';
@@ -442,7 +442,7 @@
 
                 if (hasNewChanges) banner.classList.remove('hide');
 
-                // FILTRO DE 1 MES VISTA (Desde hoy hasta dentro de 1 mes)
+                // FILTRO DE 1 MES VISTA
                 const hoy = new Date(); hoy.setHours(0,0,0,0);
                 const dentroDeUnMes = new Date(hoy); dentroDeUnMes.setMonth(dentroDeUnMes.getMonth() + 1);
                 
@@ -461,7 +461,7 @@
                     return;
                 }
 
-                proximosPartidos.forEach(p => {
+                proximosPartidos.forEach((p, index) => {
                     const eq = p._equipoRef;
                     const clasif = p._clasifRef;
                     const esLocalFav = p.EquipoLocal === eq.equipoFavorito;
@@ -500,7 +500,7 @@
                         escVis = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
                     }
 
-                    // Tipo campo (TEXTO CLARO PARA NO CONFUNDIR CON EL CLIMA)
+                    // Tipo campo 
                     let iconCampo = '';
                     if (esCanal) {
                         iconCampo = `<span class="text-[11px] font-bold bg-[#00509E] text-white px-2 py-0.5 rounded shadow-sm">${p.Campo || 'Campo'}</span>`;
@@ -524,9 +524,9 @@
                         </svg>
                     `;
 
-                    // ESTILOS DE COLOR DORADO MEJORADOS ( #A67C00 )
-                    const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 15px;"`;
-                    const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 15px;"`;
+                    // ESTILOS DE COLOR DORADO Y TAMAÑOS MAS GRANDES
+                    const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
+                    const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
                     
                     contenedor.innerHTML += `
                         <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
@@ -563,23 +563,23 @@
                                     <div class="text-sm font-bold ${esVisFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esVisFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoVisitante)}</div>
                                 </div>
 
-                                <!-- Clasificación y Escudos CENTRADOS -->
+                                <!-- Clasificación y Escudos CENTRADOS Y MAS GRANDES -->
                                 <div class="flex justify-center items-center gap-4 mb-3">
-                                    <span class="text-xs font-bold text-gray-700">🏆 ${posLocal}</span>
-                                    <div class="w-10 h-10 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
+                                    <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posLocal}</span>
+                                    <div class="w-12 h-12 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
                                         <img src="${escLocal}" class="w-full h-full object-contain p-0.5">
                                     </div>
                                     <span class="text-[10px] font-bold text-gray-400">VS</span>
-                                    <div class="w-10 h-10 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
+                                    <div class="w-12 h-12 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
                                         <img src="${escVis}" class="w-full h-full object-contain p-0.5">
                                     </div>
-                                    <span class="text-xs font-bold text-gray-700">🏆 ${posVis}</span>
+                                    <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posVis}</span>
                                 </div>
 
                                 <!-- Fila de Iconos Inferior -->
                                 <div class="mt-2 flex justify-between items-center border-t border-gray-200/50 pt-2">
                                     <div class="flex-1 flex justify-start">
-                                        <div id="clima-agenda-${p.id || matchHash}" class="text-xl w-6 h-6 flex items-center justify-center"></div>
+                                        <div id="clima-agenda-${index}" class="text-xl w-8 h-8 flex items-center justify-center"></div>
                                     </div>
                                     <div class="flex-1 flex justify-center">
                                         ${iconCampo}
@@ -594,7 +594,7 @@
                     `;
                     
                     setTimeout(() => {
-                        cargarClimaAgenda(p.id || matchHash, dirCompleta, p.FechaHora);
+                        cargarClimaAgenda(index, dirCompleta, p.FechaHora);
                     }, 100);
                 });
 
@@ -685,11 +685,11 @@
             return '';
         }
 
-        async function cargarClimaAgenda(id, dir, fecha) {
-            const elClima = document.getElementById(`clima-agenda-${id}`);
+        async function cargarClimaAgenda(index, dir, fecha) {
+            const elClima = document.getElementById(`clima-agenda-${index}`);
             if (elClima) {
                 const iconoClima = await obtenerClimaIcono(dir, fecha);
-                if (iconoClima) elClima.innerHTML = `<i class="fas ${iconoClima}"></i>`;
+                if (iconoClima) elClima.innerHTML = `<i class="fas ${iconoClima} text-xl"></i>`;
             }
         }
 
