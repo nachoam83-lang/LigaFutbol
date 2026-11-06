@@ -76,7 +76,6 @@
 
     <div id="drawer-overlay" class="fixed inset-0 bg-black/50 z-[55] hide opacity-0" onclick="toggleDrawer()"></div>
 
-    <!-- MENÚ LATERAL ARREGLADO: Cabecera interna restaurada -->
     <div id="drawer-menu" class="fixed top-0 right-0 h-full w-[85%] max-w-sm bg-gray-50 z-[60] shadow-2xl flex flex-col">
         <div class="text-white p-4 flex justify-between items-center shadow-md h-[88px]" style="background-color: var(--header-bg);">
             <h2 class="text-xl font-bold" id="drawer-title">Mis Equipos</h2>
@@ -528,6 +527,9 @@
                     return;
                 }
 
+                // Guardamos temporalmente los datos para usarlos en la carga del clima
+                window._partidosAgenda = proximosPartidos;
+
                 proximosPartidos.forEach((p, index) => {
                     const eq = p._equipoRef;
                     const clasif = p._clasifRef;
@@ -655,15 +657,41 @@
                             </div>
                         </div>
                     `;
-                    
-                    setTimeout(() => {
-                        cargarClimaAgenda(index, dirCompleta, p.FechaHora);
-                    }, 100);
                 });
+
+                // CARGAR CLIMA DE FORMA SECUENCIAL PARA EVITAR BLOQUEOS
+                cargarTodosLosClimas();
 
             } catch (e) {
                 contenedor.innerHTML = '<p class="text-center text-red-500 mt-10">Error al cargar la agenda. Comprueba tu conexión.</p>';
                 console.error(e);
+            }
+        }
+
+        async function cargarTodosLosClimas() {
+            if (!window._partidosAgenda) return;
+            const partidos = window._partidosAgenda;
+
+            for (let i = 0; i < partidos.length; i++) {
+                const p = partidos[i];
+                const eq = p._equipoRef;
+                const esCanal = (eq.idDeporte === "4");
+                const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
+                
+                // Comprobar si ya está en caché para no hacer esperar
+                const cacheKey = dirCompleta + '_' + p.FechaHora;
+                if (cacheClima[cacheKey]) {
+                    const el = document.getElementById(`clima-agenda-${i}`);
+                    if (el) el.innerHTML = `<i class="fas ${cacheClima[cacheKey]} text-xl"></i>`;
+                } else {
+                    // Si no está, pedirlo secuencialmente
+                    const icono = await obtenerClimaIcono(dirCompleta, p.FechaHora);
+                    const el = document.getElementById(`clima-agenda-${i}`);
+                    if (el && icono) el.innerHTML = `<i class="fas ${icono} text-xl"></i>`;
+                    
+                    // Pequeña pausa para no saturar la API
+                    await new Promise(r => setTimeout(r, 500));
+                }
             }
         }
 
@@ -756,14 +784,6 @@
                 console.log("Error clima", e);
             }
             return '';
-        }
-
-        async function cargarClimaAgenda(index, dir, fecha) {
-            const elClima = document.getElementById(`clima-agenda-${index}`);
-            if (elClima) {
-                const iconoClima = await obtenerClimaIcono(dir, fecha);
-                if (iconoClima) elClima.innerHTML = `<i class="fas ${iconoClima} text-xl"></i>`;
-            }
         }
 
         // --- FORMULARIO DE EQUIPOS ---
