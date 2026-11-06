@@ -708,8 +708,8 @@
                     `;
                 });
 
-                // CARGAR CLIMA Y RUTAS (Fase 3)
-                cargarClimaY Rutas();
+                // CARGAR CLIMA Y RUTAS (Fase 3) - CORREGIDO
+                cargarClimaYRutas();
 
             } catch (e) {
                 contenedor.innerHTML = '<p class="text-center text-red-500 mt-10">Error al cargar la agenda. Comprueba tu conexión.</p>';
@@ -717,7 +717,8 @@
             }
         }
 
-        async function cargarClimaY Rutas() {
+        // --- FUNCIÓN CORREGIDA (SIN ESPACIOS EN EL NOMBRE) ---
+        async function cargarClimaYRutas() {
             if (!window._partidosAgenda) return;
             const partidos = window._partidosAgenda;
             const promesas = [];
@@ -730,7 +731,7 @@
                 
                 promesas.push(
                     (async () => {
-                        // 1. OBTENER COORDENADAS DEL CAMPO (Intentar desde JSON o Geocodificar)
+                        // 1. OBTENER COORDENADAS DEL CAMPO
                         let lat = p.CampoJuego?.Latitud || p.Latitud;
                         let lon = p.CampoJuego?.Longitud || p.Longitud;
                         
