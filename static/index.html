@@ -298,7 +298,7 @@
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
         // AJUSTES Y CACHÉ
-        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', defaultMap: 'ask' };
+        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask' };
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
         let equipoActual = null;
@@ -392,9 +392,28 @@
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
         }
 
-        function guardarAjustes() {
-            userSettings.homeAddress = document.getElementById('input-casa').value.trim();
+        async function guardarAjustes() {
+            const dir = document.getElementById('input-casa').value.trim();
+            userSettings.homeAddress = dir;
             userSettings.defaultMap = document.getElementById('select-mapa-defecto').value;
+            
+            // Geocodificar dirección de casa
+            if (dir !== "") {
+                try {
+                    const res = await fetchWithTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(dir)}&count=1&language=es&format=json`);
+                    const data = await res.json();
+                    if (data.results && data.results.length > 0) {
+                        userSettings.homeLat = data.results[0].latitude;
+                        userSettings.homeLon = data.results[0].longitude;
+                    }
+                } catch(e) {
+                    console.log("Error geocodificando casa", e);
+                }
+            } else {
+                userSettings.homeLat = null;
+                userSettings.homeLon = null;
+            }
+
             localStorage.setItem('user_settings', JSON.stringify(userSettings));
             alert('Ajustes guardados correctamente.');
             volverInicio();
@@ -557,7 +576,6 @@
                     return;
                 }
 
-                // Guardamos temporalmente los datos para usarlos en la carga del clima
                 window._partidosAgenda = proximosPartidos;
 
                 proximosPartidos.forEach((p, index) => {
@@ -673,8 +691,9 @@
                                 </div>
 
                                 <div class="mt-2 flex justify-between items-center border-t border-gray-200/50 pt-2">
-                                    <div class="flex-1 flex justify-start">
-                                        <div id="clima-agenda-${index}" class="text-xl w-8 h-8 flex items-center justify-center"></div>
+                                    <div class="flex-1 flex justify-start gap-2 items-center">
+                                        <div id="clima-agenda-${index}" class="text-xl w-6 h-6 flex items-center justify-center"></div>
+                                        <div id="ruta-agenda-${index}" class="text-[11px] font-bold text-gray-700"></div>
                                     </div>
                                     <div class="flex-1 flex justify-center">
                                         ${iconCampo}
@@ -689,8 +708,8 @@
                     `;
                 });
 
-                // CARGAR CLIMA USANDO OPEN-METEO GEOCODING (Mucho más rápido y sin bloqueos)
-                cargarTodosLosClimas();
+                // CARGAR CLIMA Y RUTAS (Fase 3)
+                cargarClimaY Rutas();
 
             } catch (e) {
                 contenedor.innerHTML = '<p class="text-center text-red-500 mt-10">Error al cargar la agenda. Comprueba tu conexión.</p>';
@@ -698,10 +717,10 @@
             }
         }
 
-        async function cargarTodosLosClimas() {
+        async function cargarClimaY Rutas() {
             if (!window._partidosAgenda) return;
             const partidos = window._partidosAgenda;
-            const promesasClima = [];
+            const promesas = [];
 
             for (let i = 0; i < partidos.length; i++) {
                 const p = partidos[i];
@@ -709,21 +728,100 @@
                 const esCanal = (eq.idDeporte === "4");
                 const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
                 
-                promesasClima.push(
+                promesas.push(
                     (async () => {
-                        const cacheKey = dirCompleta + '_' + p.FechaHora;
-                        if (cacheClima[cacheKey]) {
-                            const el = document.getElementById(`clima-agenda-${i}`);
-                            if (el) el.innerHTML = `<i class="fas ${cacheClima[cacheKey]} text-xl"></i>`;
-                        } else {
-                            const icono = await obtenerClimaIcono(dirCompleta, p.FechaHora);
-                            const el = document.getElementById(`clima-agenda-${i}`);
-                            if (el && icono) el.innerHTML = `<i class="fas ${icono} text-xl"></i>`;
+                        // 1. OBTENER COORDENADAS DEL CAMPO (Intentar desde JSON o Geocodificar)
+                        let lat = p.CampoJuego?.Latitud || p.Latitud;
+                        let lon = p.CampoJuego?.Longitud || p.Longitud;
+                        
+                        if (!lat || !lon) {
+                            const cacheKey = dirCompleta;
+                            if (cacheGeo[cacheKey]) {
+                                lat = cacheGeo[cacheKey].lat;
+                                lon = cacheGeo[cacheKey].lon;
+                            } else {
+                                try {
+                                    const resGeo = await fetchWithTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(dirCompleta)}&count=1&language=es&format=json`);
+                                    const geoData = await resGeo.json();
+                                    if (geoData.results && geoData.results.length > 0) {
+                                        lat = geoData.results[0].latitude;
+                                        lon = geoData.results[0].longitude;
+                                        cacheGeo[dirCompleta] = { lat, lon };
+                                        localStorage.setItem('cache_geo', JSON.stringify(cacheGeo));
+                                    }
+                                } catch(e) {}
+                            }
+                        }
+
+                        // 2. CLIMA
+                        if (lat && lon) {
+                            const cacheKeyClima = lat + '_' + lon + '_' + p.FechaHora;
+                            if (cacheClima[cacheKeyClima]) {
+                                const el = document.getElementById(`clima-agenda-${i}`);
+                                if (el) el.innerHTML = `<i class="fas ${cacheClima[cacheKeyClima]}"></i>`;
+                            } else {
+                                try {
+                                    const fecha = p.FechaHora.split('T')[0];
+                                    const resClima = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code&start_date=${fecha}&end_date=${fecha}`);
+                                    const climaData = await resClima.json();
+                                    
+                                    const horaObj = p.FechaHora.split('T')[1];
+                                    const horaStr = horaObj ? horaObj.substring(0, 2) + ":00" : "12:00";
+                                    const idx = climaData.hourly.time.findIndex(t => t.endsWith(horaStr));
+                                    const code = idx !== -1 ? climaData.hourly.weather_code[idx] : climaData.hourly.weather_code[12];
+
+                                    let icono = '';
+                                    if (code === 0) icono = 'fa-sun text-yellow-500';
+                                    else if (code === 1 || code === 2) icono = 'fa-cloud-sun text-yellow-600';
+                                    else if (code === 3) icono = 'fa-cloud text-gray-400';
+                                    else if (code >= 45 && code <= 48) icono = 'fa-smog text-gray-500';
+                                    else if (code >= 51 && code <= 67) icono = 'fa-cloud-rain text-blue-500';
+                                    else if (code >= 71 && code <= 77) icono = 'fa-snowflake text-blue-300';
+                                    else if (code >= 80 && code <= 82) icono = 'fa-cloud-showers-heavy text-blue-600';
+                                    else if (code >= 95) icono = 'fa-cloud-bolt text-yellow-500';
+
+                                    if (icono) {
+                                        cacheClima[cacheKeyClima] = icono;
+                                        localStorage.setItem('cache_clima', JSON.stringify(cacheClima));
+                                        const el = document.getElementById(`clima-agenda-${i}`);
+                                        if (el) el.innerHTML = `<i class="fas ${icono}"></i>`;
+                                    }
+                                } catch(e) {}
+                            }
+
+                            // 3. RUTA Y TIEMPO DE VIAJE
+                            if (userSettings.homeLat && userSettings.homeLon) {
+                                try {
+                                    const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/driving/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
+                                    const routeData = await resRoute.json();
+                                    
+                                    if (routeData.routes && routeData.routes.length > 0) {
+                                        const durationMin = Math.ceil(routeData.routes[0].duration / 60);
+                                        
+                                        // Calcular hora de salida
+                                        const datePartido = new Date(p.FechaHora);
+                                        
+                                        // Margen de convocatoria: ECM 30min, Canal 2min
+                                        const margenMin = esCanal ? 2 : 30;
+                                        
+                                        // Restar margen y tiempo de viaje
+                                        datePartido.setMinutes(datePartido.getMinutes() - margenMin - durationMin);
+                                        
+                                        const hh = String(datePartido.getHours()).padStart(2, '0');
+                                        const mm = String(datePartido.getMinutes()).padStart(2, '0');
+
+                                        const elRuta = document.getElementById(`ruta-agenda-${i}`);
+                                        if (elRuta) elRuta.innerHTML = `🚗 <span class="text-blue-600">Sal a las ${hh}:${mm}</span>`;
+                                    }
+                                } catch(e) {
+                                    console.log("Error calculando ruta", e);
+                                }
+                            }
                         }
                     })()
                 );
             }
-            await Promise.all(promesasClima);
+            await Promise.all(promesas);
         }
 
         function cerrarBannerAgenda() {
@@ -761,61 +859,6 @@
             else if (app === 'apple') url = `http://maps.apple.com/?daddr=${destino}`;
             window.open(url, '_blank');
             cerrarModalMapa();
-        }
-
-        async function obtenerClimaIcono(direccion, fechaHora) {
-            const cacheKey = direccion + '_' + fechaHora;
-            if (cacheClima[cacheKey]) return cacheClima[cacheKey];
-
-            try {
-                let lat, lon;
-                
-                if (direccion.includes("El Parque Santander") || direccion.includes("Avenida de Filipinas")) {
-                    lat = 40.44372331454751;
-                    lon = -3.706714444750114;
-                } else if (cacheGeo[direccion]) {
-                    lat = cacheGeo[direccion].lat;
-                    lon = cacheGeo[direccion].lon;
-                } else {
-                    // CAMBIO CRUCIAL: Uso de Open-Meteo Geocoding API (no bloquea)
-                    const resGeo = await fetchWithTimeout(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(direccion)}&count=1&language=es&format=json`);
-                    const geoData = await resGeo.json();
-                    if (!geoData.results || geoData.results.length === 0) return '';
-                    lat = geoData.results[0].latitude;
-                    lon = geoData.results[0].longitude;
-                    cacheGeo[direccion] = { lat, lon };
-                    localStorage.setItem('cache_geo', JSON.stringify(cacheGeo));
-                }
-
-                const fecha = fechaHora.split('T')[0];
-                const resClima = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code&start_date=${fecha}&end_date=${fecha}`);
-                const climaData = await resClima.json();
-                
-                const horaObj = fechaHora.split('T')[1];
-                const horaStr = horaObj ? horaObj.substring(0, 2) + ":00" : "12:00";
-                const index = climaData.hourly.time.findIndex(t => t.endsWith(horaStr));
-                const code = index !== -1 ? climaData.hourly.weather_code[index] : climaData.hourly.weather_code[12];
-
-                let iconoResultado = '';
-                if (code === 0) iconoResultado = 'fa-sun text-yellow-500';
-                else if (code === 1 || code === 2) iconoResultado = 'fa-cloud-sun text-yellow-600';
-                else if (code === 3) iconoResultado = 'fa-cloud text-gray-400';
-                else if (code >= 45 && code <= 48) iconoResultado = 'fa-smog text-gray-500';
-                else if (code >= 51 && code <= 67) iconoResultado = 'fa-cloud-rain text-blue-500';
-                else if (code >= 71 && code <= 77) iconoResultado = 'fa-snowflake text-blue-300';
-                else if (code >= 80 && code <= 82) iconoResultado = 'fa-cloud-showers-heavy text-blue-600';
-                else if (code >= 95) iconoResultado = 'fa-cloud-bolt text-yellow-500';
-
-                if (iconoResultado) {
-                    cacheClima[cacheKey] = iconoResultado;
-                    localStorage.setItem('cache_clima', JSON.stringify(cacheClima));
-                }
-                return iconoResultado;
-
-            } catch (e) {
-                console.log("Error clima", e);
-            }
-            return '';
         }
 
         // --- FORMULARIO DE EQUIPOS ---
