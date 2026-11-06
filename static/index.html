@@ -355,7 +355,7 @@
             return null;
         }
 
-        function acortarNombre(nombre) { return !nombre ? "" : (nombre.length > 35 ? nombre.substring(0, 35) + "..." : nombre); }
+        function acortarNombre(nombre) { return !nombre ? "" : (nombre.length > 35 ? nombre.substring(0, 35).toUpperCase() + "..." : nombre.toUpperCase()); }
         
         function construirDireccion(p) {
             let dir = "";
@@ -513,7 +513,7 @@
                                 ${eq.escudoFavorito ? `<img src="${eq.escudoFavorito}" class="escudo-main-img">` : '<i class="fas fa-shield-alt text-gray-400 text-2xl"></i>'}
                             </div>
                             <div class="flex flex-col min-w-0">
-                                <h3 class="font-black text-xl leading-tight truncate">${eq.nombre}</h3>
+                                <h3 class="font-black text-xl leading-tight truncate uppercase">${eq.nombre}</h3>
                                 <p class="text-xs font-bold text-white/90 uppercase tracking-wider mt-0.5">${deporteNombre}</p>
                                 <p class="text-[11px] font-medium text-white/70 truncate mt-0.5">${categoriaNombre}</p>
                             </div>
@@ -1712,7 +1712,7 @@
                 tbody.innerHTML += `
                     <tr class="${rowClass}" style="${rowStyle}">
                         <td class="p-2 font-bold ${posColor} align-middle">${f.Posicion}</td>
-                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${escudoUrl}"></div><span class="leading-tight pr-1 ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></td>
+                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm"><img src="${escudoUrl}"></div><span class="leading-tight pr-1 uppercase ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></td>
                         <td class="p-2 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
                         <td class="p-2 text-center align-middle">${calcularRacha(f.NombreEquipo)}</td>
                         <td class="p-2 text-right font-black align-middle text-base ${ptsColor}">${f.Puntos}</td>
