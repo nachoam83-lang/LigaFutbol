@@ -310,8 +310,8 @@
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
         // AJUSTES Y CACHÉ
-        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: true };
-        if (userSettings.showRoute === undefined) userSettings.showRoute = true; 
+        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false };
+        if (userSettings.showRoute === undefined) userSettings.showRoute = false; 
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
