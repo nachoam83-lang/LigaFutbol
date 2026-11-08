@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.01                                           -->
+    <!--  Versión actual: v1.1.02                                           -->
     <!--  Fecha: 08/11/2026                                                 -->
-    <!--  Cambios: Añadido feedback háptico, animaciones y copiar direccion-->
-    <!--  Anterior: v1.1.01 · Mejoras UI/UX                                 -->
+    <!--  Cambios: Mejoras UI/UX (chincheta copia, animación y hapticos)    -->
+    <!--  Anterior: v1.1.01 · Feedback háptico y copiar direccion           -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -84,11 +84,11 @@
 
         /* Animación para cambio de pestañas */
         @keyframes slideUpFade {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .tab-content-anim {
-            animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
     </style>
 </head>
@@ -197,7 +197,7 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.01</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.02</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">08/11/2026 · Mejoras UI/UX</p>
             </div>
         </div>
@@ -877,10 +877,9 @@
                                     <div class="flex-1 flex justify-center">
                                         ${iconCampo}
                                     </div>
-                                    <div class="flex-1 flex justify-end gap-2 items-center text-gray-800 text-xl">
-                                        <i class="fas fa-copy text-gray-400 text-base cursor-pointer hover:text-gray-700 mr-1" onclick="event.stopPropagation(); copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this)"></i>
-                                        ${esLocalFav ? '<i class="fas fa-home"></i>' : '<i class="fas fa-plane"></i>'}
-                                        <i class="fas fa-map-marker-alt" onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')"></i>
+                                    <div class="flex-1 flex justify-end gap-4 items-center text-gray-800 text-xl">
+                                        <i class="${esLocalFav ? 'fas fa-home' : 'fas fa-plane'} cursor-pointer hover:text-blue-500" onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')" title="Abrir mapa"></i>
+                                        <i class="fas fa-map-marker-alt cursor-pointer hover:text-green-500" onclick="event.stopPropagation(); copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this)" title="Copiar dirección"></i>
                                     </div>
                                 </div>
                             </div>
@@ -1758,7 +1757,7 @@
             
             let htmlMapa = '';
             if (!esResultado) {
-                htmlMapa = `<div class="text-xs flex justify-center items-center mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: #f87171;"></i><a href="http://maps.apple.com/?q=${encodeURIComponent(dirCompleta)}" target="_blank" class="font-bold text-blue-500 hover:underline mr-2">${dirCompleta}</a> <i class="fas fa-copy text-gray-400 text-sm cursor-pointer hover:text-gray-700" onclick="copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this)"></i></div>`;
+                htmlMapa = `<div class="text-xs flex justify-center items-center mt-3 pt-2 border-t cursor-pointer hover:bg-gray-50 rounded transition" onclick="copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this.querySelector('i'))" style="color: var(--text-sec); border-color: var(--border-color);" title="Copiar dirección"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: #f87171;"></i><span class="font-bold text-blue-500">${dirCompleta}</span></div>`;
             }
 
             let botonesExtra = '';
