@@ -740,11 +740,6 @@
                         escVis = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
                     }
 
-                    const isCustomLocal = escLocal.startsWith('data:');
-                    const isCustomVis = escVis.startsWith('data:');
-                    const classImgLocal = (esCanal || isCustomLocal) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-                    const classImgVis = (esCanal || isCustomVis) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-
                     // Tipo campo 
                     let iconCampo = '';
                     if (esCanal) {
@@ -789,8 +784,8 @@
                                 <div class="text-sm font-bold uppercase tracking-widest opacity-90">${diaStr}</div>
                                 <div class="text-3xl font-black">${numDia}</div>
                                 <div class="text-sm font-bold uppercase tracking-widest opacity-90 mb-3">${mesStr}</div>
-                                <div class="w-12 h-12 bg-white rounded-full p-1 shadow-sm overflow-hidden" style="border: 3px solid white; box-sizing: border-box;">
-                                    <img src="${eq.escudoFavorito || '/static/logo.png'}" class="escudo-main-img">
+                                <div class="w-12 h-12 bg-white rounded-full p-1 shadow-sm overflow-hidden">
+                                    <img src="${eq.escudoFavorito || '/static/logo.png'}" class="w-full h-full object-contain">
                                 </div>
                             </div>
 
@@ -816,12 +811,12 @@
 
                                 <div class="flex justify-center items-center gap-4 mb-3">
                                     <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posLocal}</span>
-                                    <div class="w-12 h-12 bg-white rounded-full shadow-sm flex-shrink-0 overflow-hidden" style="border: 3px solid white; box-sizing: border-box;">
-                                        <img src="${escLocal}" class="${classImgLocal}">
+                                    <div class="w-12 h-12 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
+                                        <img src="${escLocal}" class="w-full h-full object-contain p-0.5">
                                     </div>
                                     <span class="text-[10px] font-bold text-gray-400">VS</span>
-                                    <div class="w-12 h-12 bg-white rounded-full shadow-sm flex-shrink-0 overflow-hidden" style="border: 3px solid white; box-sizing: border-box;">
-                                        <img src="${escVis}" class="${classImgVis}">
+                                    <div class="w-12 h-12 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0">
+                                        <img src="${escVis}" class="w-full h-full object-contain p-0.5">
                                     </div>
                                     <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posVis}</span>
                                 </div>
@@ -1727,25 +1722,17 @@
                 escudoVisitante = esVisFav ? (equipoActual.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
             }
 
-            const isCustomLocal = escudoLocal.startsWith('data:');
-            const isCustomVis = escudoVisitante.startsWith('data:');
-
-            const classImgLocal = (esCanal || isCustomLocal) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-            const classImgVis = (esCanal || isCustomVis) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-
-            let styleEscLocal = '';
-            let styleEscVis = '';
+            let htmlEscLocal, htmlEscVis;
             if (esCanal) {
-                styleEscLocal = 'style="border: 3px solid white; box-sizing: border-box;"';
-                styleEscVis = 'style="border: 3px solid var(--primary-color); box-sizing: border-box;"';
+                htmlEscLocal = `<div class="escudo-circulo" style="border: 3px solid white; padding: 0; box-sizing: border-box;"><img src="${escudoLocal}" class="escudo-main-img"></div>`;
+                htmlEscVis = `<div class="escudo-circulo" style="border: 3px solid var(--primary-color); padding: 0; box-sizing: border-box;"><img src="${escudoVisitante}" class="escudo-main-img"></div>`;
             } else {
                 const bordeFav = 'border: 4px solid var(--primary-color); box-sizing: border-box;';
-                styleEscLocal = esLocalFav ? `style="${bordeFav}"` : '';
-                styleEscVis = esVisFav ? `style="${bordeFav}"` : '';
+                let styleEscLocal = esLocalFav ? `style="${bordeFav}"` : '';
+                let styleEscVis = esVisFav ? `style="${bordeFav}"` : '';
+                htmlEscLocal = `<div class="escudo-circulo" ${styleEscLocal}><img src="${escudoLocal}"></div>`;
+                htmlEscVis = `<div class="escudo-circulo" ${styleEscVis}><img src="${escudoVisitante}"></div>`;
             }
-
-            let htmlEscLocal = `<div class="escudo-circulo" ${styleEscLocal}><img src="${escudoLocal}" class="${classImgLocal}"></div>`;
-            let htmlEscVis = `<div class="escudo-circulo" ${styleEscVis}><img src="${escudoVisitante}" class="${classImgVis}"></div>`;
             
             let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
             let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
@@ -1882,7 +1869,9 @@
                     }
                 }
 
-                const isCustom = escudoUrl.startsWith('data:');
+                const isCustom = escudoUrl.startsWith('data:') || isCanal();
+                let styleEsc = isCustom ? 'style="padding: 0; border: 2px solid white; box-sizing: border-box;"' : '';
+                let classImg = isCustom ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
 
                 let rowStyle = "border-color: var(--border-color);";
                 let posColor = esPrimero ? 'text-[#A67C00] font-black' : 'text-gray-600';
@@ -1900,7 +1889,7 @@
                 tbody.innerHTML += `
                     <tr class="${rowClass}" style="${rowStyle}">
                         <td class="p-2 font-bold ${posColor} align-middle">${f.Posicion}</td>
-                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm" ${isCustom ? 'style="border: 2px solid white; box-sizing: border-box;"' : ''}><img src="${escudoUrl}" class="${isCustom ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5'}"></div><span class="leading-tight pr-1 uppercase ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></td>
+                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm" ${styleEsc}><img src="${escudoUrl}" class="${classImg}"></div><span class="leading-tight pr-1 uppercase ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></td>
                         <td class="p-2 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
                         <td class="p-2 text-center align-middle">${calcularRacha(f.NombreEquipo)}</td>
                         <td class="p-2 text-right font-black align-middle text-base ${ptsColor}">${f.Puntos}</td>
