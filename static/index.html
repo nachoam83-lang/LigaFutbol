@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.00                                           -->
+    <!--  Versión actual: v1.1.01                                           -->
     <!--  Fecha: 08/11/2026                                                 -->
-    <!--  Cambios: Añadido logo personalizado por equipo (galería/cámara)   -->
-    <!--  Anterior: v1.0.00 · 26/11/08 · Initial issue                      -->
+    <!--  Cambios: Añadido feedback háptico, animaciones y copiar direccion-->
+    <!--  Anterior: v1.1.00 · Añadido logo personalizado por equipo         -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -81,6 +81,15 @@
         /* Estilos para Pull to Refresh */
         #ptr-indicator { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); background: white; padding: 12px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; transition: top 0.3s ease-out; }
         #ptr-indicator.active { top: 100px; }
+
+        /* Animación para cambio de pestañas */
+        @keyframes slideUpFade {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content-anim {
+            animation: slideUpFade 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
     </style>
 </head>
 <body class="pb-20">
@@ -188,8 +197,8 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.00</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">08/11/2026 · Añadido logo personalizado</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.01</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">08/11/2026 · Mejoras UI/UX</p>
             </div>
         </div>
     </div>
@@ -394,6 +403,25 @@
             return null;
         }
 
+        // --- NUEVAS FUNCIONES GLOBALES ---
+        function vibrar(ms = 40) {
+            if (navigator.vibrate) navigator.vibrate(ms);
+        }
+
+        function copiarDireccion(texto, iconElement) {
+            navigator.clipboard.writeText(texto).then(() => {
+                vibrar(50);
+                const originalClass = iconElement.className;
+                iconElement.className = 'fas fa-check text-green-500 text-base mr-1';
+                setTimeout(() => {
+                    iconElement.className = originalClass;
+                }, 2000);
+            }).catch(err => {
+                console.error('Error al copiar: ', err);
+                alert('No se pudo copiar la dirección al portapapeles.');
+            });
+        }
+
         function acortarNombre(nombre) { return !nombre ? "" : (nombre.length > 35 ? nombre.substring(0, 35).toUpperCase() + "..." : nombre.toUpperCase()); }
         
         function construirDireccion(p) {
@@ -445,6 +473,7 @@
             if (window.scrollY === 0 && touchStartY > 0) {
                 touchEndY = e.changedTouches[0].screenY;
                 if (touchEndY - touchStartY > 100) {
+                    vibrar(60); // Feedback háptico
                     ptrIndicator.classList.add('active');
                     cargarAgendaFamiliar();
                     setTimeout(() => ptrIndicator.classList.remove('active'), 1500);
@@ -848,7 +877,8 @@
                                     <div class="flex-1 flex justify-center">
                                         ${iconCampo}
                                     </div>
-                                    <div class="flex-1 flex justify-end gap-3 text-gray-800 text-xl">
+                                    <div class="flex-1 flex justify-end gap-2 items-center text-gray-800 text-xl">
+                                        <i class="fas fa-copy text-gray-400 text-base cursor-pointer hover:text-gray-700 mr-1" onclick="event.stopPropagation(); copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this)"></i>
                                         ${esLocalFav ? '<i class="fas fa-home"></i>' : '<i class="fas fa-plane"></i>'}
                                         <i class="fas fa-map-marker-alt" onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')"></i>
                                     </div>
@@ -1347,6 +1377,7 @@
             localStorage.setItem('equipos_liga', JSON.stringify(equipos));
             localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido));
             editandoEquipoId = null; 
+            vibrar(50); // Feedback háptico al guardar
             volverInicio();
         }
 
@@ -1529,13 +1560,24 @@
         }
 
         function cambiarTab(tab) {
+            vibrar(); // Feedback háptico al cambiar de pestaña
+            
             document.getElementById('tab-calendario').classList.add('hide');
             document.getElementById('tab-resultados').classList.add('hide');
             document.getElementById('tab-clasificacion').classList.add('hide');
+            
             document.getElementById('btn-tab-calendario').classList.remove('tab-active');
             document.getElementById('btn-tab-resultados').classList.remove('tab-active');
             document.getElementById('btn-tab-clasificacion').classList.remove('tab-active');
-            document.getElementById(`tab-${tab}`).classList.remove('hide');
+            
+            const targetTab = document.getElementById(`tab-${tab}`);
+            targetTab.classList.remove('hide');
+            
+            // Reiniciar la animación
+            targetTab.classList.remove('tab-content-anim');
+            void targetTab.offsetWidth; // Truco para forzar el reinicio del navegador
+            targetTab.classList.add('tab-content-anim');
+
             document.getElementById(`btn-tab-${tab}`).classList.add('tab-active');
 
             if (tab === 'calendario') renderizarCalendarioUI();
@@ -1716,7 +1758,7 @@
             
             let htmlMapa = '';
             if (!esResultado) {
-                htmlMapa = `<div class="text-xs flex justify-center items-start mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: #f87171;"></i><a href="http://maps.apple.com/?q=${encodeURIComponent(dirCompleta)}" target="_blank" class="font-bold text-blue-500 hover:underline">${dirCompleta}</a></div>`;
+                htmlMapa = `<div class="text-xs flex justify-center items-center mt-3 pt-2 border-t" style="color: var(--text-sec); border-color: var(--border-color);"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: #f87171;"></i><a href="http://maps.apple.com/?q=${encodeURIComponent(dirCompleta)}" target="_blank" class="font-bold text-blue-500 hover:underline mr-2">${dirCompleta}</a> <i class="fas fa-copy text-gray-400 text-sm cursor-pointer hover:text-gray-700" onclick="copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this)"></i></div>`;
             }
 
             let botonesExtra = '';
