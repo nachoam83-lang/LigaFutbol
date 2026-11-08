@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Agenda Familiar</title>
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
+    <!--  #Indice_de_version                                                -->
+    <!--  Versión actual: v1.1.00                                           -->
+    <!--  Fecha: 08/11/2026                                                 -->
+    <!--  Cambios: Añadido logo personalizado por equipo (galería/cámara)   -->
+    <!--  Anterior: v1.0.00 · 26/11/08 · Initial issue                      -->
+    <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -127,6 +134,11 @@
             <button onclick="cerrarBannerAgenda()" class="text-red-700 hover:text-red-900 ml-2"><i class="fas fa-times text-lg"></i></button>
         </div>
 
+        <div id="banner-offline-agenda" class="hide bg-amber-100 text-amber-800 p-3 rounded-lg text-sm font-bold flex items-center shadow-sm relative mx-4 mt-2">
+            <i class="fas fa-wifi mr-2" style="opacity:0.4"></i>
+            <span>Sin conexión — mostrando datos guardados</span>
+        </div>
+
         <div id="lista-agenda" class="p-4 space-y-4"></div>
     </div>
 
@@ -174,6 +186,11 @@
             </div>
 
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
+
+            <div class="text-center pt-6 pb-4">
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.00</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">08/11/2026 · Añadido logo personalizado</p>
+            </div>
         </div>
     </div>
 
@@ -220,6 +237,27 @@
             <div id="panel-seleccion-equipo" class="hide card p-4 border-2 border-[#A67C00]">
                 <label class="block text-xs font-bold text-[#A67C00] uppercase mb-3 text-center">👇 Toca el escudo de tu equipo</label>
                 <div id="grid-equipos" class="grid grid-cols-3 gap-2"></div>
+            </div>
+            <div id="panel-logo-custom" class="hide card p-4">
+                <label class="block text-xs font-bold uppercase mb-3" style="color: var(--text-sec);">Logo personalizado (opcional)</label>
+                <div class="flex items-center gap-3">
+                    <div id="preview-logo" class="w-16 h-16 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden flex-shrink-0">
+                        <i class="fas fa-camera text-gray-400"></i>
+                    </div>
+                    <div class="flex-1 space-y-2">
+                        <button type="button" onclick="document.getElementById('input-foto').click()" class="w-full bg-gray-100 text-gray-700 font-bold py-2 rounded-lg text-sm">
+                            <i class="fas fa-upload mr-1"></i> Subir foto
+                        </button>
+                        <button type="button" onclick="document.getElementById('input-camara').click()" class="w-full bg-gray-100 text-gray-700 font-bold py-2 rounded-lg text-sm">
+                            <i class="fas fa-camera mr-1"></i> Hacer foto
+                        </button>
+                        <button type="button" onclick="quitarLogoPersonalizado()" id="btn-quitar-logo" class="hide w-full text-red-500 font-bold py-2 rounded-lg text-sm">
+                            <i class="fas fa-trash mr-1"></i> Quitar logo
+                        </button>
+                    </div>
+                </div>
+                <input type="file" id="input-foto" accept="image/*" class="hide" onchange="procesarFotoLogo(this)">
+                <input type="file" id="input-camara" accept="image/*" capture="environment" class="hide" onchange="procesarFotoLogo(this)">
             </div>
             <button onclick="guardarEquipo()" id="btn-guardar" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition disabled:opacity-50 disabled:bg-gray-400 text-sm" disabled>Guardar Equipo</button>
         </div>
@@ -310,13 +348,14 @@
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
         // AJUSTES Y CACHÉ
-        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false };
-        if (userSettings.showRoute === undefined) userSettings.showRoute = false; 
+        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: true };
+        if (userSettings.showRoute === undefined) userSettings.showRoute = true; 
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
         let equipoActual = null;
-        let equipoSeleccionadoVisual = null; 
+        let equipoSeleccionadoVisual = null;
+        let logoPersonalizado = null;
         let editandoEquipoId = null; 
         let soloMiEquipo = false;
         
@@ -531,6 +570,13 @@
         document.addEventListener('DOMContentLoaded', () => { 
             cargarAgendaFamiliar(); 
             cargarCompeticiones(2); 
+
+            window.addEventListener('online', () => {
+                if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
+            });
+            window.addEventListener('offline', () => {
+                if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
+            });
         });
 
         // --- LÓGICA DE LA AGENDA FAMILIAR ---
@@ -547,45 +593,84 @@
 
             let todosLosPartidos = [];
             let hasNewChanges = false;
+            let showingFromCache = false;
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+
+            const isOnline = navigator.onLine !== false;
 
             try {
                 const promesas = equipos.map(async (eq) => {
-                    let res = await fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
-                    let partidos = await res.json();
-                    
-                    let resClasif = await fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
-                    let clasif = await resClasif.json();
+                    let partidos = null;
+                    let clasif = null;
+                    let fromCache = false;
 
+                    // --- 1. Intentar red (si estamos online) ---
+                    if (isOnline) {
+                        try {
+                            const res = await fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
+                            partidos = await res.json();
+                            const resClasif = await fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
+                            clasif = await resClasif.json();
+
+                            if (Array.isArray(partidos) && partidos.length > 0) {
+                                localStorage.setItem(`cache_res_${eq.id}`, JSON.stringify(partidos));
+                            }
+                            if (Array.isArray(clasif) && clasif.length > 0) {
+                                localStorage.setItem(`cache_clas_${eq.id}`, JSON.stringify(clasif));
+                            }
+                        } catch (netErr) {
+                            console.warn(`Fallo red equipo ${eq.nombre}, probando caché`);
+                        }
+                    }
+
+                    // --- 2. Fallback a caché ---
+                    if (!Array.isArray(partidos)) {
+                        const cachedRes = localStorage.getItem(`cache_res_${eq.id}`);
+                        const cachedClas = localStorage.getItem(`cache_clas_${eq.id}`);
+                        if (!cachedRes) return;
+                        try {
+                            partidos = JSON.parse(cachedRes);
+                            clasif = cachedClas ? JSON.parse(cachedClas) : [];
+                            fromCache = true;
+                        } catch { return; }
+                    }
+
+                    if (!Array.isArray(partidos)) return;
+
+                    // --- 3. Procesar partidos ---
                     partidos.forEach(p => {
                         if (p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito) {
                             let copiaP = { ...p };
                             copiaP._equipoRef = eq;
                             copiaP._clasifRef = clasif;
-                            
+                            if (fromCache) copiaP._fromCache = true;
+
                             const matchId = getMatchId(p);
                             const matchHash = getMatchHash(p);
                             const snapshotKey = `snapshot_v3_${eq.id}`;
                             let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
                             if (Array.isArray(snapshotViejo)) snapshotViejo = {};
-                            
+
                             let pending = false;
                             const snapViejo = snapshotViejo[matchId];
                             if (snapViejo) {
-                                if (snapViejo.hash !== matchHash) pending = true; 
-                                else if (snapViejo.pending) pending = true; 
+                                if (snapViejo.hash !== matchHash) pending = true;
+                                else if (snapViejo.pending) pending = true;
                             }
                             if (pending) {
                                 copiaP.CambioLocal = true;
                                 if (!dismissed[matchHash]) hasNewChanges = true;
                             }
-                            
+
                             todosLosPartidos.push(copiaP);
                         }
                     });
                 });
 
-                await Promise.all(promesas);
+                await Promise.allSettled(promesas);
+
+                showingFromCache = todosLosPartidos.some(p => p._fromCache);
+                document.getElementById('banner-offline-agenda').classList.toggle('hide', !showingFromCache);
 
                 if (hasNewChanges) banner.classList.remove('hide');
 
@@ -604,7 +689,13 @@
                 contenedor.innerHTML = '';
 
                 if (proximosPartidos.length === 0) {
-                    contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos en el próximo mes.</p>';
+                    if (!isOnline && todosLosPartidos.length === 0) {
+                        contenedor.innerHTML = '<div class="text-center text-gray-400 mt-16"><i class="fas fa-wifi text-6xl mb-4 text-gray-200" style="opacity:0.5"></i><p class="font-medium text-gray-600">Sin conexión</p><p class="text-sm mt-2">No hay datos guardados.<br>Conéctate una vez para poder verlo offline.</p></div>';
+                    } else if (showingFromCache) {
+                        contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">Sin conexión — no hay partidos próximos en los datos guardados.</p>';
+                    } else {
+                        contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos en el próximo mes.</p>';
+                    }
                     return;
                 }
 
@@ -836,30 +927,34 @@
                             // 3. RUTA Y TIEMPO DE VIAJE
                             if (userSettings.showRoute !== false && userSettings.homeLat && userSettings.homeLon) {
                                 const elRuta = document.getElementById(`ruta-agenda-${i}`);
-                                if (elRuta && !elRuta.innerHTML) elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
-                                try {
-                                    const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/driving/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
-                                    const routeData = await resRoute.json();
-                                    
-                                    if (routeData.routes && routeData.routes.length > 0) {
-                                        const durationMin = Math.ceil(routeData.routes[0].duration / 60);
+                                if (navigator.onLine === false) {
+                                    if (elRuta) elRuta.innerHTML = `<span class="text-gray-400 text-[11px]">Sin conexión</span>`;
+                                } else {
+                                    if (elRuta && !elRuta.innerHTML) elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
+                                    try {
+                                        const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/driving/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
+                                        const routeData = await resRoute.json();
                                         
-                                        // Calcular hora de salida
-                                        const datePartido = new Date(p.FechaHora);
-                                        
-                                        // Margen de convocatoria: ECM 30min, Canal 2min
-                                        const margenMin = esCanal ? 2 : 30;
-                                        
-                                        // Restar margen y tiempo de viaje
-                                        datePartido.setMinutes(datePartido.getMinutes() - margenMin - durationMin);
-                                        
-                                        const hh = String(datePartido.getHours()).padStart(2, '0');
-                                        const mm = String(datePartido.getMinutes()).padStart(2, '0');
+                                        if (routeData.routes && routeData.routes.length > 0) {
+                                            const durationMin = Math.ceil(routeData.routes[0].duration / 60);
+                                            
+                                            // Calcular hora de salida
+                                            const datePartido = new Date(p.FechaHora);
+                                            
+                                            // Margen de convocatoria: ECM 30min, Canal 2min
+                                            const margenMin = esCanal ? 2 : 30;
+                                            
+                                            // Restar margen y tiempo de viaje
+                                            datePartido.setMinutes(datePartido.getMinutes() - margenMin - durationMin);
+                                            
+                                            const hh = String(datePartido.getHours()).padStart(2, '0');
+                                            const mm = String(datePartido.getMinutes()).padStart(2, '0');
 
-                                        if (elRuta) elRuta.innerHTML = `Sal a las ${hh}:${mm}`;
+                                            if (elRuta) elRuta.innerHTML = `Sal a las ${hh}:${mm}`;
+                                        }
+                                    } catch(e) {
+                                        console.log("Error calculando ruta", e);
                                     }
-                                } catch(e) {
-                                    console.log("Error calculando ruta", e);
                                 }
                             } else if (userSettings.showRoute !== false && (!userSettings.homeLat || !userSettings.homeLon)) {
                                 const elRuta = document.getElementById(`ruta-agenda-${i}`);
@@ -924,6 +1019,7 @@
             document.getElementById('panel-seleccion-equipo').classList.add('hide');
             document.getElementById('btn-guardar').disabled = true;
             equipoSeleccionadoVisual = null;
+            resetLogoUI();
             cargarCompeticiones(2);
             mostrarFormulario();
         }
@@ -943,9 +1039,15 @@
                     document.getElementById('select-categoria-canal').value = eq.idCategoria;
                     cargarEquiposCanalPorCat();
                     document.getElementById('select-grupo').value = eq.equipoFavorito;
-                    equipoSeleccionadoVisual = { nombre: eq.equipoFavorito, escudo: eq.escudoFavorito };
+                    equipoSeleccionadoVisual = { nombre: eq.equipoFavorito, escudo: eq.escudoOficial || '/static/escudo_canal.png' };
                     document.getElementById('btn-guardar').disabled = false;
                     document.getElementById('panel-seleccion-equipo').classList.add('hide');
+                    if (eq.escudoFavorito && eq.escudoFavorito.startsWith('data:image')) {
+                        logoPersonalizado = eq.escudoFavorito;
+                        document.getElementById('preview-logo').innerHTML = `<img src="${logoPersonalizado}" class="w-full h-full object-cover">`;
+                        document.getElementById('btn-quitar-logo').classList.remove('hide');
+                    }
+                    mostrarPanelLogo();
                 });
             } else {
                 document.getElementById('div-competicion').classList.remove('hide');
@@ -959,10 +1061,17 @@
                             document.querySelectorAll('.team-select-card').forEach(c => {
                                 if(c.querySelector('span').innerText === acortarNombre(eq.equipoFavorito)) {
                                     c.classList.add('selected');
-                                    equipoSeleccionadoVisual = { nombre: eq.equipoFavorito, escudo: eq.escudoFavorito };
+                                    const escudoOf = eq.escudoOficial || (eq.escudoFavorito && !eq.escudoFavorito.startsWith('data:') ? eq.escudoFavorito : null);
+                                    equipoSeleccionadoVisual = { nombre: eq.equipoFavorito, escudo: escudoOf };
                                     document.getElementById('btn-guardar').disabled = false;
                                 }
                             });
+                            if (eq.escudoFavorito && eq.escudoFavorito.startsWith('data:image')) {
+                                logoPersonalizado = eq.escudoFavorito;
+                                document.getElementById('preview-logo').innerHTML = `<img src="${logoPersonalizado}" class="w-full h-full object-cover">`;
+                                document.getElementById('btn-quitar-logo').classList.remove('hide');
+                            }
+                            mostrarPanelLogo();
                         });
                     });
                 });
@@ -1025,6 +1134,7 @@
             document.getElementById('panel-seleccion-equipo').classList.add('hide');
             document.getElementById('btn-guardar').disabled = true;
             equipoSeleccionadoVisual = null;
+            resetLogoUI();
 
             if (idDeporte === "4") {
                 document.getElementById('div-competicion').classList.add('hide');
@@ -1055,6 +1165,7 @@
             selectGrupo.innerHTML = '<option value="">Selecciona equipo...</option>';
             document.getElementById('btn-guardar').disabled = true;
             equipoSeleccionadoVisual = null;
+            resetLogoUI();
             if (!cat || !cacheCanal[cat]) return;
             cacheCanal[cat].forEach(eq => selectGrupo.innerHTML += `<option value="${eq}">${eq}</option>`);
         }
@@ -1067,6 +1178,7 @@
             document.getElementById('panel-seleccion-equipo').classList.add('hide');
             document.getElementById('btn-guardar').disabled = true;
             equipoSeleccionadoVisual = null;
+            resetLogoUI();
             if (!idComp) return;
             selectGrupo.innerHTML = '<option value="">Cargando...</option>';
             try {
@@ -1090,6 +1202,7 @@
                 equipoSeleccionadoVisual = { nombre: idGrupo, escudo: "/static/escudo_canal.png" };
                 document.getElementById('btn-guardar').disabled = false;
                 panel.classList.add('hide');
+                mostrarPanelLogo();
                 return;
             }
 
@@ -1118,7 +1231,65 @@
             } catch (e) { grid.innerHTML = '<p class="col-span-3 text-center text-red-500 text-xs">Error al cargar equipos</p>'; }
         }
 
-        function seleccionarEquipoVisual(elementoHTML, datosEquipo) { document.querySelectorAll('.team-select-card').forEach(el => el.classList.remove('selected')); elementoHTML.classList.add('selected'); equipoSeleccionadoVisual = datosEquipo; document.getElementById('btn-guardar').disabled = false; }
+        function seleccionarEquipoVisual(elementoHTML, datosEquipo) { 
+            document.querySelectorAll('.team-select-card').forEach(el => el.classList.remove('selected')); 
+            elementoHTML.classList.add('selected'); 
+            if (!equipoSeleccionadoVisual || equipoSeleccionadoVisual.nombre !== datosEquipo.nombre) {
+                resetLogoUI();
+            }
+            equipoSeleccionadoVisual = datosEquipo; 
+            document.getElementById('btn-guardar').disabled = false; 
+            mostrarPanelLogo();
+        }
+
+        function procesarFotoLogo(input) {
+            const file = input.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                alert('Selecciona una imagen válida.');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    const size = Math.min(img.width, img.height);
+                    const ox = (img.width - size) / 2;
+                    const oy = (img.height - size) / 2;
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 200;
+                    canvas.height = 200;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, ox, oy, size, size, 0, 0, 200, 200);
+                    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+                    logoPersonalizado = dataUrl;
+                    document.getElementById('preview-logo').innerHTML = `<img src="${dataUrl}" class="w-full h-full object-cover">`;
+                    document.getElementById('btn-quitar-logo').classList.remove('hide');
+                    document.getElementById('btn-guardar').disabled = false;
+                };
+                img.onerror = () => alert('No se ha podido leer la imagen. Inténtalo con otra.');
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            input.value = '';
+        }
+
+        function quitarLogoPersonalizado() {
+            logoPersonalizado = null;
+            document.getElementById('preview-logo').innerHTML = '<i class="fas fa-camera text-gray-400"></i>';
+            document.getElementById('btn-quitar-logo').classList.add('hide');
+        }
+
+        function resetLogoUI() {
+            logoPersonalizado = null;
+            document.getElementById('preview-logo').innerHTML = '<i class="fas fa-camera text-gray-400"></i>';
+            document.getElementById('btn-quitar-logo').classList.add('hide');
+            document.getElementById('panel-logo-custom').classList.add('hide');
+        }
+
+        function mostrarPanelLogo() {
+            document.getElementById('panel-logo-custom').classList.remove('hide');
+        }
 
         function guardarEquipo() {
             const nombre = document.getElementById('input-nombre').value || 'Mi Jugador';
@@ -1147,7 +1318,9 @@
                 idCompeticion: idComp, nombreCompeticion: nombreComp,
                 idCategoria: idCat,
                 idGrupo: selGrupo.value, nombreGrupo: selGrupo.value,
-                equipoFavorito: equipoSeleccionadoVisual.nombre, escudoFavorito: equipoSeleccionadoVisual.escudo
+                equipoFavorito: equipoSeleccionadoVisual.nombre, 
+                escudoFavorito: logoPersonalizado || equipoSeleccionadoVisual.escudo,
+                escudoOficial: equipoSeleccionadoVisual.escudo
             };
             
             if (editandoEquipoId) {
