@@ -814,15 +814,14 @@
                                     <div class="text-sm font-bold ${esVisFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esVisFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoVisitante)}</div>
                                 </div>
 
-                                
-                                                                ${(() => {
+                                ${(() => {
                                     let styleLoc = '';
                                     let styleVis = '';
                                     if (esCanal && isCustomLocal) {
                                         styleLoc = 'style="border: 3px solid white; box-sizing: border-box;"';
                                     }
                                     if (esCanal && isCustomVis) {
-                                        styleVis = 'style="background-color: rgba(0, 80, 158, 0.3); border: 3px solid var(--primary-color); box-sizing: border-box;"';
+                                        styleVis = 'style="background-color: rgba(0, 80, 158, 0.3); border: 3px solid #00509E; box-sizing: border-box;"';
                                     }
                                     return `
                                     <div class="flex justify-center items-center gap-4 mb-3">
