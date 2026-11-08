@@ -377,6 +377,7 @@
         let cacheCanal = {}; 
         let rutaActualMapa = "";
         let cacheClima = JSON.parse(localStorage.getItem('cache_clima')) || {};
+        let cacheRuta = JSON.parse(localStorage.getItem('cache_ruta') || '{}');
 
         async function fetchWithTimeout(resource, options = {}) {
             const { timeout = 5000 } = options;
@@ -613,10 +614,16 @@
             const contenedor = document.getElementById('lista-agenda');
             const banner = document.getElementById('banner-alerta-agenda');
             banner.classList.add('hide');
-            contenedor.innerHTML = '<div class="text-center mt-10"><div class="loader-sm mx-auto mb-2"></div><p class="text-gray-500 text-sm">Cargando agenda...</p></div>';
+            // No vaciar la agenda en cada entrada/actualización: evita parpadeos y repintados.
+            const agendaYaPintada = contenedor.dataset.rendered === 'true' && contenedor.children.length > 0;
+            contenedor.setAttribute('aria-busy', 'true');
+            if (!agendaYaPintada) {
+                contenedor.innerHTML = '<div class="text-center mt-10"><div class="loader-sm mx-auto mb-2"></div><p class="text-gray-500 text-sm">Cargando agenda...</p></div>';
+            }
             
             if (equipos.length === 0) {
                 contenedor.innerHTML = `<div class="text-center text-gray-400 mt-16"><i class="fas fa-calendar-alt text-6xl mb-4 text-gray-200"></i><p class="font-medium">No hay equipos guardados.</p><p class="text-sm mt-2">Toca el icono de usuario arriba a la derecha para añadir uno.</p></div>`;
+                contenedor.dataset.rendered = 'true'; contenedor.removeAttribute('aria-busy');
                 return;
             }
 
@@ -636,10 +643,12 @@
                     // --- 1. Intentar red (si estamos online) ---
                     if (isOnline) {
                         try {
-                            const res = await fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
-                            partidos = await res.json();
-                            const resClasif = await fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`);
-                            clasif = await resClasif.json();
+                            // Resultados y clasificación no dependen entre sí: solicitar en paralelo.
+                            const [res, resClasif] = await Promise.all([
+                                fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`),
+                                fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`)
+                            ]);
+                            [partidos, clasif] = await Promise.all([res.json(), resClasif.json()]);
 
                             if (Array.isArray(partidos) && partidos.length > 0) {
                                 localStorage.setItem(`cache_res_${eq.id}`, JSON.stringify(partidos));
@@ -725,6 +734,7 @@
                     } else {
                         contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos en el próximo mes.</p>';
                     }
+                    contenedor.dataset.rendered = 'true'; contenedor.removeAttribute('aria-busy');
                     return;
                 }
 
@@ -809,7 +819,7 @@
                         </div>
                     ` : '';
 
-                    contenedor.innerHTML += `
+                    contenedor.insertAdjacentHTML('beforeend', `
                         <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
                             
                             <!-- Franja Izquierda -->
@@ -884,14 +894,20 @@
                                 </div>
                             </div>
                         </div>
-                    `;
+                    `);
                 });
 
-                // CARGAR CLIMA Y RUTAS (Fase 3)
+                // Marcar agenda lista y completar datos secundarios sin bloquear el render.
+                contenedor.dataset.rendered = 'true';
+                contenedor.removeAttribute('aria-busy');
                 cargarClimaYRutas();
 
             } catch (e) {
-                contenedor.innerHTML = '<p class="text-center text-red-500 mt-10">Error al cargar la agenda. Comprueba tu conexión.</p>';
+                contenedor.removeAttribute('aria-busy');
+                // Si ya había agenda, conservarla ante un error de red.
+                if (contenedor.dataset.rendered !== 'true') {
+                    contenedor.innerHTML = '<p class="text-center text-red-500 mt-10">Error al cargar la agenda. Comprueba tu conexión.</p>';
+                }
                 console.error(e);
             }
         }
@@ -977,11 +993,20 @@
                                 } else {
                                     if (elRuta && !elRuta.innerHTML) elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
                                     try {
-                                        const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/driving/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
-                                        const routeData = await resRoute.json();
-                                        
-                                        if (routeData.routes && routeData.routes.length > 0) {
-                                            const durationMin = Math.ceil(routeData.routes[0].duration / 60);
+                                        // Cache por origen/destino: evita consultar OSRM cada vez que se abre Agenda.
+                                        const routeKey = `${userSettings.homeLat},${userSettings.homeLon}_${lat},${lon}`;
+                                        let durationSec = cacheRuta[routeKey];
+                                        if (!Number.isFinite(durationSec)) {
+                                            const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/driving/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
+                                            const routeData = await resRoute.json();
+                                            if (routeData.routes && routeData.routes.length > 0) {
+                                                durationSec = routeData.routes[0].duration;
+                                                cacheRuta[routeKey] = durationSec;
+                                                localStorage.setItem('cache_ruta', JSON.stringify(cacheRuta));
+                                            }
+                                        }
+                                        if (Number.isFinite(durationSec)) {
+                                            const durationMin = Math.ceil(durationSec / 60);
                                             
                                             // Calcular hora de salida
                                             const datePartido = new Date(p.FechaHora);
