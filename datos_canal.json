@@ -360,8 +360,8 @@
       "EquipoVisitante": "Cadete/Juvenil 5",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 1,
+      "ResultadoEquipoVisitante": 4,
       "Cambio": false
     },
     {
@@ -373,7 +373,7 @@
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoVisitante": 3,
       "Cambio": false
     },
     {
@@ -384,8 +384,8 @@
       "EquipoVisitante": "Cadete/Juvenil 10",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 6,
+      "ResultadoEquipoVisitante": 3,
       "Cambio": false
     },
     {
@@ -396,8 +396,8 @@
       "EquipoVisitante": "Cadete/Juvenil 1",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 6,
+      "ResultadoEquipoVisitante": 1,
       "Cambio": false
     },
     {
@@ -2281,7 +2281,7 @@
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoVisitante": 3,
       "Cambio": false
     },
     {
@@ -2293,7 +2293,7 @@
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoVisitante": 7,
       "Cambio": false
     },
     {
@@ -2304,8 +2304,8 @@
       "EquipoVisitante": "Infantil 8",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 1,
+      "ResultadoEquipoVisitante": 1,
       "Cambio": false
     },
     {
@@ -2316,7 +2316,7 @@
       "EquipoVisitante": "Prebenjamín 10",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoLocal": 3,
       "ResultadoEquipoVisitante": 0,
       "Cambio": false
     },
@@ -2328,8 +2328,8 @@
       "EquipoVisitante": "Infantil 2",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 2,
+      "ResultadoEquipoVisitante": 4,
       "Cambio": false
     },
     {
@@ -2340,8 +2340,8 @@
       "EquipoVisitante": "Infantil 9",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 2,
+      "ResultadoEquipoVisitante": 2,
       "Cambio": false
     },
     {
@@ -2352,7 +2352,7 @@
       "EquipoVisitante": "Infantil 16",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoLocal": 6,
       "ResultadoEquipoVisitante": 0,
       "Cambio": false
     },
@@ -2472,8 +2472,8 @@
       "EquipoVisitante": "Alevín 13",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 1,
+      "ResultadoEquipoVisitante": 2,
       "Cambio": false
     },
     {
@@ -2484,8 +2484,8 @@
       "EquipoVisitante": "Alevín 1",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 6,
+      "ResultadoEquipoVisitante": 3,
       "Cambio": false
     },
     {
@@ -2496,8 +2496,8 @@
       "EquipoVisitante": "Alevín 11",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 2,
+      "ResultadoEquipoVisitante": 3,
       "Cambio": false
     },
     {
@@ -2508,8 +2508,8 @@
       "EquipoVisitante": "Infantil 1",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 4,
+      "ResultadoEquipoVisitante": 2,
       "Cambio": false
     },
     {
@@ -2640,8 +2640,8 @@
       "EquipoVisitante": "Benjamín 10",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 3,
+      "ResultadoEquipoVisitante": 6,
       "Cambio": false
     },
     {
@@ -2652,7 +2652,7 @@
       "EquipoVisitante": "Benjamín 2",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoLocal": 4,
       "ResultadoEquipoVisitante": 0,
       "Cambio": false
     },
@@ -2664,8 +2664,8 @@
       "EquipoVisitante": "Benjamín 5",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 6,
+      "ResultadoEquipoVisitante": 4,
       "Cambio": false
     },
     {
@@ -2676,8 +2676,8 @@
       "EquipoVisitante": "Alevín 9",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 2,
+      "ResultadoEquipoVisitante": 3,
       "Cambio": false
     },
     {
@@ -4712,6 +4712,18 @@
   "clasificacion": {
     "Prebenjamín": [
       {
+        "NombreEquipo": "Prebenjamín 9",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 4,
+        "PG": 4,
+        "PE": 0,
+        "PP": 0,
+        "GF": 35,
+        "GC": 3,
+        "Puntos": 12,
+        "Posicion": 1
+      },
+      {
         "NombreEquipo": "Prebenjamín 5",
         "URLEscudo": "/static/escudo_canal.png",
         "PJ": 4,
@@ -4721,30 +4733,18 @@
         "GF": 19,
         "GC": 3,
         "Puntos": 12,
-        "Posicion": 1
-      },
-      {
-        "NombreEquipo": "Prebenjamín 9",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 3,
-        "PG": 3,
-        "PE": 0,
-        "PP": 0,
-        "GF": 28,
-        "GC": 3,
-        "Puntos": 9,
         "Posicion": 2
       },
       {
         "NombreEquipo": "Prebenjamín 11",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 3,
-        "PG": 3,
+        "PJ": 4,
+        "PG": 4,
         "PE": 0,
         "PP": 0,
-        "GF": 16,
+        "GF": 19,
         "GC": 6,
-        "Puntos": 9,
+        "Puntos": 12,
         "Posicion": 3
       },
       {
@@ -4760,16 +4760,28 @@
         "Posicion": 4
       },
       {
-        "NombreEquipo": "Prebenjamín 10",
+        "NombreEquipo": "Prebenjamín 6",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
+        "PJ": 5,
         "PG": 2,
         "PE": 0,
-        "PP": 2,
-        "GF": 9,
-        "GC": 12,
+        "PP": 3,
+        "GF": 10,
+        "GC": 16,
         "Puntos": 6,
         "Posicion": 5
+      },
+      {
+        "NombreEquipo": "Prebenjamín 10",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 5,
+        "PG": 2,
+        "PE": 0,
+        "PP": 3,
+        "GF": 9,
+        "GC": 15,
+        "Puntos": 6,
+        "Posicion": 6
       },
       {
         "NombreEquipo": "Prebenjamín 13",
@@ -4781,18 +4793,6 @@
         "GF": 14,
         "GC": 22,
         "Puntos": 6,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "Prebenjamín 2",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 3,
-        "PG": 1,
-        "PE": 0,
-        "PP": 2,
-        "GF": 9,
-        "GC": 12,
-        "Puntos": 3,
         "Posicion": 7
       },
       {
@@ -4808,14 +4808,14 @@
         "Posicion": 8
       },
       {
-        "NombreEquipo": "Prebenjamín 6",
+        "NombreEquipo": "Prebenjamín 2",
         "URLEscudo": "/static/escudo_canal.png",
         "PJ": 4,
         "PG": 1,
         "PE": 0,
         "PP": 3,
-        "GF": 7,
-        "GC": 16,
+        "GF": 9,
+        "GC": 19,
         "Puntos": 3,
         "Posicion": 9
       },
@@ -4834,12 +4834,12 @@
       {
         "NombreEquipo": "Prebenjamín 15",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 3,
+        "PJ": 4,
         "PG": 0,
         "PE": 0,
-        "PP": 3,
+        "PP": 4,
         "GF": 0,
-        "GC": 9,
+        "GC": 12,
         "Puntos": 0,
         "Posicion": 11
       }
@@ -4848,13 +4848,13 @@
       {
         "NombreEquipo": "Benjamín 9",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
-        "PG": 4,
+        "PJ": 5,
+        "PG": 5,
         "PE": 0,
         "PP": 0,
-        "GF": 28,
-        "GC": 9,
-        "Puntos": 12,
+        "GF": 34,
+        "GC": 13,
+        "Puntos": 15,
         "Posicion": 1
       },
       {
@@ -4870,6 +4870,18 @@
         "Posicion": 2
       },
       {
+        "NombreEquipo": "Benjamín 11",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 4,
+        "PG": 3,
+        "PE": 0,
+        "PP": 1,
+        "GF": 27,
+        "GC": 12,
+        "Puntos": 9,
+        "Posicion": 3
+      },
+      {
         "NombreEquipo": "Benjamín 16",
         "URLEscudo": "/static/escudo_canal.png",
         "PJ": 3,
@@ -4879,18 +4891,6 @@
         "GF": 20,
         "GC": 8,
         "Puntos": 7,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "Benjamín 11",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 3,
-        "PG": 2,
-        "PE": 0,
-        "PP": 1,
-        "GF": 23,
-        "GC": 12,
-        "Puntos": 6,
         "Posicion": 4
       },
       {
@@ -4906,40 +4906,52 @@
         "Posicion": 5
       },
       {
+        "NombreEquipo": "Benjamín 10",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 5,
+        "PG": 1,
+        "PE": 2,
+        "PP": 2,
+        "GF": 21,
+        "GC": 28,
+        "Puntos": 5,
+        "Posicion": 6
+      },
+      {
         "NombreEquipo": "Benjamín 5",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 3,
+        "PJ": 4,
         "PG": 1,
         "PE": 1,
-        "PP": 1,
-        "GF": 17,
-        "GC": 15,
+        "PP": 2,
+        "GF": 21,
+        "GC": 21,
         "Puntos": 4,
-        "Posicion": 6
+        "Posicion": 7
       },
       {
         "NombreEquipo": "Benjamín 6",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
+        "PJ": 5,
         "PG": 1,
         "PE": 0,
-        "PP": 3,
-        "GF": 18,
-        "GC": 26,
+        "PP": 4,
+        "GF": 21,
+        "GC": 32,
         "Puntos": 3,
-        "Posicion": 7
+        "Posicion": 8
       },
       {
         "NombreEquipo": "Benjamín 2",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
+        "PJ": 5,
         "PG": 1,
         "PE": 0,
-        "PP": 3,
+        "PP": 4,
         "GF": 8,
-        "GC": 20,
+        "GC": 24,
         "Puntos": 3,
-        "Posicion": 8
+        "Posicion": 9
       },
       {
         "NombreEquipo": "Benjamín 8",
@@ -4951,18 +4963,6 @@
         "GF": 12,
         "GC": 29,
         "Puntos": 3,
-        "Posicion": 9
-      },
-      {
-        "NombreEquipo": "Benjamín 10",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
-        "PG": 0,
-        "PE": 2,
-        "PP": 2,
-        "GF": 15,
-        "GC": 25,
-        "Puntos": 2,
         "Posicion": 10
       },
       {
@@ -4982,25 +4982,25 @@
       {
         "NombreEquipo": "Alevín 9",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 5,
-        "PG": 5,
+        "PJ": 6,
+        "PG": 6,
         "PE": 0,
         "PP": 0,
-        "GF": 30,
-        "GC": 6,
-        "Puntos": 15,
+        "GF": 33,
+        "GC": 8,
+        "Puntos": 18,
         "Posicion": 1
       },
       {
         "NombreEquipo": "Alevín 13",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 5,
-        "PG": 4,
+        "PJ": 6,
+        "PG": 5,
         "PE": 1,
         "PP": 0,
-        "GF": 26,
-        "GC": 13,
-        "Puntos": 13,
+        "GF": 28,
+        "GC": 14,
+        "Puntos": 16,
         "Posicion": 2
       },
       {
@@ -5018,14 +5018,26 @@
       {
         "NombreEquipo": "Alevín 16",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 7,
+        "PJ": 8,
         "PG": 4,
         "PE": 1,
-        "PP": 2,
-        "GF": 22,
-        "GC": 16,
+        "PP": 3,
+        "GF": 23,
+        "GC": 18,
         "Puntos": 13,
         "Posicion": 4
+      },
+      {
+        "NombreEquipo": "Alevín 11",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 7,
+        "PG": 4,
+        "PE": 0,
+        "PP": 3,
+        "GF": 18,
+        "GC": 23,
+        "Puntos": 12,
+        "Posicion": 5
       },
       {
         "NombreEquipo": "Alevín 6",
@@ -5037,31 +5049,31 @@
         "GF": 30,
         "GC": 20,
         "Puntos": 11,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "Alevín 5",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 6,
+        "PJ": 7,
         "PG": 3,
         "PE": 2,
-        "PP": 1,
-        "GF": 22,
-        "GC": 13,
+        "PP": 2,
+        "GF": 24,
+        "GC": 16,
         "Puntos": 11,
-        "Posicion": 6
+        "Posicion": 7
       },
       {
-        "NombreEquipo": "Alevín 11",
+        "NombreEquipo": "Alevín 14",
         "URLEscudo": "/static/escudo_canal.png",
         "PJ": 6,
         "PG": 3,
-        "PE": 0,
-        "PP": 3,
-        "GF": 15,
+        "PE": 1,
+        "PP": 2,
+        "GF": 21,
         "GC": 21,
-        "Puntos": 9,
-        "Posicion": 7
+        "Puntos": 10,
+        "Posicion": 8
       },
       {
         "NombreEquipo": "Alevín 10",
@@ -5073,18 +5085,6 @@
         "GF": 14,
         "GC": 18,
         "Puntos": 8,
-        "Posicion": 8
-      },
-      {
-        "NombreEquipo": "Alevín 14",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 5,
-        "PG": 2,
-        "PE": 1,
-        "PP": 2,
-        "GF": 15,
-        "GC": 18,
-        "Puntos": 7,
         "Posicion": 9
       },
       {
@@ -5126,12 +5126,12 @@
       {
         "NombreEquipo": "Alevín 1",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 5,
+        "PJ": 6,
         "PG": 1,
         "PE": 1,
-        "PP": 3,
-        "GF": 12,
-        "GC": 19,
+        "PP": 4,
+        "GF": 15,
+        "GC": 25,
         "Puntos": 4,
         "Posicion": 13
       },
@@ -5162,12 +5162,12 @@
       {
         "NombreEquipo": "Alevín 2",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 5,
+        "PJ": 6,
         "PG": 0,
         "PE": 0,
-        "PP": 5,
-        "GF": 4,
-        "GC": 28,
+        "PP": 6,
+        "GF": 6,
+        "GC": 31,
         "Puntos": 0,
         "Posicion": 16
       }
@@ -5176,26 +5176,50 @@
       {
         "NombreEquipo": "Infantil 9",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
+        "PJ": 5,
         "PG": 4,
-        "PE": 0,
+        "PE": 1,
         "PP": 0,
-        "GF": 23,
-        "GC": 6,
-        "Puntos": 12,
+        "GF": 25,
+        "GC": 8,
+        "Puntos": 13,
         "Posicion": 1
       },
       {
         "NombreEquipo": "Infantil 13",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
-        "PG": 3,
+        "PJ": 5,
+        "PG": 4,
         "PE": 1,
         "PP": 0,
-        "GF": 16,
+        "GF": 22,
         "GC": 6,
-        "Puntos": 10,
+        "Puntos": 13,
         "Posicion": 2
+      },
+      {
+        "NombreEquipo": "Infantil 8",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 5,
+        "PG": 3,
+        "PE": 1,
+        "PP": 1,
+        "GF": 20,
+        "GC": 13,
+        "Puntos": 10,
+        "Posicion": 3
+      },
+      {
+        "NombreEquipo": "Infantil 5",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 7,
+        "PG": 3,
+        "PE": 1,
+        "PP": 3,
+        "GF": 28,
+        "GC": 23,
+        "Puntos": 10,
+        "Posicion": 4
       },
       {
         "NombreEquipo": "Infantil 15",
@@ -5207,55 +5231,43 @@
         "GF": 22,
         "GC": 9,
         "Puntos": 9,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "Infantil 8",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
-        "PG": 3,
-        "PE": 0,
-        "PP": 1,
-        "GF": 19,
-        "GC": 12,
-        "Puntos": 9,
-        "Posicion": 4
-      },
-      {
-        "NombreEquipo": "Infantil 5",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 6,
-        "PG": 3,
-        "PE": 0,
-        "PP": 3,
-        "GF": 26,
-        "GC": 21,
-        "Puntos": 9,
         "Posicion": 5
-      },
-      {
-        "NombreEquipo": "Infantil 4",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 5,
-        "PG": 2,
-        "PE": 0,
-        "PP": 3,
-        "GF": 16,
-        "GC": 21,
-        "Puntos": 6,
-        "Posicion": 6
       },
       {
         "NombreEquipo": "Infantil 2",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
-        "PG": 2,
+        "PJ": 5,
+        "PG": 3,
         "PE": 0,
         "PP": 2,
-        "GF": 11,
-        "GC": 20,
-        "Puntos": 6,
+        "GF": 15,
+        "GC": 22,
+        "Puntos": 9,
+        "Posicion": 6
+      },
+      {
+        "NombreEquipo": "Infantil 4",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 6,
+        "PG": 2,
+        "PE": 1,
+        "PP": 3,
+        "GF": 17,
+        "GC": 22,
+        "Puntos": 7,
         "Posicion": 7
+      },
+      {
+        "NombreEquipo": "Infantil 14",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 3,
+        "PG": 2,
+        "PE": 0,
+        "PP": 1,
+        "GF": 14,
+        "GC": 7,
+        "Puntos": 6,
+        "Posicion": 8
       },
       {
         "NombreEquipo": "Infantil 6",
@@ -5267,41 +5279,29 @@
         "GF": 13,
         "GC": 24,
         "Puntos": 6,
-        "Posicion": 8
+        "Posicion": 9
       },
       {
         "NombreEquipo": "Infantil 1",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 5,
+        "PJ": 6,
         "PG": 1,
         "PE": 1,
-        "PP": 3,
-        "GF": 9,
-        "GC": 16,
+        "PP": 4,
+        "GF": 11,
+        "GC": 20,
         "Puntos": 4,
-        "Posicion": 9
-      },
-      {
-        "NombreEquipo": "Infantil 14",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 2,
-        "PG": 1,
-        "PE": 0,
-        "PP": 1,
-        "GF": 10,
-        "GC": 5,
-        "Puntos": 3,
         "Posicion": 10
       },
       {
         "NombreEquipo": "Infantil 16",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 3,
+        "PJ": 4,
         "PG": 1,
         "PE": 0,
-        "PP": 2,
+        "PP": 3,
         "GF": 10,
-        "GC": 12,
+        "GC": 18,
         "Puntos": 3,
         "Posicion": 11
       },
@@ -5320,17 +5320,41 @@
       {
         "NombreEquipo": "Infantil 11",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
+        "PJ": 5,
         "PG": 0,
         "PE": 0,
-        "PP": 4,
-        "GF": 9,
-        "GC": 23,
+        "PP": 5,
+        "GF": 11,
+        "GC": 27,
         "Puntos": 0,
         "Posicion": 13
       }
     ],
     "Cadete/Juvenil": [
+      {
+        "NombreEquipo": "Cadete/Juvenil 5",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 5,
+        "PG": 3,
+        "PE": 1,
+        "PP": 1,
+        "GF": 17,
+        "GC": 12,
+        "Puntos": 10,
+        "Posicion": 1
+      },
+      {
+        "NombreEquipo": "Cadete/Juvenil 4",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 3,
+        "PG": 3,
+        "PE": 0,
+        "PP": 0,
+        "GF": 15,
+        "GC": 6,
+        "Puntos": 9,
+        "Posicion": 2
+      },
       {
         "NombreEquipo": "Cadete/Juvenil 2",
         "URLEscudo": "/static/escudo_canal.png",
@@ -5341,7 +5365,19 @@
         "GF": 18,
         "GC": 19,
         "Puntos": 8,
-        "Posicion": 1
+        "Posicion": 3
+      },
+      {
+        "NombreEquipo": "Cadete/Juvenil 16",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 3,
+        "PG": 2,
+        "PE": 1,
+        "PP": 0,
+        "GF": 11,
+        "GC": 5,
+        "Puntos": 7,
+        "Posicion": 4
       },
       {
         "NombreEquipo": "Cadete/Juvenil 13",
@@ -5353,19 +5389,7 @@
         "GF": 11,
         "GC": 7,
         "Puntos": 7,
-        "Posicion": 2
-      },
-      {
-        "NombreEquipo": "Cadete/Juvenil 5",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 4,
-        "PG": 2,
-        "PE": 1,
-        "PP": 1,
-        "GF": 13,
-        "GC": 11,
-        "Puntos": 7,
-        "Posicion": 3
+        "Posicion": 5
       },
       {
         "NombreEquipo": "Cadete/Juvenil 9",
@@ -5377,42 +5401,18 @@
         "GF": 9,
         "GC": 3,
         "Puntos": 6,
-        "Posicion": 4
-      },
-      {
-        "NombreEquipo": "Cadete/Juvenil 4",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 2,
-        "PG": 2,
-        "PE": 0,
-        "PP": 0,
-        "GF": 9,
-        "GC": 5,
-        "Puntos": 6,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "Cadete/Juvenil 10",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 3,
+        "PJ": 4,
         "PG": 1,
         "PE": 2,
-        "PP": 0,
-        "GF": 9,
-        "GC": 6,
+        "PP": 1,
+        "GF": 12,
+        "GC": 12,
         "Puntos": 5,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "Cadete/Juvenil 16",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 2,
-        "PG": 1,
-        "PE": 1,
-        "PP": 0,
-        "GF": 8,
-        "GC": 5,
-        "Puntos": 4,
         "Posicion": 7
       },
       {
@@ -5428,40 +5428,52 @@
         "Posicion": 8
       },
       {
-        "NombreEquipo": "Cadete/Juvenil 14",
+        "NombreEquipo": "Cadete/Juvenil 6",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 2,
+        "PJ": 3,
         "PG": 1,
         "PE": 0,
-        "PP": 1,
-        "GF": 5,
-        "GC": 3,
+        "PP": 2,
+        "GF": 10,
+        "GC": 11,
         "Puntos": 3,
         "Posicion": 9
       },
       {
-        "NombreEquipo": "Cadete/Juvenil 8",
+        "NombreEquipo": "Cadete/Juvenil 14",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 2,
-        "PG": 0,
-        "PE": 1,
-        "PP": 1,
-        "GF": 4,
-        "GC": 5,
-        "Puntos": 1,
+        "PJ": 3,
+        "PG": 1,
+        "PE": 0,
+        "PP": 2,
+        "GF": 5,
+        "GC": 6,
+        "Puntos": 3,
         "Posicion": 10
       },
       {
-        "NombreEquipo": "Cadete/Juvenil 1",
+        "NombreEquipo": "Cadete/Juvenil 8",
         "URLEscudo": "/static/escudo_canal.png",
         "PJ": 3,
         "PG": 0,
         "PE": 1,
         "PP": 2,
-        "GF": 8,
-        "GC": 12,
+        "GF": 5,
+        "GC": 9,
         "Puntos": 1,
         "Posicion": 11
+      },
+      {
+        "NombreEquipo": "Cadete/Juvenil 1",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 4,
+        "PG": 0,
+        "PE": 1,
+        "PP": 3,
+        "GF": 9,
+        "GC": 18,
+        "Puntos": 1,
+        "Posicion": 12
       },
       {
         "NombreEquipo": "Cadete/Juvenil 11",
@@ -5473,18 +5485,6 @@
         "GF": 5,
         "GC": 26,
         "Puntos": 1,
-        "Posicion": 12
-      },
-      {
-        "NombreEquipo": "Cadete/Juvenil 6",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 2,
-        "PG": 0,
-        "PE": 0,
-        "PP": 2,
-        "GF": 4,
-        "GC": 8,
-        "Puntos": 0,
         "Posicion": 13
       }
     ]
