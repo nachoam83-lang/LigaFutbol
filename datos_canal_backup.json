@@ -2520,8 +2520,8 @@
       "EquipoVisitante": "Alevín 17",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 5,
+      "ResultadoEquipoVisitante": 3,
       "Cambio": false
     },
     {
@@ -5102,12 +5102,12 @@
       {
         "NombreEquipo": "Alevín 17",
         "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 3,
+        "PJ": 4,
         "PG": 1,
         "PE": 1,
-        "PP": 1,
-        "GF": 10,
-        "GC": 9,
+        "PP": 2,
+        "GF": 13,
+        "GC": 14,
         "Puntos": 4,
         "Posicion": 11
       },
@@ -5124,6 +5124,18 @@
         "Posicion": 12
       },
       {
+        "NombreEquipo": "Alevín 4",
+        "URLEscudo": "/static/escudo_canal.png",
+        "PJ": 6,
+        "PG": 1,
+        "PE": 1,
+        "PP": 4,
+        "GF": 13,
+        "GC": 22,
+        "Puntos": 4,
+        "Posicion": 13
+      },
+      {
         "NombreEquipo": "Alevín 1",
         "URLEscudo": "/static/escudo_canal.png",
         "PJ": 6,
@@ -5133,7 +5145,7 @@
         "GF": 15,
         "GC": 25,
         "Puntos": 4,
-        "Posicion": 13
+        "Posicion": 14
       },
       {
         "NombreEquipo": "Alevín 3",
@@ -5145,18 +5157,6 @@
         "GF": 21,
         "GC": 22,
         "Puntos": 3,
-        "Posicion": 14
-      },
-      {
-        "NombreEquipo": "Alevín 4",
-        "URLEscudo": "/static/escudo_canal.png",
-        "PJ": 5,
-        "PG": 0,
-        "PE": 1,
-        "PP": 4,
-        "GF": 8,
-        "GC": 19,
-        "Puntos": 1,
         "Posicion": 15
       },
       {
