@@ -602,20 +602,216 @@
 
             // Precalienta el selector de competiciones cuando el navegador esté libre,
             // para no competir con la agenda en el arranque en frío.
-                if ('requestIdleCallback' in window) {
-            requestIdleCallback(() => cargarCompeticiones(2), { timeout: 3000 });
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(() => cargarCompeticiones(2), { timeout: 3000 });
             } else {
-            setTimeout(() => cargarCompeticiones(2), 1500);
-                }
+                setTimeout(() => cargarCompeticiones(2), 1500);
+            }
 
             window.addEventListener('online', () => {
-            if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
+                if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
             });
             window.addEventListener('offline', () => {
-            if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
+                if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
             });
-            });
+        });
+
         // --- LÓGICA DE LA AGENDA FAMILIAR ---
+        function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
+            const contenedor = document.getElementById('lista-agenda');
+            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+
+            // FILTRO DE 1 MES VISTA
+            const hoy = new Date(); hoy.setHours(0,0,0,0);
+            const dentroDeUnMes = new Date(hoy); dentroDeUnMes.setMonth(dentroDeUnMes.getMonth() + 1);
+            
+            const proximosPartidos = partidos
+                .filter(p => {
+                    if (!p.FechaHora) return false;
+                    const d = new Date(p.FechaHora);
+                    return d >= hoy && d <= dentroDeUnMes;
+                })
+                .sort((a, b) => new Date(a.FechaHora) - new Date(b.FechaHora));
+
+            contenedor.innerHTML = '';
+
+            if (proximosPartidos.length === 0) {
+                if (!isOnline && partidos.length === 0) {
+                    contenedor.innerHTML = '<div class="text-center text-gray-400 mt-16"><i class="fas fa-wifi text-6xl mb-4 text-gray-200" style="opacity:0.5"></i><p class="font-medium text-gray-600">Sin conexión</p><p class="text-sm mt-2">No hay datos guardados.<br>Conéctate una vez para poder verlo offline.</p></div>';
+                } else if (showingFromCache) {
+                    contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">Sin conexión — no hay partidos próximos en los datos guardados.</p>';
+                } else {
+                    contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos en el próximo mes.</p>';
+                }
+                contenedor.dataset.rendered = 'true'; contenedor.removeAttribute('aria-busy');
+                return;
+            }
+
+            window._partidosAgenda = proximosPartidos;
+
+            proximosPartidos.forEach((p, index) => {
+                const eq = p._equipoRef;
+                const clasif = p._clasifRef;
+                const esLocalFav = p.EquipoLocal === eq.equipoFavorito;
+                const esVisFav = p.EquipoVisitante === eq.equipoFavorito;
+                const esCanal = (eq.idDeporte === "4");
+                
+                // COLORES
+                const colorFondo = esCanal ? '#00509E' : '#006D6F';
+                const colorFondoTrans = esCanal ? 'rgba(0, 80, 158, 0.05)' : 'rgba(0, 109, 111, 0.05)'; 
+                
+                // Fechas
+                const dateObj = new Date(p.FechaHora);
+                const dias = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
+                const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+                const diaStr = dias[dateObj.getDay()];
+                const numDia = dateObj.getDate();
+                const mesStr = meses[dateObj.getMonth()];
+                const horaStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+                // Posiciones
+                let posLocal = "-", posVis = "-";
+                if (clasif && Array.isArray(clasif)) {
+                    const lStats = clasif.find(c => c.NombreEquipo === p.EquipoLocal);
+                    const vStats = clasif.find(c => c.NombreEquipo === p.EquipoVisitante);
+                    if (lStats) posLocal = lStats.Posicion;
+                    if (vStats) posVis = vStats.Posicion;
+                }
+
+                const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
+                
+                // Escudos
+                let escLocal = p.URLEscudoEquipoLocal || '/static/logo.png';
+                let escVis = p.URLEscudoEquipoVisitante || '/static/logo.png';
+                if (esCanal) {
+                    escLocal = esLocalFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
+                    escVis = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
+                }
+
+                const isCustomLocal = escLocal.startsWith('data:');
+                const isCustomVis = escVis.startsWith('data:');
+                const classImgLocal = (esCanal || isCustomLocal) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
+                const classImgVis = (esCanal || isCustomVis) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
+
+                // Tipo campo 
+                let iconCampo = '';
+                if (esCanal) {
+                    iconCampo = `<span class="text-[11px] font-bold bg-[#00509E] text-white px-2 py-0.5 rounded shadow-sm">${p.Campo || 'Campo'}</span>`;
+                } else {
+                    iconCampo = esCampoExterior(p) 
+                        ? `<span class="text-[11px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded shadow-sm">Exterior</span>` 
+                        : `<span class="text-[11px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded shadow-sm">Pabellón</span>`;
+                }
+
+                // Alerta de cambio
+                let haCambiado = p.Cambio || p.CambioLocal;
+                const matchHash = getMatchHash(p);
+                if (haCambiado && dismissed[matchHash]) {
+                    if (Date.now() - dismissed[matchHash] > 3600000) haCambiado = false;
+                }
+                const warningSvg = `
+                    <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 drop-shadow-md">
+                        <path d="M12 2.5L1.5 21h21L12 2.5z" fill="#FACC15" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
+                        <path d="M12 8.5v5.5" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
+                        <circle cx="12" cy="17.5" r="1.5" fill="#000"/>
+                    </svg>
+                `;
+
+                const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
+                const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
+                
+                // COMPROBAR SI MOSTRAR RUTA (AHORA CENTRADO)
+                const htmlRuta = userSettings.showRoute !== false ? `
+                    <div class="flex items-center justify-center gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
+                        <i class="fas fa-car text-gray-800"></i>
+                        <span id="ruta-agenda-${index}" class="text-blue-600"></span>
+                    </div>
+                ` : '';
+
+                contenedor.insertAdjacentHTML('beforeend', `
+                    <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
+                        
+                        <!-- Franja Izquierda -->
+                        <div class="w-24 flex flex-col items-center justify-center text-white py-4 flex-shrink-0" style="background-color: ${colorFondo};">
+                            <div class="mb-2">${getDeporteIcon(eq.idDeporte)}</div>
+                            <div class="text-sm font-bold uppercase tracking-widest opacity-90">${diaStr}</div>
+                            <div class="text-3xl font-black">${numDia}</div>
+                            <div class="text-sm font-bold uppercase tracking-widest opacity-90 mb-3">${mesStr}</div>
+                            <div class="w-12 h-12 bg-white rounded-full p-1 shadow-sm overflow-hidden">
+                                <img src="${eq.escudoFavorito || '/static/logo.png'}" class="escudo-main-img">
+                            </div>
+                        </div>
+
+                        <!-- Contenido Derecha -->
+                        <div class="p-3 flex-1 flex flex-col justify-between" style="background-color: ${colorFondoTrans};">
+                            <div class="flex justify-between items-start border-b border-gray-200/50 pb-2 mb-2">
+                                <div class="flex flex-col">
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-base font-black text-gray-800 uppercase tracking-wide">${eq.nombre}</span>
+                                    </div>
+                                    <span class="text-xs font-bold text-gray-600 uppercase mt-0.5">${eq.nombreCompeticion}</span>
+                                </div>
+                                <div class="text-right flex items-center gap-2">
+                                    ${haCambiado && (esLocalFav || esVisFav) ? warningSvg : ''}
+                                    <div class="text-lg font-black text-gray-800">${horaStr}</div>
+                                </div>
+                            </div>
+
+                            <div class="text-center mb-2">
+                                <div class="text-sm font-bold ${esLocalFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esLocalFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoLocal)}</div>
+                                <div class="text-sm font-bold ${esVisFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esVisFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoVisitante)}</div>
+                            </div>
+
+                            ${(() => {
+                                let styleLoc = '';
+                                let styleVis = '';
+                                if (esCanal && isCustomLocal) {
+                                    styleLoc = 'style="border: 3px solid white; box-sizing: border-box;"';
+                                }
+                                if (esCanal && isCustomVis) {
+                                    styleVis = 'style="background-color: rgba(0, 80, 158, 0.3); border: 3px solid #00509E; box-sizing: border-box;"';
+                                }
+                                return `
+                                <div class="flex justify-center items-center gap-4 mb-3">
+                                    <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posLocal}</span>
+                                    <div class="w-12 h-12 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0" ${styleLoc}>
+                                        <img src="${escLocal}" class="${classImgLocal}">
+                                    </div>
+                                    <span class="text-[10px] font-bold text-gray-400">VS</span>
+                                    <div class="w-12 h-12 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0" ${styleVis}>
+                                        <img src="${escVis}" class="${classImgVis}">
+                                    </div>
+                                    <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posVis}</span>
+                                </div>`;
+                            })()}
+
+                            <!-- LÍNEA DE RUTA CENTRADA -->
+                            ${htmlRuta}
+
+                            <!-- Fila de Iconos Inferior -->
+                            <div class="mt-1 flex justify-between items-center border-t border-gray-200/50 pt-2">
+                                <div class="flex-1 flex justify-start">
+                                    <div id="clima-agenda-${index}" class="text-xl w-6 h-6 flex items-center justify-center"></div>
+                                </div>
+                                <div class="flex-1 flex justify-center">
+                                    ${iconCampo}
+                                </div>
+                                <div class="flex-1 flex justify-end gap-4 items-center text-gray-800 text-xl">
+                                    <i class="${esLocalFav ? 'fas fa-home' : 'fas fa-plane'} cursor-pointer hover:text-blue-500" onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')" title="Abrir mapa"></i>
+                                    <i class="fas fa-map-marker-alt cursor-pointer hover:text-green-500" onclick="event.stopPropagation(); copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this)" title="Copiar dirección"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `);
+            });
+
+            // Marcar agenda lista y completar datos secundarios sin bloquear el render.
+            contenedor.dataset.rendered = 'true';
+            contenedor.removeAttribute('aria-busy');
+            cargarClimaYRutas();
+        }
+
         async function cargarAgendaFamiliar() {
             const contenedor = document.getElementById('lista-agenda');
             const banner = document.getElementById('banner-alerta-agenda');
@@ -632,6 +828,29 @@
                 contenedor.dataset.rendered = 'true'; contenedor.removeAttribute('aria-busy');
                 return;
             }
+
+            // ── En arranque en frío, pintar YA con lo guardado en caché ──
+            if (!agendaYaPintada) {
+                const partidosCache = [];
+                equipos.forEach(eq => {
+                    const rawRes  = localStorage.getItem(`cache_res_${eq.id}`);
+                    const rawClas = localStorage.getItem(`cache_clas_${eq.id}`);
+                    if (!rawRes) return;
+                    try {
+                        const partidos = JSON.parse(rawRes);
+                        const clasif   = rawClas ? JSON.parse(rawClas) : [];
+                        partidos.forEach(p => {
+                            if (p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito) {
+                                partidosCache.push({ ...p, _equipoRef: eq, _clasifRef: clasif, _fromCache: true });
+                            }
+                        });
+                    } catch {}
+                });
+                if (partidosCache.length) {
+                    renderAgendaDesdeDatos(partidosCache, { showingFromCache: true });
+                }
+            }
+            // ── FIN ──
 
             let todosLosPartidos = [];
             let hasNewChanges = false;
@@ -718,195 +937,7 @@
 
                 if (hasNewChanges) banner.classList.remove('hide');
 
-                // FILTRO DE 1 MES VISTA
-                const hoy = new Date(); hoy.setHours(0,0,0,0);
-                const dentroDeUnMes = new Date(hoy); dentroDeUnMes.setMonth(dentroDeUnMes.getMonth() + 1);
-                
-                const proximosPartidos = todosLosPartidos
-                    .filter(p => {
-                        if (!p.FechaHora) return false;
-                        const d = new Date(p.FechaHora);
-                        return d >= hoy && d <= dentroDeUnMes;
-                    })
-                    .sort((a, b) => new Date(a.FechaHora) - new Date(b.FechaHora));
-
-                contenedor.innerHTML = '';
-
-                if (proximosPartidos.length === 0) {
-                    if (!isOnline && todosLosPartidos.length === 0) {
-                        contenedor.innerHTML = '<div class="text-center text-gray-400 mt-16"><i class="fas fa-wifi text-6xl mb-4 text-gray-200" style="opacity:0.5"></i><p class="font-medium text-gray-600">Sin conexión</p><p class="text-sm mt-2">No hay datos guardados.<br>Conéctate una vez para poder verlo offline.</p></div>';
-                    } else if (showingFromCache) {
-                        contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">Sin conexión — no hay partidos próximos en los datos guardados.</p>';
-                    } else {
-                        contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">No hay partidos en el próximo mes.</p>';
-                    }
-                    contenedor.dataset.rendered = 'true'; contenedor.removeAttribute('aria-busy');
-                    return;
-                }
-
-                window._partidosAgenda = proximosPartidos;
-
-                proximosPartidos.forEach((p, index) => {
-                    const eq = p._equipoRef;
-                    const clasif = p._clasifRef;
-                    const esLocalFav = p.EquipoLocal === eq.equipoFavorito;
-                    const esVisFav = p.EquipoVisitante === eq.equipoFavorito;
-                    const esCanal = (eq.idDeporte === "4");
-                    
-                    // COLORES
-                    const colorFondo = esCanal ? '#00509E' : '#006D6F';
-                    const colorFondoTrans = esCanal ? 'rgba(0, 80, 158, 0.05)' : 'rgba(0, 109, 111, 0.05)'; 
-                    
-                    // Fechas
-                    const dateObj = new Date(p.FechaHora);
-                    const dias = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
-                    const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-                    const diaStr = dias[dateObj.getDay()];
-                    const numDia = dateObj.getDate();
-                    const mesStr = meses[dateObj.getMonth()];
-                    const horaStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-                    // Posiciones
-                    let posLocal = "-", posVis = "-";
-                    if (clasif && Array.isArray(clasif)) {
-                        const lStats = clasif.find(c => c.NombreEquipo === p.EquipoLocal);
-                        const vStats = clasif.find(c => c.NombreEquipo === p.EquipoVisitante);
-                        if (lStats) posLocal = lStats.Posicion;
-                        if (vStats) posVis = vStats.Posicion;
-                    }
-
-                    const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
-                    
-                    // Escudos
-                    let escLocal = p.URLEscudoEquipoLocal || '/static/logo.png';
-                    let escVis = p.URLEscudoEquipoVisitante || '/static/logo.png';
-                    if (esCanal) {
-                        escLocal = esLocalFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
-                        escVis = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
-                    }
-
-                    const isCustomLocal = escLocal.startsWith('data:');
-                    const isCustomVis = escVis.startsWith('data:');
-                    const classImgLocal = (esCanal || isCustomLocal) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-                    const classImgVis = (esCanal || isCustomVis) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-
-                    // Tipo campo 
-                    let iconCampo = '';
-                    if (esCanal) {
-                        iconCampo = `<span class="text-[11px] font-bold bg-[#00509E] text-white px-2 py-0.5 rounded shadow-sm">${p.Campo || 'Campo'}</span>`;
-                    } else {
-                        iconCampo = esCampoExterior(p) 
-                            ? `<span class="text-[11px] font-bold text-orange-600 bg-orange-100 px-2 py-0.5 rounded shadow-sm">Exterior</span>` 
-                            : `<span class="text-[11px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded shadow-sm">Pabellón</span>`;
-                    }
-
-                    // Alerta de cambio
-                    let haCambiado = p.Cambio || p.CambioLocal;
-                    const matchHash = getMatchHash(p);
-                    if (haCambiado && dismissed[matchHash]) {
-                        if (Date.now() - dismissed[matchHash] > 3600000) haCambiado = false;
-                    }
-                    const warningSvg = `
-                        <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 drop-shadow-md">
-                            <path d="M12 2.5L1.5 21h21L12 2.5z" fill="#FACC15" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
-                            <path d="M12 8.5v5.5" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
-                            <circle cx="12" cy="17.5" r="1.5" fill="#000"/>
-                        </svg>
-                    `;
-
-                    const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
-                    const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
-                    
-                    // COMPROBAR SI MOSTRAR RUTA (AHORA CENTRADO)
-                    const htmlRuta = userSettings.showRoute !== false ? `
-                        <div class="flex items-center justify-center gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
-                            <i class="fas fa-car text-gray-800"></i>
-                            <span id="ruta-agenda-${index}" class="text-blue-600"></span>
-                        </div>
-                    ` : '';
-
-                    contenedor.insertAdjacentHTML('beforeend', `
-                        <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
-                            
-                            <!-- Franja Izquierda -->
-                            <div class="w-24 flex flex-col items-center justify-center text-white py-4 flex-shrink-0" style="background-color: ${colorFondo};">
-                                <div class="mb-2">${getDeporteIcon(eq.idDeporte)}</div>
-                                <div class="text-sm font-bold uppercase tracking-widest opacity-90">${diaStr}</div>
-                                <div class="text-3xl font-black">${numDia}</div>
-                                <div class="text-sm font-bold uppercase tracking-widest opacity-90 mb-3">${mesStr}</div>
-                                <div class="w-12 h-12 bg-white rounded-full p-1 shadow-sm overflow-hidden">
-                                    <img src="${eq.escudoFavorito || '/static/logo.png'}" class="escudo-main-img">
-                                </div>
-                            </div>
-
-                            <!-- Contenido Derecha -->
-                            <div class="p-3 flex-1 flex flex-col justify-between" style="background-color: ${colorFondoTrans};">
-                                <div class="flex justify-between items-start border-b border-gray-200/50 pb-2 mb-2">
-                                    <div class="flex flex-col">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-base font-black text-gray-800 uppercase tracking-wide">${eq.nombre}</span>
-                                        </div>
-                                        <span class="text-xs font-bold text-gray-600 uppercase mt-0.5">${eq.nombreCompeticion}</span>
-                                    </div>
-                                    <div class="text-right flex items-center gap-2">
-                                        ${haCambiado && (esLocalFav || esVisFav) ? warningSvg : ''}
-                                        <div class="text-lg font-black text-gray-800">${horaStr}</div>
-                                    </div>
-                                </div>
-
-                                <div class="text-center mb-2">
-                                    <div class="text-sm font-bold ${esLocalFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esLocalFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoLocal)}</div>
-                                    <div class="text-sm font-bold ${esVisFav ? 'text-[#A67C00]' : 'text-gray-800'}" ${esVisFav ? styleFav : styleNormal}>${acortarNombre(p.EquipoVisitante)}</div>
-                                </div>
-
-                                ${(() => {
-                                    let styleLoc = '';
-                                    let styleVis = '';
-                                    if (esCanal && isCustomLocal) {
-                                        styleLoc = 'style="border: 3px solid white; box-sizing: border-box;"';
-                                    }
-                                    if (esCanal && isCustomVis) {
-                                        styleVis = 'style="background-color: rgba(0, 80, 158, 0.3); border: 3px solid #00509E; box-sizing: border-box;"';
-                                    }
-                                    return `
-                                    <div class="flex justify-center items-center gap-4 mb-3">
-                                        <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posLocal}</span>
-                                        <div class="w-12 h-12 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0" ${styleLoc}>
-                                            <img src="${escLocal}" class="${classImgLocal}">
-                                        </div>
-                                        <span class="text-[10px] font-bold text-gray-400">VS</span>
-                                        <div class="w-12 h-12 bg-white rounded-full border border-gray-200 overflow-hidden shadow-sm flex-shrink-0" ${styleVis}>
-                                            <img src="${escVis}" class="${classImgVis}">
-                                        </div>
-                                        <span class="text-sm font-black text-gray-700 flex items-center gap-1"><i class="fas fa-trophy text-[#A67C00]"></i> ${posVis}</span>
-                                    </div>`;
-                                })()}
-
-                                <!-- LÍNEA DE RUTA CENTRADA -->
-                                ${htmlRuta}
-
-                                <!-- Fila de Iconos Inferior -->
-                                <div class="mt-1 flex justify-between items-center border-t border-gray-200/50 pt-2">
-                                    <div class="flex-1 flex justify-start">
-                                        <div id="clima-agenda-${index}" class="text-xl w-6 h-6 flex items-center justify-center"></div>
-                                    </div>
-                                    <div class="flex-1 flex justify-center">
-                                        ${iconCampo}
-                                    </div>
-                                    <div class="flex-1 flex justify-end gap-4 items-center text-gray-800 text-xl">
-                                        <i class="${esLocalFav ? 'fas fa-home' : 'fas fa-plane'} cursor-pointer hover:text-blue-500" onclick="event.stopPropagation(); abrirModalMapa('${dirCompleta.replace(/'/g, "\\'")}')" title="Abrir mapa"></i>
-                                        <i class="fas fa-map-marker-alt cursor-pointer hover:text-green-500" onclick="event.stopPropagation(); copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this)" title="Copiar dirección"></i>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `);
-                });
-
-                // Marcar agenda lista y completar datos secundarios sin bloquear el render.
-                contenedor.dataset.rendered = 'true';
-                contenedor.removeAttribute('aria-busy');
-                cargarClimaYRutas();
+                renderAgendaDesdeDatos(todosLosPartidos, { showingFromCache, isOnline });
 
             } catch (e) {
                 contenedor.removeAttribute('aria-busy');
