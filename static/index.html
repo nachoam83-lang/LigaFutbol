@@ -599,16 +599,22 @@
 
         document.addEventListener('DOMContentLoaded', () => { 
             cargarAgendaFamiliar(); 
-            cargarCompeticiones(2); 
+
+            // Precalienta el selector de competiciones cuando el navegador esté libre,
+            // para no competir con la agenda en el arranque en frío.
+                if ('requestIdleCallback' in window) {
+            requestIdleCallback(() => cargarCompeticiones(2), { timeout: 3000 });
+            } else {
+            setTimeout(() => cargarCompeticiones(2), 1500);
+                }
 
             window.addEventListener('online', () => {
-                if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
+            if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
             });
             window.addEventListener('offline', () => {
-                if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
+            if (!document.getElementById('screen-agenda').classList.contains('hide')) cargarAgendaFamiliar();
             });
-        });
-
+            });
         // --- LÓGICA DE LA AGENDA FAMILIAR ---
         async function cargarAgendaFamiliar() {
             const contenedor = document.getElementById('lista-agenda');
@@ -645,8 +651,8 @@
                         try {
                             // Resultados y clasificación no dependen entre sí: solicitar en paralelo.
                             const [res, resClasif] = await Promise.all([
-                                fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`),
-                                fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`)
+                                fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 2000 }),
+                                fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 2000 })
                             ]);
                             [partidos, clasif] = await Promise.all([res.json(), resClasif.json()]);
 
