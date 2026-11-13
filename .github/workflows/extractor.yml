@@ -3,12 +3,12 @@ name: Extracción Automática de Datos
 on:
   schedule:
     # Se ejecuta cada 30 minutos
-    - cron: '*/30 * * * *'
+    - cron: '*/20 * * * *'
   workflow_dispatch: # <--- BOTÓN PARA LANZARLO A MANO
 
 jobs:
   extraer:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04          # ← ANTES: ubuntu-latest
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: false
