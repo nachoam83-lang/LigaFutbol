@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.02                                           -->
+    <!--  Versión actual: v1.1.03                                           -->
     <!--  Fecha: 08/11/2026                                                 -->
-    <!--  Cambios: Mejoras UI/UX (chincheta copia, animación y hapticos)    -->
-    <!--  Anterior: v1.1.01 · Feedback háptico y copiar direccion           -->
+    <!--  Cambios: Banners offline fuera + escudos ECM más grandes          -->
+    <!--  Anterior: v1.1.02 · Mejoras UI/UX                                  -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -70,7 +70,9 @@
         .escudo-circulo img { width: 100%; height: 100%; object-fit: contain; }
         .escudo-circulo-sm { width: 32px; height: 32px; background-color: white; border-radius: 50%; padding: 6px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; margin-right: 8px; flex-shrink: 0; overflow: hidden; box-sizing: border-box; }
         .escudo-circulo-sm img { width: 100%; height: 100%; object-fit: contain; }
+        .escudo-circulo-sm.escudo-lg { width: 44px; height: 44px; padding: 3px; }
         .escudo-main-img { border-radius: 50%; object-fit: cover; width: 100%; height: 100%; }
+        .escudo-fav-zoom { transform: scale(1.25); transform-origin: center; }
 
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
         
@@ -134,19 +136,6 @@
             <h1 id="main-title" class="text-xl font-bold tracking-wide">Agenda Familiar</h1>
             <button onclick="toggleDrawer()" class="text-white hover:opacity-80 transition"><i class="fas fa-user text-2xl"></i></button>
         </div>
-        
-        <div id="banner-alerta-agenda" class="hide bg-red-100 text-red-700 p-3 rounded-lg text-sm font-bold flex items-center justify-between shadow-sm relative mx-4 mt-4">
-            <div class="flex items-center">
-                <i class="fas fa-exclamation-triangle mr-2 text-lg"></i> 
-                <span>¡Atención! Hay cambios en algún partido.</span>
-            </div>
-            <button onclick="cerrarBannerAgenda()" class="text-red-700 hover:text-red-900 ml-2"><i class="fas fa-times text-lg"></i></button>
-        </div>
-
-        <div id="banner-offline-agenda" class="hide bg-amber-100 text-amber-800 p-3 rounded-lg text-sm font-bold flex items-center shadow-sm relative mx-4 mt-2">
-            <i class="fas fa-wifi mr-2" style="opacity:0.4"></i>
-            <span>Sin conexión — mostrando datos guardados</span>
-        </div>
 
         <div id="lista-agenda" class="p-4 space-y-4"></div>
     </div>
@@ -197,8 +186,8 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.02</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">08/11/2026 · Mejoras UI/UX</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.03</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">08/11/2026 · Banners offline + escudos ECM</p>
             </div>
         </div>
     </div>
@@ -690,8 +679,10 @@
 
                 const isCustomLocal = escLocal.startsWith('data:');
                 const isCustomVis = escVis.startsWith('data:');
-                const classImgLocal = (esCanal || isCustomLocal) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-                const classImgVis = (esCanal || isCustomVis) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
+                let classImgLocal = (esCanal || isCustomLocal) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
+                let classImgVis = (esCanal || isCustomVis) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
+                if (!esCanal && esLocalFav) classImgLocal += ' escudo-fav-zoom';
+                if (!esCanal && esVisFav)   classImgVis   += ' escudo-fav-zoom';
 
                 // Tipo campo 
                 let iconCampo = '';
@@ -810,12 +801,18 @@
             contenedor.dataset.rendered = 'true';
             contenedor.removeAttribute('aria-busy');
             cargarClimaYRutas();
+
+            if (showingFromCache) {
+                contenedor.insertAdjacentHTML('beforeend', `
+                    <div class="text-center text-[11px] text-gray-400 mt-3 mb-2 flex items-center justify-center gap-1">
+                        <i class="fas fa-wifi" style="opacity:0.4"></i>
+                        Mostrando datos guardados · sin conexión
+                    </div>`);
+            }
         }
 
         async function cargarAgendaFamiliar() {
             const contenedor = document.getElementById('lista-agenda');
-            const banner = document.getElementById('banner-alerta-agenda');
-            banner.classList.add('hide');
             // No vaciar la agenda en cada entrada/actualización: evita parpadeos y repintados.
             const agendaYaPintada = contenedor.dataset.rendered === 'true' && contenedor.children.length > 0;
             contenedor.setAttribute('aria-busy', 'true');
@@ -933,9 +930,6 @@
                 await Promise.allSettled(promesas);
 
                 showingFromCache = todosLosPartidos.some(p => p._fromCache);
-                document.getElementById('banner-offline-agenda').classList.toggle('hide', !showingFromCache);
-
-                if (hasNewChanges) banner.classList.remove('hide');
 
                 renderAgendaDesdeDatos(todosLosPartidos, { showingFromCache, isOnline });
 
@@ -1078,7 +1072,6 @@
             const now = Date.now();
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
             localStorage.setItem('last_banner_close', now.toString());
-            document.getElementById('banner-alerta-agenda').classList.add('hide');
             setTimeout(() => { cargarAgendaFamiliar(); }, 100);
         }
 
@@ -1844,8 +1837,10 @@
             const isCustomLocal = escudoLocal.startsWith('data:');
             const isCustomVis = escudoVisitante.startsWith('data:');
 
-            const classImgLocal = (esCanal || isCustomLocal) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-            const classImgVis = (esCanal || isCustomVis) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
+            let classImgLocal = (esCanal || isCustomLocal) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
+            let classImgVis = (esCanal || isCustomVis) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
+            if (!esCanal && esLocalFav) classImgLocal += ' escudo-fav-zoom';
+            if (!esCanal && esVisFav)   classImgVis   += ' escudo-fav-zoom';
 
             let styleEscLocal = '';
             let styleEscVis = '';
@@ -1982,6 +1977,8 @@
                 }).join('');
             }
 
+            const bigEscudo = isCanal() ? '' : 'escudo-lg';
+
             filas.forEach(f => {
                 const esPrimero = f.Posicion === 1;
                 const esFavorito = f.NombreEquipo === equipoActual.equipoFavorito;
@@ -2016,7 +2013,7 @@
                 tbody.innerHTML += `
                     <tr class="${rowClass}" style="${rowStyle}">
                         <td class="p-2 font-bold ${posColor} align-middle">${f.Posicion}</td>
-                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm" ${styleEsc}><img src="${escudoUrl}" class="${classImg}"></div><span class="leading-tight pr-1 uppercase ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></td>
+                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm ${bigEscudo}" ${styleEsc}><img src="${escudoUrl}" class="${classImg}"></div><span class="leading-tight pr-1 uppercase ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></td>
                         <td class="p-2 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
                         <td class="p-2 text-center align-middle">${calcularRacha(f.NombreEquipo)}</td>
                         <td class="p-2 text-right font-black align-middle text-base ${ptsColor}">${f.Puntos}</td>
