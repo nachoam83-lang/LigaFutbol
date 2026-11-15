@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.07                                           -->
+    <!--  Versión actual: v1.1.08                                           -->
     <!--  Fecha: 15/11/2026                                                 -->
-    <!--  Cambios: Fix definitivo detección "Disputado sin incidencias"     -->
-    <!--  Anterior: v1.1.06 · Fix estados + clima                           -->
+    <!--  Cambios: Tiempo de viaje desactivado por defecto                  -->
+    <!--  Anterior: v1.1.07 · Fix detección estados                         -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -186,8 +186,8 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.07</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">15/11/2026 · Fix estados + clima</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.08</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">15/11/2026 · Viaje desactivado por defecto</p>
             </div>
         </div>
     </div>
@@ -345,9 +345,9 @@
         });
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
-        // AJUSTES Y CACHÉ
-        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: true };
-        if (userSettings.showRoute === undefined) userSettings.showRoute = true; 
+        // AJUSTES Y CACHÉ (showRoute: false por defecto)
+        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false };
+        if (userSettings.showRoute === undefined) userSettings.showRoute = false; 
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
@@ -447,7 +447,7 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
-        // --- v1.1.07: Estado fiable del partido (Lógica corregida) ---
+        // --- v1.1.08: Estado fiable del partido ---
         function getEstadoPartido(p) {
             if (p.EstadoPartido === undefined && p.Cerrado === undefined) {
                 return (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) ? 'jugado' : 'pendiente';
@@ -455,22 +455,16 @@
 
             const est = String(p.EstadoPartido || '').toLowerCase().trim();
 
-            // 1) Negativos explícitos PRIMERO (para no confundir con "Disputado sin...")
             if (/aplaz|suspend|cancel|anulad|retirad|no celebra|no disp|no se jug/.test(est)) return 'aplazado';
-
-            // 2) Positivos explícitos (incluye "Disputado sin incidencias")
             if (/jugad|finaliz|cerrad|disputad|celebrad|acab|conclu|termin/.test(est)) return 'jugado';
-
-            // 3) Pendientes
             if (/pendiente|por jugar|programad|previst/.test(est)) return 'pendiente';
 
-            // 4) Si el acta está cerrada o hay goles, asumimos jugado
             if (p.Cerrado === true || p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) return 'jugado';
 
             return 'pendiente';
         }
 
-        // --- PULL TO REFRESH (Tirar hacia abajo) ---
+        // --- PULL TO REFRESH ---
         let touchStartY = 0;
         let touchEndY = 0;
         const screenAgenda = document.getElementById('screen-agenda');
@@ -486,7 +480,7 @@
             if (window.scrollY === 0 && touchStartY > 0) {
                 touchEndY = e.changedTouches[0].screenY;
                 if (touchEndY - touchStartY > 100) {
-                    vibrar(60); // Feedback háptico
+                    vibrar(60);
                     ptrIndicator.classList.add('active');
                     cargarAgendaFamiliar();
                     setTimeout(() => ptrIndicator.classList.remove('active'), 1500);
@@ -501,7 +495,8 @@
             document.getElementById('screen-ajustes').classList.remove('hide');
             document.getElementById('input-casa').value = userSettings.homeAddress || '';
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
-            document.getElementById('toggle-ruta').checked = userSettings.showRoute !== false;
+            // Forzamos a que se muestre apagado si no es true explícitamente
+            document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
         }
 
         async function guardarAjustes() {
@@ -725,7 +720,8 @@
                 const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
                 const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
                 
-                const htmlRuta = userSettings.showRoute !== false ? `
+                // v1.1.08: Solo mostramos la ruta si showRoute es true explícitamente
+                const htmlRuta = userSettings.showRoute === true ? `
                     <div class="flex items-center justify-center gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
                         <i class="fas fa-car text-gray-800"></i>
                         <span id="ruta-agenda-${index}" class="text-blue-600"></span>
@@ -985,7 +981,6 @@
                                 if (el) el.innerHTML = `<i class="fas ${cacheClima[cacheKeyClima]}"></i>`;
                             } else {
                                 try {
-                                    // v1.1.07: Evitar error 400 de Open-Meteo pidiendo clima > 15 días
                                     const fechaPartido = new Date(p.FechaHora);
                                     const hoy = new Date();
                                     const diffDias = (fechaPartido - hoy) / (1000 * 60 * 60 * 24);
@@ -1022,7 +1017,8 @@
                                 } catch(e) {}
                             }
 
-                            if (userSettings.showRoute !== false && userSettings.homeLat && userSettings.homeLon) {
+                            // v1.1.08: Solo calculamos ruta si showRoute es true
+                            if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
                                 const elRuta = document.getElementById(`ruta-agenda-${i}`);
                                 if (navigator.onLine === false) {
                                     if (elRuta) elRuta.innerHTML = `<span class="text-gray-400 text-[11px]">Sin conexión</span>`;
@@ -1053,7 +1049,7 @@
                                         console.log("Error calculando ruta", e);
                                     }
                                 }
-                            } else if (userSettings.showRoute !== false && (!userSettings.homeLat || !userSettings.homeLon)) {
+                            } else if (userSettings.showRoute === true && (!userSettings.homeLat || !userSettings.homeLon)) {
                                 const elRuta = document.getElementById(`ruta-agenda-${i}`);
                                 if (elRuta) elRuta.innerHTML = `<span class="text-gray-400 text-[11px]">Configura tu casa</span>`;
                             }
@@ -1741,7 +1737,6 @@
             const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
             const esResultado = (modo === 'resultados');
 
-            // v1.1.07: estado fiable del partido
             const estado = getEstadoPartido(p);
             const esAplazado = estado === 'aplazado';
             const esJugado = estado === 'jugado';
@@ -1852,14 +1847,12 @@
             let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
             let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
 
-            // Atenuar jugados SOLO en Calendario y SOLO si no está aplazado
             const atenuarJugado = !esResultado && esJugado && !esAplazado;
             if (atenuarJugado) {
                 classLocal += ' opacity-50';
                 classVis += ' opacity-50';
             }
 
-            // Hueco central (donde antes estaba "vs")
             let marcador;
             if (esResultado) {
                 if (esJugado) {
@@ -1977,7 +1970,6 @@
             if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
 
             function calcularRacha(nombreEquipo) {
-                // v1.1.07: usar getEstadoPartido para no contar partidos pendientes (evita 0-0 falsos)
                 const partidosEquipo = todosLosPartidos.filter(p => {
                     if (!(p.EquipoLocal === nombreEquipo || p.EquipoVisitante === nombreEquipo)) return false;
                     if (p.NumeroJornada === 12) return false;
