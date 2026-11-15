@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.04                                           -->
+    <!--  Versión actual: v1.1.05                                           -->
     <!--  Fecha: 15/11/2026                                                 -->
-    <!--  Cambios: Calendario sin resultados + estados jugado/aplazado      -->
-    <!--  Anterior: v1.1.03 · Banners offline + escudos ECM                 -->
+    <!--  Cambios: Fix 0-0 falso en ECM (EstadoPartido/Cerrado)             -->
+    <!--  Anterior: v1.1.04 · Calendario sin resultados + estados            -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -186,8 +186,8 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.04</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">15/11/2026 · Calendario + estados</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.05</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">15/11/2026 · Fix 0-0 ECM</p>
             </div>
         </div>
     </div>
@@ -447,6 +447,22 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
+        // --- v1.1.05: Estado fiable del partido ---
+        // ECM trae EstadoPartido + Cerrado → usar eso (evita 0-0 falsos en pendientes)
+        // Canal no trae estado → fallback a goles (>0)
+        function getEstadoPartido(p) {
+            if (p.EstadoPartido !== undefined || p.Cerrado !== undefined) {
+                const est = String(p.EstadoPartido || '').toLowerCase();
+                if (/aplaz|suspend/.test(est)) return 'aplazado';
+                if (p.Cerrado === true) return 'jugado';
+                if (/finaliz|jugad|cerrad|acta|disputad/.test(est)) return 'jugado';
+                if (/pendiente|por jugar|sin jugar/.test(est)) return 'pendiente';
+                if (est && !/pendiente/.test(est)) return 'jugado';
+                return 'pendiente';
+            }
+            return (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) ? 'jugado' : 'pendiente';
+        }
+
         // --- PULL TO REFRESH (Tirar hacia abajo) ---
         let touchStartY = 0;
         let touchEndY = 0;
@@ -589,8 +605,6 @@
         document.addEventListener('DOMContentLoaded', () => { 
             cargarAgendaFamiliar(); 
 
-            // Precalienta el selector de competiciones cuando el navegador esté libre,
-            // para no competir con la agenda en el arranque en frío.
             if ('requestIdleCallback' in window) {
                 requestIdleCallback(() => cargarCompeticiones(2), { timeout: 3000 });
             } else {
@@ -610,7 +624,6 @@
             const contenedor = document.getElementById('lista-agenda');
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
 
-            // FILTRO DE 1 MES VISTA
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             const dentroDeUnMes = new Date(hoy); dentroDeUnMes.setMonth(dentroDeUnMes.getMonth() + 1);
             
@@ -645,11 +658,9 @@
                 const esVisFav = p.EquipoVisitante === eq.equipoFavorito;
                 const esCanal = (eq.idDeporte === "4");
                 
-                // COLORES
                 const colorFondo = esCanal ? '#00509E' : '#006D6F';
                 const colorFondoTrans = esCanal ? 'rgba(0, 80, 158, 0.05)' : 'rgba(0, 109, 111, 0.05)'; 
                 
-                // Fechas
                 const dateObj = new Date(p.FechaHora);
                 const dias = ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'];
                 const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
@@ -658,7 +669,6 @@
                 const mesStr = meses[dateObj.getMonth()];
                 const horaStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                // Posiciones
                 let posLocal = "-", posVis = "-";
                 if (clasif && Array.isArray(clasif)) {
                     const lStats = clasif.find(c => c.NombreEquipo === p.EquipoLocal);
@@ -669,7 +679,6 @@
 
                 const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
                 
-                // Escudos
                 let escLocal = p.URLEscudoEquipoLocal || '/static/logo.png';
                 let escVis = p.URLEscudoEquipoVisitante || '/static/logo.png';
                 if (esCanal) {
@@ -684,7 +693,6 @@
                 if (!esCanal && esLocalFav) classImgLocal += ' escudo-fav-zoom';
                 if (!esCanal && esVisFav)   classImgVis   += ' escudo-fav-zoom';
 
-                // Tipo campo 
                 let iconCampo = '';
                 if (esCanal) {
                     iconCampo = `<span class="text-[11px] font-bold bg-[#00509E] text-white px-2 py-0.5 rounded shadow-sm">${p.Campo || 'Campo'}</span>`;
@@ -694,7 +702,6 @@
                         : `<span class="text-[11px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded shadow-sm">Pabellón</span>`;
                 }
 
-                // Alerta de cambio
                 let haCambiado = p.Cambio || p.CambioLocal;
                 const matchHash = getMatchHash(p);
                 if (haCambiado && dismissed[matchHash]) {
@@ -711,7 +718,6 @@
                 const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
                 const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
                 
-                // COMPROBAR SI MOSTRAR RUTA (AHORA CENTRADO)
                 const htmlRuta = userSettings.showRoute !== false ? `
                     <div class="flex items-center justify-center gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
                         <i class="fas fa-car text-gray-800"></i>
@@ -722,7 +728,6 @@
                 contenedor.insertAdjacentHTML('beforeend', `
                     <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
                         
-                        <!-- Franja Izquierda -->
                         <div class="w-24 flex flex-col items-center justify-center text-white py-4 flex-shrink-0" style="background-color: ${colorFondo};">
                             <div class="mb-2">${getDeporteIcon(eq.idDeporte)}</div>
                             <div class="text-sm font-bold uppercase tracking-widest opacity-90">${diaStr}</div>
@@ -733,7 +738,6 @@
                             </div>
                         </div>
 
-                        <!-- Contenido Derecha -->
                         <div class="p-3 flex-1 flex flex-col justify-between" style="background-color: ${colorFondoTrans};">
                             <div class="flex justify-between items-start border-b border-gray-200/50 pb-2 mb-2">
                                 <div class="flex flex-col">
@@ -776,10 +780,8 @@
                                 </div>`;
                             })()}
 
-                            <!-- LÍNEA DE RUTA CENTRADA -->
                             ${htmlRuta}
 
-                            <!-- Fila de Iconos Inferior -->
                             <div class="mt-1 flex justify-between items-center border-t border-gray-200/50 pt-2">
                                 <div class="flex-1 flex justify-start">
                                     <div id="clima-agenda-${index}" class="text-xl w-6 h-6 flex items-center justify-center"></div>
@@ -797,7 +799,6 @@
                 `);
             });
 
-            // Marcar agenda lista y completar datos secundarios sin bloquear el render.
             contenedor.dataset.rendered = 'true';
             contenedor.removeAttribute('aria-busy');
             cargarClimaYRutas();
@@ -813,7 +814,6 @@
 
         async function cargarAgendaFamiliar() {
             const contenedor = document.getElementById('lista-agenda');
-            // No vaciar la agenda en cada entrada/actualización: evita parpadeos y repintados.
             const agendaYaPintada = contenedor.dataset.rendered === 'true' && contenedor.children.length > 0;
             contenedor.setAttribute('aria-busy', 'true');
             if (!agendaYaPintada) {
@@ -826,7 +826,6 @@
                 return;
             }
 
-            // ── En arranque en frío, pintar YA con lo guardado en caché ──
             if (!agendaYaPintada) {
                 const partidosCache = [];
                 equipos.forEach(eq => {
@@ -847,7 +846,6 @@
                     renderAgendaDesdeDatos(partidosCache, { showingFromCache: true });
                 }
             }
-            // ── FIN ──
 
             let todosLosPartidos = [];
             let hasNewChanges = false;
@@ -862,10 +860,8 @@
                     let clasif = null;
                     let fromCache = false;
 
-                    // --- 1. Intentar red (si estamos online) ---
                     if (isOnline) {
                         try {
-                            // Resultados y clasificación no dependen entre sí: solicitar en paralelo.
                             const [res, resClasif] = await Promise.all([
                                 fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 2000 }),
                                 fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 2000 })
@@ -883,7 +879,6 @@
                         }
                     }
 
-                    // --- 2. Fallback a caché ---
                     if (!Array.isArray(partidos)) {
                         const cachedRes = localStorage.getItem(`cache_res_${eq.id}`);
                         const cachedClas = localStorage.getItem(`cache_clas_${eq.id}`);
@@ -897,7 +892,6 @@
 
                     if (!Array.isArray(partidos)) return;
 
-                    // --- 3. Procesar partidos ---
                     partidos.forEach(p => {
                         if (p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito) {
                             let copiaP = { ...p };
@@ -935,7 +929,6 @@
 
             } catch (e) {
                 contenedor.removeAttribute('aria-busy');
-                // Si ya había agenda, conservarla ante un error de red.
                 if (contenedor.dataset.rendered !== 'true') {
                     contenedor.innerHTML = '<p class="text-center text-red-500 mt-10">Error al cargar la agenda. Comprueba tu conexión.</p>';
                 }
@@ -956,11 +949,9 @@
                 
                 promesas.push(
                     (async () => {
-                        // 1. OBTENER COORDENADAS DEL CAMPO
                         let lat = p.CampoJuego?.Latitud || p.Latitud;
                         let lon = p.CampoJuego?.Longitud || p.Longitud;
 
-                        // TRUCO PARA CANAL: Coordenadas fijas
                         if (esCanal || dirCompleta.includes("El Parque Santander")) {
                             lat = 40.44372331454751;
                             lon = -3.706714444750114;
@@ -980,7 +971,6 @@
                             }
                         }
 
-                        // 2. CLIMA
                         if (lat && lon) {
                             const cacheKeyClima = lat + '_' + lon + '_' + p.FechaHora;
                             if (cacheClima[cacheKeyClima]) {
@@ -1016,7 +1006,6 @@
                                 } catch(e) {}
                             }
 
-                            // 3. RUTA Y TIEMPO DE VIAJE
                             if (userSettings.showRoute !== false && userSettings.homeLat && userSettings.homeLon) {
                                 const elRuta = document.getElementById(`ruta-agenda-${i}`);
                                 if (navigator.onLine === false) {
@@ -1024,7 +1013,6 @@
                                 } else {
                                     if (elRuta && !elRuta.innerHTML) elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
                                     try {
-                                        // Cache por origen/destino: evita consultar OSRM cada vez que se abre Agenda.
                                         const routeKey = `${userSettings.homeLat},${userSettings.homeLon}_${lat},${lon}`;
                                         let durationSec = cacheRuta[routeKey];
                                         if (!Number.isFinite(durationSec)) {
@@ -1038,19 +1026,11 @@
                                         }
                                         if (Number.isFinite(durationSec)) {
                                             const durationMin = Math.ceil(durationSec / 60);
-                                            
-                                            // Calcular hora de salida
                                             const datePartido = new Date(p.FechaHora);
-                                            
-                                            // Margen de convocatoria: ECM 30min, Canal 2min
                                             const margenMin = esCanal ? 2 : 30;
-                                            
-                                            // Restar margen y tiempo de viaje
                                             datePartido.setMinutes(datePartido.getMinutes() - margenMin - durationMin);
-                                            
                                             const hh = String(datePartido.getHours()).padStart(2, '0');
                                             const mm = String(datePartido.getMinutes()).padStart(2, '0');
-
                                             if (elRuta) elRuta.innerHTML = `Sal a las ${hh}:${mm}`;
                                         }
                                     } catch(e) {
@@ -1424,11 +1404,11 @@
             localStorage.setItem('equipos_liga', JSON.stringify(equipos));
             localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido));
             editandoEquipoId = null; 
-            vibrar(50); // Feedback háptico al guardar
+            vibrar(50);
             volverInicio();
         }
 
-        // --- LÓGICA DE LA PANTALLA DE DETALLE (COMO ANTES) ---
+        // --- LÓGICA DE LA PANTALLA DE DETALLE ---
         async function abrirEquipo(index) {
             equipoActual = equipos[index];
             if (equipoActual.idDeporte === "4") document.body.classList.add('theme-canal');
@@ -1607,7 +1587,7 @@
         }
 
         function cambiarTab(tab) {
-            vibrar(); // Feedback háptico al cambiar de pestaña
+            vibrar();
             
             document.getElementById('tab-calendario').classList.add('hide');
             document.getElementById('tab-resultados').classList.add('hide');
@@ -1620,9 +1600,8 @@
             const targetTab = document.getElementById(`tab-${tab}`);
             targetTab.classList.remove('hide');
             
-            // Reiniciar la animación
             targetTab.classList.remove('tab-content-anim');
-            void targetTab.offsetWidth; // Truco para forzar el reinicio del navegador
+            void targetTab.offsetWidth;
             targetTab.classList.add('tab-content-anim');
 
             document.getElementById(`btn-tab-${tab}`).classList.add('tab-active');
@@ -1669,7 +1648,7 @@
                 if (idx !== -1) indiceSeleccionadoCal = idx;
             }
 
-            const partidosJugados = cacheResultados.filter(p => new Date(p.FechaHora) < hoy && (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0));
+            const partidosJugados = cacheResultados.filter(p => getEstadoPartido(p) === 'jugado');
             if (partidosJugados.length > 0) {
                 partidosJugados.sort((a,b) => new Date(b.FechaHora) - new Date(a.FechaHora));
                 const ultimaJornada = Number(partidosJugados[0].NumeroJornada);
@@ -1746,12 +1725,10 @@
             const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
             const esResultado = (modo === 'resultados');
 
-            // Detección de aplazado (varios campos posibles del JSON)
-            const esAplazado = !!(
-                p.Aplazado === true ||
-                p.Suspendido === true ||
-                (p.Estado && /aplaz|suspend/i.test(String(p.Estado)))
-            );
+            // v1.1.05: estado fiable del partido (ECM usa EstadoPartido/Cerrado)
+            const estado = getEstadoPartido(p);
+            const esAplazado = estado === 'aplazado';
+            const esJugado = estado === 'jugado';
             
             const matchHash = getMatchHash(p);
             let dismissedChanges = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
@@ -1859,11 +1836,6 @@
             let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
             let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
 
-            const hoy = new Date(); hoy.setHours(0,0,0,0);
-            const esPasado = p.FechaHora && new Date(p.FechaHora) < hoy;
-            const tieneResultado = (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0);
-            const esJugado = esPasado || tieneResultado;
-
             // Atenuar jugados SOLO en Calendario y SOLO si no está aplazado
             const atenuarJugado = !esResultado && esJugado && !esAplazado;
             if (atenuarJugado) {
@@ -1874,18 +1846,18 @@
             // Hueco central (donde antes estaba "vs")
             let marcador;
             if (esResultado) {
-                // En Resultados: marcador como siempre
-                marcador = esJugado
-                    ? `<span class="text-xl font-black" style="color: var(--primary-color);">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>`
-                    : `<span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>`;
+                if (esJugado) {
+                    marcador = `<span class="text-xl font-black" style="color: var(--primary-color);">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>`;
+                } else if (esAplazado) {
+                    marcador = `<i class="fas fa-hourglass-half text-2xl" style="color: #d97706;" title="Aplazado"></i>`;
+                } else {
+                    marcador = `<span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">Pendiente</span>`;
+                }
             } else if (esAplazado) {
-                // Calendario + Aplazado: hourglass ámbar (no atenuado)
                 marcador = `<i class="fas fa-hourglass-half text-2xl" style="color: #d97706;" title="Aplazado"></i>`;
             } else if (esJugado) {
-                // Calendario + Jugado: bandera a cuadros (sin marcador)
                 marcador = `<i class="fas fa-flag-checkered text-2xl text-gray-400" title="Jugado"></i>`;
             } else {
-                // Calendario + Futuro normal
                 marcador = `<span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>`;
             }
 
@@ -1989,11 +1961,12 @@
             if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
 
             function calcularRacha(nombreEquipo) {
-                const partidosEquipo = todosLosPartidos.filter(p => 
-                    (p.EquipoLocal === nombreEquipo || p.EquipoVisitante === nombreEquipo) && 
-                    (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) &&
-                    p.NumeroJornada !== 12
-                ).sort((a, b) => a.NumeroJornada - b.NumeroJornada);
+                // v1.1.05: usar getEstadoPartido para no contar partidos pendientes (evita 0-0 falsos)
+                const partidosEquipo = todosLosPartidos.filter(p => {
+                    if (!(p.EquipoLocal === nombreEquipo || p.EquipoVisitante === nombreEquipo)) return false;
+                    if (p.NumeroJornada === 12) return false;
+                    return getEstadoPartido(p) === 'jugado';
+                }).sort((a, b) => a.NumeroJornada - b.NumeroJornada);
                 
                 const ultimos5 = partidosEquipo.slice(-5);
                 if (ultimos5.length === 0) return '<span class="text-xs" style="color:var(--text-sec)">-</span>';
