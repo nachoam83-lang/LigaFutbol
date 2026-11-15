@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.03                                           -->
-    <!--  Fecha: 08/11/2026                                                 -->
-    <!--  Cambios: Banners offline fuera + escudos ECM más grandes          -->
-    <!--  Anterior: v1.1.02 · Mejoras UI/UX                                  -->
+    <!--  Versión actual: v1.1.04                                           -->
+    <!--  Fecha: 15/11/2026                                                 -->
+    <!--  Cambios: Calendario sin resultados + estados jugado/aplazado      -->
+    <!--  Anterior: v1.1.03 · Banners offline + escudos ECM                 -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -186,8 +186,8 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.03</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">08/11/2026 · Banners offline + escudos ECM</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.04</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">15/11/2026 · Calendario + estados</p>
             </div>
         </div>
     </div>
@@ -1068,13 +1068,6 @@
             await Promise.all(promesas);
         }
 
-        function cerrarBannerAgenda() {
-            const now = Date.now();
-            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-            localStorage.setItem('last_banner_close', now.toString());
-            setTimeout(() => { cargarAgendaFamiliar(); }, 100);
-        }
-
         // --- LÓGICA DE MAPA Y CLIMA ---
         function abrirModalMapa(dir) {
             if (userSettings.defaultMap && userSettings.defaultMap !== 'ask') {
@@ -1752,6 +1745,13 @@
             const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
             const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
             const esResultado = (modo === 'resultados');
+
+            // Detección de aplazado (varios campos posibles del JSON)
+            const esAplazado = !!(
+                p.Aplazado === true ||
+                p.Suspendido === true ||
+                (p.Estado && /aplaz|suspend/i.test(String(p.Estado)))
+            );
             
             const matchHash = getMatchHash(p);
             let dismissedChanges = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
@@ -1816,7 +1816,7 @@
             }
 
             let botonesExtra = '';
-            if (!esResultado && esFavorito) {
+            if (!esResultado && esFavorito && !esAplazado) {
                 const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
                 const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}.`;
                 botonesExtra = `
@@ -1861,14 +1861,40 @@
 
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             const esPasado = p.FechaHora && new Date(p.FechaHora) < hoy;
-            const marcador = (esPasado || p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) 
-                ? `<span class="text-xl font-black" style="color: var(--primary-color);">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>`
-                : `<span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>`;
+            const tieneResultado = (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0);
+            const esJugado = esPasado || tieneResultado;
+
+            // Atenuar jugados SOLO en Calendario y SOLO si no está aplazado
+            const atenuarJugado = !esResultado && esJugado && !esAplazado;
+            if (atenuarJugado) {
+                classLocal += ' opacity-50';
+                classVis += ' opacity-50';
+            }
+
+            // Hueco central (donde antes estaba "vs")
+            let marcador;
+            if (esResultado) {
+                // En Resultados: marcador como siempre
+                marcador = esJugado
+                    ? `<span class="text-xl font-black" style="color: var(--primary-color);">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>`
+                    : `<span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>`;
+            } else if (esAplazado) {
+                // Calendario + Aplazado: hourglass ámbar (no atenuado)
+                marcador = `<i class="fas fa-hourglass-half text-2xl" style="color: #d97706;" title="Aplazado"></i>`;
+            } else if (esJugado) {
+                // Calendario + Jugado: bandera a cuadros (sin marcador)
+                marcador = `<i class="fas fa-flag-checkered text-2xl text-gray-400" title="Jugado"></i>`;
+            } else {
+                // Calendario + Futuro normal
+                marcador = `<span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>`;
+            }
+
+            const opacidadFecha = atenuarJugado ? 'opacity-60' : '';
 
             return `
                 <div class="${claseTarjeta}">
                     <div class="flex justify-between items-center mb-2">
-                        <div class="font-extrabold text-[13px] uppercase" style="color: var(--primary-color);">${textoFecha}</div>
+                        <div class="font-extrabold text-[13px] uppercase ${opacidadFecha}" style="color: var(--primary-color);">${textoFecha}</div>
                         ${htmlCampo}
                     </div>
                     <div class="flex justify-between items-center w-full my-2">
