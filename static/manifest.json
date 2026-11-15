@@ -3,6 +3,7 @@
   "short_name": "Ligas Infantiles",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#f2f2f7",
   "theme_color": "#007aff",
   "icons": [
