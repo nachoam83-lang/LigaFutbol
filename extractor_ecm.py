@@ -53,7 +53,7 @@ def get_json(url):
     try:
         r = requests.get(url, headers=HEADERS, timeout=15, verify=False)
         data = r.json()
-        # ARREGLO: Si devuelve un string, intentamos parsearlo a JSON
+        # Si devuelve un string, intentamos parsearlo a JSON
         if isinstance(data, str): 
             data = json.loads(data)
         return data
@@ -79,7 +79,7 @@ def extraer_ecm():
         exito = True 
             
         items_comp = data_comp.get("data", data_comp.get("Data", [])) if isinstance(data_comp, dict) else data_comp
-        # ARREGLO: Asegurarnos de que es una lista antes de iterar
+        # Asegurarnos de que es una lista antes de iterar
         if not isinstance(items_comp, list): continue
             
         for comp in items_comp:
@@ -134,26 +134,50 @@ def extraer_ecm():
                                     
                         datos_finales["resultados"][key_grupo] = todos_los_partidos
                         
-                        tabla = {}
-                        for p in todos_los_partidos:
-                            local, visitante = p.get("EquipoLocal"), p.get("EquipoVisitante")
-                            if not local or not visitante: continue
-                            if local not in tabla: tabla[local] = {"NombreEquipo": local, "URLEscudo": p.get("URLEscudoEquipoLocal"), "Puntos": 0, "Jugados": 0, "GF": 0, "GC": 0}
-                            if visitante not in tabla: tabla[visitante] = {"NombreEquipo": visitante, "URLEscudo": p.get("URLEscudoEquipoVisitante"), "Puntos": 0, "Jugados": 0, "GF": 0, "GC": 0}
-                            
-                            estado, rl, rv = p.get("EstadoPartido", ""), p.get("ResultadoEquipoLocal", 0), p.get("ResultadoEquipoVisitante", 0)
-                            if "Jugado" in estado or "Finalizado" in estado or rl > 0 or rv > 0:
-                                tabla[local]["Jugados"] += 1; tabla[visitante]["Jugados"] += 1
-                                tabla[local]["GF"] += rl; tabla[local]["GC"] += rv
-                                tabla[visitante]["GF"] += rv; tabla[visitante]["GC"] += rl
-                                if rl > rv: tabla[local]["Puntos"] += 3
-                                elif rl < rv: tabla[visitante]["Puntos"] += 3
-                                else: tabla[local]["Puntos"] += 1; tabla[visitante]["Puntos"] += 1
+                        # ─────────────────────────────────────────────────────────
+                        # FIX v1.1.05: cálculo de clasificación robusto
+                        # - `p.get(...) or 0` cubre null/None que rompía `> 0`
+                        # - try/except por grupo: un grupo roto no tumba la extracción
+                        # ─────────────────────────────────────────────────────────
+                        try:
+                            tabla = {}
+                            for p in todos_los_partidos:
+                                local = p.get("EquipoLocal")
+                                visitante = p.get("EquipoVisitante")
+                                if not local or not visitante:
+                                    continue
+                                if local not in tabla:
+                                    tabla[local] = {"NombreEquipo": local, "URLEscudo": p.get("URLEscudoEquipoLocal"), "Puntos": 0, "Jugados": 0, "GF": 0, "GC": 0}
+                                if visitante not in tabla:
+                                    tabla[visitante] = {"NombreEquipo": visitante, "URLEscudo": p.get("URLEscudoEquipoVisitante"), "Puntos": 0, "Jugados": 0, "GF": 0, "GC": 0}
                                 
-                        lista_tabla = list(tabla.values())
-                        lista_tabla.sort(key=lambda x: (x["Puntos"], x["GF"] - x["GC"], x["GF"]), reverse=True)
-                        for i, eq in enumerate(lista_tabla): eq["Posicion"] = i + 1
-                        datos_finales["clasificacion"][key_grupo] = lista_tabla
+                                estado = p.get("EstadoPartido") or ""
+                                rl = p.get("ResultadoEquipoLocal") or 0
+                                rv = p.get("ResultadoEquipoVisitante") or 0
+                                
+                                if "Jugado" in estado or "Finalizado" in estado or rl > 0 or rv > 0:
+                                    tabla[local]["Jugados"] += 1
+                                    tabla[visitante]["Jugados"] += 1
+                                    tabla[local]["GF"] += rl
+                                    tabla[local]["GC"] += rv
+                                    tabla[visitante]["GF"] += rv
+                                    tabla[visitante]["GC"] += rl
+                                    if rl > rv:
+                                        tabla[local]["Puntos"] += 3
+                                    elif rl < rv:
+                                        tabla[visitante]["Puntos"] += 3
+                                    else:
+                                        tabla[local]["Puntos"] += 1
+                                        tabla[visitante]["Puntos"] += 1
+                                        
+                            lista_tabla = list(tabla.values())
+                            lista_tabla.sort(key=lambda x: (x["Puntos"], x["GF"] - x["GC"], x["GF"]), reverse=True)
+                            for i, eq in enumerate(lista_tabla):
+                                eq["Posicion"] = i + 1
+                            datos_finales["clasificacion"][key_grupo] = lista_tabla
+                        except Exception as e_clas:
+                            print(f"      ⚠️ Error clasificación grupo {key_grupo}: {e_clas}")
+                            datos_finales["clasificacion"][key_grupo] = []
 
             datos_finales["competiciones"][str(id_deporte)].append({"Id": id_comp, "IdCategoria": id_cat_real, "Nombre": nombre_comp, "Grupos": lista_grupos})
 
