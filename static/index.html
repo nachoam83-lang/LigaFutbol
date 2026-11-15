@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.05                                           -->
+    <!--  Versión actual: v1.1.06                                           -->
     <!--  Fecha: 15/11/2026                                                 -->
-    <!--  Cambios: Fix 0-0 falso en ECM (EstadoPartido/Cerrado)             -->
-    <!--  Anterior: v1.1.04 · Calendario sin resultados + estados            -->
+    <!--  Cambios: Fix detección estados (No Celebrado) + límite clima      -->
+    <!--  Anterior: v1.1.05 · Fix 0-0 falso en ECM (EstadoPartido)          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -186,8 +186,8 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.05</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">15/11/2026 · Fix 0-0 ECM</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.06</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">15/11/2026 · Fix estados + clima</p>
             </div>
         </div>
     </div>
@@ -447,20 +447,32 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
-        // --- v1.1.05: Estado fiable del partido ---
-        // ECM trae EstadoPartido + Cerrado → usar eso (evita 0-0 falsos en pendientes)
-        // Canal no trae estado → fallback a goles (>0)
+        // --- v1.1.06: Estado fiable del partido (Fix "No Celebrado") ---
         function getEstadoPartido(p) {
-            if (p.EstadoPartido !== undefined || p.Cerrado !== undefined) {
-                const est = String(p.EstadoPartido || '').toLowerCase();
-                if (/aplaz|suspend/.test(est)) return 'aplazado';
-                if (p.Cerrado === true) return 'jugado';
-                if (/finaliz|jugad|cerrad|acta|disputad/.test(est)) return 'jugado';
-                if (/pendiente|por jugar|sin jugar/.test(est)) return 'pendiente';
-                if (est && !/pendiente/.test(est)) return 'jugado';
-                return 'pendiente';
+            // Canal (sin EstadoPartido ni Cerrado) → fallback a goles
+            if (p.EstadoPartido === undefined && p.Cerrado === undefined) {
+                return (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) ? 'jugado' : 'pendiente';
             }
-            return (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) ? 'jugado' : 'pendiente';
+
+            const est = String(p.EstadoPartido || '').toLowerCase().trim();
+
+            // 1) Aplazado/suspendido/cancelado/anulado/no celebrado → NO jugado
+            if (/aplaz|suspend|cancel|anulad|retirad|no celebra|no disp/.test(est)) return 'aplazado';
+            
+            // 2) Cualquier frase que empiece por "no " o "sin " → aplazado
+            if (/(^|\s)(no|sin)\s+/.test(est)) return 'aplazado';
+
+            // 3) Cerrado explícito por el backend → jugado
+            if (p.Cerrado === true) return 'jugado';
+
+            // 4) Positivos claros (incluye "Disputado sin incidencias")
+            if (/(^|\s)(jugad|finaliz|cerrad|acab|conclu|termin|celebrad|disputad)/.test(est)) return 'jugado';
+
+            // 5) Pendiente explícito
+            if (/pendiente|por jugar|programad|previst/.test(est)) return 'pendiente';
+
+            // 6) Estado desconocido → pendiente (nunca jugado por error)
+            return 'pendiente';
         }
 
         // --- PULL TO REFRESH (Tirar hacia abajo) ---
@@ -978,6 +990,15 @@
                                 if (el) el.innerHTML = `<i class="fas ${cacheClima[cacheKeyClima]}"></i>`;
                             } else {
                                 try {
+                                    // v1.1.06: Evitar error 400 de Open-Meteo pidiendo clima > 15 días
+                                    const fechaPartido = new Date(p.FechaHora);
+                                    const hoy = new Date();
+                                    const diffDias = (fechaPartido - hoy) / (1000 * 60 * 60 * 24);
+                                    
+                                    if (diffDias > 15 || diffDias < -1) {
+                                        throw new Error("Fecha fuera de rango para clima");
+                                    }
+
                                     const fecha = p.FechaHora.split('T')[0];
                                     const resClima = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code&start_date=${fecha}&end_date=${fecha}`);
                                     const climaData = await resClima.json();
@@ -1725,7 +1746,7 @@
             const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
             const esResultado = (modo === 'resultados');
 
-            // v1.1.05: estado fiable del partido (ECM usa EstadoPartido/Cerrado)
+            // v1.1.06: estado fiable del partido
             const estado = getEstadoPartido(p);
             const esAplazado = estado === 'aplazado';
             const esJugado = estado === 'jugado';
@@ -1961,7 +1982,7 @@
             if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
 
             function calcularRacha(nombreEquipo) {
-                // v1.1.05: usar getEstadoPartido para no contar partidos pendientes (evita 0-0 falsos)
+                // v1.1.06: usar getEstadoPartido para no contar partidos pendientes (evita 0-0 falsos)
                 const partidosEquipo = todosLosPartidos.filter(p => {
                     if (!(p.EquipoLocal === nombreEquipo || p.EquipoVisitante === nombreEquipo)) return false;
                     if (p.NumeroJornada === 12) return false;
