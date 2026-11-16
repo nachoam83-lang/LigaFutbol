@@ -503,17 +503,17 @@
             }
         }
 
-               function renderizarAjustesGrupos() {
+       function renderizarAjustesGrupos() {
             const contenedor = document.getElementById('lista-grupos-ajustes');
             if (!contenedor) return;
             contenedor.innerHTML = '';
 
-            if (equipos.length === 0) {
+            if (!equipos || equipos.length === 0) {
                 contenedor.innerHTML = '<p class="text-xs text-gray-400">No tienes equipos guardados.</p>';
                 return;
             }
 
-            equipos.forEach(eq => {
+            equipos.forEach((eq, idx) => {
                 const url = getGrupoEquipo(eq);
                 const tieneGrupo = !!url;
                 
@@ -526,11 +526,10 @@
                 `;
 
                 if (tieneGrupo) {
-                    // Nuevo diseño: Tick verde y Aspa roja
                     html += `
                         <div class="flex items-center gap-2">
                             <span class="text-green-500 text-lg" title="Grupo activo"><i class="fas fa-check-circle"></i></span>
-                            <button onclick="abrirModalBorrado('${eq.equipoFavorito.replace(/'/g, "\\'")}', '${eq.nombreCompeticion.replace(/'/g, "\\'")}')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-full w-7 h-7 flex items-center justify-center transition" title="Quitar enlace">
+                            <button onclick="abrirModalBorrado(${idx})" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-full w-7 h-7 flex items-center justify-center transition" title="Quitar enlace">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
