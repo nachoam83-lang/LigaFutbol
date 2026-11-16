@@ -1,9 +1,10 @@
-const CACHE_NAME = 'liga-futbol-auto';
+const CACHE_NAME = 'liga-futbol-v1.1.13'; // <-- CAMBIAR VERSIÓN AQUÍ CADA VEZ QUE ACTUALICES
 const urlsToCache = [
     '/',
     '/static/index.html',
     '/static/logo.png',
-    '/static/Equipo_Canal.png'
+    '/static/Equipo_Canal.png',
+    '/static/escudo_canal.png'
 ];
 
 // Instalar y forzar la activación inmediata
@@ -31,22 +32,47 @@ self.addEventListener('activate', event => {
     );
 });
 
-// Estrategia Stale-While-Revalidate (Velocidad + Actualización automática)
+// Estrategias de red
 self.addEventListener('fetch', event => {
     if (event.request.method !== 'GET') return;
 
+    const url = new URL(event.request.url);
+
+    // 1. NETWORK FIRST: Para HTML, API y grupos.json (Datos críticos y dinámicos)
+    if (url.pathname === '/' || 
+        url.pathname.endsWith('.html') || 
+        url.pathname.startsWith('/api/') || 
+        url.pathname.endsWith('grupos.json')) {
+        
+        event.respondWith(
+            fetch(event.request)
+                .then(networkResponse => {
+                    // Si la red responde bien, guardamos una copia actualizada
+                    if (networkResponse && networkResponse.status === 200) {
+                        const responseClone = networkResponse.clone();
+                        caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
+                    }
+                    return networkResponse;
+                })
+                .catch(() => {
+                    // Si falla la red (offline), devolvemos la copia de caché
+                    return caches.match(event.request);
+                })
+        );
+        return;
+    }
+
+    // 2. STALE-WHILE-REVALIDATE: Para el resto (imágenes, CDNs, fuentes)
     event.respondWith(
         caches.open(CACHE_NAME).then(cache => {
             return cache.match(event.request).then(cachedResponse => {
-                // Iniciamos la descarga en segundo plano
                 const fetchPromise = fetch(event.request).then(networkResponse => {
                     if (networkResponse && networkResponse.status === 200) {
-                        cache.put(event.request, networkResponse.clone()); // Guardamos la nueva
+                        cache.put(event.request, networkResponse.clone());
                     }
                     return networkResponse;
-                }).catch(() => {}); // Si no hay internet, ignoramos el error
+                }).catch(() => {});
 
-                // Devolvemos la copia guardada al instante (o esperamos a la red si no existe)
                 return cachedResponse || fetchPromise;
             });
         })
