@@ -592,6 +592,7 @@
         }
 
         let tempEquipoGrupo = "";
+        let tempEquipoBorrar = "";
         
         function abrirModalGrupo(nombreEquipo, nombreCompeticion) {
             tempEquipoGrupo = `${nombreEquipo} (${nombreCompeticion})`;
@@ -612,6 +613,7 @@
             const eq = equipos[idx];
             if (!eq) return;
             const nombreCompleto = `${eq.equipoFavorito} (${eq.nombreCompeticion})`;
+            tempEquipoBorrar = nombreCompleto;
             document.getElementById('texto-equipo-borrar').innerText = nombreCompleto;
             document.getElementById('modal-borrado').classList.remove('hide');
             setTimeout(() => document.getElementById('modal-borrado').classList.remove('opacity-0'), 10);
