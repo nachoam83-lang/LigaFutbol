@@ -1,16 +1,17 @@
-from fastapi import FastAPI, HTTPException, Response
+from fastapi import FastAPI, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from datetime import datetime, timedelta
 from functools import lru_cache
+from pydantic import BaseModel
 import json
 import os
 import base64
 import urllib.request
-import urllib.error  # <-- IMPORTANTE: Faltaba esto
+import urllib.error
+import urllib.parse
 import threading
-from pydantic import BaseModel
 
 app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
@@ -26,10 +27,14 @@ class SolicitudGrupo(BaseModel):
     equipo: str
     url: str
 
+class SolicitudBorrado(BaseModel):
+    equipo: str
+    motivo: str
+
 def _github_api(method, path, data=None):
-    token = os.getenv("TELEGRAM_TOKEN")
+    token = os.getenv("GITHUB_TOKEN") # <--- Usa GITHUB_TOKEN
     if not token:
-        raise HTTPException(status_code=500, detail="Falta TELEGRAM_TOKEN en Render")
+        raise HTTPException(status_code=500, detail="Falta GITHUB_TOKEN en Render")
     
     url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
     headers = {
@@ -47,14 +52,13 @@ def _github_api(method, path, data=None):
         with urllib.request.urlopen(req) as response:
             return json.loads(response.read().decode('utf-8'))
     except urllib.error.HTTPError as e:
-        if e.code == 404: return None # Archivo no encontrado
+        if e.code == 404: return None
         if e.code == 409: raise HTTPException(status_code=409, detail="Conflicto de versión en GitHub")
         raise HTTPException(status_code=e.code, detail=f"Error de GitHub: {e.reason}")
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error de red: {str(e)}")
 
 def leer_grupos():
-    # 1. Intentar leer de GitHub
     try:
         res = _github_api("GET", GITHUB_FILE)
         if res and "content" in res:
@@ -63,7 +67,6 @@ def leer_grupos():
     except Exception as e:
         print(f"⚠️ Fallo al leer de GitHub, usando local: {e}")
     
-    # 2. Fallback a local
     if os.path.exists(GITHUB_FILE):
         try:
             with open(GITHUB_FILE, "r", encoding="utf-8") as f:
@@ -74,13 +77,10 @@ def leer_grupos():
 
 def guardar_grupos(grupos, sha_actual):
     contenido_str = json.dumps(grupos, ensure_ascii=False, indent=2)
-    
-    # 1. Guardar localmente (para no perderlo si falla GitHub)
     os.makedirs(os.path.dirname(GITHUB_FILE), exist_ok=True)
     with open(GITHUB_FILE, "w", encoding="utf-8") as f:
         f.write(contenido_str)
 
-    # 2. Guardar en GitHub
     try:
         contenido_b64 = base64.b64encode(contenido_str.encode('utf-8')).decode('utf-8')
         data = {
@@ -97,7 +97,23 @@ def guardar_grupos(grupos, sha_actual):
         print(f"❌ Error guardando en GitHub: {e}")
         return False
 
-@app.get("/api/grupos_whatsapp") # <-- CAMBIADO EL NOMBRE PARA NO CHOCAR CON EL OTRO
+# ─── FUNCIONES AUXILIARES TELEGRAM ───
+def _tg_answer(token, cb_id, text):
+    url = f"https://api.telegram.org/bot{token}/answerCallbackQuery"
+    data = json.dumps({"callback_query_id": cb_id, "text": text}).encode('utf-8')
+    req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'})
+    try: urllib.request.urlopen(req)
+    except: pass
+
+def _tg_edit(token, chat_id, msg_id, text):
+    url = f"https://api.telegram.org/bot{token}/editMessageText"
+    data = json.dumps({"chat_id": chat_id, "message_id": msg_id, "text": text, "parse_mode": "Markdown"}).encode('utf-8')
+    req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'})
+    try: urllib.request.urlopen(req)
+    except: pass
+
+# ─── ENDPOINTS GRUPOS Y TELEGRAM ───
+@app.get("/api/grupos_whatsapp")
 def get_grupos_whatsapp():
     grupos, _ = leer_grupos()
     return grupos
@@ -109,19 +125,102 @@ def post_solicitar_grupo(req: SolicitudGrupo):
         
     with github_lock:
         grupos, sha = leer_grupos()
-        
         if req.equipo in grupos:
             raise HTTPException(status_code=409, detail="Este equipo ya tiene un grupo asignado")
-            
         grupos[req.equipo] = req.url
         exito = guardar_grupos(grupos, sha)
-        
         if not exito:
             return {"status": "warning", "mensaje": "Guardado localmente, pero falló en GitHub"}
-            
         return {"status": "ok", "mensaje": "Grupo guardado correctamente"}
-# ─── FIN CONFIGURACIÓN GITHUB ───
 
+@app.post("/api/solicitar-borrado")
+def post_solicitar_borrado(req: SolicitudBorrado):
+    tg_token = os.getenv("TELEGRAM_TOKEN")
+    tg_chat = os.getenv("TELEGRAM_CHAT_ID")
+    
+    if not tg_token or not tg_chat:
+        return {"status": "error", "mensaje": "Faltan tokens de Telegram"}
+    
+    texto = f"⚠️ *SOLICITUD DE BORRADO*\n\n*Equipo:* {req.equipo}\n*Motivo:* {req.motivo}"
+    
+    # Callback data no puede superar 64 bytes. Usamos base64 o un hash si el nombre es muy largo.
+    # Para evitar problemas, cortamos el nombre del equipo a 50 caracteres para el callback.
+    equipo_cb = urllib.parse.quote(req.equipo[:50])
+    
+    keyboard = {
+        "inline_keyboard": [[
+            {"text": "✅ Aprobar borrado", "callback_data": f"del|{equipo_cb}"},
+            {"text": "❌ Ignorar", "callback_data": "ignore"}
+        ]]
+    }
+    
+    url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
+    data = json.dumps({
+        "chat_id": tg_chat,
+        "text": texto,
+        "parse_mode": "Markdown",
+        "reply_markup": keyboard
+    }).encode('utf-8')
+    
+    req_tg = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'})
+    try:
+        urllib.request.urlopen(req_tg)
+        return {"status": "ok"}
+    except Exception as e:
+        print(f"Error enviando a Telegram: {e}")
+        return {"status": "error"}
+
+@app.post("/api/telegram-webhook")
+async def telegram_webhook(request: Request):
+    tg_token = os.getenv("TELEGRAM_TOKEN")
+    try:
+        data = await request.json()
+        if "callback_query" in data:
+            cb = data["callback_query"]
+            cb_id = cb["id"]
+            cb_data = cb["data"]
+            msg_id = cb["message"]["message_id"]
+            chat_id = cb["message"]["chat"]["id"]
+
+            if cb_data.startswith("del|"):
+                equipo_cb = cb_data.split("|", 1)[1]
+                equipo = urllib.parse.unquote(equipo_cb)
+                
+                with github_lock:
+                    grupos, sha = leer_grupos()
+                    if equipo in grupos:
+                        del grupos[equipo]
+                        guardar_grupos(grupos, sha)
+                
+                _tg_answer(tg_token, cb_id, "✅ Grupo eliminado")
+                _tg_edit(tg_token, chat_id, msg_id, f"✅ *BORRADO APROBADO*\nEquipo: {equipo}")
+                
+            elif cb_data == "ignore":
+                _tg_answer(tg_token, cb_id, "❌ Operación cancelada")
+                _tg_edit(tg_token, chat_id, msg_id, "❌ *Borrado ignorado*")
+                
+        return {"ok": True}
+    except Exception as e:
+        print(f"Error en webhook: {e}")
+        return {"ok": False}
+
+@app.get("/api/setup-webhook")
+def setup_webhook(request: Request):
+    tg_token = os.getenv("TELEGRAM_TOKEN")
+    if not tg_token: return {"error": "Falta TELEGRAM_TOKEN"}
+    
+    # Detecta automáticamente la URL base de Render
+    base_url = str(request.base_url).rstrip("/")
+    webhook_url = f"{base_url}/api/telegram-webhook"
+    
+    url = f"https://api.telegram.org/bot{tg_token}/setWebhook?url={webhook_url}"
+    try:
+        res = urllib.request.urlopen(url)
+        return {"status": "ok", "respuesta": json.loads(res.read().decode('utf-8'))}
+    except Exception as e:
+        return {"error": str(e)}
+
+# ─── LÓGICA DE DATOS ORIGINAL ───
 @app.get("/ping")
 def ping():
     return Response(content="OK", media_type="text/plain")
@@ -130,7 +229,6 @@ def ping():
 def read_index():
     return FileResponse("static/index.html")
 
-# --- CACHÉ EN RAM ---
 @lru_cache(maxsize=1)
 def _leer_json_liga():
     if not os.path.exists("datos_liga.json"): return None
@@ -238,7 +336,7 @@ def get_competiciones(id_deporte: str):
     if not datos: return []
     return datos["competiciones"].get(str(id_deporte), [])
 
-@app.get("/api/grupos/{id_categoria}/{id_competicion}") # <-- ESTA SE QUEDA COMO ESTABA
+@app.get("/api/grupos/{id_categoria}/{id_competicion}")
 def get_grupos(id_categoria: str, id_competicion: str):
     if id_categoria == "99": return []
     datos = cargar_datos()
