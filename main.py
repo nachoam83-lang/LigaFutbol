@@ -21,29 +21,45 @@ def ping():
 def read_index():
     return FileResponse("static/index.html")
 
-# --- LECTURA DE DATOS (SIN CACHÉ PARA EVITAR BLOQUEOS) ---
+# --- CACHÉ EN RAM (ESTO ES LO QUE HACE QUE ECM VAYA RÁPIDO) ---
+_cache_liga = None
 def cargar_datos():
+    global _cache_liga
+    if _cache_liga is not None:
+        return _cache_liga
+        
     if os.path.exists("datos_liga.json"):
         with open("datos_liga.json", "r", encoding="utf-8") as f:
             datos = json.load(f)
             if datos and datos.get("competiciones"):
-                return datos
+                _cache_liga = datos
+                return _cache_liga
+                
     print("⚠️ Usando backup para datos_liga.json")
     if os.path.exists("datos_liga_backup.json"):
         with open("datos_liga_backup.json", "r", encoding="utf-8") as f:
-            return json.load(f)
+            _cache_liga = json.load(f)
+            return _cache_liga
     return None
 
+_cache_canal = None
 def cargar_datos_canal():
+    global _cache_canal
+    if _cache_canal is not None:
+        return _cache_canal
+        
     if os.path.exists("datos_canal.json"):
         with open("datos_canal.json", "r", encoding="utf-8") as f:
             datos = json.load(f)
             if datos and len(datos.get("partidos", [])) > 0:
-                return datos
+                _cache_canal = datos
+                return _cache_canal
+                
     print("⚠️ Usando backup para datos_canal.json")
     if os.path.exists("datos_canal_backup.json"):
         with open("datos_canal_backup.json", "r", encoding="utf-8") as f:
-            return json.load(f)
+            _cache_canal = json.load(f)
+            return _cache_canal
     return {"equipos": {}, "partidos": [], "clasificacion": {}}
 
 def corregir_anio(fecha_str):
