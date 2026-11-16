@@ -604,13 +604,23 @@
             modal.classList.remove('hide');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
-        
+
         function abrirModalGrupoIdx(idx) {
             const eq = equipos[idx];
             if (!eq) return;
             abrirModalGrupo(eq.equipoFavorito, eq.nombreCompeticion);
         }
         
+        // 3. Función auxiliar por índice para el aspa roja de borrado en Ajustes
+        function abrirModalBorrado(idx) {
+            const eq = equipos[idx];
+            if (!eq) return;
+            const nombreCompleto = `${eq.equipoFavorito} (${eq.nombreCompeticion})`;
+            document.getElementById('texto-equipo-borrar').innerText = nombreCompleto;
+            document.getElementById('modal-borrado').classList.remove('hide');
+            setTimeout(() => document.getElementById('modal-borrado').classList.remove('opacity-0'), 10);
+        }
+
         function abrirModalGrupoDesdeDetalle() {
             if (equipoActual) {
                 abrirModalGrupo(equipoActual.equipoFavorito, equipoActual.nombreCompeticion);
