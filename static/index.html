@@ -218,8 +218,8 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.12</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Auto Telegram</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.2.00</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos de Wahtsapp</p>
             </div>
         </div>
     </div>
@@ -1586,10 +1586,11 @@
             cacheEquipoAbiertoId = equipoActual.id;
 
             try {
+ 
                 const [resCal, resRes, resClasif] = await Promise.all([
-                    fetchWithTimeout(`/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}/0`),
-                    fetchWithTimeout(`/api/resultados/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`),
-                    fetchWithTimeout(`/api/clasificacion/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${equipoActual.idCategoria}/${equipoActual.idGrupo}`)
+                    fetchWithTimeout(`/api/calendario/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${encodeURIComponent(equipoActual.idCategoria)}/${encodeURIComponent(equipoActual.idGrupo)}/0`, { timeout: 10000 }),
+                    fetchWithTimeout(`/api/resultados/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${encodeURIComponent(equipoActual.idCategoria)}/${encodeURIComponent(equipoActual.idGrupo)}`, { timeout: 10000 }),
+                    fetchWithTimeout(`/api/clasificacion/${equipoActual.idDeporte}/${equipoActual.idCompeticion}/${encodeURIComponent(equipoActual.idCategoria)}/${encodeURIComponent(equipoActual.idGrupo)}`, { timeout: 10000 })
                 ]);
 
                 cacheCalendarioGlobal = await resCal.json();
