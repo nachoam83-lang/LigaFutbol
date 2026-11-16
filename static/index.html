@@ -537,7 +537,7 @@
                     `;
                 } else {
                     html += `
-                        <button onclick="abrirModalGrupo('${eq.equipoFavorito.replace(/'/g, "\\'")}', '${eq.nombreCompeticion.replace(/'/g, "\\'")}')" class="bg-[#25D366] text-white text-[11px] font-bold px-3 py-1.5 rounded shadow hover:bg-green-600 transition">
+                        <button onclick="abrirModalGrupoIdx(${idx})" class="bg-[#25D366] text-white text-[11px] font-bold px-3 py-1.5 rounded shadow hover:bg-green-600 transition">
                             <i class="fas fa-link mr-1"></i> Añadir
                         </button>
                     `;
@@ -605,7 +605,13 @@
             modal.classList.remove('hide');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
-
+        
+        function abrirModalGrupoIdx(idx) {
+            const eq = equipos[idx];
+            if (!eq) return;
+            abrirModalGrupo(eq.equipoFavorito, eq.nombreCompeticion);
+        }
+        
         function abrirModalGrupoDesdeDetalle() {
             if (equipoActual) {
                 abrirModalGrupo(equipoActual.equipoFavorito, equipoActual.nombreCompeticion);
