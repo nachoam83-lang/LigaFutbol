@@ -6,9 +6,9 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.14                                           -->
+    <!--  Versión actual: v1.2.00                                           -->
     <!--  Fecha: 16/11/2026                                                 -->
-    <!--  Cambios: Grupos WhatsApp con escritura (GitHub API)               -->
+    <!--  Cambios: Creación de Grupos WhatsApp por Equipos (GitHub API)      -->
     <!--  Anterior: v1.1.13 · Grupos WhatsApp (lite)                        -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
@@ -120,11 +120,11 @@
         </div>
     </div>
 
-    <!-- Modal para Enviar Solicitud (v1.1.14) -->
+    <!-- Modal para Enviar Solicitud (v1.2.00) -->
     <div id="modal-grupo" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalGrupo()">
         <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
             <h3 class="text-lg font-black text-center mb-2">Asignar Grupo</h3>
-            <p class="text-xs text-gray-500 text-center mb-4">Pega el enlace del grupo de WhatsApp. El primero que lo guarde se quedará asignado a este equipo.</p>
+            <p class="text-xs text-gray-500 text-center mb-4">Pega el enlace del grupo de WhatsApp. El primer enlace se quedará asignado a este equipo.</p>
             
             <input type="url" id="input-url-grupo" placeholder="https://chat.whatsapp.com/..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-4">
             
@@ -135,7 +135,7 @@
         </div>
     </div>
 
-         <!-- Modal de Borrado (v1.1.15) -->
+         <!-- Modal de Borrado (v1.2.00) -->
         <div id="modal-borrado" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalBorrado()">
             <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
                 <h3 class="text-lg font-black text-center text-red-600 mb-2">¡ATENCIÓN!</h3>
@@ -212,11 +212,11 @@
                 </button>
             </div>
 
-            <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.1.14) -->
+            <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.2.00) -->
             <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
                 <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">WHATSAPP</div>
                 <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
-                <p class="text-xs text-gray-600 mb-3">Sigue estas normas para crear el grupo:</p>
+                <p class="text-xs text-gray-600 mb-3">MODERADOR. Sigue estas normas para crear el grupo:</p>
                 <ul class="text-[11px] text-gray-600 mb-4 space-y-1 list-disc pl-4">
                     <li><b>Nombre:</b> Categoría + Colegio + Color/Letra.</li>
                     <li><b>Mensajes temporales:</b> Desactivados.</li>
@@ -233,7 +233,7 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.14</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.2.00</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
             </div>
         </div>
@@ -455,7 +455,7 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // GRUPOS DE WHATSAPP (v1.1.14 - Conectado a API Backend)
+        // GRUPOS DE WHATSAPP (v1.2.00 - Conectado a API Backend)
         // ═══════════════════════════════════════════════════════════════
         async function cargarGrupos() {
             try {
