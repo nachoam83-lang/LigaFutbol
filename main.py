@@ -1,56 +1,42 @@
-from fastapi import FastAPI, HTTPException, Response
+¡from fastapi import FastAPI, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from datetime import datetime, timedelta
 from functools import lru_cache
+from pydantic import BaseModel
 import json
 import os
+import requests
+import base64
 
 app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/ping")
-def ping():
-    return Response(content="OK", media_type="text/plain")
-
-@app.get("/")
-def read_index():
-    return FileResponse("static/index.html")
-
-# --- CACHÉ EN RAM ---
-@lru_cache(maxsize=1)
-def _leer_json_liga():
-    if not os.path.exists("datos_liga.json"): return None
-    with open("datos_liga.json", "r", encoding="utf-8") as f:
-        return json.load(f)
-
-@lru_cache(maxsize=1)
-def _leer_json_canal():
-    if not os.path.exists("datos_canal.json"): return {"equipos": {}, "partidos": [], "clasificacion": {}}
-    with open("datos_canal.json", "r", encoding="utf-8") as f:
-        return json.load(f)
-
+# --- CACHÉ EN RAM (CORREGIDO) ---
+# Quitamos el @lru_cache de aquí para que siempre lea el archivo fresco si se reinicia
 def cargar_datos():
-    datos = _leer_json_liga()
-    # Comprobación para ECM: si no hay datos o está vacío, tira del backup
-    if not datos or not datos.get("competiciones"):
-        print("⚠️ Usando backup para datos_liga.json")
-        if os.path.exists("datos_liga_backup.json"):
-            with open("datos_liga_backup.json", "r", encoding="utf-8") as f:
-                return json.load(f)
-    return datos
+    if not os.path.exists("datos_liga.json"): 
+        return None
+    with open("datos_liga.json", "r", encoding="utf-8") as f:
+        datos = json.load(f)
+        if not datos.get("competiciones"):
+            if os.path.exists("datos_liga_backup.json"):
+                with open("datos_liga_backup.json", "r", encoding="utf-8") as f2:
+                    return json.load(f2)
+        return datos
 
 def cargar_datos_canal():
-    datos = _leer_json_canal()
-    # Comprobación para Canal: si no hay partidos, tira del backup
-    if not datos or len(datos.get("partidos", [])) == 0:
-        print("⚠️ Usando backup para datos_canal.json")
-        if os.path.exists("datos_canal_backup.json"):
-            with open("datos_canal_backup.json", "r", encoding="utf-8") as f:
-                return json.load(f)
-    return datos
+    if not os.path.exists("datos_canal.json"):
+        return {"equipos": {}, "partidos": [], "clasificacion": {}}
+    with open("datos_canal.json", "r", encoding="utf-8") as f:
+        datos = json.load(f)
+        if len(datos.get("partidos", [])) == 0:
+            if os.path.exists("datos_canal_backup.json"):
+                with open("datos_canal_backup.json", "r", encoding="utf-8") as f2:
+                    return json.load(f2)
+        return datos
 
 def corregir_anio(fecha_str):
     if not fecha_str or len(fecha_str) < 7: return fecha_str
@@ -62,17 +48,11 @@ def corregir_anio(fecha_str):
 
 def calcular_jornadas_canal(partidos, categoria):
     mapa_fechas = {
-        "2026-09-26": 1, "2026-10-03": 1,
-        "2026-10-10": 2, "2026-10-17": 2,
-        "2026-10-21": 3, "2026-10-22": 3, "2026-10-23": 3,
-        "2026-10-24": 4, "2026-10-31": 4,
-        "2026-11-07": 5, "2026-11-14": 5,
-        "2026-11-21": 6, "2026-11-28": 6,
-        "2026-12-12": 7, "2026-12-19": 7,
-        "2027-01-09": 8, "2027-01-16": 8,
-        "2027-01-23": 9, "2027-01-30": 9,
-        "2027-02-06": 10, "2027-02-13": 10,
-        "2027-02-20": 11
+        "2026-09-26": 1, "2026-10-03": 1, "2026-10-10": 2, "2026-10-17": 2,
+        "2026-10-21": 3, "2026-10-22": 3, "2026-10-23": 3, "2026-10-24": 4, "2026-10-31": 4,
+        "2026-11-07": 5, "2026-11-14": 5, "2026-11-21": 6, "2026-11-28": 6,
+        "2026-12-12": 7, "2026-12-19": 7, "2027-01-09": 8, "2027-01-16": 8,
+        "2027-01-23": 9, "2027-01-30": 9, "2027-02-06": 10, "2027-02-13": 10, "2027-02-20": 11
     }
 
     for p in partidos:
@@ -121,6 +101,14 @@ def calcular_jornadas_canal(partidos, categoria):
     for j in sorted(jornadas_finales.keys()):
         partidos_finales.extend(jornadas_finales[j])
     return partidos_finales, jornadas_finales
+
+@app.get("/ping")
+def ping():
+    return Response(content="OK", media_type="text/plain")
+
+@app.get("/")
+def read_index():
+    return FileResponse("static/index.html")
 
 @app.get("/api/competiciones/{id_deporte}")
 def get_competiciones(id_deporte: str):
@@ -219,3 +207,81 @@ def get_ics(titulo: str, fecha: str, lugar: str, deporte: str = "2"):
         return Response(status_code=400, content="Fecha inválida")
     ics_content = f"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//LigaFutbol//ES\r\nBEGIN:VEVENT\r\nSUMMARY:{titulo}\r\nDTSTART:{dtstart}\r\nDTEND:{dtend}\r\nLOCATION:{lugar}\r\nDESCRIPTION:{descripcion}\r\nEND:VEVENT\r\nEND:VCALENDAR"
     return Response(content=ics_content, media_type="text/calendar", headers={"Content-Disposition": "attachment; filename=partido.ics"})
+
+# ─────────────────────────────────────────────────────────────────
+# TELEGRAM Y GESTIÓN DE GRUPOS
+# ─────────────────────────────────────────────────────────────────
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
+GITHUB_REPO = os.getenv("GITHUB_REPO")
+GITHUB_FILE_PATH = os.getenv("GITHUB_FILE_PATH", "static/grupos.json")
+
+class SolicitudGrupo(BaseModel):
+    equipo: str
+    url: str
+
+@app.post("/api/solicitar-grupo")
+async def solicitar_grupo(datos: SolicitudGrupo):
+    if not TELEGRAM_TOKEN or not TELEGRAM_CHAT_ID:
+        raise HTTPException(status_code=500, detail="Telegram no configurado")
+    
+    texto = f"📥 *Nueva solicitud de grupo*\n\n*Equipo:* {datos.equipo}\n*Enlace:* {datos.url}\n\n¿Aprobar?"
+    botones = {
+        "inline_keyboard": [
+            [
+                {"text": "✅ Aprobar", "callback_data": f"APROBAR|{datos.equipo}|{datos.url}"},
+                {"text": "❌ Rechazar", "callback_data": "RECHAZAR"}
+            ]
+        ]
+    }
+    
+    requests.post(
+        f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage",
+        json={"chat_id": TELEGRAM_CHAT_ID, "text": texto, "parse_mode": "Markdown", "reply_markup": botones}
+    )
+    return {"ok": True}
+
+@app.post("/api/telegram-webhook")
+async def telegram_webhook(request: Request):
+    data = await request.json()
+    if "callback_query" in data:
+        callback = data["callback_query"]
+        callback_id = callback["id"]
+        accion = callback["data"]
+        
+        requests.post(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/answerCallbackQuery", json={"callback_query_id": callback_id})
+        
+        if accion.startswith("APROBAR|"):
+            _, equipo, url = accion.split("|", 2)
+            headers = {"Authorization": f"token {GITHUB_TOKEN}", "Accept": "application/vnd.github.v3+json"}
+            url_api = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{GITHUB_FILE_PATH}"
+            
+            res_get = requests.get(url_api, headers=headers)
+            if res_get.status_code == 200:
+                contenido_actual = json.loads(base64.b64decode(res_get.json()["content"]).decode("utf-8"))
+                sha = res_get.json()["sha"]
+            else:
+                contenido_actual = {}
+                sha = None
+
+            contenido_actual[equipo] = url
+            nuevo_contenido_b64 = base64.b64encode(json.dumps(contenido_actual, indent=2, ensure_ascii=False).encode("utf-8")).decode("utf-8")
+
+            payload = {
+                "message": f"Añadido grupo de WhatsApp para {equipo}",
+                "content": nuevo_contenido_b64
+            }
+            if sha: payload["sha"] = sha
+                
+            requests.put(url_api, headers=headers, json=payload)
+            
+            requests.post(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage", json={
+                "chat_id": TELEGRAM_CHAT_ID, "text": f"✅ Grupo de *{equipo}* aprobado y guardado en la app."
+            })
+        elif accion == "RECHAZAR":
+            requests.post(f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage", json={
+                "chat_id": TELEGRAM_CHAT_ID, "text": "❌ Solicitud rechazada."
+            })
+
+    return {"ok": True}
