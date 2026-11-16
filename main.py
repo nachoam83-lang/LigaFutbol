@@ -6,13 +6,15 @@ from datetime import datetime, timedelta
 from functools import lru_cache
 import json
 import os
-import os
-import json
 import base64
 import urllib.request
+import urllib.error  # <-- IMPORTANTE: Faltaba esto
 import threading
 from pydantic import BaseModel
-from fastapi import HTTPException
+
+app = FastAPI(title="API Liga Fútbol Sala")
+app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # ─── CONFIGURACIÓN GITHUB ───
 GITHUB_REPO = "nachoam83-lang/LigaFutbol"
@@ -95,8 +97,8 @@ def guardar_grupos(grupos, sha_actual):
         print(f"❌ Error guardando en GitHub: {e}")
         return False
 
-@app.get("/api/grupos")
-def get_grupos():
+@app.get("/api/grupos_whatsapp") # <-- CAMBIADO EL NOMBRE PARA NO CHOCAR CON EL OTRO
+def get_grupos_whatsapp():
     grupos, _ = leer_grupos()
     return grupos
 
@@ -115,14 +117,10 @@ def post_solicitar_grupo(req: SolicitudGrupo):
         exito = guardar_grupos(grupos, sha)
         
         if not exito:
-            # Si falla GitHub, lo dejamos guardado en local pero avisamos
             return {"status": "warning", "mensaje": "Guardado localmente, pero falló en GitHub"}
             
         return {"status": "ok", "mensaje": "Grupo guardado correctamente"}
-
-app = FastAPI(title="API Liga Fútbol Sala")
-app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# ─── FIN CONFIGURACIÓN GITHUB ───
 
 @app.get("/ping")
 def ping():
@@ -147,7 +145,6 @@ def _leer_json_canal():
 
 def cargar_datos():
     datos = _leer_json_liga()
-    # Comprobación para ECM: si no hay datos o está vacío, tira del backup
     if not datos or not datos.get("competiciones"):
         print("⚠️ Usando backup para datos_liga.json")
         if os.path.exists("datos_liga_backup.json"):
@@ -157,7 +154,6 @@ def cargar_datos():
 
 def cargar_datos_canal():
     datos = _leer_json_canal()
-    # Comprobación para Canal: si no hay partidos, tira del backup
     if not datos or len(datos.get("partidos", [])) == 0:
         print("⚠️ Usando backup para datos_canal.json")
         if os.path.exists("datos_canal_backup.json"):
@@ -242,7 +238,7 @@ def get_competiciones(id_deporte: str):
     if not datos: return []
     return datos["competiciones"].get(str(id_deporte), [])
 
-@app.get("/api/grupos/{id_categoria}/{id_competicion}")
+@app.get("/api/grupos/{id_categoria}/{id_competicion}") # <-- ESTA SE QUEDA COMO ESTABA
 def get_grupos(id_categoria: str, id_competicion: str):
     if id_categoria == "99": return []
     datos = cargar_datos()
