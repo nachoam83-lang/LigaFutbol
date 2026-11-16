@@ -1351,7 +1351,7 @@
             if (app === 'waze') url = `https://waze.com/ul?q=${destino}`;
             else if (app === 'google') url = `https://www.google.com/maps/dir/?api=1&destination=${destino}`;
             else if (app === 'apple') url = `http://maps.apple.com/?daddr=${destino}`;
-            window.open(url, '_blank');
+            window.location.href = url;
             cerrarModalMapa();
         }
 
