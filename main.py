@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from datetime import datetime, timedelta
+from functools import lru_cache
 from pydantic import BaseModel
 import json
 import os
@@ -13,54 +14,29 @@ app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/ping")
-def ping():
-    return Response(content="OK", media_type="text/plain")
-
-@app.get("/")
-def read_index():
-    return FileResponse("static/index.html")
-
-# --- CACHÉ EN RAM (ESTO ES LO QUE HACE QUE ECM VAYA RÁPIDO) ---
-_cache_liga = None
+# --- CACHÉ EN RAM (CORREGIDO) ---
+# Quitamos el @lru_cache de aquí para que siempre lea el archivo fresco si se reinicia
 def cargar_datos():
-    global _cache_liga
-    if _cache_liga is not None:
-        return _cache_liga
-        
-    if os.path.exists("datos_liga.json"):
-        with open("datos_liga.json", "r", encoding="utf-8") as f:
-            datos = json.load(f)
-            if datos and datos.get("competiciones"):
-                _cache_liga = datos
-                return _cache_liga
-                
-    print("⚠️ Usando backup para datos_liga.json")
-    if os.path.exists("datos_liga_backup.json"):
-        with open("datos_liga_backup.json", "r", encoding="utf-8") as f:
-            _cache_liga = json.load(f)
-            return _cache_liga
-    return None
+    if not os.path.exists("datos_liga.json"): 
+        return None
+    with open("datos_liga.json", "r", encoding="utf-8") as f:
+        datos = json.load(f)
+        if not datos.get("competiciones"):
+            if os.path.exists("datos_liga_backup.json"):
+                with open("datos_liga_backup.json", "r", encoding="utf-8") as f2:
+                    return json.load(f2)
+        return datos
 
-_cache_canal = None
 def cargar_datos_canal():
-    global _cache_canal
-    if _cache_canal is not None:
-        return _cache_canal
-        
-    if os.path.exists("datos_canal.json"):
-        with open("datos_canal.json", "r", encoding="utf-8") as f:
-            datos = json.load(f)
-            if datos and len(datos.get("partidos", [])) > 0:
-                _cache_canal = datos
-                return _cache_canal
-                
-    print("⚠️ Usando backup para datos_canal.json")
-    if os.path.exists("datos_canal_backup.json"):
-        with open("datos_canal_backup.json", "r", encoding="utf-8") as f:
-            _cache_canal = json.load(f)
-            return _cache_canal
-    return {"equipos": {}, "partidos": [], "clasificacion": {}}
+    if not os.path.exists("datos_canal.json"):
+        return {"equipos": {}, "partidos": [], "clasificacion": {}}
+    with open("datos_canal.json", "r", encoding="utf-8") as f:
+        datos = json.load(f)
+        if len(datos.get("partidos", [])) == 0:
+            if os.path.exists("datos_canal_backup.json"):
+                with open("datos_canal_backup.json", "r", encoding="utf-8") as f2:
+                    return json.load(f2)
+        return datos
 
 def corregir_anio(fecha_str):
     if not fecha_str or len(fecha_str) < 7: return fecha_str
@@ -125,6 +101,14 @@ def calcular_jornadas_canal(partidos, categoria):
     for j in sorted(jornadas_finales.keys()):
         partidos_finales.extend(jornadas_finales[j])
     return partidos_finales, jornadas_finales
+
+@app.get("/ping")
+def ping():
+    return Response(content="OK", media_type="text/plain")
+
+@app.get("/")
+def read_index():
+    return FileResponse("static/index.html")
 
 @app.get("/api/competiciones/{id_deporte}")
 def get_competiciones(id_deporte: str):
