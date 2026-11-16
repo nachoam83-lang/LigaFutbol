@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.09                                           -->
+    <!--  Versión actual: v1.1.13                                           -->
     <!--  Fecha: 16/11/2026                                                 -->
-    <!--  Cambios: Botones compartir/calendario en partidos aplazados       -->
-    <!--  Anterior: v1.1.08 · Viaje desactivado por defecto                 -->
+    <!--  Cambios: Grupos WhatsApp (lite) sobre motor v1.1.09               -->
+    <!--  Anterior: v1.1.09 · Botones compartir/calendario en aplazados     -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -80,18 +80,14 @@
         #drawer-menu { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
         #drawer-menu.open { transform: translateX(0); }
 
-        /* Estilos para Pull to Refresh */
         #ptr-indicator { position: fixed; top: -60px; left: 50%; transform: translateX(-50%); background: white; padding: 12px; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2); z-index: 100; transition: top 0.3s ease-out; }
         #ptr-indicator.active { top: 100px; }
 
-        /* Animación para cambio de pestañas */
         @keyframes slideUpFade {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .tab-content-anim {
-            animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
+        .tab-content-anim { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
 <body class="pb-20">
@@ -153,7 +149,6 @@
                 <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
             </div>
 
-            <!-- TOGGLE TIEMPO DE VIAJE -->
             <div class="card p-4 flex justify-between items-center">
                 <div>
                     <label class="block text-sm font-bold text-gray-800">Tiempo de Viaje</label>
@@ -186,8 +181,8 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.09</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Fix botones aplazados</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.13</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp (lite)</p>
             </div>
         </div>
     </div>
@@ -266,16 +261,24 @@
         <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <div class="flex items-center p-4 h-[88px]">
                 <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
-                <div class="flex items-center flex-1">
+                <div class="flex items-center flex-1 min-w-0">
                     <div class="w-14 h-14 bg-white rounded-full p-1 shadow-sm mr-4 flex-shrink-0 flex items-center justify-center overflow-hidden">
                         <img id="titulo-detalle-escudo" src="/static/logo.png" class="escudo-main-img">
                     </div>
-                    <div class="flex flex-col">
-                        <h2 id="titulo-detalle-nombre" class="text-2xl font-black text-white leading-tight"></h2>
-                        <p id="titulo-detalle-categoria" class="text-sm font-semibold text-white/80 uppercase tracking-widest"></p>
+                    <div class="flex flex-col min-w-0">
+                        <h2 id="titulo-detalle-nombre" class="text-2xl font-black text-white leading-tight truncate"></h2>
+                        <p id="titulo-detalle-categoria" class="text-sm font-semibold text-white/80 uppercase tracking-widest truncate"></p>
                     </div>
                 </div>
-                <button onclick="refrescarPantallaJugador(this)" class="text-white hover:opacity-80 transition ml-2"><i class="fas fa-sync-alt text-lg"></i></button>
+                <!-- Botón WhatsApp (visible solo si hay grupo) -->
+                <a id="btn-grupo-equipo" href="#" class="hide w-9 h-9 rounded-full bg-[#25D366] shadow-sm flex items-center justify-center text-white hover:opacity-90 transition ml-2 flex-shrink-0" title="Abrir grupo del equipo">
+                    <i class="fab fa-whatsapp text-xl"></i>
+                </a>
+                <!-- Botón Crear Grupo (visible solo si NO hay grupo) -->
+                <button id="btn-crear-grupo" onclick="crearGrupoEquipo()" class="hide w-9 h-9 rounded-full bg-white/10 border border-white/40 shadow-sm flex items-center justify-center text-white hover:bg-white/20 transition ml-2 flex-shrink-0" title="Crear grupo del equipo">
+                    <i class="fas fa-plus text-sm"></i>
+                </button>
+                <button onclick="refrescarPantallaJugador(this)" class="text-white hover:opacity-80 transition ml-2 flex-shrink-0"><i class="fas fa-sync-alt text-lg"></i></button>
             </div>
         </div>
 
@@ -345,11 +348,17 @@
         });
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
-        // AJUSTES Y CACHÉ (showRoute: false por defecto)
         let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false };
         if (userSettings.showRoute === undefined) userSettings.showRoute = false; 
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
+
+        // ═══ v1.1.13 · Caché de grupos de WhatsApp ═══
+        let cacheGrupos = {};
+        try {
+            cacheGrupos = JSON.parse(localStorage.getItem('cache_grupos') || '{}');
+            if (typeof cacheGrupos !== 'object' || cacheGrupos === null || Array.isArray(cacheGrupos)) cacheGrupos = {};
+        } catch (e) { cacheGrupos = {}; }
 
         let equipoActual = null;
         let equipoSeleccionadoVisual = null;
@@ -393,7 +402,65 @@
             return null;
         }
 
-        // --- NUEVAS FUNCIONES GLOBALES ---
+        // ═══════════════════════════════════════════════════════════════
+        // v1.1.13 · GRUPOS DE WHATSAPP (directorio estático vía JSON)
+        // ═══════════════════════════════════════════════════════════════
+        async function cargarGrupos() {
+            try {
+                const res = await fetchWithTimeout('/static/grupos.json', { timeout: 3000, cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    delete data._ayuda;
+                    if (data && typeof data === 'object' && !Array.isArray(data)) {
+                        cacheGrupos = data;
+                        localStorage.setItem('cache_grupos', JSON.stringify(cacheGrupos));
+                        if (equipoActual) actualizarBotonGrupoEquipo();
+                    }
+                }
+            } catch (e) {
+                console.log('No se pudo cargar grupos.json, usando caché local');
+            }
+        }
+
+        function getGrupoEquipo(eq) {
+            if (!eq || !eq.equipoFavorito) return null;
+            const compuesta = `${eq.equipoFavorito} (${eq.nombreCompeticion || ''})`;
+            const simple = eq.equipoFavorito;
+            return cacheGrupos[compuesta] || cacheGrupos[simple] || null;
+        }
+
+        function actualizarBotonGrupoEquipo() {
+            const btnWa = document.getElementById('btn-grupo-equipo');
+            const btnCrear = document.getElementById('btn-crear-grupo');
+            if (!btnWa || !btnCrear || !equipoActual) return;
+            const url = getGrupoEquipo(equipoActual);
+            if (url) {
+                // Tiene grupo: mostrar botón WhatsApp, ocultar "Crear"
+                btnWa.href = url;
+                btnWa.classList.remove('hide');
+                btnCrear.classList.add('hide');
+            } else {
+                // Sin grupo: ocultar WhatsApp, mostrar "Crear"
+                btnWa.href = '#';
+                btnWa.classList.add('hide');
+                btnCrear.classList.remove('hide');
+            }
+        }
+
+        function crearGrupoEquipo() {
+            vibrar(40);
+            alert(
+                'Aún no se puede crear el grupo desde la app.\n\n' +
+                'Por ahora:\n' +
+                '1) El delegado crea el grupo en WhatsApp.\n' +
+                '2) Comparte el enlace de invitación con el administrador.\n' +
+                '3) El administrador lo añade al directorio.\n\n' +
+                'En cuanto esté disponible, podrás crear el grupo desde aquí.'
+            );
+        }
+
+        // --- FIN bloque grupos ---
+
         function vibrar(ms = 40) {
             if (navigator.vibrate) navigator.vibrate(ms);
         }
@@ -447,7 +514,6 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
-        // --- v1.1.09: Estado fiable del partido ---
         function getEstadoPartido(p) {
             if (p.EstadoPartido === undefined && p.Cerrado === undefined) {
                 return (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) ? 'jugado' : 'pendiente';
@@ -483,6 +549,7 @@
                     vibrar(60);
                     ptrIndicator.classList.add('active');
                     cargarAgendaFamiliar();
+                    cargarGrupos();
                     setTimeout(() => ptrIndicator.classList.remove('active'), 1500);
                 }
             }
@@ -531,6 +598,7 @@
                 localStorage.removeItem('cache_proximo_partido');
                 localStorage.removeItem('cache_clima');
                 localStorage.removeItem('cache_geo');
+                localStorage.removeItem('cache_grupos');
                 localStorage.removeItem('dismissed_changes');
                 Object.keys(localStorage).forEach(key => {
                     if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_')) {
@@ -605,6 +673,7 @@
 
         document.addEventListener('DOMContentLoaded', () => { 
             cargarAgendaFamiliar(); 
+            cargarGrupos();
 
             if ('requestIdleCallback' in window) {
                 requestIdleCallback(() => cargarCompeticiones(2), { timeout: 3000 });
@@ -726,6 +795,10 @@
                     </div>
                 ` : '';
 
+                // v1.1.13: icono WhatsApp como <a> para no abrir pestaña en blanco
+                const urlGrupo = getGrupoEquipo(eq);
+                const htmlIconoGrupo = urlGrupo ? `<a href="${urlGrupo}" onclick="event.stopPropagation()" class="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center hover:scale-110 transition mx-2 flex-shrink-0" title="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp text-[#25D366] text-base"></i></a>` : '';
+
                 contenedor.insertAdjacentHTML('beforeend', `
                     <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
                         
@@ -747,9 +820,10 @@
                                     </div>
                                     <span class="text-xs font-bold text-gray-600 uppercase mt-0.5">${eq.nombreCompeticion}</span>
                                 </div>
-                                <div class="text-right flex items-center gap-2">
+                                <div class="text-right flex items-center gap-1">
                                     ${haCambiado && (esLocalFav || esVisFav) ? warningSvg : ''}
-                                    <div class="text-lg font-black text-gray-800">${horaStr}</div>
+                                    ${htmlIconoGrupo}
+                                    <div class="text-lg font-black text-gray-800 ml-1">${horaStr}</div>
                                 </div>
                             </div>
 
@@ -1015,7 +1089,6 @@
                                 } catch(e) {}
                             }
 
-                            // v1.1.09: Solo calculamos ruta si showRoute es true
                             if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
                                 const elRuta = document.getElementById(`ruta-agenda-${i}`);
                                 if (navigator.onLine === false) {
@@ -1058,7 +1131,7 @@
             await Promise.all(promesas);
         }
 
-        // --- LÓGICA DE MAPA Y CLIMA ---
+        // --- LÓGICA DE MAPA ---
         function abrirModalMapa(dir) {
             if (userSettings.defaultMap && userSettings.defaultMap !== 'ask') {
                 rutaActualMapa = dir;
@@ -1431,6 +1504,9 @@
             escudoImg.src = equipoActual.escudoFavorito || '/static/logo.png';
             document.getElementById('carga-escudo').src = equipoActual.escudoFavorito || '/static/logo.png';
 
+            // v1.1.13: actualizar botón de grupo (WhatsApp o "Crear grupo")
+            actualizarBotonGrupoEquipo();
+
             if (cacheEquipoAbiertoId === equipoActual.id && cacheCalendarioGlobal) {
                 document.getElementById('screen-agenda').classList.add('hide');
                 document.getElementById('screen-ajustes').classList.add('hide');
@@ -1802,7 +1878,6 @@
             }
 
             let botonesExtra = '';
-            // v1.1.09: Quitamos "&& !esAplazado" para que los botones salgan siempre en tu equipo
             if (!esResultado && esFavorito) {
                 const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
                 const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}.`;
