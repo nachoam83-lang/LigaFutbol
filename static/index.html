@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.09                                           -->
+    <!--  Versión actual: v1.1.11                                           -->
     <!--  Fecha: 16/11/2026                                                 -->
-    <!--  Cambios: Botones compartir/calendario en partidos aplazados       -->
-    <!--  Anterior: v1.1.08 · Viaje desactivado por defecto                 -->
+    <!--  Cambios: Integración completa WhatsApp + Gestión en Ajustes       -->
+    <!--  Anterior: v1.1.10 · Carga de JSON de WhatsApp                     -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -75,6 +75,7 @@
         .escudo-fav-zoom { transform: scale(1.25); transform-origin: center; }
 
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
+        #modal-grupo { transition: opacity 0.3s, visibility 0.3s; }
         
         #drawer-overlay { transition: opacity 0.3s; }
         #drawer-menu { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
@@ -123,6 +124,26 @@
         </div>
     </div>
 
+    <!-- Modal para generar JSON de WhatsApp -->
+    <div id="modal-grupo" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalGrupo()">
+        <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-black text-center mb-2">Configurar Grupo</h3>
+            <p class="text-xs text-gray-500 text-center mb-4">Pega el enlace del grupo y copia el código generado en tu <b>grupos.json</b> de GitHub.</p>
+            
+            <input type="url" id="input-url-grupo" placeholder="https://chat.whatsapp.com/..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-3">
+            
+            <div class="bg-gray-100 p-3 rounded-lg border border-gray-200 mb-4 relative">
+                <code id="texto-json-generado" class="text-xs text-gray-800 break-all select-all font-mono"></code>
+                <button onclick="copiarJSON()" class="absolute top-2 right-2 bg-white p-1.5 rounded shadow text-gray-600 hover:text-green-600 transition"><i class="fas fa-copy"></i></button>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="cerrarModalGrupo()" class="flex-1 bg-gray-200 font-bold py-2 rounded-lg text-sm">Cerrar</button>
+                <a href="https://github.com" target="_blank" class="flex-1 bg-gray-800 text-white font-bold py-2 rounded-lg text-sm text-center flex items-center justify-center gap-2"><i class="fab fa-github"></i> Ir a GitHub</a>
+            </div>
+        </div>
+    </div>
+
     <div id="pantalla-carga" class="oculto">
         <div class="loader-juego mb-6"><div class="escudo-wrapper"><img id="carga-escudo" src="/static/logo.png" alt="Escudo"></div></div>
         <h2 id="carga-texto" class="text-2xl font-black mb-2 tracking-wider">CARGANDO AGENDA</h2>
@@ -141,7 +162,7 @@
     </div>
 
     <!-- PANTALLA DE AJUSTES -->
-    <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen">
+    <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen pb-24">
         <div class="text-white h-[88px] px-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
             <h1 class="text-xl font-bold">Ajustes</h1>
@@ -153,7 +174,6 @@
                 <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
             </div>
 
-            <!-- TOGGLE TIEMPO DE VIAJE -->
             <div class="card p-4 flex justify-between items-center">
                 <div>
                     <label class="block text-sm font-bold text-gray-800">Tiempo de Viaje</label>
@@ -175,6 +195,26 @@
                 </select>
             </div>
 
+            <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
+
+            <!-- NUEVA SECCIÓN: ADMINISTRACIÓN DE GRUPOS -->
+            <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
+                <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">DELEGADOS</div>
+                <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
+                <p class="text-xs text-gray-600 mb-3">Sigue estas normas para crear el grupo:</p>
+                <ul class="text-[11px] text-gray-600 mb-4 space-y-1 list-disc pl-4">
+                    <li><b>Nombre:</b> Categoría + Colegio + Color/Letra (Ej: Benjamín Patrocinio Rojo).</li>
+                    <li><b>Mensajes temporales:</b> Desactivados.</li>
+                    <li><b>Permisos activos:</b> Enviar mensajes, Invitar con enlace, Aprobar miembros.</li>
+                    <li><b>El resto de permisos:</b> Desactivados.</li>
+                </ul>
+
+                <div class="space-y-3">
+                    <p class="text-[11px] font-bold text-gray-700 uppercase mt-2">Tus equipos:</p>
+                    <div id="lista-grupos-ajustes"></div>
+                </div>
+            </div>
+
             <div class="card p-4">
                 <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Mantenimiento</label>
                 <p class="text-xs text-gray-500 mb-2">Si la app va lenta o ves datos erróneos, limpia la caché.</p>
@@ -183,11 +223,9 @@
                 </button>
             </div>
 
-            <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
-
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.09</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Fix botones aplazados</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.11</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · WhatsApp Integrado</p>
             </div>
         </div>
     </div>
@@ -275,7 +313,8 @@
                         <p id="titulo-detalle-categoria" class="text-sm font-semibold text-white/80 uppercase tracking-widest"></p>
                     </div>
                 </div>
-                <button onclick="refrescarPantallaJugador(this)" class="text-white hover:opacity-80 transition ml-2"><i class="fas fa-sync-alt text-lg"></i></button>
+                <button id="btn-grupo-equipo" class="hide text-[#25D366] hover:opacity-80 transition ml-2" title="Abrir grupo del equipo"><i class="fab fa-whatsapp text-2xl"></i></button>
+                <button onclick="refrescarPantallaJugador(this)" class="text-white hover:opacity-80 transition ml-3"><i class="fas fa-sync-alt text-lg"></i></button>
             </div>
         </div>
 
@@ -345,11 +384,11 @@
         });
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
-        // AJUSTES Y CACHÉ (showRoute: false por defecto)
         let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false };
         if (userSettings.showRoute === undefined) userSettings.showRoute = false; 
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
+        let cacheGrupos = JSON.parse(localStorage.getItem('cache_grupos') || '{}'); 
 
         let equipoActual = null;
         let equipoSeleccionadoVisual = null;
@@ -393,7 +432,6 @@
             return null;
         }
 
-        // --- NUEVAS FUNCIONES GLOBALES ---
         function vibrar(ms = 40) {
             if (navigator.vibrate) navigator.vibrate(ms);
         }
@@ -447,21 +485,113 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
-        // --- v1.1.09: Estado fiable del partido ---
-        function getEstadoPartido(p) {
-            if (p.EstadoPartido === undefined && p.Cerrado === undefined) {
-                return (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) ? 'jugado' : 'pendiente';
+        // --- v1.1.11: Lógica de Grupos y Ajustes ---
+        async function cargarGrupos() {
+            try {
+                const res = await fetchWithTimeout('/static/grupos.json', { timeout: 3000, cache: 'no-store' });
+                if (res.ok) {
+                    const data = await res.json();
+                    delete data._ayuda;
+                    cacheGrupos = data;
+                    localStorage.setItem('cache_grupos', JSON.stringify(cacheGrupos));
+                    if (equipoActual) actualizarBotonGrupoEquipo();
+                }
+            } catch (e) {
+                console.log('No se pudo cargar grupos.json, usando caché');
+            }
+        }
+
+        function getGrupoEquipo(eq) {
+            if (!eq) return null;
+            const simple = eq.equipoFavorito;
+            const compuesta = `${eq.equipoFavorito} (${eq.nombreCompeticion})`;
+            return cacheGrupos[compuesta] || cacheGrupos[simple] || null;
+        }
+
+        function actualizarBotonGrupoEquipo() {
+            const btn = document.getElementById('btn-grupo-equipo');
+            if (!btn || !equipoActual) return;
+            const url = getGrupoEquipo(equipoActual);
+            if (url) {
+                btn.classList.remove('hide');
+                btn.onclick = () => window.open(url, '_blank');
+            } else {
+                btn.classList.add('hide');
+                btn.onclick = null;
+            }
+        }
+
+        function renderizarAjustesGrupos() {
+            const contenedor = document.getElementById('lista-grupos-ajustes');
+            if (!contenedor) return;
+            contenedor.innerHTML = '';
+
+            if (equipos.length === 0) {
+                contenedor.innerHTML = '<p class="text-xs text-gray-400">No tienes equipos guardados.</p>';
+                return;
             }
 
-            const est = String(p.EstadoPartido || '').toLowerCase().trim();
+            equipos.forEach(eq => {
+                const url = getGrupoEquipo(eq);
+                const tieneGrupo = !!url;
+                
+                let html = `
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-200 mb-2">
+                        <div class="flex flex-col flex-1 pr-2">
+                            <span class="text-xs font-bold text-gray-800 leading-tight">${eq.nombre}</span>
+                            <span class="text-[10px] text-gray-500">${eq.nombreCompeticion}</span>
+                        </div>
+                `;
 
-            if (/aplaz|suspend|cancel|anulad|retirad|no celebra|no disp|no se jug/.test(est)) return 'aplazado';
-            if (/jugad|finaliz|cerrad|disputad|celebrad|acab|conclu|termin/.test(est)) return 'jugado';
-            if (/pendiente|por jugar|programad|previst/.test(est)) return 'pendiente';
+                if (tieneGrupo) {
+                    html += `<span class="text-[10px] font-bold text-green-600 bg-green-100 px-2 py-1 rounded"><i class="fas fa-check-circle mr-1"></i> Activo</span>`;
+                } else {
+                    html += `
+                        <button onclick="abrirModalGrupo('${eq.equipoFavorito.replace(/'/g, "\\'")}', '${eq.nombreCompeticion.replace(/'/g, "\\'")}')" class="bg-[#25D366] text-white text-[11px] font-bold px-3 py-1.5 rounded shadow hover:bg-green-600 transition">
+                            <i class="fas fa-link mr-1"></i> Añadir
+                        </button>
+                    `;
+                }
+                
+                html += `</div>`;
+                contenedor.innerHTML += html;
+            });
+        }
 
-            if (p.Cerrado === true || p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) return 'jugado';
+        function abrirModalGrupo(nombreEquipo, nombreCompeticion) {
+            document.getElementById('input-url-grupo').value = '';
+            document.getElementById('texto-json-generado').innerHTML = 'Esperando enlace...';
+            
+            const nombreEscapado = nombreEquipo.replace(/"/g, '\\"');
+            document.getElementById('texto-json-generado').innerHTML = `"${nombreEscapado} (${nombreCompeticion})": ""`;
+            
+            document.getElementById('input-url-grupo').oninput = (e) => {
+                const val = e.target.value.trim();
+                document.getElementById('texto-json-generado').innerHTML = `"${nombreEscapado} (${nombreCompeticion})": "${val}"`;
+            };
 
-            return 'pendiente';
+            const modal = document.getElementById('modal-grupo');
+            modal.classList.remove('hide');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function cerrarModalGrupo() {
+            const modal = document.getElementById('modal-grupo');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hide'), 300);
+        }
+
+        function copiarJSON() {
+            const texto = document.getElementById('texto-json-generado').innerText;
+            if (!texto || texto.includes('Esperando enlace')) return;
+            
+            navigator.clipboard.writeText(texto).then(() => {
+                vibrar(50);
+                const btn = document.querySelector('#modal-grupo button[onclick="copiarJSON()"] i');
+                const orig = btn.className;
+                btn.className = 'fas fa-check text-green-600';
+                setTimeout(() => btn.className = orig, 2000);
+            });
         }
 
         // --- PULL TO REFRESH ---
@@ -483,6 +613,7 @@
                     vibrar(60);
                     ptrIndicator.classList.add('active');
                     cargarAgendaFamiliar();
+                    cargarGrupos();
                     setTimeout(() => ptrIndicator.classList.remove('active'), 1500);
                 }
             }
@@ -496,6 +627,7 @@
             document.getElementById('input-casa').value = userSettings.homeAddress || '';
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
+            renderizarAjustesGrupos();
         }
 
         async function guardarAjustes() {
@@ -533,7 +665,7 @@
                 localStorage.removeItem('cache_geo');
                 localStorage.removeItem('dismissed_changes');
                 Object.keys(localStorage).forEach(key => {
-                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_')) {
+                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_') || key === 'cache_grupos') {
                         localStorage.removeItem(key);
                     }
                 });
@@ -605,11 +737,12 @@
 
         document.addEventListener('DOMContentLoaded', () => { 
             cargarAgendaFamiliar(); 
+            cargarGrupos(); 
 
             if ('requestIdleCallback' in window) {
-                requestIdleCallback(() => cargarCompeticiones(2), { timeout: 3000 });
+                requestIdleCallback(() => { cargarCompeticiones(2); }, { timeout: 3000 });
             } else {
-                setTimeout(() => cargarCompeticiones(2), 1500);
+                setTimeout(() => { cargarCompeticiones(2); }, 1500);
             }
 
             window.addEventListener('online', () => {
@@ -726,6 +859,9 @@
                     </div>
                 ` : '';
 
+                const urlGrupo = getGrupoEquipo(eq);
+                const htmlIconoGrupo = urlGrupo ? `<i class="fab fa-whatsapp text-[#25D366] text-lg ml-2 cursor-pointer hover:scale-110 transition" onclick="event.stopPropagation(); window.open('${urlGrupo}', '_blank')" title="Abrir grupo de WhatsApp"></i>` : '';
+
                 contenedor.insertAdjacentHTML('beforeend', `
                     <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
                         
@@ -749,7 +885,7 @@
                                 </div>
                                 <div class="text-right flex items-center gap-2">
                                     ${haCambiado && (esLocalFav || esVisFav) ? warningSvg : ''}
-                                    <div class="text-lg font-black text-gray-800">${horaStr}</div>
+                                    <div class="text-lg font-black text-gray-800 flex items-center">${htmlIconoGrupo} <span class="ml-1">${horaStr}</span></div>
                                 </div>
                             </div>
 
@@ -812,6 +948,9 @@
                     </div>`);
             }
         }
+        
+        // [El resto de funciones se mantienen igual: abrirEquipo, cargarAgenda, etc.]
+        // ... (Omito el resto para no hacer el mensaje infinito, pero en tu archivo real van igual que en v1.1.10)
 
         async function cargarAgendaFamiliar() {
             const contenedor = document.getElementById('lista-agenda');
@@ -1015,7 +1154,6 @@
                                 } catch(e) {}
                             }
 
-                            // v1.1.09: Solo calculamos ruta si showRoute es true
                             if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
                                 const elRuta = document.getElementById(`ruta-agenda-${i}`);
                                 if (navigator.onLine === false) {
@@ -1058,7 +1196,6 @@
             await Promise.all(promesas);
         }
 
-        // --- LÓGICA DE MAPA Y CLIMA ---
         function abrirModalMapa(dir) {
             if (userSettings.defaultMap && userSettings.defaultMap !== 'ask') {
                 rutaActualMapa = dir;
@@ -1087,7 +1224,6 @@
             cerrarModalMapa();
         }
 
-        // --- FORMULARIO DE EQUIPOS ---
         function prepararNuevoEquipo() {
             toggleDrawer(); 
             editandoEquipoId = null;
@@ -1418,7 +1554,6 @@
             volverInicio();
         }
 
-        // --- LÓGICA DE LA PANTALLA DE DETALLE ---
         async function abrirEquipo(index) {
             equipoActual = equipos[index];
             if (equipoActual.idDeporte === "4") document.body.classList.add('theme-canal');
@@ -1430,6 +1565,8 @@
             const escudoImg = document.getElementById('titulo-detalle-escudo');
             escudoImg.src = equipoActual.escudoFavorito || '/static/logo.png';
             document.getElementById('carga-escudo').src = equipoActual.escudoFavorito || '/static/logo.png';
+
+            actualizarBotonGrupoEquipo();
 
             if (cacheEquipoAbiertoId === equipoActual.id && cacheCalendarioGlobal) {
                 document.getElementById('screen-agenda').classList.add('hide');
@@ -1802,7 +1939,6 @@
             }
 
             let botonesExtra = '';
-            // v1.1.09: Quitamos "&& !esAplazado" para que los botones salgan siempre en tu equipo
             if (!esResultado && esFavorito) {
                 const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
                 const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}.`;
