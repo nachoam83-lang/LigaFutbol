@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.08                                           -->
-    <!--  Fecha: 15/11/2026                                                 -->
-    <!--  Cambios: Tiempo de viaje desactivado por defecto                  -->
-    <!--  Anterior: v1.1.07 · Fix detección estados                         -->
+    <!--  Versión actual: v1.1.09                                           -->
+    <!--  Fecha: 16/11/2026                                                 -->
+    <!--  Cambios: Botones compartir/calendario en partidos aplazados       -->
+    <!--  Anterior: v1.1.08 · Viaje desactivado por defecto                 -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -186,8 +186,8 @@
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.08</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">15/11/2026 · Viaje desactivado por defecto</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.09</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Fix botones aplazados</p>
             </div>
         </div>
     </div>
@@ -447,7 +447,7 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
-        // --- v1.1.08: Estado fiable del partido ---
+        // --- v1.1.09: Estado fiable del partido ---
         function getEstadoPartido(p) {
             if (p.EstadoPartido === undefined && p.Cerrado === undefined) {
                 return (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) ? 'jugado' : 'pendiente';
@@ -495,7 +495,6 @@
             document.getElementById('screen-ajustes').classList.remove('hide');
             document.getElementById('input-casa').value = userSettings.homeAddress || '';
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
-            // Forzamos a que se muestre apagado si no es true explícitamente
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
         }
 
@@ -720,7 +719,6 @@
                 const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
                 const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
                 
-                // v1.1.08: Solo mostramos la ruta si showRoute es true explícitamente
                 const htmlRuta = userSettings.showRoute === true ? `
                     <div class="flex items-center justify-center gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
                         <i class="fas fa-car text-gray-800"></i>
@@ -1017,7 +1015,7 @@
                                 } catch(e) {}
                             }
 
-                            // v1.1.08: Solo calculamos ruta si showRoute es true
+                            // v1.1.09: Solo calculamos ruta si showRoute es true
                             if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
                                 const elRuta = document.getElementById(`ruta-agenda-${i}`);
                                 if (navigator.onLine === false) {
@@ -1804,7 +1802,8 @@
             }
 
             let botonesExtra = '';
-            if (!esResultado && esFavorito && !esAplazado) {
+            // v1.1.09: Quitamos "&& !esAplazado" para que los botones salgan siempre en tu equipo
+            if (!esResultado && esFavorito) {
                 const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
                 const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}.`;
                 botonesExtra = `
