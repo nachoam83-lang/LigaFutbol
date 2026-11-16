@@ -135,24 +135,23 @@
         </div>
     </div>
 
-         <!-- Modal de Borrado (v1.2.00) -->
-        <div id="modal-borrado" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalBorrado()">
-            <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
-                <h3 class="text-lg font-black text-center text-red-600 mb-2">¡ATENCIÓN!</h3>
-                <p class="text-xs text-gray-500 text-center mb-4">Vas a solicitar eliminar el enlace de este grupo. El administrador recibirá un aviso para confirmarlo.</p>
-            
-                <p id="texto-equipo-borrar" class="text-sm font-bold text-center mb-3"></p>
+    <!-- Modal de Borrado (v1.2.00) -->
+    <div id="modal-borrado" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalBorrado()">
+        <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-black text-center text-red-600 mb-2">¡ATENCIÓN!</h3>
+            <p class="text-xs text-gray-500 text-center mb-4">Vas a solicitar eliminar el enlace de este grupo. El administrador recibirá un aviso para confirmarlo.</p>
+        
+            <p id="texto-equipo-borrar" class="text-sm font-bold text-center mb-3"></p>
 
-                <textarea id="input-motivo-borrado" placeholder="Escribe el motivo (ej: enlace caducado, grupo equivocado...)" rows="3" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-4"></textarea>
-            
-                <div class="flex gap-2">
-                    <button onclick="cerrarModalBorrado()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg text-sm">Cancelar</button>
-                    <button onclick="enviarSolicitudBorrado()" id="btn-enviar-borrado" class="flex-1 bg-red-500 text-white font-bold py-3 rounded-lg text-sm shadow hover:bg-red-600 transition">Solicitar Borrado</button>
-                </div>
+            <textarea id="input-motivo-borrado" placeholder="Escribe el motivo (ej: enlace caducado, grupo equivocado...)" rows="3" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-4"></textarea>
+        
+            <div class="flex gap-2">
+                <button onclick="cerrarModalBorrado()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg text-sm">Cancelar</button>
+                <button onclick="enviarSolicitudBorrado()" id="btn-enviar-borrado" class="flex-1 bg-red-500 text-white font-bold py-3 rounded-lg text-sm shadow hover:bg-red-600 transition">Solicitar Borrado</button>
             </div>
         </div>
+    </div>
         
-    
     <div id="pantalla-carga" class="oculto">
         <div class="loader-juego mb-6"><div class="escudo-wrapper"><img id="carga-escudo" src="/static/logo.png" alt="Escudo"></div></div>
         <h2 id="carga-texto" class="text-2xl font-black mb-2 tracking-wider">CARGANDO AGENDA</h2>
@@ -425,40 +424,17 @@
         let cacheClima = JSON.parse(localStorage.getItem('cache_clima')) || {};
         let cacheRuta = JSON.parse(localStorage.getItem('cache_ruta') || '{}');
 
-        async function fetchWithTimeout(resource, options = {}) {
-            const { timeout = 5000 } = options;
-            const controller = new AbortController();
-            const id = setTimeout(() => controller.abort(), timeout);
-            const response = await fetch(resource, { ...options, signal: controller.signal });
-            clearTimeout(id);
-            return response;
-        }
+        // ═══════════════════════════════════════════════════════════════════
+        // GESTIÓN DE GRUPOS DE WHATSAPP (Versión Unificada y Limpia)
+        // ═══════════════════════════════════════════════════════════════════
+        let tempEquipoGrupo = "";
+        let tempEquipoBorrar = "";
 
-        async function geocodificar(dir) {
-            try {
-                const res = await fetchWithTimeout(`https://photon.komoot.io/api/?q=${encodeURIComponent(dir)}&limit=1`);
-                const data = await res.json();
-                if (data.features && data.features.length > 0) {
-                    return {
-                        lon: data.features[0].geometry.coordinates[0],
-                        lat: data.features[0].geometry.coordinates[1]
-                    };
-                }
-            } catch (e) {
-                console.log("Error en Photon", e);
-            }
-            return null;
-        }
-
-        // ═══════════════════════════════════════════════════════════════
-        // GRUPOS DE WHATSAPP (v1.2.00 - Conectado a API Backend)
-        // ═══════════════════════════════════════════════════════════════
         async function cargarGrupos() {
             try {
                 const res = await fetchWithTimeout('/api/grupos_whatsapp', { timeout: 4000, cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
-                    // Limpiamos el campo de ayuda si existe para que no interfiera
                     if (data._ayuda) delete data._ayuda;
                     
                     if (data && typeof data === 'object' && !Array.isArray(data)) {
@@ -485,21 +461,21 @@
         function actualizarBotonGrupoEquipo() {
             const btnWa = document.getElementById('btn-grupo-equipo');
             const btnCrear = document.getElementById('btn-crear-grupo');
-            if (!btnWa || !btnCrear || !equipoActual) return;
+            if (!btnWa || !equipoActual) return;
             
             const url = getGrupoEquipo(equipoActual);
             if (url) {
                 btnWa.href = url;
                 btnWa.classList.remove('hide');
-                btnCrear.classList.add('hide');
+                if (btnCrear) btnCrear.classList.add('hide');
             } else {
                 btnWa.href = '#';
                 btnWa.classList.add('hide');
-                btnCrear.classList.remove('hide');
+                if (btnCrear) btnCrear.classList.remove('hide');
             }
         }
 
-       function renderizarAjustesGrupos() {
+        function renderizarAjustesGrupos() {
             const contenedor = document.getElementById('lista-grupos-ajustes');
             if (!contenedor) return;
             contenedor.innerHTML = '';
@@ -531,9 +507,16 @@
                         </div>
                     `;
                 } else {
-
-let tempEquipoGrupo = "";
-        let tempEquipoBorrar = "";
+                    html += `
+                        <button onclick="abrirModalGrupoIdx(${idx})" class="bg-[#25D366] text-white text-[11px] font-bold px-3 py-1.5 rounded shadow hover:bg-green-600 transition">
+                            <i class="fas fa-link mr-1"></i> Añadir
+                        </button>
+                    `;
+                }
+                html += `</div>`;
+                contenedor.innerHTML += html;
+            });
+        }
 
         function abrirModalGrupo(nombreEquipo, nombreCompeticion) {
             tempEquipoGrupo = `${nombreEquipo} (${nombreCompeticion})`;
@@ -555,7 +538,7 @@ let tempEquipoGrupo = "";
             const nombreCompleto = `${eq.equipoFavorito} (${eq.nombreCompeticion})`;
             tempEquipoBorrar = nombreCompleto;
             document.getElementById('texto-equipo-borrar').innerText = nombreCompleto;
-            document.getElementById('input-motivo-borrar').value = '';
+            document.getElementById('input-motivo-borrado').value = '';
             const modal = document.getElementById('modal-borrado');
             modal.classList.remove('hide');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
@@ -648,8 +631,32 @@ let tempEquipoGrupo = "";
                 btn.innerText = 'Guardar Enlace';
             }
         }
-             
         // --- FIN BLOQUE GRUPOS ---
+
+        async function fetchWithTimeout(resource, options = {}) {
+            const { timeout = 5000 } = options;
+            const controller = new AbortController();
+            const id = setTimeout(() => controller.abort(), timeout);
+            const response = await fetch(resource, { ...options, signal: controller.signal });
+            clearTimeout(id);
+            return response;
+        }
+
+        async function geocodificar(dir) {
+            try {
+                const res = await fetchWithTimeout(`https://photon.komoot.io/api/?q=${encodeURIComponent(dir)}&limit=1`);
+                const data = await res.json();
+                if (data.features && data.features.length > 0) {
+                    return {
+                        lon: data.features[0].geometry.coordinates[0],
+                        lat: data.features[0].geometry.coordinates[1]
+                    };
+                }
+            } catch (e) {
+                console.log("Error en Photon", e);
+            }
+            return null;
+        }
 
         function vibrar(ms = 40) {
             if (navigator.vibrate) navigator.vibrate(ms);
