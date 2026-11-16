@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from datetime import datetime, timedelta
-from functools import lru_cache
 from pydantic import BaseModel
 import json
 import os
@@ -22,36 +21,30 @@ def ping():
 def read_index():
     return FileResponse("static/index.html")
 
-# --- CACHÉ EN RAM ---
-@lru_cache(maxsize=1)
-def _leer_json_liga():
-    if not os.path.exists("datos_liga.json"): return None
-    with open("datos_liga.json", "r", encoding="utf-8") as f:
-        return json.load(f)
-
-@lru_cache(maxsize=1)
-def _leer_json_canal():
-    if not os.path.exists("datos_canal.json"): return {"equipos": {}, "partidos": [], "clasificacion": {}}
-    with open("datos_canal.json", "r", encoding="utf-8") as f:
-        return json.load(f)
-
+# --- LECTURA DE DATOS (SIN CACHÉ PARA EVITAR BLOQUEOS) ---
 def cargar_datos():
-    datos = _leer_json_liga()
-    if not datos or not datos.get("competiciones"):
-        print("⚠️ Usando backup para datos_liga.json")
-        if os.path.exists("datos_liga_backup.json"):
-            with open("datos_liga_backup.json", "r", encoding="utf-8") as f:
-                return json.load(f)
-    return datos
+    if os.path.exists("datos_liga.json"):
+        with open("datos_liga.json", "r", encoding="utf-8") as f:
+            datos = json.load(f)
+            if datos and datos.get("competiciones"):
+                return datos
+    print("⚠️ Usando backup para datos_liga.json")
+    if os.path.exists("datos_liga_backup.json"):
+        with open("datos_liga_backup.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    return None
 
 def cargar_datos_canal():
-    datos = _leer_json_canal()
-    if not datos or len(datos.get("partidos", [])) == 0:
-        print("⚠️ Usando backup para datos_canal.json")
-        if os.path.exists("datos_canal_backup.json"):
-            with open("datos_canal_backup.json", "r", encoding="utf-8") as f:
-                return json.load(f)
-    return datos
+    if os.path.exists("datos_canal.json"):
+        with open("datos_canal.json", "r", encoding="utf-8") as f:
+            datos = json.load(f)
+            if datos and len(datos.get("partidos", [])) > 0:
+                return datos
+    print("⚠️ Usando backup para datos_canal.json")
+    if os.path.exists("datos_canal_backup.json"):
+        with open("datos_canal_backup.json", "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"equipos": {}, "partidos": [], "clasificacion": {}}
 
 def corregir_anio(fecha_str):
     if not fecha_str or len(fecha_str) < 7: return fecha_str
@@ -63,17 +56,11 @@ def corregir_anio(fecha_str):
 
 def calcular_jornadas_canal(partidos, categoria):
     mapa_fechas = {
-        "2026-09-26": 1, "2026-10-03": 1,
-        "2026-10-10": 2, "2026-10-17": 2,
-        "2026-10-21": 3, "2026-10-22": 3, "2026-10-23": 3,
-        "2026-10-24": 4, "2026-10-31": 4,
-        "2026-11-07": 5, "2026-11-14": 5,
-        "2026-11-21": 6, "2026-11-28": 6,
-        "2026-12-12": 7, "2026-12-19": 7,
-        "2027-01-09": 8, "2027-01-16": 8,
-        "2027-01-23": 9, "2027-01-30": 9,
-        "2027-02-06": 10, "2027-02-13": 10,
-        "2027-02-20": 11
+        "2026-09-26": 1, "2026-10-03": 1, "2026-10-10": 2, "2026-10-17": 2,
+        "2026-10-21": 3, "2026-10-22": 3, "2026-10-23": 3, "2026-10-24": 4, "2026-10-31": 4,
+        "2026-11-07": 5, "2026-11-14": 5, "2026-11-21": 6, "2026-11-28": 6,
+        "2026-12-12": 7, "2026-12-19": 7, "2027-01-09": 8, "2027-01-16": 8,
+        "2027-01-23": 9, "2027-01-30": 9, "2027-02-06": 10, "2027-02-13": 10, "2027-02-20": 11
     }
 
     for p in partidos:
@@ -222,7 +209,7 @@ def get_ics(titulo: str, fecha: str, lugar: str, deporte: str = "2"):
     return Response(content=ics_content, media_type="text/calendar", headers={"Content-Disposition": "attachment; filename=partido.ics"})
 
 # ─────────────────────────────────────────────────────────────────
-# NUEVO: TELEGRAM Y GESTIÓN DE GRUPOS
+# TELEGRAM Y GESTIÓN DE GRUPOS
 # ─────────────────────────────────────────────────────────────────
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
