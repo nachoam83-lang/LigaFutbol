@@ -6,10 +6,9 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.11                                           -->
+    <!--  Versión actual: v1.2.00                                           -->
     <!--  Fecha: 16/11/2026                                                 -->
-    <!--  Cambios: Integración completa WhatsApp + Gestión en Ajustes       -->
-    <!--  Anterior: v1.1.10 · Carga de JSON de WhatsApp                     -->
+    <!--  Cambios: Grupos Whatsapp para padres     -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -124,22 +123,17 @@
         </div>
     </div>
 
-    <!-- Modal para generar JSON de WhatsApp -->
+    <!-- Modal para Enviar Solicitud -->
     <div id="modal-grupo" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalGrupo()">
         <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
-            <h3 class="text-lg font-black text-center mb-2">Configurar Grupo</h3>
-            <p class="text-xs text-gray-500 text-center mb-4">Pega el enlace del grupo y copia el código generado en tu <b>grupos.json</b> de GitHub.</p>
+            <h3 class="text-lg font-black text-center mb-2">Solicitar Grupo</h3>
+            <p class="text-xs text-gray-500 text-center mb-4">Pega el enlace del grupo de WhatsApp. El administrador recibirá una notificación para aprobarlo.</p>
             
-            <input type="url" id="input-url-grupo" placeholder="https://chat.whatsapp.com/..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-3">
+            <input type="url" id="input-url-grupo" placeholder="https://chat.whatsapp.com/..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-4">
             
-            <div class="bg-gray-100 p-3 rounded-lg border border-gray-200 mb-4 relative">
-                <code id="texto-json-generado" class="text-xs text-gray-800 break-all select-all font-mono"></code>
-                <button onclick="copiarJSON()" class="absolute top-2 right-2 bg-white p-1.5 rounded shadow text-gray-600 hover:text-green-600 transition"><i class="fas fa-copy"></i></button>
-            </div>
-
             <div class="flex gap-2">
-                <button onclick="cerrarModalGrupo()" class="flex-1 bg-gray-200 font-bold py-2 rounded-lg text-sm">Cerrar</button>
-                <a href="https://github.com" target="_blank" class="flex-1 bg-gray-800 text-white font-bold py-2 rounded-lg text-sm text-center flex items-center justify-center gap-2"><i class="fab fa-github"></i> Ir a GitHub</a>
+                <button onclick="cerrarModalGrupo()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg text-sm">Cancelar</button>
+                <button onclick="enviarSolicitudGrupo()" id="btn-enviar-solicitud" class="flex-1 bg-[#25D366] text-white font-bold py-3 rounded-lg text-sm shadow hover:bg-green-600 transition">Enviar al Admin</button>
             </div>
         </div>
     </div>
@@ -197,13 +191,13 @@
 
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
-            <!-- NUEVA SECCIÓN: ADMINISTRACIÓN DE GRUPOS -->
+            <!-- SECCIÓN: ADMINISTRACIÓN DE GRUPOS -->
             <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
                 <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">DELEGADOS</div>
                 <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
                 <p class="text-xs text-gray-600 mb-3">Sigue estas normas para crear el grupo:</p>
                 <ul class="text-[11px] text-gray-600 mb-4 space-y-1 list-disc pl-4">
-                    <li><b>Nombre:</b> Categoría + Colegio + Color/Letra (Ej: Benjamín Patrocinio Rojo).</li>
+                    <li><b>Nombre:</b> Categoría + Colegio + Color/Letra.</li>
                     <li><b>Mensajes temporales:</b> Desactivados.</li>
                     <li><b>Permisos activos:</b> Enviar mensajes, Invitar con enlace, Aprobar miembros.</li>
                     <li><b>El resto de permisos:</b> Desactivados.</li>
@@ -224,8 +218,8 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.11</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · WhatsApp Integrado</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.12</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Auto Telegram</p>
             </div>
         </div>
     </div>
@@ -313,7 +307,7 @@
                         <p id="titulo-detalle-categoria" class="text-sm font-semibold text-white/80 uppercase tracking-widest"></p>
                     </div>
                 </div>
-                <button id="btn-grupo-equipo" class="hide text-[#25D366] hover:opacity-80 transition ml-2" title="Abrir grupo del equipo"><i class="fab fa-whatsapp text-2xl"></i></button>
+                <button id="btn-grupo-equipo" class="hide w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center text-[#25D366] hover:opacity-80 transition ml-2" title="Abrir grupo del equipo"><i class="fab fa-whatsapp text-xl"></i></button>
                 <button onclick="refrescarPantallaJugador(this)" class="text-white hover:opacity-80 transition ml-3"><i class="fas fa-sync-alt text-lg"></i></button>
             </div>
         </div>
@@ -406,6 +400,9 @@
         let rutaActualMapa = "";
         let cacheClima = JSON.parse(localStorage.getItem('cache_clima')) || {};
         let cacheRuta = JSON.parse(localStorage.getItem('cache_ruta') || '{}');
+        
+        // ⚠️ IMPORTANTE: PON AQUÍ TU URL DE RENDER (sin la barra final)
+        const API_URL = "https://ligapsj.onrender.com"; 
 
         async function fetchWithTimeout(resource, options = {}) {
             const { timeout = 5000 } = options;
@@ -485,7 +482,6 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
-        // --- v1.1.11: Lógica de Grupos y Ajustes ---
         async function cargarGrupos() {
             try {
                 const res = await fetchWithTimeout('/static/grupos.json', { timeout: 3000, cache: 'no-store' });
@@ -558,18 +554,10 @@
             });
         }
 
+        let tempEquipoGrupo = "";
         function abrirModalGrupo(nombreEquipo, nombreCompeticion) {
+            tempEquipoGrupo = `${nombreEquipo} (${nombreCompeticion})`;
             document.getElementById('input-url-grupo').value = '';
-            document.getElementById('texto-json-generado').innerHTML = 'Esperando enlace...';
-            
-            const nombreEscapado = nombreEquipo.replace(/"/g, '\\"');
-            document.getElementById('texto-json-generado').innerHTML = `"${nombreEscapado} (${nombreCompeticion})": ""`;
-            
-            document.getElementById('input-url-grupo').oninput = (e) => {
-                const val = e.target.value.trim();
-                document.getElementById('texto-json-generado').innerHTML = `"${nombreEscapado} (${nombreCompeticion})": "${val}"`;
-            };
-
             const modal = document.getElementById('modal-grupo');
             modal.classList.remove('hide');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
@@ -581,20 +569,39 @@
             setTimeout(() => modal.classList.add('hide'), 300);
         }
 
-        function copiarJSON() {
-            const texto = document.getElementById('texto-json-generado').innerText;
-            if (!texto || texto.includes('Esperando enlace')) return;
-            
-            navigator.clipboard.writeText(texto).then(() => {
-                vibrar(50);
-                const btn = document.querySelector('#modal-grupo button[onclick="copiarJSON()"] i');
-                const orig = btn.className;
-                btn.className = 'fas fa-check text-green-600';
-                setTimeout(() => btn.className = orig, 2000);
-            });
+        async function enviarSolicitudGrupo() {
+            const url = document.getElementById('input-url-grupo').value.trim();
+            if (!url || !url.includes("chat.whatsapp.com")) {
+                alert("Por favor, introduce un enlace válido de WhatsApp.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-enviar-solicitud');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner spin-anim"></i> Enviando...';
+
+            try {
+                const res = await fetch(`${API_URL}/api/solicitar-grupo`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ equipo: tempEquipoGrupo, url: url })
+                });
+
+                if (res.ok) {
+                    vibrar(50);
+                    alert("Solicitud enviada. El administrador la revisará y la activará en breve.");
+                    cerrarModalGrupo();
+                } else {
+                    alert("Error al enviar la solicitud. Inténtalo más tarde.");
+                }
+            } catch (e) {
+                alert("Error de conexión. Comprueba que tienes internet.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Enviar al Admin';
+            }
         }
 
-        // --- PULL TO REFRESH ---
         let touchStartY = 0;
         let touchEndY = 0;
         const screenAgenda = document.getElementById('screen-agenda');
@@ -620,7 +627,6 @@
             touchStartY = 0;
         }, { passive: true });
 
-        // --- AJUSTES Y NAVEGACIÓN ---
         function abrirAjustes() {
             document.getElementById('screen-agenda').classList.add('hide');
             document.getElementById('screen-ajustes').classList.remove('hide');
@@ -753,7 +759,6 @@
             });
         });
 
-        // --- LÓGICA DE LA AGENDA FAMILIAR ---
         function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
             const contenedor = document.getElementById('lista-agenda');
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
@@ -860,7 +865,7 @@
                 ` : '';
 
                 const urlGrupo = getGrupoEquipo(eq);
-                const htmlIconoGrupo = urlGrupo ? `<i class="fab fa-whatsapp text-[#25D366] text-lg ml-2 cursor-pointer hover:scale-110 transition" onclick="event.stopPropagation(); window.open('${urlGrupo}', '_blank')" title="Abrir grupo de WhatsApp"></i>` : '';
+                const htmlIconoGrupo = urlGrupo ? `<div class="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center cursor-pointer hover:scale-110 transition mx-2" onclick="event.stopPropagation(); window.open('${urlGrupo}', '_blank')" title="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp text-[#25D366] text-base"></i></div>` : '';
 
                 contenedor.insertAdjacentHTML('beforeend', `
                     <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
@@ -883,9 +888,10 @@
                                     </div>
                                     <span class="text-xs font-bold text-gray-600 uppercase mt-0.5">${eq.nombreCompeticion}</span>
                                 </div>
-                                <div class="text-right flex items-center gap-2">
+                                <div class="text-right flex items-center gap-1">
                                     ${haCambiado && (esLocalFav || esVisFav) ? warningSvg : ''}
-                                    <div class="text-lg font-black text-gray-800 flex items-center">${htmlIconoGrupo} <span class="ml-1">${horaStr}</span></div>
+                                    ${htmlIconoGrupo}
+                                    <div class="text-lg font-black text-gray-800 ml-1">${horaStr}</div>
                                 </div>
                             </div>
 
@@ -948,9 +954,6 @@
                     </div>`);
             }
         }
-        
-        // [El resto de funciones se mantienen igual: abrirEquipo, cargarAgenda, etc.]
-        // ... (Omito el resto para no hacer el mensaje infinito, pero en tu archivo real van igual que en v1.1.10)
 
         async function cargarAgendaFamiliar() {
             const contenedor = document.getElementById('lista-agenda');
