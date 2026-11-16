@@ -76,6 +76,23 @@
 
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
         #modal-grupo { transition: opacity 0.3s, visibility 0.3s; }
+
+            <!-- Modal de Borrado (v1.1.15) -->
+        <div id="modal-borrado" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalBorrado()">
+            <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
+                <h3 class="text-lg font-black text-center text-red-600 mb-2">¡ATENCIÓN!</h3>
+                <p class="text-xs text-gray-500 text-center mb-4">Vas a solicitar eliminar el enlace de este grupo. El administrador recibirá un aviso para confirmarlo.</p>
+            
+                <p id="texto-equipo-borrar" class="text-sm font-bold text-center mb-3"></p>
+
+                <textarea id="input-motivo-borrado" placeholder="Escribe el motivo (ej: enlace caducado, grupo equivocado...)" rows="3" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-4"></textarea>
+            
+                <div class="flex gap-2">
+                    <button onclick="cerrarModalBorrado()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg text-sm">Cancelar</button>
+                    <button onclick="enviarSolicitudBorrado()" id="btn-enviar-borrado" class="flex-1 bg-red-500 text-white font-bold py-3 rounded-lg text-sm shadow hover:bg-red-600 transition">Solicitar Borrado</button>
+                </div>
+            </div>
+        </div>
         
         #drawer-overlay { transition: opacity 0.3s; }
         #drawer-menu { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
@@ -485,7 +502,7 @@
             }
         }
 
-        function renderizarAjustesGrupos() {
+               function renderizarAjustesGrupos() {
             const contenedor = document.getElementById('lista-grupos-ajustes');
             if (!contenedor) return;
             contenedor.innerHTML = '';
@@ -508,7 +525,15 @@
                 `;
 
                 if (tieneGrupo) {
-                    html += `<span class="text-[10px] font-bold text-green-600 bg-green-100 px-2 py-1 rounded"><i class="fas fa-check-circle mr-1"></i> Activo</span>`;
+                    // Nuevo diseño: Tick verde y Aspa roja
+                    html += `
+                        <div class="flex items-center gap-2">
+                            <span class="text-green-500 text-lg" title="Grupo activo"><i class="fas fa-check-circle"></i></span>
+                            <button onclick="abrirModalBorrado('${eq.equipoFavorito.replace(/'/g, "\\'")}', '${eq.nombreCompeticion.replace(/'/g, "\\'")}')" class="text-red-500 hover:text-red-700 bg-red-50 hover:bg-red-100 rounded-full w-7 h-7 flex items-center justify-center transition" title="Quitar enlace">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
                 } else {
                     html += `
                         <button onclick="abrirModalGrupo('${eq.equipoFavorito.replace(/'/g, "\\'")}', '${eq.nombreCompeticion.replace(/'/g, "\\'")}')" class="bg-[#25D366] text-white text-[11px] font-bold px-3 py-1.5 rounded shadow hover:bg-green-600 transition">
@@ -519,6 +544,55 @@
                 html += `</div>`;
                 contenedor.innerHTML += html;
             });
+        }
+
+        let tempEquipoBorrar = "";
+        function abrirModalBorrado(nombreEquipo, nombreCompeticion) {
+            tempEquipoBorrar = `${nombreEquipo} (${nombreCompeticion})`;
+            document.getElementById('texto-equipo-borrar').innerText = tempEquipoBorrar;
+            document.getElementById('input-motivo-borrado').value = '';
+            const modal = document.getElementById('modal-borrado');
+            modal.classList.remove('hide');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function cerrarModalBorrado() {
+            const modal = document.getElementById('modal-borrado');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hide'), 300);
+        }
+
+        async function enviarSolicitudBorrado() {
+            const motivo = document.getElementById('input-motivo-borrado').value.trim();
+            if (!motivo) {
+                alert("Por favor, escribe un motivo para solicitar el borrado.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-enviar-borrado');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner spin-anim"></i> Enviando...';
+
+            try {
+                const res = await fetch('/api/solicitar-borrado', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ equipo: tempEquipoBorrar, motivo: motivo })
+                });
+
+                if (res.ok) {
+                    vibrar(50);
+                    alert("Solicitud enviada al administrador. Si se aprueba, el grupo se eliminará.");
+                    cerrarModalBorrado();
+                } else {
+                    alert("Error al enviar la solicitud.");
+                }
+            } catch (e) {
+                alert("Error de conexión.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Solicitar Borrado';
+            }
         }
 
         let tempEquipoGrupo = "";
