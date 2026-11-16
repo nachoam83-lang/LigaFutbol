@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.1.13                                           -->
+    <!--  Versión actual: v1.1.14                                           -->
     <!--  Fecha: 16/11/2026                                                 -->
-    <!--  Cambios: Grupos WhatsApp (lite) sobre motor v1.1.09               -->
-    <!--  Anterior: v1.1.09 · Botones compartir/calendario en aplazados     -->
+    <!--  Cambios: Grupos WhatsApp con escritura (GitHub API)               -->
+    <!--  Anterior: v1.1.13 · Grupos WhatsApp (lite)                        -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -75,6 +75,7 @@
         .escudo-fav-zoom { transform: scale(1.25); transform-origin: center; }
 
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
+        #modal-grupo { transition: opacity 0.3s, visibility 0.3s; }
         
         #drawer-overlay { transition: opacity 0.3s; }
         #drawer-menu { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
@@ -119,6 +120,21 @@
         </div>
     </div>
 
+    <!-- Modal para Enviar Solicitud (v1.1.14) -->
+    <div id="modal-grupo" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalGrupo()">
+        <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-black text-center mb-2">Asignar Grupo</h3>
+            <p class="text-xs text-gray-500 text-center mb-4">Pega el enlace del grupo de WhatsApp. El primero que lo guarde se quedará asignado a este equipo.</p>
+            
+            <input type="url" id="input-url-grupo" placeholder="https://chat.whatsapp.com/..." class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-4">
+            
+            <div class="flex gap-2">
+                <button onclick="cerrarModalGrupo()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg text-sm">Cancelar</button>
+                <button onclick="enviarSolicitudGrupo()" id="btn-enviar-solicitud" class="flex-1 bg-[#25D366] text-white font-bold py-3 rounded-lg text-sm shadow hover:bg-green-600 transition">Guardar Enlace</button>
+            </div>
+        </div>
+    </div>
+
     <div id="pantalla-carga" class="oculto">
         <div class="loader-juego mb-6"><div class="escudo-wrapper"><img id="carga-escudo" src="/static/logo.png" alt="Escudo"></div></div>
         <h2 id="carga-texto" class="text-2xl font-black mb-2 tracking-wider">CARGANDO AGENDA</h2>
@@ -137,7 +153,7 @@
     </div>
 
     <!-- PANTALLA DE AJUSTES -->
-    <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen">
+    <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen pb-24">
         <div class="text-white h-[88px] px-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
             <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
             <h1 class="text-xl font-bold">Ajustes</h1>
@@ -178,11 +194,29 @@
                 </button>
             </div>
 
+            <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.1.14) -->
+            <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
+                <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">WHATSAPP</div>
+                <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
+                <p class="text-xs text-gray-600 mb-3">Sigue estas normas para crear el grupo:</p>
+                <ul class="text-[11px] text-gray-600 mb-4 space-y-1 list-disc pl-4">
+                    <li><b>Nombre:</b> Categoría + Colegio + Color/Letra.</li>
+                    <li><b>Mensajes temporales:</b> Desactivados.</li>
+                    <li><b>Permisos activos:</b> Enviar mensajes, Invitar con enlace, Aprobar miembros.</li>
+                    <li><b>El resto de permisos:</b> Desactivados.</li>
+                </ul>
+
+                <div class="space-y-3">
+                    <p class="text-[11px] font-bold text-gray-700 uppercase mt-2">Tus equipos:</p>
+                    <div id="lista-grupos-ajustes"></div>
+                </div>
+            </div>
+
             <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
 
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.13</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp (lite)</p>
+                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.1.14</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
             </div>
         </div>
     </div>
@@ -270,12 +304,12 @@
                         <p id="titulo-detalle-categoria" class="text-sm font-semibold text-white/80 uppercase tracking-widest truncate"></p>
                     </div>
                 </div>
-                <!-- Botón WhatsApp (visible solo si hay grupo) -->
+                <!-- Botón WhatsApp (visible si hay grupo) -->
                 <a id="btn-grupo-equipo" href="#" class="hide w-9 h-9 rounded-full bg-[#25D366] shadow-sm flex items-center justify-center text-white hover:opacity-90 transition ml-2 flex-shrink-0" title="Abrir grupo del equipo">
                     <i class="fab fa-whatsapp text-xl"></i>
                 </a>
-                <!-- Botón Crear Grupo (visible solo si NO hay grupo) -->
-                <button id="btn-crear-grupo" onclick="crearGrupoEquipo()" class="hide w-9 h-9 rounded-full bg-white/10 border border-white/40 shadow-sm flex items-center justify-center text-white hover:bg-white/20 transition ml-2 flex-shrink-0" title="Crear grupo del equipo">
+                <!-- Botón Crear Grupo (visible si NO hay grupo) -->
+                <button id="btn-crear-grupo" onclick="abrirModalGrupoDesdeDetalle()" class="hide w-9 h-9 rounded-full bg-white/10 border border-white/40 shadow-sm flex items-center justify-center text-white hover:bg-white/20 transition ml-2 flex-shrink-0" title="Asignar grupo del equipo">
                     <i class="fas fa-plus text-sm"></i>
                 </button>
                 <button onclick="refrescarPantallaJugador(this)" class="text-white hover:opacity-80 transition ml-2 flex-shrink-0"><i class="fas fa-sync-alt text-lg"></i></button>
@@ -353,7 +387,7 @@
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
-        // ═══ v1.1.13 · Caché de grupos de WhatsApp ═══
+        // Caché de grupos de WhatsApp
         let cacheGrupos = {};
         try {
             cacheGrupos = JSON.parse(localStorage.getItem('cache_grupos') || '{}');
@@ -403,22 +437,27 @@
         }
 
         // ═══════════════════════════════════════════════════════════════
-        // v1.1.13 · GRUPOS DE WHATSAPP (directorio estático vía JSON)
+        // GRUPOS DE WHATSAPP (v1.1.14 - Conectado a API Backend)
         // ═══════════════════════════════════════════════════════════════
         async function cargarGrupos() {
             try {
-                const res = await fetchWithTimeout('/static/grupos.json', { timeout: 3000, cache: 'no-store' });
+                const res = await fetchWithTimeout('/api/grupos_whatsapp', { timeout: 4000, cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
-                    delete data._ayuda;
+                    // Limpiamos el campo de ayuda si existe para que no interfiera
+                    if (data._ayuda) delete data._ayuda;
+                    
                     if (data && typeof data === 'object' && !Array.isArray(data)) {
                         cacheGrupos = data;
                         localStorage.setItem('cache_grupos', JSON.stringify(cacheGrupos));
                         if (equipoActual) actualizarBotonGrupoEquipo();
+                        if (!document.getElementById('screen-ajustes').classList.contains('hide')) {
+                            renderizarAjustesGrupos();
+                        }
                     }
                 }
             } catch (e) {
-                console.log('No se pudo cargar grupos.json, usando caché local');
+                console.log('No se pudo cargar grupos desde la API, usando caché local');
             }
         }
 
@@ -433,33 +472,114 @@
             const btnWa = document.getElementById('btn-grupo-equipo');
             const btnCrear = document.getElementById('btn-crear-grupo');
             if (!btnWa || !btnCrear || !equipoActual) return;
+            
             const url = getGrupoEquipo(equipoActual);
             if (url) {
-                // Tiene grupo: mostrar botón WhatsApp, ocultar "Crear"
                 btnWa.href = url;
                 btnWa.classList.remove('hide');
                 btnCrear.classList.add('hide');
             } else {
-                // Sin grupo: ocultar WhatsApp, mostrar "Crear"
                 btnWa.href = '#';
                 btnWa.classList.add('hide');
                 btnCrear.classList.remove('hide');
             }
         }
 
-        function crearGrupoEquipo() {
-            vibrar(40);
-            alert(
-                'Aún no se puede crear el grupo desde la app.\n\n' +
-                'Por ahora:\n' +
-                '1) El delegado crea el grupo en WhatsApp.\n' +
-                '2) Comparte el enlace de invitación con el administrador.\n' +
-                '3) El administrador lo añade al directorio.\n\n' +
-                'En cuanto esté disponible, podrás crear el grupo desde aquí.'
-            );
+        function renderizarAjustesGrupos() {
+            const contenedor = document.getElementById('lista-grupos-ajustes');
+            if (!contenedor) return;
+            contenedor.innerHTML = '';
+
+            if (equipos.length === 0) {
+                contenedor.innerHTML = '<p class="text-xs text-gray-400">No tienes equipos guardados.</p>';
+                return;
+            }
+
+            equipos.forEach(eq => {
+                const url = getGrupoEquipo(eq);
+                const tieneGrupo = !!url;
+                
+                let html = `
+                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-200 mb-2">
+                        <div class="flex flex-col flex-1 pr-2">
+                            <span class="text-xs font-bold text-gray-800 leading-tight">${eq.nombre}</span>
+                            <span class="text-[10px] text-gray-500 truncate">${eq.equipoFavorito} (${eq.nombreCompeticion})</span>
+                        </div>
+                `;
+
+                if (tieneGrupo) {
+                    html += `<span class="text-[10px] font-bold text-green-600 bg-green-100 px-2 py-1 rounded"><i class="fas fa-check-circle mr-1"></i> Activo</span>`;
+                } else {
+                    html += `
+                        <button onclick="abrirModalGrupo('${eq.equipoFavorito.replace(/'/g, "\\'")}', '${eq.nombreCompeticion.replace(/'/g, "\\'")}')" class="bg-[#25D366] text-white text-[11px] font-bold px-3 py-1.5 rounded shadow hover:bg-green-600 transition">
+                            <i class="fas fa-link mr-1"></i> Añadir
+                        </button>
+                    `;
+                }
+                html += `</div>`;
+                contenedor.innerHTML += html;
+            });
         }
 
-        // --- FIN bloque grupos ---
+        let tempEquipoGrupo = "";
+        
+        function abrirModalGrupo(nombreEquipo, nombreCompeticion) {
+            tempEquipoGrupo = `${nombreEquipo} (${nombreCompeticion})`;
+            document.getElementById('input-url-grupo').value = '';
+            const modal = document.getElementById('modal-grupo');
+            modal.classList.remove('hide');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function abrirModalGrupoDesdeDetalle() {
+            if (equipoActual) {
+                abrirModalGrupo(equipoActual.equipoFavorito, equipoActual.nombreCompeticion);
+            }
+        }
+
+        function cerrarModalGrupo() {
+            const modal = document.getElementById('modal-grupo');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hide'), 300);
+        }
+
+        async function enviarSolicitudGrupo() {
+            const url = document.getElementById('input-url-grupo').value.trim();
+            if (!url || !url.includes("chat.whatsapp.com")) {
+                alert("Por favor, introduce un enlace válido de WhatsApp.");
+                return;
+            }
+
+            const btn = document.getElementById('btn-enviar-solicitud');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner spin-anim"></i> Guardando...';
+
+            try {
+                const res = await fetch('/api/solicitar-grupo', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ equipo: tempEquipoGrupo, url: url })
+                });
+
+                if (res.ok) {
+                    vibrar(50);
+                    alert("Enlace guardado correctamente. El grupo ya está activo.");
+                    cerrarModalGrupo();
+                    await cargarGrupos(); // Recargamos para actualizar la vista
+                } else if (res.status === 409) {
+                    alert("Este equipo ya tiene un grupo asignado. No se puede modificar.");
+                    cerrarModalGrupo();
+                } else {
+                    alert("Error al guardar el enlace. Inténtalo más tarde.");
+                }
+            } catch (e) {
+                alert("Error de conexión. Comprueba que tienes internet.");
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'Guardar Enlace';
+            }
+        }
+        // --- FIN BLOQUE GRUPOS ---
 
         function vibrar(ms = 40) {
             if (navigator.vibrate) navigator.vibrate(ms);
@@ -563,6 +683,7 @@
             document.getElementById('input-casa').value = userSettings.homeAddress || '';
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
+            renderizarAjustesGrupos();
         }
 
         async function guardarAjustes() {
@@ -795,7 +916,6 @@
                     </div>
                 ` : '';
 
-                // v1.1.13: icono WhatsApp como <a> para no abrir pestaña en blanco
                 const urlGrupo = getGrupoEquipo(eq);
                 const htmlIconoGrupo = urlGrupo ? `<a href="${urlGrupo}" onclick="event.stopPropagation()" class="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center hover:scale-110 transition mx-2 flex-shrink-0" title="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp text-[#25D366] text-base"></i></a>` : '';
 
@@ -1504,7 +1624,6 @@
             escudoImg.src = equipoActual.escudoFavorito || '/static/logo.png';
             document.getElementById('carga-escudo').src = equipoActual.escudoFavorito || '/static/logo.png';
 
-            // v1.1.13: actualizar botón de grupo (WhatsApp o "Crear grupo")
             actualizarBotonGrupoEquipo();
 
             if (cacheEquipoAbiertoId === equipoActual.id && cacheCalendarioGlobal) {
