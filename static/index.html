@@ -1005,10 +1005,12 @@
 
                     if (isOnline) {
                         try {
+                            
                             const [res, resClasif] = await Promise.all([
-                                fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 2000 }),
-                                fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 2000 })
+                                fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${encodeURIComponent(eq.idCategoria)}/${encodeURIComponent(eq.idGrupo)}`, { timeout: 10000 }),
+                                fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${encodeURIComponent(eq.idCategoria)}/${encodeURIComponent(eq.idGrupo)}`, { timeout: 10000 })
                             ]);
+                            
                             [partidos, clasif] = await Promise.all([res.json(), resClasif.json()]);
 
                             if (Array.isArray(partidos) && partidos.length > 0) {
