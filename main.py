@@ -12,6 +12,8 @@ import urllib.request
 import urllib.error
 import urllib.parse
 import threading
+import html
+import hashlib
 
 app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
@@ -32,7 +34,7 @@ class SolicitudBorrado(BaseModel):
     motivo: str
 
 def _github_api(method, path, data=None):
-    token = os.getenv("GITHUB_TOKEN") # <--- Usa GITHUB_TOKEN
+    token = os.getenv("GITHUB_TOKEN")
     if not token:
         raise HTTPException(status_code=500, detail="Falta GITHUB_TOKEN en Render")
     
@@ -107,7 +109,7 @@ def _tg_answer(token, cb_id, text):
 
 def _tg_edit(token, chat_id, msg_id, text):
     url = f"https://api.telegram.org/bot{token}/editMessageText"
-    data = json.dumps({"chat_id": chat_id, "message_id": msg_id, "text": text, "parse_mode": "Markdown"}).encode('utf-8')
+    data = json.dumps({"chat_id": chat_id, "message_id": msg_id, "text": text, "parse_mode": "HTML"}).encode('utf-8')
     req = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'})
     try: urllib.request.urlopen(req)
     except: pass
@@ -139,17 +141,17 @@ def post_solicitar_borrado(req: SolicitudBorrado):
     tg_chat = os.getenv("TELEGRAM_CHAT_ID")
     
     if not tg_token or not tg_chat:
-        return {"status": "error", "mensaje": "Faltan tokens de Telegram"}
+        raise HTTPException(status_code=500, detail="Faltan variables de Telegram en Render")
     
-    texto = f"⚠️ *SOLICITUD DE BORRADO*\n\n*Equipo:* {req.equipo}\n*Motivo:* {req.motivo}"
+    equipo_seguro = html.escape(req.equipo)
+    motivo_seguro = html.escape(req.motivo)
+    texto = f"⚠️ <b>SOLICITUD DE BORRADO</b>\n\n<b>Equipo:</b> {equipo_seguro}\n<b>Motivo:</b> {motivo_seguro}"
     
-    # Callback data no puede superar 64 bytes. Usamos base64 o un hash si el nombre es muy largo.
-    # Para evitar problemas, cortamos el nombre del equipo a 50 caracteres para el callback.
-    equipo_cb = urllib.parse.quote(req.equipo[:50])
+    equipo_hash = hashlib.md5(req.equipo.encode('utf-8')).hexdigest()[:16]
     
     keyboard = {
         "inline_keyboard": [[
-            {"text": "✅ Aprobar borrado", "callback_data": f"del|{equipo_cb}"},
+            {"text": "✅ Aprobar borrado", "callback_data": f"del|{equipo_hash}"},
             {"text": "❌ Ignorar", "callback_data": "ignore"}
         ]]
     }
@@ -158,7 +160,7 @@ def post_solicitar_borrado(req: SolicitudBorrado):
     data = json.dumps({
         "chat_id": tg_chat,
         "text": texto,
-        "parse_mode": "Markdown",
+        "parse_mode": "HTML",
         "reply_markup": keyboard
     }).encode('utf-8')
     
@@ -166,9 +168,13 @@ def post_solicitar_borrado(req: SolicitudBorrado):
     try:
         urllib.request.urlopen(req_tg)
         return {"status": "ok"}
+    except urllib.error.HTTPError as e:
+        detalle = e.read().decode('utf-8', errors='ignore')
+        print(f"Error HTTP Telegram ({e.code}): {detalle}")
+        raise HTTPException(status_code=500, detail=f"Telegram error: {detalle}")
     except Exception as e:
         print(f"Error enviando a Telegram: {e}")
-        return {"status": "error"}
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/telegram-webhook")
 async def telegram_webhook(request: Request):
@@ -183,21 +189,28 @@ async def telegram_webhook(request: Request):
             chat_id = cb["message"]["chat"]["id"]
 
             if cb_data.startswith("del|"):
-                equipo_cb = cb_data.split("|", 1)[1]
-                equipo = urllib.parse.unquote(equipo_cb)
+                equipo_hash = cb_data.split("|", 1)[1]
+                equipo_encontrado = None
                 
                 with github_lock:
                     grupos, sha = leer_grupos()
-                    if equipo in grupos:
-                        del grupos[equipo]
-                        guardar_grupos(grupos, sha)
+                    for k in list(grupos.keys()):
+                        if hashlib.md5(k.encode('utf-8')).hexdigest()[:16] == equipo_hash:
+                            equipo_encontrado = k
+                            del grupos[k]
+                            guardar_grupos(grupos, sha)
+                            break
                 
-                _tg_answer(tg_token, cb_id, "✅ Grupo eliminado")
-                _tg_edit(tg_token, chat_id, msg_id, f"✅ *BORRADO APROBADO*\nEquipo: {equipo}")
+                if equipo_encontrado:
+                    _tg_answer(tg_token, cb_id, "✅ Grupo eliminado")
+                    _tg_edit(tg_token, chat_id, msg_id, f"✅ <b>BORRADO APROBADO</b>\nEquipo: {html.escape(equipo_encontrado)}")
+                else:
+                    _tg_answer(tg_token, cb_id, "⚠️ El grupo ya no existía")
+                    _tg_edit(tg_token, chat_id, msg_id, "⚠️ <b>El grupo ya había sido eliminado</b>")
                 
             elif cb_data == "ignore":
                 _tg_answer(tg_token, cb_id, "❌ Operación cancelada")
-                _tg_edit(tg_token, chat_id, msg_id, "❌ *Borrado ignorado*")
+                _tg_edit(tg_token, chat_id, msg_id, "❌ <b>Borrado ignorado</b>")
                 
         return {"ok": True}
     except Exception as e:
@@ -209,14 +222,13 @@ def setup_webhook(request: Request):
     tg_token = os.getenv("TELEGRAM_TOKEN")
     if not tg_token: return {"error": "Falta TELEGRAM_TOKEN"}
     
-    # Detecta automáticamente la URL base de Render
-    base_url = str(request.base_url).rstrip("/")
-    webhook_url = f"{base_url}/api/telegram-webhook"
+    host = request.headers.get("host")
+    webhook_url = f"https://{host}/api/telegram-webhook"
     
     url = f"https://api.telegram.org/bot{tg_token}/setWebhook?url={webhook_url}"
     try:
         res = urllib.request.urlopen(url)
-        return {"status": "ok", "respuesta": json.loads(res.read().decode('utf-8'))}
+        return {"status": "ok", "webhook_url": webhook_url, "respuesta": json.loads(res.read().decode('utf-8'))}
     except Exception as e:
         return {"error": str(e)}
 
