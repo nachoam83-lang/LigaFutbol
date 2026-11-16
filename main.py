@@ -6,6 +6,119 @@ from datetime import datetime, timedelta
 from functools import lru_cache
 import json
 import os
+import os
+import json
+import base64
+import urllib.request
+import threading
+from pydantic import BaseModel
+from fastapi import HTTPException
+
+# ─── CONFIGURACIÓN GITHUB ───
+GITHUB_REPO = "nachoam83-lang/LigaFutbol"
+GITHUB_FILE = "static/grupos.json"
+GITHUB_BRANCH = "main"
+github_lock = threading.Lock()
+
+class SolicitudGrupo(BaseModel):
+    equipo: str
+    url: str
+
+def _github_api(method, path, data=None):
+    token = os.getenv("TELEGRAM_TOKEN")
+    if not token:
+        raise HTTPException(status_code=500, detail="Falta TELEGRAM_TOKEN en Render")
+    
+    url = f"https://api.github.com/repos/{GITHUB_REPO}/contents/{path}"
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+        "User-Agent": "LigaFutbol-App"
+    }
+    
+    req = urllib.request.Request(url, method=method, headers=headers)
+    if data:
+        req.add_header('Content-Type', 'application/json')
+        req.data = json.dumps(data).encode('utf-8')
+        
+    try:
+        with urllib.request.urlopen(req) as response:
+            return json.loads(response.read().decode('utf-8'))
+    except urllib.error.HTTPError as e:
+        if e.code == 404: return None # Archivo no encontrado
+        if e.code == 409: raise HTTPException(status_code=409, detail="Conflicto de versión en GitHub")
+        raise HTTPException(status_code=e.code, detail=f"Error de GitHub: {e.reason}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error de red: {str(e)}")
+
+def leer_grupos():
+    # 1. Intentar leer de GitHub
+    try:
+        res = _github_api("GET", GITHUB_FILE)
+        if res and "content" in res:
+            contenido = base64.b64decode(res["content"]).decode('utf-8')
+            return json.loads(contenido), res["sha"]
+    except Exception as e:
+        print(f"⚠️ Fallo al leer de GitHub, usando local: {e}")
+    
+    # 2. Fallback a local
+    if os.path.exists(GITHUB_FILE):
+        try:
+            with open(GITHUB_FILE, "r", encoding="utf-8") as f:
+                return json.load(f), None
+        except: pass
+        
+    return {}, None
+
+def guardar_grupos(grupos, sha_actual):
+    contenido_str = json.dumps(grupos, ensure_ascii=False, indent=2)
+    
+    # 1. Guardar localmente (para no perderlo si falla GitHub)
+    os.makedirs(os.path.dirname(GITHUB_FILE), exist_ok=True)
+    with open(GITHUB_FILE, "w", encoding="utf-8") as f:
+        f.write(contenido_str)
+
+    # 2. Guardar en GitHub
+    try:
+        contenido_b64 = base64.b64encode(contenido_str.encode('utf-8')).decode('utf-8')
+        data = {
+            "message": "Actualizar grupo de WhatsApp vía App",
+            "content": contenido_b64,
+            "branch": GITHUB_BRANCH
+        }
+        if sha_actual:
+            data["sha"] = sha_actual
+            
+        _github_api("PUT", GITHUB_FILE, data)
+        return True
+    except Exception as e:
+        print(f"❌ Error guardando en GitHub: {e}")
+        return False
+
+@app.get("/api/grupos")
+def get_grupos():
+    grupos, _ = leer_grupos()
+    return grupos
+
+@app.post("/api/solicitar-grupo")
+def post_solicitar_grupo(req: SolicitudGrupo):
+    if "chat.whatsapp.com" not in req.url:
+        raise HTTPException(status_code=400, detail="Enlace de WhatsApp no válido")
+        
+    with github_lock:
+        grupos, sha = leer_grupos()
+        
+        if req.equipo in grupos:
+            raise HTTPException(status_code=409, detail="Este equipo ya tiene un grupo asignado")
+            
+        grupos[req.equipo] = req.url
+        exito = guardar_grupos(grupos, sha)
+        
+        if not exito:
+            # Si falla GitHub, lo dejamos guardado en local pero avisamos
+            return {"status": "warning", "mensaje": "Guardado localmente, pero falló en GitHub"}
+            
+        return {"status": "ok", "mensaje": "Grupo guardado correctamente"}
 
 app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
