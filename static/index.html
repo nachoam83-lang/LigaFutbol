@@ -531,22 +531,31 @@
                         </div>
                     `;
                 } else {
-                    html += `
-                        <button onclick="abrirModalGrupoIdx(${idx})" class="bg-[#25D366] text-white text-[11px] font-bold px-3 py-1.5 rounded shadow hover:bg-green-600 transition">
-                            <i class="fas fa-link mr-1"></i> Añadir
-                        </button>
-                    `;
-                }
-                html += `</div>`;
-                contenedor.innerHTML += html;
-            });
+
+let tempEquipoGrupo = "";
+        let tempEquipoBorrar = "";
+
+        function abrirModalGrupo(nombreEquipo, nombreCompeticion) {
+            tempEquipoGrupo = `${nombreEquipo} (${nombreCompeticion})`;
+            document.getElementById('input-url-grupo').value = '';
+            const modal = document.getElementById('modal-grupo');
+            modal.classList.remove('hide');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
         }
 
-        let tempEquipoBorrar = "";
-        function abrirModalBorrado(nombreEquipo, nombreCompeticion) {
-            tempEquipoBorrar = `${nombreEquipo} (${nombreCompeticion})`;
-            document.getElementById('texto-equipo-borrar').innerText = tempEquipoBorrar;
-            document.getElementById('input-motivo-borrado').value = '';
+        function abrirModalGrupoIdx(idx) {
+            const eq = equipos[idx];
+            if (!eq) return;
+            abrirModalGrupo(eq.equipoFavorito, eq.nombreCompeticion);
+        }
+
+        function abrirModalBorrado(idx) {
+            const eq = equipos[idx];
+            if (!eq) return;
+            const nombreCompleto = `${eq.equipoFavorito} (${eq.nombreCompeticion})`;
+            tempEquipoBorrar = nombreCompleto;
+            document.getElementById('texto-equipo-borrar').innerText = nombreCompleto;
+            document.getElementById('input-motivo-borrar').value = '';
             const modal = document.getElementById('modal-borrado');
             modal.classList.remove('hide');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
@@ -591,34 +600,6 @@
             }
         }
 
-        let tempEquipoGrupo = "";
-        let tempEquipoBorrar = "";
-        
-        function abrirModalGrupo(nombreEquipo, nombreCompeticion) {
-            tempEquipoGrupo = `${nombreEquipo} (${nombreCompeticion})`;
-            document.getElementById('input-url-grupo').value = '';
-            const modal = document.getElementById('modal-grupo');
-            modal.classList.remove('hide');
-            setTimeout(() => modal.classList.remove('opacity-0'), 10);
-        }
-
-        function abrirModalGrupoIdx(idx) {
-            const eq = equipos[idx];
-            if (!eq) return;
-            abrirModalGrupo(eq.equipoFavorito, eq.nombreCompeticion);
-        }
-        
-        // 3. Función auxiliar por índice para el aspa roja de borrado en Ajustes
-        function abrirModalBorrado(idx) {
-            const eq = equipos[idx];
-            if (!eq) return;
-            const nombreCompleto = `${eq.equipoFavorito} (${eq.nombreCompeticion})`;
-            tempEquipoBorrar = nombreCompleto;
-            document.getElementById('texto-equipo-borrar').innerText = nombreCompleto;
-            document.getElementById('modal-borrado').classList.remove('hide');
-            setTimeout(() => document.getElementById('modal-borrado').classList.remove('opacity-0'), 10);
-        }
-
         function abrirModalGrupoDesdeDetalle() {
             if (equipoActual) {
                 abrirModalGrupo(equipoActual.equipoFavorito, equipoActual.nombreCompeticion);
@@ -653,7 +634,7 @@
                     vibrar(50);
                     alert("Enlace guardado correctamente. El grupo ya está activo.");
                     cerrarModalGrupo();
-                    await cargarGrupos(); // Recargamos para actualizar la vista
+                    await cargarGrupos();
                 } else if (res.status === 409) {
                     alert("Este equipo ya tiene un grupo asignado. No se puede modificar.");
                     cerrarModalGrupo();
@@ -667,6 +648,7 @@
                 btn.innerText = 'Guardar Enlace';
             }
         }
+             
         // --- FIN BLOQUE GRUPOS ---
 
         function vibrar(ms = 40) {
