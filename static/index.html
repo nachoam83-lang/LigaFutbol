@@ -77,23 +77,6 @@
         #modal-mapa { transition: opacity 0.3s, visibility 0.3s; }
         #modal-grupo { transition: opacity 0.3s, visibility 0.3s; }
 
-            <!-- Modal de Borrado (v1.1.15) -->
-        <div id="modal-borrado" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalBorrado()">
-            <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
-                <h3 class="text-lg font-black text-center text-red-600 mb-2">¡ATENCIÓN!</h3>
-                <p class="text-xs text-gray-500 text-center mb-4">Vas a solicitar eliminar el enlace de este grupo. El administrador recibirá un aviso para confirmarlo.</p>
-            
-                <p id="texto-equipo-borrar" class="text-sm font-bold text-center mb-3"></p>
-
-                <textarea id="input-motivo-borrado" placeholder="Escribe el motivo (ej: enlace caducado, grupo equivocado...)" rows="3" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-4"></textarea>
-            
-                <div class="flex gap-2">
-                    <button onclick="cerrarModalBorrado()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg text-sm">Cancelar</button>
-                    <button onclick="enviarSolicitudBorrado()" id="btn-enviar-borrado" class="flex-1 bg-red-500 text-white font-bold py-3 rounded-lg text-sm shadow hover:bg-red-600 transition">Solicitar Borrado</button>
-                </div>
-            </div>
-        </div>
-        
         #drawer-overlay { transition: opacity 0.3s; }
         #drawer-menu { transition: transform 0.3s ease-in-out; transform: translateX(100%); }
         #drawer-menu.open { transform: translateX(0); }
@@ -152,6 +135,24 @@
         </div>
     </div>
 
+         <!-- Modal de Borrado (v1.1.15) -->
+        <div id="modal-borrado" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalBorrado()">
+            <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
+                <h3 class="text-lg font-black text-center text-red-600 mb-2">¡ATENCIÓN!</h3>
+                <p class="text-xs text-gray-500 text-center mb-4">Vas a solicitar eliminar el enlace de este grupo. El administrador recibirá un aviso para confirmarlo.</p>
+            
+                <p id="texto-equipo-borrar" class="text-sm font-bold text-center mb-3"></p>
+
+                <textarea id="input-motivo-borrado" placeholder="Escribe el motivo (ej: enlace caducado, grupo equivocado...)" rows="3" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg text-sm mb-4"></textarea>
+            
+                <div class="flex gap-2">
+                    <button onclick="cerrarModalBorrado()" class="flex-1 bg-gray-200 text-gray-800 font-bold py-3 rounded-lg text-sm">Cancelar</button>
+                    <button onclick="enviarSolicitudBorrado()" id="btn-enviar-borrado" class="flex-1 bg-red-500 text-white font-bold py-3 rounded-lg text-sm shadow hover:bg-red-600 transition">Solicitar Borrado</button>
+                </div>
+            </div>
+        </div>
+        
+    
     <div id="pantalla-carga" class="oculto">
         <div class="loader-juego mb-6"><div class="escudo-wrapper"><img id="carga-escudo" src="/static/logo.png" alt="Escudo"></div></div>
         <h2 id="carga-texto" class="text-2xl font-black mb-2 tracking-wider">CARGANDO AGENDA</h2>
