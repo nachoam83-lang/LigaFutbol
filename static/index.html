@@ -864,8 +864,8 @@
                     if (isOnline) {
                         try {
                             const [res, resClasif] = await Promise.all([
-                                fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 2000 }),
-                                fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 2000 })
+                                fetchWithTimeout(`/api/resultados/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 20000 }),
+                                fetchWithTimeout(`/api/clasificacion/${eq.idDeporte}/${eq.idCompeticion}/${eq.idCategoria}/${eq.idGrupo}`, { timeout: 20000 })
                             ]);
                             [partidos, clasif] = await Promise.all([res.json(), resClasif.json()]);
 
