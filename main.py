@@ -52,11 +52,15 @@ async def recibir_solicitud_borrado(request: Request):
     except Exception as e:
         return {"status": "error", "mensaje": str(e)}
 
-# ─── RESOLVER O BORRAR UN AVISO PENDIENTE ───
+# ─── RESOLVER O BORRAR UN AVISO PENDIENTE (Corregido) ───
 @app.post("/api/admin/resolver/{aviso_id}")
-def resolver_aviso(aviso_id: int):
+def resolver_aviso(aviso_id: str):  # Usamos str para evitar conflictos de tipos
     global SOLICITUDES_PENDIENTES
-    SOLICITUDES_PENDIENTES = [aviso for aviso in SOLICITUDES_PENDIENTES if aviso.get("id") != aviso_id]
+    # Comparamos convirtiendo ambos a string de forma segura
+    SOLICITUDES_PENDIENTES = [
+        aviso for aviso in SOLICITUDES_PENDIENTES 
+        if str(aviso.get("id")) != str(aviso_id)
+    ]
     return {"status": "success", "total_restantes": len(SOLICITUDES_PENDIENTES)}
 
 # ─── LIMPIAR TODOS LOS PENDIENTES ───
