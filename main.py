@@ -19,6 +19,16 @@ app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# ─── MODO ADMINISTRADOR: PENDIENTES TELEGRAM ───
+@app.get("/api/admin/pendientes")
+def verificar_pendientes():
+    try:
+        # Aquí puedes dejar la lista vacía por ahora o simular un aviso poniendo pendientes = [1] para probar
+        pendientes = [] 
+        return {"total": len(pendientes), "avisos": pendientes}
+    except Exception as e:
+        return {"total": 0, "avisos": []}
+
 # ─── CONFIGURACIÓN GITHUB ───
 GITHUB_REPO = "nachoam83-lang/LigaFutbol"
 GITHUB_FILE = "static/grupos.json"
