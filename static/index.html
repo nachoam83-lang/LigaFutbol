@@ -170,96 +170,95 @@
     </div>
 
     <!-- PANTALLA DE AJUSTES -->
-    <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen pb-24">
-        <div class="text-white h-[88px] px-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
-            <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
-            <h1 class="text-xl font-bold">Ajustes</h1>
-        </div>
-        <div class="p-4 space-y-4">
-             
-           <!-- TARJETA UNIFICADA: RUTAS Y MAPAS -->
-            <div class="card p-4 space-y-4">
-                <div>
-                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Dirección de Casa</label>
-                    <p class="text-xs text-gray-500 mb-2">Se usará para calcular el tiempo de viaje a los partidos.</p>
-                    <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-                </div>
-
-                <div class="border-t pt-4 flex justify-between items-center" style="border-color: var(--border-color);">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-800">Tiempo de Viaje</label>
-                        <p class="text-xs text-gray-500">Mostrar hora de salida recomendada</p>
-                    </div>
-                    <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-ruta" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
-                    </label>
-                </div>
-
-                <div class="border-t pt-4" style="border-color: var(--border-color);">
-                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">App de Mapas por Defecto</label>
-                    <select id="select-mapa-defecto" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-                        <option value="ask">Preguntar siempre</option>
-                        <option value="waze">Waze</option>
-                        <option value="google">Google Maps</option>
-                        <option value="apple">Apple Maps</option>
-                    </select>
-                </div>
-
-                <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-lg shadow transition text-sm">Guardar Cambios</button>
+   <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen pb-24">
+    <div class="text-white h-[88px] px-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
+        <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
+        <h1 class="text-xl font-bold">Ajustes</h1>
+    </div>
+    <div class="p-4 space-y-4">
+         
+       <!-- TARJETA UNIFICADA: RUTAS Y MAPAS -->
+        <div class="card p-4 space-y-4">
+            <div>
+                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Dirección de Casa</label>
+                <p class="text-xs text-gray-500 mb-2">Se usará para calcular el tiempo de viaje a los partidos.</p>
+                <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
             </div>
-            
-            <div class="card p-4">
-                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Mantenimiento</label>
-                <p class="text-xs text-gray-500 mb-2">Si la app va lenta o ves datos erróneos, limpia la caché.</p>
-                <button onclick="limpiarCacheApp()" class="w-full bg-red-100 text-red-600 font-bold py-3 rounded-lg shadow-sm border border-red-200 transition hover:bg-red-200">
-                    <i class="fas fa-broom mr-2"></i> Limpiar Caché y Actualizar
+
+            <div class="border-t pt-4 flex justify-between items-center" style="border-color: var(--border-color);">
+                <div>
+                    <label class="block text-sm font-bold text-gray-800">Tiempo de Viaje</label>
+                    <p class="text-xs text-gray-500">Mostrar hora de salida recomendada</p>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                    <input type="checkbox" id="toggle-ruta" class="sr-only peer">
+                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                </label>
+            </div>
+
+            <div class="border-t pt-4" style="border-color: var(--border-color);">
+                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">App de Mapas por Defecto</label>
+                <select id="select-mapa-defecto" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                    <option value="ask">Preguntar siempre</option>
+                    <option value="waze">Waze</option>
+                    <option value="google">Google Maps</option>
+                    <option value="apple">Apple Maps</option>
+                </select>
+            </div>
+
+            <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-lg shadow transition text-sm">Guardar Cambios</button>
+        </div>
+        
+        <div class="card p-4">
+            <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Mantenimiento</label>
+            <p class="text-xs text-gray-500 mb-2">Si la app va lenta o ves datos erróneos, limpia la caché.</p>
+            <button onclick="limpiarCacheApp()" class="w-full bg-red-100 text-red-600 font-bold py-3 rounded-lg shadow-sm border border-red-200 transition hover:bg-red-200">
+                <i class="fas fa-broom mr-2"></i> Limpiar Caché y Actualizar
+            </button>
+        </div>
+
+        <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.02.00) -->
+        <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
+            <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">WHATSAPP</div>
+            <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
+            <p class="text-xs text-gray-600 mb-3">DELEGADO. Sigue estas normas para crear el grupo:</p>
+            <ul class="text-[11px] text-gray-600 mb-4 space-y-1 list-disc pl-4">
+                <li><b>Nombre:</b> Categoría + Colegio + Color/Letra.</li>
+                <li><b>Mensajes temporales:</b> Desactivados.</li>
+                <li><b>Permisos activos:</b> Enviar mensajes, Invitar con enlace, Aprobar miembros.</li>
+                <li><b>El resto de permisos:</b> Desactivados.</li>
+            </ul>
+
+            <div class="space-y-3">
+                <p class="text-[11px] font-bold text-gray-700 uppercase mt-2">Tus equipos:</p>
+                <div id="lista-grupos-ajustes"></div>
+            </div>
+        </div>
+
+        <!-- BANNER DE AVISOS DE TELEGRAM Y GESTIÓN EN APP (Admin) -->
+        <div id="admin-banner-avisos" class="hide bg-[#25D366] text-white p-3 rounded-lg shadow-md mb-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-bell text-xl animate-bounce"></i>
+                    <div>
+                        <p class="text-xs font-black uppercase">Modo Administrador</p>
+                        <p class="text-[11px] font-medium leading-tight">Gestiona las solicitudes abajo o ábrelas en Telegram:</p>
+                    </div>
+                </div>
+                <button onclick="gestionarSolicitudesAdmin()" class="bg-white text-[#25D366] font-black text-xs px-3 py-2 rounded-lg shadow hover:bg-gray-100 transition">
+                    Ir a Telegram
                 </button>
             </div>
+            <!-- Contenedor donde aparecerán dinámicamente las tarjetas con los botones -->
+            <div id="contenedor-avisos-admin" class="mt-3"></div>
+        </div>
 
-            <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.02.00) -->
-            <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
-                <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">WHATSAPP</div>
-                <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
-                <p class="text-xs text-gray-600 mb-3">DELEGADO. Sigue estas normas para crear el grupo:</p>
-                <ul class="text-[11px] text-gray-600 mb-4 space-y-1 list-disc pl-4">
-                    <li><b>Nombre:</b> Categoría + Colegio + Color/Letra.</li>
-                    <li><b>Mensajes temporales:</b> Desactivados.</li>
-                    <li><b>Permisos activos:</b> Enviar mensajes, Invitar con enlace, Aprobar miembros.</li>
-                    <li><b>El resto de permisos:</b> Desactivados.</li>
-                </ul>
-
-           <div class="space-y-3">
-                    <p class="text-[11px] font-bold text-gray-700 uppercase mt-2">Tus equipos:</p>
-                    <div id="lista-grupos-ajustes"></div>
-                </div>
-            </div>
-
-            <!-- BANNER DE AVISOS DE TELEGRAM (Solo visible para el Admin) -->
-            <div id="admin-banner-avisos" class="hide bg-[#25D366] text-white p-3 rounded-lg shadow-md mb-4">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-bell text-xl animate-bounce"></i>
-                        <div>
-                            <p class="text-xs font-black uppercase">Modo Administrador</p>
-                            <p class="text-[11px] font-medium leading-tight">Gestiona las solicitudes abajo o ábrelas en Telegram:</p>
-                        </div>
-                    </div>
-                    <button onclick="gestionarSolicitudesAdmin()" class="bg-white text-[#25D366] font-black text-xs px-3 py-2 rounded-lg shadow hover:bg-gray-100 transition">
-                        Ir a Telegram
-                    </button>
-                </div>
-
-                <!-- CONTENEDOR DINÁMICO DE LAS TARJETAS CON BOTONES APROBAR/RECHAZAR -->
-                <div id="contenedor-avisos-admin" class="mt-3"></div>
-            </div>
-
-            <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.02.00</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
-            </div>
+        <div class="text-center pt-6 pb-4">
+            <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.02.00</p>
+            <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
         </div>
     </div>
+</div>
 
     <!-- FORMULARIO DE EQUIPO -->
     <div id="screen-formulario" class="hide max-w-md mx-auto min-h-screen" style="background-color: var(--bg-color);">
@@ -474,10 +473,20 @@
             }
         }
 
-        async function comprobarAvisosAdmin() {
+       async function comprobarAvisosAdmin() {
             const esAdmin = localStorage.getItem('es_admin_liga') === 'true';
             const banner = document.getElementById('admin-banner-avisos');
             const textoAviso = document.getElementById('admin-texto-aviso');
+            
+            // Buscamos o creamos un contenedor para los botones dentro del banner
+            let contenedorAvisos = document.getElementById('contenedor-avisos-admin');
+            if (banner && !contenedorAvisos) {
+                contenedorAvisos = document.createElement('div');
+                contenedorAvisos.id = 'contenedor-avisos-admin';
+                contenedorAvisos.className = 'mt-3 pt-2 border-t border-white/20';
+                banner.appendChild(contenedorAvisos);
+            }
+
             if (!banner || !textoAviso) return;
 
             if (!esAdmin) {
@@ -485,7 +494,7 @@
                 return;
             }
 
-            // Si es admin, el banner SIEMPRE es visible en su móvil
+            // Si es admin, el banner SIEMPRE es visible
             banner.classList.remove('hide');
 
             try {
@@ -493,35 +502,65 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data.total > 0) {
-                        // HAY AVISOS: Banner verde brillante
+                        // HAY AVISOS: Banner verde brillante + Pintar tarjetas con botones
                         banner.classList.remove('bg-slate-800');
                         banner.classList.add('bg-[#25D366]');
                         textoAviso.innerText = `Hay ${data.total} solicitud(es) de grupo pendientes.`;
+                        
+                        if (contenedorAvisos) {
+                            contenedorAvisos.innerHTML = `
+                                <div class="space-y-2 mt-2">
+                                    ${data.avisos.map(aviso => `
+                                        <div class="bg-white text-gray-800 p-2.5 rounded-lg flex justify-between items-center text-xs shadow-sm">
+                                            <div>
+                                                <span class="font-bold">ID: ${aviso.id}</span>
+                                                <p class="text-[10px] text-gray-500">${JSON.stringify(aviso.detalles)}</p>
+                                            </div>
+                                            <div class="flex gap-1.5">
+                                                <button onclick="procesarAviso(${aviso.id}, 'aprobar')" class="bg-green-600 hover:bg-green-700 text-white font-bold px-2.5 py-1.5 rounded transition">Aprobar</button>
+                                                <button onclick="procesarAviso(${aviso.id}, 'rechazar')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2.5 py-1.5 rounded transition">Rechazar</button>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            `;
+                        }
                     } else {
-                        // SIN AVISOS: Banner oscuro discreto indicando que el modo admin está activo
+                        // SIN AVISOS: Banner oscuro discreto
                         banner.classList.remove('bg-[#25D366]');
                         banner.classList.add('bg-slate-800');
                         textoAviso.innerText = "Modo Administrador activo · Sin avisos pendientes.";
+                        if (contenedorAvisos) contenedorAvisos.innerHTML = "";
                     }
                 }
             } catch (e) {
-                // Si falla la red, mostramos igualmente el estado activo en oscuro
                 banner.classList.remove('bg-[#25D366]');
                 banner.classList.add('bg-slate-800');
                 textoAviso.innerText = "Modo Administrador activo.";
+                if (contenedorAvisos) contenedorAvisos.innerHTML = "";
+            }
+        }
+
+        async function procesarAviso(id, accion) {
+            try {
+                const res = await fetch(`/api/admin/resolver/${id}`, { method: 'POST' });
+                if (res.ok) {
+                    comprobarAvisosAdmin(); // Recarga la lista de avisos al momento
+                } else {
+                    alert("No se pudo procesar la solicitud.");
+                }
+            } catch (e) {
+                alert("Error de conexión al procesar la solicitud.");
             }
         }
 
         function gestionarSolicitudesAdmin() {
-        // 1. Reemplaza 'TuBotDeTelegram' por el alias (username) real de tu bot de Telegram.
-        // 2. El parámetro '?start=admin_solicitudes' le indica al bot que debe arrancar 
-        //    mostrando el panel de gestión, los mensajes y los botones interactivos.
-        const urlTelegram = "https://t.me/@PSJ_Liga_aprobador_bot?start=admin_solicitudes";
-    
-        // Usar location.href en lugar de window.open evita por completo la pestaña en blanco 
-        // y abre la app de Telegram de forma fluida en iOS.
-        window.location.href = urlTelegram;
-}
+            // Limpia opcionalmente en segundo plano
+            fetch('/api/admin/limpiar', { method: 'POST' }).catch(() => {});
+            
+            const urlTelegram = "https://t.me/PSJ_Liga_aprobador_bot?start=admin_solicitudes";
+            window.location.href = urlTelegram;
+        }
 
         
         let cacheCalendarioGlobal = null;
