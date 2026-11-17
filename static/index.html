@@ -483,6 +483,20 @@
                 banner.appendChild(contenedorAvisos);
             }
 
+            // Añadimos también un botón rápido para cerrar sesión de admin al final del banner
+            let botonCerrarAdmin = document.getElementById('btn-cerrar-admin');
+            if (!botonCerrarAdmin) {
+                botonCerrarAdmin = document.createElement('div');
+                botonCerrarAdmin.id = 'btn-cerrar-admin';
+                botonCerrarAdmin.className = 'mt-3 pt-2 border-t border-white/10 flex justify-end';
+                botonCerrarAdmin.innerHTML = `
+                    <button type="button" onclick="cerrarModoAdmin()" class="text-[11px] text-white/70 hover:text-white underline cursor-pointer">
+                        🔒 Cerrar Modo Administrador
+                    </button>
+                `;
+                banner.appendChild(botonCerrarAdmin);
+            }
+
             try {
                 const res = await fetchWithTimeout('/api/admin/pendientes', { timeout: 3000 });
                 if (res.ok) {
@@ -500,16 +514,16 @@
                                     
                                     return `
                                         <div class="bg-white text-gray-800 p-3 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs shadow-md gap-3">
-                                            <!-- Bloque de información con ID arriba y texto sin recortes -->
+                                            <!-- Texto flexible que se ajusta perfectamente -->
                                             <div class="flex-grow w-full sm:w-auto">
                                                 <div class="font-bold text-[10px] text-indigo-600 mb-0.5">📋 Solicitud ID: ${aviso.id}</div>
                                                 <div class="font-black text-gray-900 text-sm leading-snug break-words">🗑️ ${equipo}</div>
                                                 <div class="text-[11px] text-gray-600 mt-1"><strong>Motivo:</strong> ${motivo}</div>
                                             </div>
-                                            <!-- Botones apilados verticalmente a la derecha -->
-                                            <div class="flex flex-col gap-1.5 w-full sm:w-auto flex-shrink-0">
-                                                <button type="button" onclick="procesarAviso(${aviso.id}, 'aprobar')" class="bg-green-600 hover:bg-green-700 text-white font-bold px-4 py-1.5 rounded shadow transition cursor-pointer text-center">Aprobar</button>
-                                                <button type="button" onclick="procesarAviso(${aviso.id}, 'rechazar')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-1.5 rounded shadow transition cursor-pointer text-center">Rechazar</button>
+                                            <!-- Botones con tamaño fijo y uniforme (w-28) -->
+                                            <div class="flex flex-col gap-1.5 w-full sm:w-auto flex-shrink-0 items-end">
+                                                <button type="button" onclick="procesarAviso(${aviso.id}, 'aprobar')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 rounded shadow transition cursor-pointer text-center w-28">Aprobar</button>
+                                                <button type="button" onclick="procesarAviso(${aviso.id}, 'rechazar')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 rounded shadow transition cursor-pointer text-center w-28">Rechazar</button>
                                             </div>
                                         </div>
                                     `;
@@ -528,6 +542,15 @@
                 banner.classList.add('bg-slate-800');
                 textoAviso.innerText = "Modo Administrador activo.";
                 contenedorAvisos.innerHTML = "";
+            }
+        }
+
+        // Función para salir del Modo Administrador de forma segura en dispositivos ajenos
+        function cerrarModoAdmin() {
+            if (confirm("¿Seguro que deseas salir del Modo Administrador en este dispositivo?")) {
+                localStorage.removeItem('es_admin_liga');
+                localStorage.removeItem('admin_activo');
+                location.reload(); // Recarga la app y oculta todo el panel de admin al instante
             }
         }
 
