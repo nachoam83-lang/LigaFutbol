@@ -50,7 +50,7 @@ def ejecutar_todo():
         except Exception as e:
             print(f"❌ Error crítico en ECM: {e}")
     
-    # Extraer Canal
+    # Extraer Canal (ahora con el buscador dinámico de PDF reparado)
     try:
         extraer_canal()
     except Exception as e:
@@ -62,26 +62,27 @@ def ejecutar_todo():
         subprocess.run(["git", "config", "user.email", "bot@ligafutbol.com"], check=True)
         subprocess.run(["git", "config", "user.name", "LigaFutbol Bot"], check=True)
         
-        subprocess.run(["git", "add", "."], check=False)
+        # Añadimos específicamente los json generados y la carpeta static por si hay escudos nuevos
+        subprocess.run(["git", "add", "datos_canal.json", "datos_liga.json", "static/"], check=False)
         
         status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
         
         if status.stdout.strip():
-            subprocess.run(["git", "commit", "-m", "Actualización automática de datos"], check=True)
+            subprocess.run(["git", "commit", "-m", "Actualización automática de datos y horarios"], check=True)
             
             pull_result = subprocess.run(["git", "pull", "origin", "main", "--rebase", "--autostash"], capture_output=True, text=True, check=False)
             
             if pull_result.returncode == 0:
                 push_result = subprocess.run(["git", "push", "origin", "main"], capture_output=True, text=True, check=False)
                 if push_result.returncode == 0:
-                    print("✅ ¡Todo subido a GitHub!")
+                    print("✅ ¡Todo actualizado y subido a GitHub con éxito!")
                 else:
                     print("❌ Error al hacer push:", push_result.stderr)
             else:
                 print("⚠️ No se pudo hacer pull.", pull_result.stderr)
                 subprocess.run(["git", "rebase", "--abort"], check=False)
         else:
-            print("ℹ️ No hay cambios.")
+            print("ℹ️ No hay cambios nuevos en los JSON para subir.")
     except Exception as e:
         print(f"❌ Error inesperado en Git: {e}")
         subprocess.run(["git", "rebase", "--abort"], check=False)

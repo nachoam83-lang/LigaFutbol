@@ -14,7 +14,6 @@ def extraer_canal():
     url_base = "https://www.ocioydeportecanal.es"
     url_evento = f"{url_base}/es/event/view/240702-competicion-escuela-2627"
     url_api = f"{url_base}/es/matches/loadPublicEventMatchesView/240702"
-    url_pdf = "https://32760c338621fc279e50-75ecfd1a96ffdf4c500d931ef477c188.ssl.cf3.rackcdn.com/56/6e/4e/43/f4/63/74/f2/f2/a7/f9/c4/6a/3d/56/24/6ae9bd2dec243.pdf"
     
     categorias = {"PB": "Prebenjamín", "B": "Benjamín", "A": "Alevín", "I": "Infantil", "CJ": "Cadete/Juvenil", "C": "Cadete", "J": "Juvenil"}
 
@@ -44,21 +43,18 @@ def extraer_canal():
             if res.status_code == 200:
                 soup_detalle = BeautifulSoup(res.text, 'html.parser')
                 
-                # 1. Buscamos el marcador en las clases típicas
                 score_div = soup_detalle.select_one('.match-score, .score, .result, .match-result')
                 if score_div:
                     match_res = re.findall(r'(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)', score_div.text.strip())
                     if match_res:
                         return int(match_res[0][0]), int(match_res[0][1])
                 
-                # 2. Si no, buscamos en todo el texto pero con el regex blindado
                 matches = re.findall(r'(?<!\d)(\d{1,2})\s*-\s*(\d{1,2})(?!\d)', soup_detalle.text)
                 if matches:
                     return int(matches[0][0]), int(matches[0][1])
         except Exception:
             pass
         
-        # PARCHE DE SEGURIDAD: Si no encontramos marcador, forzamos 0-3
         print("       -> No se encontró marcador. Asignando 0-3 por defecto.")
         return 0, 3
 
@@ -118,7 +114,7 @@ def extraer_canal():
                         rl, rv = obtener_resultado_detalle(url_detalle, session)
                         print(f"    🏳️ Partido no presentado: {loc} vs {vis}. Resultado asignado: {rl}-{rv}")
                     else:
-                        rl, rv = 0, 3 # Si no hay enlace, asumimos 0-3
+                        rl, rv = 0, 3 
                 else:
                     scoreboard = p.select('.match-round-scoreboard span')
                     rl, rv = 0, 0
@@ -143,36 +139,62 @@ def extraer_canal():
         except Exception:
             break
 
-    # --- 2. PDF (Extrae Horas y Campos Futuros) ---
-    print("  📄 Procesando PDF...")
+    # --- 2. PDF (Búsqueda dinámica de horarios) ---
+    print("  📄 Buscando enlace dinámico del PDF en la web...")
+    url_pdf = None
     try:
-        response_pdf = requests.get(url_pdf, verify=False, timeout=15)
-        with pdfplumber.open(io.BytesIO(response_pdf.content)) as pdf:
-            for page in pdf.pages[1:]:
-                tables = page.extract_tables() or page.extract_tables({"vertical_strategy": "text", "horizontal_strategy": "text"})
-                for tabla in tables:
-                    if len(tabla) < 5 or not any("LIGA INTERNA" in str(c) for fila in tabla[:4] for c in fila if c): continue
-                    
-                    fecha_cruda = next((str(c).replace('\n', ' ') for c in tabla[0] if c), "")
-                    fecha_iso = parsear_fecha_pdf(fecha_cruda)
-                    if fecha_iso == "2026-01-01": continue
+        url_pagina_canal = "https://www.ocioydeportecanal.es/es/page/view/escuela_futbol"
+        response_pagina = requests.get(url_pagina_canal, verify=False, timeout=10)
+        soup_pagina = BeautifulSoup(response_pagina.text, 'html.parser')
+        
+        for a in soup_pagina.find_all('a', href=True):
+            href = a.get('href', '')
+            texto_a = a.text.strip().upper()
+            if ".pdf" in href.lower() or "aquí" in texto_a or "aqui" in texto_a:
+                texto_contexto = a.parent.text.lower() if a.parent else ""
+                if "horarios" in texto_contexto or "días" in texto_contexto or "partidos" in texto_contexto:
+                    url_pdf = href if href.startswith("http") else f"{url_base}{href}"
+                    break
+        
+        if not url_pdf:
+            for a in soup_pagina.find_all('a', href=True):
+                if ".pdf" in a.get('href', '').lower():
+                    url_pdf = a.get('href')
+                    if not url_pdf.startswith("http"):
+                        url_pdf = f"{url_base}{url_pdf}"
+                    break
 
-                    for fila in tabla:
-                        if not fila[0] or "-" not in str(fila[0]): continue
-                        hora = str(fila[0]).split('-')[0].strip()
-                        equipos_en_fila = [str(c).strip() for c in fila if c and re.match(r"^[A-Z]{1,2}\d+$", str(c).strip())]
+        if url_pdf:
+            print(f"    🔗 Enlace al PDF encontrado: {url_pdf}")
+            response_pdf = requests.get(url_pdf, verify=False, timeout=15)
+            with pdfplumber.open(io.BytesIO(response_pdf.content)) as pdf:
+                for page in pdf.pages[1:]:
+                    tables = page.extract_tables() or page.extract_tables({"vertical_strategy": "text", "horizontal_strategy": "text"})
+                    for tabla in tables:
+                        if len(tabla) < 5 or not any("LIGA INTERNA" in str(c) for fila in tabla[:4] for c in fila if c): continue
                         
-                        for i in range(0, len(equipos_en_fila), 2):
-                            if i + 1 < len(equipos_en_fila):
-                                loc = traducir_equipo(equipos_en_fila[i])
-                                vis = traducir_equipo(equipos_en_fila[i+1])
-                                if not es_equipo_valido(loc) or not es_equipo_valido(vis): continue
-                                
-                                campo_num = (i // 2) + 1
-                                key = "_".join(sorted([loc, vis]))
-                                if key in diccionario_partidos:
-                                    diccionario_partidos[key]["FechaHora"] = f"{fecha_iso}T{hora}:00"
-                                    diccionario_partidos[key]["Campo"] = f"Campo {campo_num}"
+                        fecha_cruda = next((str(c).replace('\n', ' ') for c in tabla[0] if c), "")
+                        fecha_iso = parsear_fecha_pdf(fecha_cruda)
+                        if fecha_iso == "2026-01-01": continue
+
+                        for fila in tabla:
+                            if not fila[0] or "-" not in str(fila[0]): continue
+                            hora = str(fila[0]).split('-')[0].strip()
+                            equipos_en_fila = [str(c).strip() for c in fila if c and re.match(r"^[A-Z]{1,2}\d+$", str(c).strip())]
+                            
+                            for i in range(0, len(equipos_en_fila), 2):
+                                if i + 1 < len(equipos_en_fila):
+                                    loc = traducir_equipo(equipos_en_fila[i])
+                                    vis = traducir_equipo(equipos_en_fila[i+1])
+                                    if not es_equipo_valido(loc) or not es_equipo_valido(vis): continue
+                                    
+                                    campo_num = (i // 2) + 1
+                                    key = "_".join(sorted([loc, vis]))
+                                    if key in diccionario_partidos:
+                                        diccionario_partidos[key]["FechaHora"] = f"{fecha_iso}T{hora}:00"
+                                        diccionario_partidos[key]["Campo"] = f"Campo {campo_num}"
+        else:
+            print("    ⚠️ No se pudo localizar ningún PDF. Se mantienen los datos de la web.")
     except Exception as e:
         print(f"    ❌ Error PDF: {e}")
 
@@ -193,7 +215,6 @@ def extraer_canal():
         for p in diccionario_partidos.values():
             loc = p["EquipoLocal"]
             vis = p["EquipoVisitante"]
-            # Ahora que los "no presentados" tienen goles reales, esta condición los contará
             if loc in tabla and vis in tabla and (p["ResultadoEquipoLocal"] > 0 or p["ResultadoEquipoVisitante"] > 0):
                 rl, rv = p["ResultadoEquipoLocal"], p["ResultadoEquipoVisitante"]
                 tabla[loc]["PJ"] += 1; tabla[vis]["PJ"] += 1
