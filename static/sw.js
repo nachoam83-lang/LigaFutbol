@@ -1,4 +1,4 @@
-const CACHE_NAME = 'liga-futbol-v1.1.13'; // <-- CAMBIAR VERSIÓN AQUÍ CADA VEZ QUE ACTUALICES
+const CACHE_NAME = 'liga-futbol-v1.02.00'; // <-- CAMBIA ESTO CADA VEZ QUE ACTUALICES (ej: v1.02.01)
 const urlsToCache = [
     '/',
     '/static/index.html',
@@ -17,7 +17,7 @@ self.addEventListener('install', event => {
     );
 });
 
-// Limpiar cachés antiguas y tomar el control
+// Limpiar cachés antiguas y tomar el control de forma segura
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => {
@@ -38,7 +38,7 @@ self.addEventListener('fetch', event => {
 
     const url = new URL(event.request.url);
 
-    // 1. NETWORK FIRST: Para HTML, API y grupos.json (Datos críticos y dinámicos)
+    // 1. NETWORK FIRST: Para HTML, API y datos dinámicos
     if (url.pathname === '/' || 
         url.pathname.endsWith('.html') || 
         url.pathname.startsWith('/api/') || 
@@ -47,7 +47,6 @@ self.addEventListener('fetch', event => {
         event.respondWith(
             fetch(event.request)
                 .then(networkResponse => {
-                    // Si la red responde bien, guardamos una copia actualizada
                     if (networkResponse && networkResponse.status === 200) {
                         const responseClone = networkResponse.clone();
                         caches.open(CACHE_NAME).then(cache => cache.put(event.request, responseClone));
@@ -55,14 +54,13 @@ self.addEventListener('fetch', event => {
                     return networkResponse;
                 })
                 .catch(() => {
-                    // Si falla la red (offline), devolvemos la copia de caché
                     return caches.match(event.request);
                 })
         );
         return;
     }
 
-    // 2. STALE-WHILE-REVALIDATE: Para el resto (imágenes, CDNs, fuentes)
+    // 2. STALE-WHILE-REVALIDATE: Para imágenes, CDNs y recursos estáticos
     event.respondWith(
         caches.open(CACHE_NAME).then(cache => {
             return cache.match(event.request).then(cachedResponse => {
