@@ -6,10 +6,10 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.2.00                                           -->
+    <!--  Versión actual: v1.02.00                                           -->
     <!--  Fecha: 16/11/2026                                                 -->
     <!--  Cambios: Creación de Grupos WhatsApp por Equipos (GitHub API)      -->
-    <!--  Anterior: v1.1.13 · Grupos WhatsApp (lite)                        -->
+    <!--  Anterior: v1.01.13 · Grupos WhatsApp (lite)                        -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -120,7 +120,7 @@
         </div>
     </div>
 
-    <!-- Modal para Enviar Solicitud (v1.2.00) -->
+    <!-- Modal para Enviar Solicitud (v1.02.00) -->
     <div id="modal-grupo" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalGrupo()">
         <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
             <h3 class="text-lg font-black text-center mb-2">Asignar Grupo</h3>
@@ -135,7 +135,7 @@
         </div>
     </div>
 
-    <!-- Modal de Borrado (v1.2.00) -->
+    <!-- Modal de Borrado (v1.02.00) -->
     <div id="modal-borrado" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalBorrado()">
         <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
             <h3 class="text-lg font-black text-center text-red-600 mb-2">¡ATENCIÓN!</h3>
@@ -217,7 +217,7 @@
                 </button>
             </div>
 
-            <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.2.00) -->
+            <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.02.00) -->
             <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
                 <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">WHATSAPP</div>
                 <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
@@ -250,7 +250,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.2.00</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.02.00</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
             </div>
         </div>
@@ -881,9 +881,10 @@
 
             function limpiarCacheApp() {
             if(confirm('¿Seguro que quieres borrar la caché? La app se reiniciará.')) {
-                // Guardamos por seguridad si eres admin antes de limpiar
-                const soyAdmin = localStorage.getItem('es_admin_liga');
+                // 1. GUARDAMOS TU PERMISO DE ADMIN POR SEGURIDAD ANTES DE TOCAR NADA
+                const eraAdmin = localStorage.getItem('es_admin_liga');
 
+                // 2. Borramos la caché habitual de la app
                 localStorage.removeItem('cache_proximo_partido');
                 localStorage.removeItem('cache_clima');
                 localStorage.removeItem('cache_geo');
@@ -895,11 +896,12 @@
                     }
                 });
 
-                // Restauramos el modo admin por si acaso
-                if (soyAdmin === 'true') {
+                // 3. DEVOLVEMOS EL MODO ADMIN ALMACENADO
+                if (eraAdmin === 'true') {
                     localStorage.setItem('es_admin_liga', 'true');
                 }
 
+                // 4. Recargamos la app
                 location.reload();
             }
         }
