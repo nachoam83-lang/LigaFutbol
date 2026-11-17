@@ -1183,6 +1183,38 @@ async function procesarAviso(id, accion) {
                     </div>
                 ` : '';
 
+                // ─────────────────────────────────────────────────────────────
+                // LÓGICA DE BOTONES DE RUTA INTELIGENTES EXCLUSIVA PARA LA AGENDA
+                // ─────────────────────────────────────────────────────────────
+                const esPartidoEnCasa = esLocalFav || esCanal;
+                let botonesRutaAgenda = '';
+                if (esPartidoEnCasa) {
+                    botonesRutaAgenda = `
+                        <div class="mt-2 text-center">
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dirCompleta)}&travelmode=walking" 
+                               target="_blank" 
+                               class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded inline-flex items-center gap-1.5 shadow transition cursor-pointer">
+                                <i class="fas fa-walking"></i> Ir caminando
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    botonesRutaAgenda = `
+                        <div class="flex gap-2 mt-2 justify-center">
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dirCompleta)}&travelmode=driving" 
+                               target="_blank" 
+                               class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded inline-flex items-center gap-1.5 shadow transition cursor-pointer">
+                                <i class="fas fa-car"></i> En coche
+                            </a>
+                            <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dirCompleta)}&travelmode=transit" 
+                               target="_blank" 
+                               class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded inline-flex items-center gap-1.5 shadow transition cursor-pointer">
+                                <i class="fas fa-bus"></i> Transporte público
+                            </a>
+                        </div>
+                    `;
+                }
+                
                 const urlGrupo = getGrupoEquipo(eq);
                 const htmlIconoGrupo = urlGrupo ? `<a href="${urlGrupo}" onclick="event.stopPropagation()" class="w-8 h-8 rounded-full bg-[#25D366] shadow-sm flex items-center justify-center hover:scale-110 transition ml-3 mr-1 flex-shrink-0" title="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp text-white text-base"></i></a>` : '';
                 
@@ -1243,6 +1275,7 @@ async function procesarAviso(id, accion) {
                             })()}
 
                             ${htmlRuta}
+                            ${botonesRutaAgenda}  <!-- 👈 INYÉCTALO AQUÍ -->
 
                             <div class="mt-1 flex justify-between items-center border-t border-gray-200/50 pt-2">
                                 <div class="flex-1 flex justify-start">
