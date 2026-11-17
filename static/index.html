@@ -229,14 +229,28 @@
                     <li><b>El resto de permisos:</b> Desactivados.</li>
                 </ul>
 
-                <div class="space-y-3">
+           <div class="space-y-3">
                     <p class="text-[11px] font-bold text-gray-700 uppercase mt-2">Tus equipos:</p>
                     <div id="lista-grupos-ajustes"></div>
                 </div>
             </div>
 
+            <!-- BANNER DE AVISOS DE TELEGRAM (Solo visible para el Admin) -->
+            <div id="admin-banner-avisos" class="hide bg-[#25D366] text-white p-3 rounded-lg shadow-md mb-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <i class="fas fa-bell text-xl animate-bounce"></i>
+                    <div>
+                        <p class="text-xs font-black uppercase">Modo Administrador</p>
+                        <p id="admin-texto-aviso" class="text-[11px] font-medium leading-tight">Hay solicitudes pendientes en Telegram.</p>
+                    </div>
+                </div>
+                <button onclick="gestionarSolicitudesAdmin()" class="bg-white text-[#25D366] font-black text-xs px-3 py-2 rounded-lg shadow hover:bg-gray-100 transition">
+                    Ver Chat
+                </button>
+            </div>
+
             <div class="text-center pt-6 pb-4">
-                <p class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">v1.2.00</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.2.00</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
             </div>
         </div>
@@ -416,6 +430,64 @@
         let logoPersonalizado = null;
         let editandoEquipoId = null; 
         let soloMiEquipo = false;
+        
+        // ═══════════════════════════════════════════════════════════════
+        // MODO ADMINISTRADOR (PIN de 8 dígitos y Huevo de Pascua)
+        // ═══════════════════════════════════════════════════════════════
+        let toquesVersion = 0;
+        let timerToques = null;
+
+        function activarHuevodePascuaAdmin() {
+            toquesVersion++;
+            if (timerToques) clearTimeout(timerToques);
+            
+            if (toquesVersion >= 5) {
+                toquesVersion = 0;
+                const pinIngresado = prompt("Introduce el PIN de Administrador (8 dígitos):");
+                const PIN_SECRETO = "11235813"; // Puedes cambiar este número de 8 dígitos cuando quieras
+                
+                if (pinIngresado === PIN_SECRETO) {
+                    localStorage.setItem('es_admin_liga', 'true');
+                    alert("¡Modo Administrador activado en este dispositivo!");
+                    comprobarAvisosAdmin();
+                } else {
+                    alert("PIN incorrecto.");
+                }
+            } else {
+                timerToques = setTimeout(() => { toquesVersion = 0; }, 1500);
+            }
+        }
+
+        async function comprobarAvisosAdmin() {
+            const esAdmin = localStorage.getItem('es_admin_liga') === 'true';
+            const banner = document.getElementById('admin-banner-avisos');
+            if (!banner) return;
+
+            if (!esAdmin) {
+                banner.classList.add('hide');
+                return;
+            }
+
+            try {
+                const res = await fetchWithTimeout('/api/admin/pendientes', { timeout: 3000 });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.total > 0) {
+                        document.getElementById('admin-texto-aviso').innerText = `Hay ${data.total} solicitud(es) de grupo pendientes.`;
+                        banner.classList.remove('hide');
+                    } else {
+                        banner.classList.add('hide');
+                    }
+                }
+            } catch (e) {
+                banner.classList.add('hide');
+            }
+        }
+
+        function gestionarSolicitudesAdmin() {
+            window.open("https://t.me/TuBotDeTelegram", "_blank");
+        }
+
         
         let cacheCalendarioGlobal = null;
         let cacheResultados = null;
