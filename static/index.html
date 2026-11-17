@@ -176,34 +176,38 @@
             <h1 class="text-xl font-bold">Ajustes</h1>
         </div>
         <div class="p-4 space-y-4">
-            <div class="card p-4">
-                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Dirección de Casa</label>
-                <p class="text-xs text-gray-500 mb-2">Se usará para calcular el tiempo de viaje a los partidos.</p>
-                <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-            </div>
-
-            <div class="card p-4 flex justify-between items-center">
+             
+           <!-- TARJETA UNIFICADA: RUTAS Y MAPAS -->
+            <div class="card p-4 space-y-4">
                 <div>
-                    <label class="block text-sm font-bold text-gray-800">Tiempo de Viaje</label>
-                    <p class="text-xs text-gray-500">Mostrar hora de salida recomendada</p>
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Dirección de Casa</label>
+                    <p class="text-xs text-gray-500 mb-2">Se usará para calcular el tiempo de viaje a los partidos.</p>
+                    <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
                 </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="toggle-ruta" class="sr-only peer">
-                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
-                </label>
-            </div>
 
-            <div class="card p-4">
-                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">App de Mapas por Defecto</label>
-                <select id="select-mapa-defecto" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-                    <option value="ask">Preguntar siempre</option>
-                    <option value="waze">Waze</option>
-                    <option value="google">Google Maps</option>
-                    <option value="apple">Apple Maps</option>
-                </select>
-            </div>
+                <div class="border-t pt-4 flex justify-between items-center" style="border-color: var(--border-color);">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800">Tiempo de Viaje</label>
+                        <p class="text-xs text-gray-500">Mostrar hora de salida recomendada</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-ruta" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                    </label>
+                </div>
 
-            <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-4 rounded-lg shadow-lg transition text-sm mt-4">Guardar Cambios</button>
+                <div class="border-t pt-4" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">App de Mapas por Defecto</label>
+                    <select id="select-mapa-defecto" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                        <option value="ask">Preguntar siempre</option>
+                        <option value="waze">Waze</option>
+                        <option value="google">Google Maps</option>
+                        <option value="apple">Apple Maps</option>
+                    </select>
+                </div>
+
+                <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-lg shadow transition text-sm">Guardar Cambios</button>
+            </div>
             
             <div class="card p-4">
                 <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Mantenimiento</label>
@@ -994,8 +998,8 @@
                 ` : '';
 
                 const urlGrupo = getGrupoEquipo(eq);
-                const htmlIconoGrupo = urlGrupo ? `<a href="${urlGrupo}" onclick="event.stopPropagation()" class="w-7 h-7 rounded-full bg-white shadow-sm flex items-center justify-center hover:scale-110 transition mx-2 flex-shrink-0" title="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp text-[#25D366] text-base"></i></a>` : '';
-
+                const htmlIconoGrupo = urlGrupo ? `<a href="${urlGrupo}" onclick="event.stopPropagation()" class="w-8 h-8 rounded-full bg-[#25D366] shadow-sm flex items-center justify-center hover:scale-110 transition ml-3 mr-1 flex-shrink-0" title="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp text-white text-base"></i></a>` : '';
+                
                 contenedor.insertAdjacentHTML('beforeend', `
                     <div class="rounded-xl shadow-md border border-gray-200 overflow-hidden flex cursor-pointer" onclick="abrirEquipo(${equipos.indexOf(eq)})">
                         
