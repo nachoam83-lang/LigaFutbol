@@ -6,10 +6,9 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.02.00                                           -->
-    <!--  Fecha: 16/11/2026                                                 -->
-    <!--  Cambios: Creación de Grupos WhatsApp por Equipos (GitHub API)      -->
-    <!--  Anterior: v1.01.13 · Grupos WhatsApp (lite)                        -->
+    <!--  Versión actual: v1.03.01                                           -->
+    <!--  Fecha: 17/11/2026                                                 -->
+    <!--  Cambios: Corrección de sintaxis y ruta inteligente                 -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -120,7 +119,7 @@
         </div>
     </div>
 
-    <!-- Modal para Enviar Solicitud (v1.02.00) -->
+    <!-- Modal para Enviar Solicitud -->
     <div id="modal-grupo" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalGrupo()">
         <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
             <h3 class="text-lg font-black text-center mb-2">Asignar Grupo</h3>
@@ -135,7 +134,7 @@
         </div>
     </div>
 
-    <!-- Modal de Borrado (v1.02.00) -->
+    <!-- Modal de Borrado -->
     <div id="modal-borrado" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalBorrado()">
         <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
             <h3 class="text-lg font-black text-center text-red-600 mb-2">¡ATENCIÓN!</h3>
@@ -197,20 +196,20 @@
                 </div>
 
                 <div class="border-t pt-4" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Transporte para partidos fuera de casa</label>
+                    <select id="select-transporte-fuera" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                        <option value="driving">🚗 Coche</option>
+                        <option value="transit">🚌 Transporte público</option>
+                    </select>
+                </div>
+
+                <div class="border-t pt-4" style="border-color: var(--border-color);">
                     <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">App de Mapas por Defecto</label>
                     <select id="select-mapa-defecto" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
                         <option value="ask">Preguntar siempre</option>
                         <option value="waze">Waze</option>
                         <option value="google">Google Maps</option>
                         <option value="apple">Apple Maps</option>
-                    </select>
-                </div>
-
-                <div class="border-t pt-4" style="border-color: var(--border-color);">
-                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Transporte para partidos fuera de casa</label>
-                    <select id="select-transporte-fuera" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-                        <option value="driving">🚗 Coche</option>
-                        <option value="transit">🚌 Transporte público</option>
                     </select>
                 </div>
 
@@ -225,11 +224,11 @@
                 </button>
             </div>
 
-            <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.02.00) -->
+            <!-- SECCIÓN: GESTIÓN DE GRUPOS -->
             <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
                 <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">WHATSAPP</div>
                 <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
-                <p class="text-xs text-gray-600 mb-3"></b>DELEGADO.</b> Sigue estas normas para crear el grupo:</p>
+                <p class="text-xs text-gray-600 mb-3"><b>DELEGADO.</b> Sigue estas normas para crear el grupo:</p>
                 <ul class="text-[11px] text-gray-600 mb-4 space-y-1 list-disc pl-4">
                     <li><b>Nombre:</b> Categoría + Colegio + Color/Letra.</li>
                     <li><b>Mensajes temporales:</b> Desactivados.</li>
@@ -262,8 +261,8 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.02.00</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.03.01</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">17/11/2026 · Hora de salida inteligente</p>
             </div>
         </div>
     </div>
@@ -425,8 +424,9 @@
         });
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
-        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false };
+        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false, transportModeAway: 'driving' };
         if (userSettings.showRoute === undefined) userSettings.showRoute = false; 
+        if (userSettings.transportModeAway === undefined) userSettings.transportModeAway = 'driving';
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
@@ -491,7 +491,6 @@
                 banner.appendChild(contenedorAvisos);
             }
 
-            // Añadimos también un botón rápido para cerrar sesión de admin al final del banner
             let botonCerrarAdmin = document.getElementById('btn-cerrar-admin');
             if (!botonCerrarAdmin) {
                 botonCerrarAdmin = document.createElement('div');
@@ -522,13 +521,11 @@
                                     
                                     return `
                                         <div class="bg-white text-gray-800 p-3 rounded-lg flex flex-col sm:flex-row justify-between items-start sm:items-center text-xs shadow-md gap-3">
-                                            <!-- Texto flexible que se ajusta perfectamente -->
                                             <div class="flex-grow w-full sm:w-auto">
                                                 <div class="font-bold text-[10px] text-indigo-600 mb-0.5">📋 Solicitud ID: ${aviso.id}</div>
                                                 <div class="font-black text-gray-900 text-sm leading-snug break-words">🗑️ ${equipo}</div>
                                                 <div class="text-[11px] text-gray-600 mt-1"><strong>Motivo:</strong> ${motivo}</div>
                                             </div>
-                                            <!-- Botones con tamaño fijo y uniforme (w-28) -->
                                             <div class="flex flex-col gap-1.5 w-full sm:w-auto flex-shrink-0 items-end">
                                                 <button type="button" onclick="procesarAviso(${aviso.id}, 'aprobar')" class="bg-green-600 hover:bg-green-700 text-white font-bold py-1.5 rounded shadow transition cursor-pointer text-center w-28">Aprobar</button>
                                                 <button type="button" onclick="procesarAviso(${aviso.id}, 'rechazar')" class="bg-red-600 hover:bg-red-700 text-white font-bold py-1.5 rounded shadow transition cursor-pointer text-center w-28">Rechazar</button>
@@ -553,25 +550,22 @@
             }
         }
 
-        // Función para salir del Modo Administrador de forma segura en dispositivos ajenos
         function cerrarModoAdmin() {
             if (confirm("¿Seguro que deseas salir del Modo Administrador en este dispositivo?")) {
                 localStorage.removeItem('es_admin_liga');
                 localStorage.removeItem('admin_activo');
-                location.reload(); // Recarga la app y oculta todo el panel de admin al instante
+                location.reload(); 
             }
         }
 
-async function procesarAviso(id, accion) {
+        async function procesarAviso(id, accion) {
             try {
-                // 1. Feedback visual inmediato en el botón para que se note que se ha pulsado
                 const btnAprobar = document.querySelector(`button[onclick*="procesarAviso(${id}, 'aprobar')"]`);
                 if (btnAprobar) {
                     btnAprobar.innerText = "...";
                     btnAprobar.disabled = true;
                 }
 
-                // 2. Llamada al servidor FastAPI
                 const res = await fetch(`/api/admin/resolver/${id}`, { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -580,14 +574,11 @@ async function procesarAviso(id, accion) {
 
                 if (res.ok) {
                     vibrar(50);
-                    
-                    // 3. Eliminamos el elemento visualmente de la pantalla de forma instantánea
                     const contenedorAvisos = document.getElementById('contenedor-avisos-admin');
                     if (contenedorAvisos) {
                         contenedorAvisos.innerHTML = `<div class="text-xs text-white/90 py-1"><i class="fas fa-check mr-1"></i> Solicitud procesada correctamente.</div>`;
                     }
 
-                    // 4. Sincronizamos con el servidor para actualizar el banner y los grupos
                     setTimeout(async () => {
                         await comprobarAvisosAdmin();
                         if (typeof cargarGrupos === 'function') cargarGrupos();
@@ -806,7 +797,7 @@ async function procesarAviso(id, accion) {
 
                 if (res.ok) {
                     vibrar(50);
-                    alert("Enlace guardado correctamente. El grupo ya está activo.");
+                    alert("En enlace guardado correctamente. El grupo ya está activo.");
                     cerrarModalGrupo();
                     await cargarGrupos();
                     comprobarAvisosAdmin();
@@ -950,6 +941,7 @@ async function procesarAviso(id, accion) {
             document.getElementById('input-casa').value = userSettings.homeAddress || '';
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
+            document.getElementById('select-transporte-fuera').value = userSettings.transportModeAway || 'driving';
             renderizarAjustesGrupos();
             comprobarAvisosAdmin();
         }
@@ -959,6 +951,7 @@ async function procesarAviso(id, accion) {
             userSettings.homeAddress = dir;
             userSettings.defaultMap = document.getElementById('select-mapa-defecto').value;
             userSettings.showRoute = document.getElementById('toggle-ruta').checked;
+            userSettings.transportModeAway = document.getElementById('select-transporte-fuera').value;
             
             if (dir !== "") {
                 document.getElementById('btn-guardar-ajustes').innerText = "Buscando dirección...";
@@ -992,7 +985,7 @@ async function procesarAviso(id, accion) {
                 localStorage.removeItem('cache_grupos');
                 localStorage.removeItem('dismissed_changes');
                 Object.keys(localStorage).forEach(key => {
-                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_')) {
+                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_') || key.startsWith('cache_ruta')) {
                         localStorage.removeItem(key);
                     }
                 });
@@ -1186,11 +1179,11 @@ async function procesarAviso(id, accion) {
                 
                 const esPartidoEnCasa = esLocalFav || esCanal;
                 const iconoRutaHtml = esPartidoEnCasa ? '<i class="fas fa-walking text-gray-800"></i>' : (userSettings.transportModeAway === 'transit' ? '<i class="fas fa-bus text-gray-800"></i>' : '<i class="fas fa-car text-gray-800"></i>');
-                
+
                 const htmlRuta = userSettings.showRoute === true ? `
                     <div class="flex items-center justify-center gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
                         ${iconoRutaHtml}
-                        <span id="ruta-agenda-${index}" class="text-blue-600"></span>
+                        <span id="ruta-agenda-${index}" class="text-blue-600">Calculando...</span>
                     </div>
                 ` : '';
 
@@ -1486,15 +1479,14 @@ async function procesarAviso(id, accion) {
                                 } catch(e) {}
                             }
 
-                                    if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
-                                    const elRuta = document.getElementById(`ruta-agenda-${i}`);
-                                    if (navigator.onLine === false) {
+                            if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
+                                const elRuta = document.getElementById(`ruta-agenda-${i}`);
+                                if (navigator.onLine === false) {
                                     if (elRuta) elRuta.innerHTML = `<span class="text-gray-400 text-[11px]">Sin conexión</span>`;
-                                    } else {
+                                } else {
                                     if (elRuta && elRuta.innerText === "Calculando...") elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
                                     try {
                                         const esPartidoEnCasa = (p.EquipoLocal === eq.equipoFavorito) || esCanal;
-                                        // 🏠 En casa -> Caminando ('foot'). 🚗/🚌 Fuera -> El modo elegido en ajustes
                                         const mode = esPartidoEnCasa ? 'foot' : (userSettings.transportModeAway || 'driving');
                                         
                                         const routeKey = `${userSettings.homeLat},${userSettings.homeLon}_${lat},${lon}_${mode}`;
@@ -1526,6 +1518,7 @@ async function procesarAviso(id, accion) {
                                     }
                                 }
                             }
+                        }
                     })()
                 );
             }
@@ -1976,7 +1969,7 @@ async function procesarAviso(id, accion) {
                     cacheCalendarioGlobal = JSON.parse(cachedCal);
                     cacheResultados = JSON.parse(cachedRes);
                     cacheClasificacion = JSON.parse(cachedClas);
-                    cacheClasificacionPartidos = cacheResultados;
+                    cacheClasificacionPartidos = cachedRes;
                     
                     setTimeout(() => {
                         document.getElementById('pantalla-carga').classList.add('oculto');
