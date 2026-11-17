@@ -170,95 +170,95 @@
     </div>
 
     <!-- PANTALLA DE AJUSTES -->
-   <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen pb-24">
-    <div class="text-white h-[88px] px-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
-        <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
-        <h1 class="text-xl font-bold">Ajustes</h1>
-    </div>
-    <div class="p-4 space-y-4">
-         
-       <!-- TARJETA UNIFICADA: RUTAS Y MAPAS -->
-        <div class="card p-4 space-y-4">
-            <div>
-                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Dirección de Casa</label>
-                <p class="text-xs text-gray-500 mb-2">Se usará para calcular el tiempo de viaje a los partidos.</p>
-                <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-            </div>
-
-            <div class="border-t pt-4 flex justify-between items-center" style="border-color: var(--border-color);">
+    <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen pb-24">
+        <div class="text-white h-[88px] px-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
+            <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
+            <h1 class="text-xl font-bold">Ajustes</h1>
+        </div>
+        <div class="p-4 space-y-4">
+             
+           <!-- TARJETA UNIFICADA: RUTAS Y MAPAS -->
+            <div class="card p-4 space-y-4">
                 <div>
-                    <label class="block text-sm font-bold text-gray-800">Tiempo de Viaje</label>
-                    <p class="text-xs text-gray-500">Mostrar hora de salida recomendada</p>
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Dirección de Casa</label>
+                    <p class="text-xs text-gray-500 mb-2">Se usará para calcular el tiempo de viaje a los partidos.</p>
+                    <input type="text" id="input-casa" placeholder="Ej: Calle Mayor 1, Madrid" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
                 </div>
-                <label class="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" id="toggle-ruta" class="sr-only peer">
-                    <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
-                </label>
-            </div>
 
-            <div class="border-t pt-4" style="border-color: var(--border-color);">
-                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">App de Mapas por Defecto</label>
-                <select id="select-mapa-defecto" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-                    <option value="ask">Preguntar siempre</option>
-                    <option value="waze">Waze</option>
-                    <option value="google">Google Maps</option>
-                    <option value="apple">Apple Maps</option>
-                </select>
-            </div>
-
-            <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-lg shadow transition text-sm">Guardar Cambios</button>
-        </div>
-        
-        <div class="card p-4">
-            <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Mantenimiento</label>
-            <p class="text-xs text-gray-500 mb-2">Si la app va lenta o ves datos erróneos, limpia la caché.</p>
-            <button onclick="limpiarCacheApp()" class="w-full bg-red-100 text-red-600 font-bold py-3 rounded-lg shadow-sm border border-red-200 transition hover:bg-red-200">
-                <i class="fas fa-broom mr-2"></i> Limpiar Caché y Actualizar
-            </button>
-        </div>
-
-        <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.02.00) -->
-        <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
-            <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">WHATSAPP</div>
-            <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
-            <p class="text-xs text-gray-600 mb-3">DELEGADO. Sigue estas normas para crear el grupo:</p>
-            <ul class="text-[11px] text-gray-600 mb-4 space-y-1 list-disc pl-4">
-                <li><b>Nombre:</b> Categoría + Colegio + Color/Letra.</li>
-                <li><b>Mensajes temporales:</b> Desactivados.</li>
-                <li><b>Permisos activos:</b> Enviar mensajes, Invitar con enlace, Aprobar miembros.</li>
-                <li><b>El resto de permisos:</b> Desactivados.</li>
-            </ul>
-
-            <div class="space-y-3">
-                <p class="text-[11px] font-bold text-gray-700 uppercase mt-2">Tus equipos:</p>
-                <div id="lista-grupos-ajustes"></div>
-            </div>
-        </div>
-
-        <!-- BANNER DE AVISOS DE TELEGRAM Y GESTIÓN EN APP (Admin) -->
-        <div id="admin-banner-avisos" class="hide bg-[#25D366] text-white p-3 rounded-lg shadow-md mb-4">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-bell text-xl animate-bounce"></i>
+                <div class="border-t pt-4 flex justify-between items-center" style="border-color: var(--border-color);">
                     <div>
-                        <p class="text-xs font-black uppercase">Modo Administrador</p>
-                        <p class="text-[11px] font-medium leading-tight">Gestiona las solicitudes abajo o ábrelas en Telegram:</p>
+                        <label class="block text-sm font-bold text-gray-800">Tiempo de Viaje</label>
+                        <p class="text-xs text-gray-500">Mostrar hora de salida recomendada</p>
                     </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-ruta" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                    </label>
                 </div>
-                <button onclick="gestionarSolicitudesAdmin()" class="bg-white text-[#25D366] font-black text-xs px-3 py-2 rounded-lg shadow hover:bg-gray-100 transition">
-                    Ir a Telegram
+
+                <div class="border-t pt-4" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">App de Mapas por Defecto</label>
+                    <select id="select-mapa-defecto" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                        <option value="ask">Preguntar siempre</option>
+                        <option value="waze">Waze</option>
+                        <option value="google">Google Maps</option>
+                        <option value="apple">Apple Maps</option>
+                    </select>
+                </div>
+
+                <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-lg shadow transition text-sm">Guardar Cambios</button>
+            </div>
+            
+            <div class="card p-4">
+                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Mantenimiento</label>
+                <p class="text-xs text-gray-500 mb-2">Si la app va lenta o ves datos erróneos, limpia la caché.</p>
+                <button onclick="limpiarCacheApp()" class="w-full bg-red-100 text-red-600 font-bold py-3 rounded-lg shadow-sm border border-red-200 transition hover:bg-red-200">
+                    <i class="fas fa-broom mr-2"></i> Limpiar Caché y Actualizar
                 </button>
             </div>
-            <!-- Contenedor donde aparecerán dinámicamente las tarjetas con los botones -->
-            <div id="contenedor-avisos-admin" class="mt-3"></div>
-        </div>
 
-        <div class="text-center pt-6 pb-4">
-            <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.02.00</p>
-            <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
+            <!-- SECCIÓN: GESTIÓN DE GRUPOS (v1.02.00) -->
+            <div class="card p-4 border-2 border-[#25D366] relative overflow-hidden mt-6">
+                <div class="absolute top-0 right-0 bg-[#25D366] text-white text-[10px] font-bold px-3 py-1 rounded-bl-lg">WHATSAPP</div>
+                <h3 class="font-black text-gray-800 mb-2"><i class="fab fa-whatsapp text-[#25D366] text-lg mr-1"></i> Gestión de Grupos</h3>
+                <p class="text-xs text-gray-600 mb-3">MODERADOR. Sigue estas normas para crear el grupo:</p>
+                <ul class="text-[11px] text-gray-600 mb-4 space-y-1 list-disc pl-4">
+                    <li><b>Nombre:</b> Categoría + Colegio + Color/Letra.</li>
+                    <li><b>Mensajes temporales:</b> Desactivados.</li>
+                    <li><b>Permisos activos:</b> Enviar mensajes, Invitar con enlace, Aprobar miembros.</li>
+                    <li><b>El resto de permisos:</b> Desactivados.</li>
+                </ul>
+
+                <div class="space-y-3">
+                    <p class="text-[11px] font-bold text-gray-700 uppercase mt-2">Tus equipos:</p>
+                    <div id="lista-grupos-ajustes"></div>
+                </div>
+            </div>
+
+            <!-- BANNER DE AVISOS DE TELEGRAM Y GESTIÓN EN APP (Admin) -->
+            <div id="admin-banner-avisos" class="hide bg-[#25D366] text-white p-3 rounded-lg shadow-md mb-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-bell text-xl animate-bounce"></i>
+                        <div>
+                            <p class="text-xs font-black uppercase">Modo Administrador</p>
+                            <p id="admin-texto-aviso" class="text-[11px] font-medium leading-tight">Hay solicitudes pendientes.</p>
+                        </div>
+                    </div>
+                    <button onclick="gestionarSolicitudesAdmin()" class="bg-white text-[#25D366] font-black text-xs px-3 py-2 rounded-lg shadow hover:bg-gray-100 transition">
+                        Ir a Telegram
+                    </button>
+                </div>
+                <!-- Contenedor dinámico de tarjetas con botones Aprobar / Rechazar -->
+                <div id="contenedor-avisos-admin" class="mt-3"></div>
+            </div>
+
+            <div class="text-center pt-6 pb-4">
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.02.00</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
+            </div>
         </div>
     </div>
-</div>
 
     <!-- FORMULARIO DE EQUIPO -->
     <div id="screen-formulario" class="hide max-w-md mx-auto min-h-screen" style="background-color: var(--bg-color);">
@@ -422,7 +422,6 @@
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
-        // Caché de grupos de WhatsApp
         let cacheGrupos = {};
         try {
             cacheGrupos = JSON.parse(localStorage.getItem('cache_grupos') || '{}');
@@ -448,37 +447,25 @@
             if (toquesVersion >= 5) {
                 toquesVersion = 0;
                 const pinIngresado = prompt("Introduce el PIN de Administrador (8 dígitos):");
-                const PIN_SECRETO = "11235813"; // Puedes cambiar este número de 8 dígitos cuando quieras
+                const PIN_SECRETO = "11235813"; 
                 
-            // ... dentro de tu validación de PIN ...
-            if (pinIngresado === PIN_SECRETO) {
-            // 1. Guardamos de forma explícita
-            localStorage.setItem('es_admin_liga', 'true');
-    
-            // 2. Forzamos una pequeña comprobación de lectura para asegurar que se grabó
-            const confirmado = localStorage.getItem('es_admin_liga');
-    
-            if (confirmado === 'true') {
-            // 3. Damos feedback visual al usuario para que espere un segundo antes de tocar nada
-            alert("¡Modo Administrador activado y guardado correctamente en el dispositivo!");
-            comprobarAvisosAdmin();
-            } else {
-            alert("Error de escritura en el navegador. Inténtalo de nuevo.");
-            }
-            } else {
-            alert("PIN incorrecto.");
-        }
+                if (pinIngresado === PIN_SECRETO) {
+                    localStorage.setItem('es_admin_liga', 'true');
+                    alert("¡Modo Administrador activado en este dispositivo!");
+                    comprobarAvisosAdmin();
+                } else {
+                    alert("PIN incorrecto.");
+                }
             } else {
                 timerToques = setTimeout(() => { toquesVersion = 0; }, 1500);
             }
         }
 
-       async function comprobarAvisosAdmin() {
+        async function comprobarAvisosAdmin() {
             const esAdmin = localStorage.getItem('es_admin_liga') === 'true';
             const banner = document.getElementById('admin-banner-avisos');
             const textoAviso = document.getElementById('admin-texto-aviso');
             
-            // Buscamos o creamos un contenedor para los botones dentro del banner
             let contenedorAvisos = document.getElementById('contenedor-avisos-admin');
             if (banner && !contenedorAvisos) {
                 contenedorAvisos = document.createElement('div');
@@ -494,7 +481,6 @@
                 return;
             }
 
-            // Si es admin, el banner SIEMPRE es visible
             banner.classList.remove('hide');
 
             try {
@@ -502,10 +488,9 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data.total > 0) {
-                        // HAY AVISOS: Banner verde brillante + Pintar tarjetas con botones
                         banner.classList.remove('bg-slate-800');
                         banner.classList.add('bg-[#25D366]');
-                        textoAviso.innerText = `Hay ${data.total} solicitud(es) de grupo pendientes.`;
+                        textoAviso.innerText = `Hay ${data.total} solicitud(es) pendientes.`;
                         
                         if (contenedorAvisos) {
                             contenedorAvisos.innerHTML = `
@@ -526,7 +511,6 @@
                             `;
                         }
                     } else {
-                        // SIN AVISOS: Banner oscuro discreto
                         banner.classList.remove('bg-[#25D366]');
                         banner.classList.add('bg-slate-800');
                         textoAviso.innerText = "Modo Administrador activo · Sin avisos pendientes.";
@@ -545,7 +529,8 @@
             try {
                 const res = await fetch(`/api/admin/resolver/${id}`, { method: 'POST' });
                 if (res.ok) {
-                    comprobarAvisosAdmin(); // Recarga la lista de avisos al momento
+                    comprobarAvisosAdmin();
+                    cargarGrupos();
                 } else {
                     alert("No se pudo procesar la solicitud.");
                 }
@@ -555,14 +540,11 @@
         }
 
         function gestionarSolicitudesAdmin() {
-            // Limpia opcionalmente en segundo plano
             fetch('/api/admin/limpiar', { method: 'POST' }).catch(() => {});
-            
             const urlTelegram = "https://t.me/PSJ_Liga_aprobador_bot?start=admin_solicitudes";
             window.location.href = urlTelegram;
         }
 
-        
         let cacheCalendarioGlobal = null;
         let cacheResultados = null;
         let cacheClasificacion = null;
@@ -574,9 +556,6 @@
         let cacheClima = JSON.parse(localStorage.getItem('cache_clima')) || {};
         let cacheRuta = JSON.parse(localStorage.getItem('cache_ruta') || '{}');
 
-        // ═══════════════════════════════════════════════════════════════════
-        // GESTIÓN DE GRUPOS DE WHATSAPP (Versión Unificada y Limpia)
-        // ═══════════════════════════════════════════════════════════════════
         let tempEquipoGrupo = "";
         let tempEquipoBorrar = "";
 
@@ -722,6 +701,7 @@
                     vibrar(50);
                     alert("Solicitud enviada al administrador. Si se aprueba, el grupo se eliminará.");
                     cerrarModalBorrado();
+                    comprobarAvisosAdmin();
                 } else {
                     alert("Error al enviar la solicitud.");
                 }
@@ -730,12 +710,6 @@
             } finally {
                 btn.disabled = false;
                 btn.innerText = 'Solicitar Borrado';
-            }
-        }
-
-        function abrirModalGrupoDesdeDetalle() {
-            if (equipoActual) {
-                abrirModalGrupo(equipoActual.equipoFavorito, equipoActual.nombreCompeticion);
             }
         }
 
@@ -768,6 +742,7 @@
                     alert("Enlace guardado correctamente. El grupo ya está activo.");
                     cerrarModalGrupo();
                     await cargarGrupos();
+                    comprobarAvisosAdmin();
                 } else if (res.status === 409) {
                     alert("Este equipo ya tiene un grupo asignado. No se puede modificar.");
                     cerrarModalGrupo();
@@ -781,7 +756,6 @@
                 btn.innerText = 'Guardar Enlace';
             }
         }
-        // --- FIN BLOQUE GRUPOS ---
 
         async function fetchWithTimeout(resource, options = {}) {
             const { timeout = 5000 } = options;
@@ -877,7 +851,6 @@
             return 'pendiente';
         }
 
-        // --- PULL TO REFRESH ---
         let touchStartY = 0;
         let touchEndY = 0;
         const screenAgenda = document.getElementById('screen-agenda');
@@ -897,13 +870,13 @@
                     ptrIndicator.classList.add('active');
                     cargarAgendaFamiliar();
                     cargarGrupos();
+                    comprobarAvisosAdmin();
                     setTimeout(() => ptrIndicator.classList.remove('active'), 1500);
                 }
             }
             touchStartY = 0;
         }, { passive: true });
 
-        // --- AJUSTES Y NAVEGACIÓN ---
         function abrirAjustes() {
             document.getElementById('screen-agenda').classList.add('hide');
             document.getElementById('screen-ajustes').classList.remove('hide');
@@ -911,7 +884,6 @@
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
             renderizarAjustesGrupos();
-            // <--- AÑADIR ESTA LÍNEA AQUÍ PARA QUE REVISE EL ADMIN AL ENTRAR EN AJUSTES
             comprobarAvisosAdmin();
         }
 
@@ -928,7 +900,7 @@
                     userSettings.homeLat = coords.lat;
                     userSettings.homeLon = coords.lon;
                 } else {
-                    alert("No se ha encontrado la dirección exacta. Prueba a poner solo la calle y la ciudad, sin el número de portal, o comprueba si está bien escrita.");
+                    alert("No se ha encontrado la dirección exacta. Prueba a poner solo la calle y la ciudad.");
                     userSettings.homeLat = null;
                     userSettings.homeLon = null;
                 }
@@ -943,35 +915,28 @@
             volverInicio();
         }
 
-          function limpiarCacheApp() {
-    if(confirm('¿Seguro que quieres borrar la caché? La app se reiniciará.')) {
-        // 1. GUARDAMOS TU PERMISO DE ADMIN POR SEGURIDAD ANTES DE TOCAR NADA
-        const eraAdmin = localStorage.getItem('es_admin_liga');
+        function limpiarCacheApp() {
+            if(confirm('¿Seguro que quieres borrar la caché? La app se reiniciará.')) {
+                const eraAdmin = localStorage.getItem('es_admin_liga');
 
-        // 2. Borramos la caché habitual de la app
-        localStorage.removeItem('cache_proximo_partido');
-        localStorage.removeItem('cache_clima');
-        localStorage.removeItem('cache_geo');
-        localStorage.removeItem('cache_grupos');
-        localStorage.removeItem('dismissed_changes');
-        Object.keys(localStorage).forEach(key => {
-            if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_')) {
-                localStorage.removeItem(key);
+                localStorage.removeItem('cache_proximo_partido');
+                localStorage.removeItem('cache_clima');
+                localStorage.removeItem('cache_geo');
+                localStorage.removeItem('cache_grupos');
+                localStorage.removeItem('dismissed_changes');
+                Object.keys(localStorage).forEach(key => {
+                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_')) {
+                        localStorage.removeItem(key);
+                    }
+                });
+
+                if (eraAdmin === 'true') {
+                    localStorage.setItem('es_admin_liga', 'true');
+                }
+
+                location.reload();
             }
-        });
-
-        // 3. DEVOLVEMOS EL MODO ADMIN ALMACENADO Y FORZAMOS LECTURA
-        if (eraAdmin === 'true') {
-            localStorage.setItem('es_admin_liga', 'true');
-            localStorage.getItem('es_admin_liga'); // Fuerza a iOS a escribir en disco ya
         }
-
-        // 4. Damos un pequeño respiro de 100ms antes de recargar para que iOS guarde los datos
-        setTimeout(() => {
-            location.reload();
-        }, 100);
-    }
-}
 
         function toggleDrawer() {
             const overlay = document.getElementById('drawer-overlay');
@@ -1038,6 +1003,7 @@
         document.addEventListener('DOMContentLoaded', () => { 
             cargarAgendaFamiliar(); 
             cargarGrupos();
+            comprobarAvisosAdmin();
 
             if ('requestIdleCallback' in window) {
                 requestIdleCallback(() => cargarCompeticiones(2), { timeout: 3000 });
@@ -1053,7 +1019,6 @@
             });
         });
 
-        // --- LÓGICA DE LA AGENDA FAMILIAR ---
         function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
             const contenedor = document.getElementById('lista-agenda');
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
@@ -1073,7 +1038,7 @@
 
             if (proximosPartidos.length === 0) {
                 if (!isOnline && partidos.length === 0) {
-                    contenedor.innerHTML = '<div class="text-center text-gray-400 mt-16"><i class="fas fa-wifi text-6xl mb-4 text-gray-200" style="opacity:0.5"></i><p class="font-medium text-gray-600">Sin conexión</p><p class="text-sm mt-2">No hay datos guardados.<br>Conéctate una vez para poder verlo offline.</p></div>';
+                    contenedor.innerHTML = '<div class="text-center text-gray-400 mt-16"><i class="fas fa-wifi text-6xl mb-4 text-gray-200" style="opacity:0.5"></i><p class="font-medium text-gray-600">Sin conexión</p><p class="text-sm mt-2">No hay datos guardados.</p></div>';
                 } else if (showingFromCache) {
                     contenedor.innerHTML = '<p class="text-center text-gray-500 mt-10">Sin conexión — no hay partidos próximos en los datos guardados.</p>';
                 } else {
@@ -1313,7 +1278,7 @@
                                 localStorage.setItem(`cache_clas_${eq.id}`, JSON.stringify(clasif));
                             }
                         } catch (netErr) {
-                            console.warn(`Fallo red equipo ${eq.nombre}, probando caché`);
+                            console.warn(`Fallo red equipo ${eq.nombre}`);
                         }
                     }
 
@@ -1368,9 +1333,8 @@
             } catch (e) {
                 contenedor.removeAttribute('aria-busy');
                 if (contenedor.dataset.rendered !== 'true') {
-                    contenedor.innerHTML = '<p class="text-center text-red-500 mt-10">Error al cargar la agenda. Comprueba tu conexión.</p>';
+                    contenedor.innerHTML = '<p class="text-center text-red-500 mt-10">Error al cargar la agenda.</p>';
                 }
-                console.error(e);
             }
         }
 
@@ -1479,13 +1443,8 @@
                                             const mm = String(datePartido.getMinutes()).padStart(2, '0');
                                             if (elRuta) elRuta.innerHTML = `Sal a las ${hh}:${mm}`;
                                         }
-                                    } catch(e) {
-                                        console.log("Error calculando ruta", e);
-                                    }
+                                    } catch(e) {}
                                 }
-                            } else if (userSettings.showRoute === true && (!userSettings.homeLat || !userSettings.homeLon)) {
-                                const elRuta = document.getElementById(`ruta-agenda-${i}`);
-                                if (elRuta) elRuta.innerHTML = `<span class="text-gray-400 text-[11px]">Configura tu casa</span>`;
                             }
                         }
                     })()
@@ -1494,7 +1453,6 @@
             await Promise.all(promesas);
         }
 
-        // --- LÓGICA DE MAPA ---
         function abrirModalMapa(dir) {
             if (userSettings.defaultMap && userSettings.defaultMap !== 'ask') {
                 rutaActualMapa = dir;
@@ -1523,7 +1481,6 @@
             cerrarModalMapa();
         }
 
-        // --- FORMULARIO DE EQUIPOS ---
         function prepararNuevoEquipo() {
             toggleDrawer(); 
             editandoEquipoId = null;
@@ -1786,7 +1743,6 @@
                     document.getElementById('btn-quitar-logo').classList.remove('hide');
                     document.getElementById('btn-guardar').disabled = false;
                 };
-                img.onerror = () => alert('No se ha podido leer la imagen. Inténtalo con otra.');
                 img.src = e.target.result;
             };
             reader.readAsDataURL(file);
@@ -1854,7 +1810,6 @@
             volverInicio();
         }
 
-        // --- LÓGICA DE LA PANTALLA DE DETALLE ---
         async function abrirEquipo(index) {
             equipoActual = equipos[index];
             if (equipoActual.idDeporte === "4") document.body.classList.add('theme-canal');
@@ -1943,17 +1898,6 @@
                     cacheResultados = JSON.parse(cachedRes);
                     cacheClasificacion = JSON.parse(cachedClas);
                     cacheClasificacionPartidos = cacheResultados;
-
-                    const snapshotKey = `snapshot_v3_${equipoActual.id}`;
-                    let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
-                    if (Array.isArray(snapshotViejo)) snapshotViejo = {};
-                    
-                    cacheResultados.forEach(p => {
-                        const matchId = getMatchId(p);
-                        if (snapshotViejo[matchId] && snapshotViejo[matchId].pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
-                            p.CambioLocal = true;
-                        }
-                    });
                     
                     setTimeout(() => {
                         document.getElementById('pantalla-carga').classList.add('oculto');
@@ -1986,31 +1930,6 @@
                 cacheCalendarioGlobal = await resCal.json(); cacheResultados = await resRes.json(); cacheClasificacion = await resClasif.json();
                 
                 if (!cacheResultados || cacheResultados.length === 0) throw new Error("Datos vacíos");
-
-                const snapshotKey = `snapshot_v3_${equipoActual.id}`;
-                let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
-                if (Array.isArray(snapshotViejo)) snapshotViejo = {};
-                const snapshotNuevo = { ...snapshotViejo };
-
-                cacheResultados.forEach(p => {
-                    if (!p.EquipoLocal && !p.EquipoVisitante) return;
-                    const matchId = getMatchId(p);
-                    const matchHash = getMatchHash(p);
-                    let pending = false;
-                    const snapViejo = snapshotViejo[matchId];
-                    if (snapViejo) {
-                        if (snapViejo.hash !== matchHash) pending = true;
-                        else if (snapViejo.pending) pending = true;
-                    }
-                    snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
-                    if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
-                        p.CambioLocal = true;
-                    }
-                });
-                Object.keys(snapshotNuevo).forEach(k => {
-                    if (!cacheResultados.some(p => getMatchId(p) === k)) delete snapshotNuevo[k];
-                });
-                localStorage.setItem(snapshotKey, JSON.stringify(snapshotNuevo));
 
                 localStorage.setItem(`cache_cal_${equipoActual.id}`, JSON.stringify(cacheCalendarioGlobal));
                 localStorage.setItem(`cache_res_${equipoActual.id}`, JSON.stringify(cacheResultados));
@@ -2134,13 +2053,6 @@
             
             localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
             document.getElementById('banner-alerta').classList.add('hide');
-            
-            setTimeout(() => {
-                if (cacheResultados) {
-                    if (!document.getElementById('tab-calendario').classList.contains('hide')) renderizarCalendarioUI();
-                    if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
-                }
-            }, 3600000); 
         }
 
         function toggleFiltro() {
@@ -2182,7 +2094,6 @@
             if (Array.isArray(dismissedChanges)) dismissedChanges = {};
             
             let haCambiado = p.Cambio || p.CambioLocal;
-            
             if (haCambiado && dismissedChanges[matchHash]) {
                 if (Date.now() - dismissedChanges[matchHash] > 3600000) haCambiado = false;
             }
