@@ -236,17 +236,22 @@
             </div>
 
             <!-- BANNER DE AVISOS DE TELEGRAM (Solo visible para el Admin) -->
-            <div id="admin-banner-avisos" class="hide bg-[#25D366] text-white p-3 rounded-lg shadow-md mb-4 flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-bell text-xl animate-bounce"></i>
-                    <div>
-                        <p class="text-xs font-black uppercase">Modo Administrador</p>
-                        <p id="admin-texto-aviso" class="text-[11px] font-medium leading-tight">Hay solicitudes pendientes en Telegram.</p>
+            <div id="admin-banner-avisos" class="hide bg-[#25D366] text-white p-3 rounded-lg shadow-md mb-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-bell text-xl animate-bounce"></i>
+                        <div>
+                            <p class="text-xs font-black uppercase">Modo Administrador</p>
+                            <p class="text-[11px] font-medium leading-tight">Gestiona las solicitudes abajo o ábrelas en Telegram:</p>
+                        </div>
                     </div>
+                    <button onclick="gestionarSolicitudesAdmin()" class="bg-white text-[#25D366] font-black text-xs px-3 py-2 rounded-lg shadow hover:bg-gray-100 transition">
+                        Ir a Telegram
+                    </button>
                 </div>
-                <button onclick="gestionarSolicitudesAdmin()" class="bg-white text-[#25D366] font-black text-xs px-3 py-2 rounded-lg shadow hover:bg-gray-100 transition">
-                    Ver Chat
-                </button>
+
+                <!-- CONTENEDOR DINÁMICO DE LAS TARJETAS CON BOTONES APROBAR/RECHAZAR -->
+                <div id="contenedor-avisos-admin" class="mt-3"></div>
             </div>
 
             <div class="text-center pt-6 pb-4">
