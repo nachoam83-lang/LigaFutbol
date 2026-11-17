@@ -466,14 +466,6 @@
             const banner = document.getElementById('admin-banner-avisos');
             const textoAviso = document.getElementById('admin-texto-aviso');
             
-            let contenedorAvisos = document.getElementById('contenedor-avisos-admin');
-            if (banner && !contenedorAvisos) {
-                contenedorAvisos = document.createElement('div');
-                contenedorAvisos.id = 'contenedor-avisos-admin';
-                contenedorAvisos.className = 'mt-3 pt-2 border-t border-white/20';
-                banner.appendChild(contenedorAvisos);
-            }
-
             if (!banner || !textoAviso) return;
 
             if (!esAdmin) {
@@ -482,6 +474,15 @@
             }
 
             banner.classList.remove('hide');
+
+            // Buscamos o creamos el contenedor específico fuera del flex principal para evitar bloqueos visuales
+            let contenedorAvisos = document.getElementById('contenedor-avisos-admin');
+            if (!contenedorAvisos) {
+                contenedorAvisos = document.createElement('div');
+                contenedorAvisos.id = 'contenedor-avisos-admin';
+                contenedorAvisos.className = 'mt-3 pt-2 border-t border-white/20 w-full';
+                banner.appendChild(contenedorAvisos);
+            }
 
             try {
                 const res = await fetchWithTimeout('/api/admin/pendientes', { timeout: 3000 });
@@ -492,47 +493,53 @@
                         banner.classList.add('bg-[#25D366]');
                         textoAviso.innerText = `Hay ${data.total} solicitud(es) pendientes.`;
                         
-                        if (contenedorAvisos) {
-                            contenedorAvisos.innerHTML = `
-                                <div class="space-y-2 mt-2">
-                                    ${data.avisos.map(aviso => `
-                                        <div class="bg-white text-gray-800 p-2.5 rounded-lg flex justify-between items-center text-xs shadow-sm">
-                                            <div>
-                                                <span class="font-bold">ID: ${aviso.id}</span>
-                                                <p class="text-[10px] text-gray-500">${JSON.stringify(aviso.detalles)}</p>
-                                            </div>
-                                            <div class="flex gap-1.5">
-                                                <button onclick="procesarAviso(${aviso.id}, 'aprobar')" class="bg-green-600 hover:bg-green-700 text-white font-bold px-2.5 py-1.5 rounded transition">Aprobar</button>
-                                                <button onclick="procesarAviso(${aviso.id}, 'rechazar')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-2.5 py-1.5 rounded transition">Rechazar</button>
-                                            </div>
+                        contenedorAvisos.innerHTML = `
+                            <div class="space-y-2 mt-2 w-full">
+                                ${data.avisos.map(aviso => `
+                                    <div class="bg-white text-gray-800 p-2.5 rounded-lg flex justify-between items-center text-xs shadow-md">
+                                        <div class="pr-2 truncate">
+                                            <span class="font-black text-gray-900">ID: ${aviso.id}</span>
+                                            <p class="text-[10px] text-gray-500 truncate">${JSON.stringify(aviso.detalles)}</p>
                                         </div>
-                                    `).join('')}
-                                </div>
-                            `;
-                        }
+                                        <div class="flex gap-1.5 flex-shrink-0">
+                                            <button type="button" onclick="procesarAviso(${aviso.id}, 'aprobar')" class="bg-green-600 hover:bg-green-700 text-white font-bold px-3 py-1.5 rounded shadow transition cursor-pointer">Aprobar</button>
+                                            <button type="button" onclick="procesarAviso(${aviso.id}, 'rechazar')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded shadow transition cursor-pointer">Rechazar</button>
+                                        </div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
                     } else {
                         banner.classList.remove('bg-[#25D366]');
                         banner.classList.add('bg-slate-800');
                         textoAviso.innerText = "Modo Administrador activo · Sin avisos pendientes.";
-                        if (contenedorAvisos) contenedorAvisos.innerHTML = "";
+                        contenedorAvisos.innerHTML = "";
                     }
                 }
             } catch (e) {
                 banner.classList.remove('bg-[#25D366]');
                 banner.classList.add('bg-slate-800');
                 textoAviso.innerText = "Modo Administrador activo.";
-                if (contenedorAvisos) contenedorAvisos.innerHTML = "";
+                contenedorAvisos.innerHTML = "";
             }
         }
 
         async function procesarAviso(id, accion) {
             try {
-                const res = await fetch(`/api/admin/resolver/${id}`, { method: 'POST' });
+                // Hacemos la llamada POST para resolver la solicitud
+                const res = await fetch(`/api/admin/resolver/${id}`, { 
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ accion: accion })
+                });
+
                 if (res.ok) {
-                    comprobarAvisosAdmin();
-                    cargarGrupos();
+                    vibrar(50);
+                    // Actualizamos de inmediato la lista de avisos y los grupos de WhatsApp
+                    await comprobarAvisosAdmin();
+                    if (typeof cargarGrupos === 'function') cargarGrupos();
                 } else {
-                    alert("No se pudo procesar la solicitud.");
+                    alert("No se pudo procesar la solicitud en el servidor.");
                 }
             } catch (e) {
                 alert("Error de conexión al procesar la solicitud.");
