@@ -19,51 +19,106 @@ app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# 1. Creamos una lista global en la memoria del servidor para guardar los pendientes
+# 1. Lista global en la memoria del servidor para guardar los pendientes de la PWA
 SOLICITUDES_PENDIENTES = []
 
-# ─── MODO ADMINISTRADOR: PENDIENTES TELEGRAM ───
+# ─── MODO ADMINISTRADOR: PENDIENTES TELEGRAM / PWA ───
 @app.get("/api/admin/pendientes")
 def verificar_pendientes():
     try:
-        # 2. Devolvemos la lista real en lugar de una vacía `[]`
         return {"total": len(SOLICITUDES_PENDIENTES), "avisos": SOLICITUDES_PENDIENTES}
     except Exception as e:
         return {"total": 0, "avisos": []}
 
-# ─── RECIBIR SOLICITUD DE BORRADO DESDE EL CLIENTE ───
+# ─── 1. SOLICITAR BORRADO (Unificado: Alimenta la PWA y avisa a Telegram) ───
 @app.post("/api/solicitar-borrado")
-async def recibir_solicitud_borrado(request: Request):
+async def post_solicitar_borrado(request: Request):
     try:
-        # Leemos los datos que envía la app (ej: grupo, equipo, motivo...)
         datos = await request.json()
-        
-        # Creamos el objeto del aviso
+        equipo_val = datos.get("equipo", "Desconocido")
+        motivo_val = datos.get("motivo", "Sin motivo")
+
+        # A. Guardar en la lista global para que aparezca en el banner de la PWA
         nuevo_aviso = {
             "id": len(SOLICITUDES_PENDIENTES) + 1,
-            "detalles": datos,
+            "detalles": {"equipo": equipo_val, "motivo": motivo_val},
             "fecha": str(datetime.now())
         }
-        
-        # Lo guardamos en la lista global para que aparezca en pendientes
         SOLICITUDES_PENDIENTES.append(nuevo_aviso)
-        
-        return {"status": "success", "mensaje": "Solicitud guardada en pendientes"}
-    except Exception as e:
-        return {"status": "error", "mensaje": str(e)}
 
-# ─── RESOLVER O BORRAR UN AVISO PENDIENTE (Corregido) ───
+        # B. Enviar notificación al chat de Telegram del administrador
+        tg_token = os.getenv("TELEGRAM_TOKEN")
+        tg_chat = os.getenv("TELEGRAM_CHAT_ID")
+        
+        if tg_token and tg_chat:
+            equipo_seguro = html.escape(equipo_val)
+            motivo_seguro = html.escape(motivo_val)
+            texto = f"⚠️ <b>SOLICITUD DE BORRADO</b>\n\n<b>Equipo:</b> {equipo_seguro}\n<b>Motivo:</b> {motivo_seguro}"
+            
+            equipo_hash = hashlib.md5(equipo_val.encode('utf-8')).hexdigest()[:16]
+            
+            keyboard = {
+                "inline_keyboard": [[
+                    {"text": "✅ Aprobar borrado", "callback_data": f"del|{equipo_hash}"},
+                    {"text": "❌ Ignorar", "callback_data": "ignore"}
+                ]]
+            }
+            
+            url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
+            data = json.dumps({
+                "chat_id": tg_chat,
+                "text": texto,
+                "parse_mode": "HTML",
+                "reply_markup": keyboard
+            }).encode('utf-8')
+            
+            req_tg = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'})
+            try:
+                urllib.request.urlopen(req_tg)
+            except Exception as e:
+                print(f"Aviso: No se pudo enviar a Telegram, pero se guardó en la PWA: {e}")
+
+        return {"status": "ok", "mensaje": "Solicitud guardada en pendientes y enviada a Telegram"}
+    except Exception as e:
+        print(f"Error en solicitar-borrado: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+# ─── 2. RESOLVER O BORRAR UN AVISO PENDIENTE DESDE LA PWA ───
 @app.post("/api/admin/resolver/{aviso_id}")
-def resolver_aviso(aviso_id: str):  # Usamos str para evitar conflictos de tipos
+async def resolver_aviso(aviso_id: str, request: Request):
     global SOLICITUDES_PENDIENTES
-    # Comparamos convirtiendo ambos a string de forma segura
+    try:
+        body = await request.json()
+        accion = body.get("accion", "rechazar")
+    except:
+        accion = "rechazar"
+
+    aviso_encontrado = None
+    for aviso in SOLICITUDES_PENDIENTES:
+        if str(aviso.get("id")) == str(aviso_id):
+            aviso_encontrado = aviso
+            break
+
+    # Si se aprueba desde la PWA, borramos el grupo de GitHub (grupos.json) igual que en Telegram
+    if aviso_encontrado and accion == "aprobar":
+        detalles = aviso_encontrado.get("detalles", {})
+        nombre_equipo = detalles.get("equipo")
+        if nombre_equipo:
+            with github_lock:
+                grupos, sha = leer_grupos()
+                if nombre_equipo in grupos:
+                    del grupos[nombre_equipo]
+                    guardar_grupos(grupos, sha)
+
+    # Eliminar el aviso de la lista global usando conversión segura a string
     SOLICITUDES_PENDIENTES = [
         aviso for aviso in SOLICITUDES_PENDIENTES 
         if str(aviso.get("id")) != str(aviso_id)
     ]
+    
     return {"status": "success", "total_restantes": len(SOLICITUDES_PENDIENTES)}
 
-# ─── LIMPIAR TODOS LOS PENDIENTES ───
+# ─── 3. LIMPIAR TODOS LOS PENDIENTES ───
 @app.post("/api/admin/limpiar")
 def limpiar_pendientes():
     global SOLICITUDES_PENDIENTES
@@ -185,47 +240,6 @@ def post_solicitar_grupo(req: SolicitudGrupo):
         if not exito:
             return {"status": "warning", "mensaje": "Guardado localmente, pero falló en GitHub"}
         return {"status": "ok", "mensaje": "Grupo guardado correctamente"}
-
-@app.post("/api/solicitar-borrado")
-def post_solicitar_borrado(req: SolicitudBorrado):
-    tg_token = os.getenv("TELEGRAM_TOKEN")
-    tg_chat = os.getenv("TELEGRAM_CHAT_ID")
-    
-    if not tg_token or not tg_chat:
-        raise HTTPException(status_code=500, detail="Faltan variables de Telegram en Render")
-    
-    equipo_seguro = html.escape(req.equipo)
-    motivo_seguro = html.escape(req.motivo)
-    texto = f"⚠️ <b>SOLICITUD DE BORRADO</b>\n\n<b>Equipo:</b> {equipo_seguro}\n<b>Motivo:</b> {motivo_seguro}"
-    
-    equipo_hash = hashlib.md5(req.equipo.encode('utf-8')).hexdigest()[:16]
-    
-    keyboard = {
-        "inline_keyboard": [[
-            {"text": "✅ Aprobar borrado", "callback_data": f"del|{equipo_hash}"},
-            {"text": "❌ Ignorar", "callback_data": "ignore"}
-        ]]
-    }
-    
-    url = f"https://api.telegram.org/bot{tg_token}/sendMessage"
-    data = json.dumps({
-        "chat_id": tg_chat,
-        "text": texto,
-        "parse_mode": "HTML",
-        "reply_markup": keyboard
-    }).encode('utf-8')
-    
-    req_tg = urllib.request.Request(url, data=data, headers={'Content-Type': 'application/json'})
-    try:
-        urllib.request.urlopen(req_tg)
-        return {"status": "ok"}
-    except urllib.error.HTTPError as e:
-        detalle = e.read().decode('utf-8', errors='ignore')
-        print(f"Error HTTP Telegram ({e.code}): {detalle}")
-        raise HTTPException(status_code=500, detail=f"Telegram error: {detalle}")
-    except Exception as e:
-        print(f"Error enviando a Telegram: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/api/telegram-webhook")
 async def telegram_webhook(request: Request):
@@ -487,5 +501,5 @@ def get_ics(titulo: str, fecha: str, lugar: str, deporte: str = "2"):
         dtend = hora_fin_evento.strftime("%Y%m%dT%H%M%S")
     except Exception:
         return Response(status_code=400, content="Fecha inválida")
-    ics_content = f"BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//LigaFutbol//ES\r\nBEGIN:VEVENT\r\nSUMMARY:{titulo}\r\nDTSTART:{dtstart}\r\nDTEND:{dtend}\r\nLOCATION:{lugar}\r\nDESCRIPTION:{descripcion}\r\nEND:VEVENT\r\nEND:VCALENDAR"
+    ics_content = f"BEGIN:VCALENDAR\r\nVERSION:2.0\r\PRODID:-//LigaFutbol//ES\r\nBEGIN:VEVENT\r\nSUMMARY:{titulo}\r\nDTSTART:{dtstart}\r\nDTEND:{dtend}\r\nLOCATION:{lugar}\r\nDESCRIPTION:{descripcion}\r\nEND:VEVENT\r\nEND:VCALENDAR"
     return Response(content=ics_content, media_type="text/calendar", headers={"Content-Disposition": "attachment; filename=partido.ics"})
