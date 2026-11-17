@@ -461,26 +461,38 @@
         async function comprobarAvisosAdmin() {
             const esAdmin = localStorage.getItem('es_admin_liga') === 'true';
             const banner = document.getElementById('admin-banner-avisos');
-            if (!banner) return;
+            const textoAviso = document.getElementById('admin-texto-aviso');
+            if (!banner || !textoAviso) return;
 
             if (!esAdmin) {
                 banner.classList.add('hide');
                 return;
             }
 
+            // Si es admin, el banner SIEMPRE es visible en su móvil
+            banner.classList.remove('hide');
+
             try {
                 const res = await fetchWithTimeout('/api/admin/pendientes', { timeout: 3000 });
                 if (res.ok) {
                     const data = await res.json();
                     if (data.total > 0) {
-                        document.getElementById('admin-texto-aviso').innerText = `Hay ${data.total} solicitud(es) de grupo pendientes.`;
-                        banner.classList.remove('hide');
+                        // HAY AVISOS: Banner verde brillante
+                        banner.classList.remove('bg-slate-800');
+                        banner.classList.add('bg-[#25D366]');
+                        textoAviso.innerText = `Hay ${data.total} solicitud(es) de grupo pendientes.`;
                     } else {
-                        banner.classList.add('hide');
+                        // SIN AVISOS: Banner oscuro discreto indicando que el modo admin está activo
+                        banner.classList.remove('bg-[#25D366]');
+                        banner.classList.add('bg-slate-800');
+                        textoAviso.innerText = "Modo Administrador activo · Sin avisos pendientes.";
                     }
                 }
             } catch (e) {
-                banner.classList.add('hide');
+                // Si falla la red, mostramos igualmente el estado activo en oscuro
+                banner.classList.remove('bg-[#25D366]');
+                banner.classList.add('bg-slate-800');
+                textoAviso.innerText = "Modo Administrador activo.";
             }
         }
 
@@ -867,8 +879,11 @@
             volverInicio();
         }
 
-        function limpiarCacheApp() {
+            function limpiarCacheApp() {
             if(confirm('¿Seguro que quieres borrar la caché? La app se reiniciará.')) {
+                // Guardamos por seguridad si eres admin antes de limpiar
+                const soyAdmin = localStorage.getItem('es_admin_liga');
+
                 localStorage.removeItem('cache_proximo_partido');
                 localStorage.removeItem('cache_clima');
                 localStorage.removeItem('cache_geo');
@@ -879,6 +894,12 @@
                         localStorage.removeItem(key);
                     }
                 });
+
+                // Restauramos el modo admin por si acaso
+                if (soyAdmin === 'true') {
+                    localStorage.setItem('es_admin_liga', 'true');
+                }
+
                 location.reload();
             }
         }
