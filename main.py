@@ -19,13 +19,15 @@ app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# 1. Creamos una lista global en la memoria del servidor para guardar los pendientes
+SOLICITUDES_PENDIENTES = []
+
 # ─── MODO ADMINISTRADOR: PENDIENTES TELEGRAM ───
 @app.get("/api/admin/pendientes")
 def verificar_pendientes():
     try:
-        # Aquí puedes dejar la lista vacía por ahora o simular un aviso poniendo pendientes = [1] para probar
-        pendientes = [] 
-        return {"total": len(pendientes), "avisos": pendientes}
+        # 2. Devolvemos la lista real en lugar de una vacía `[]`
+        return {"total": len(SOLICITUDES_PENDIENTES), "avisos": SOLICITUDES_PENDIENTES}
     except Exception as e:
         return {"total": 0, "avisos": []}
 
