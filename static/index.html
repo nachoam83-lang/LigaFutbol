@@ -891,29 +891,32 @@
         }
 
           function limpiarCacheApp() {
-    if (confirm('¿Seguro que quieres borrar la caché? La app se reiniciará.')) {
-        
-        // 1. Resguardamos los datos críticos que NO queremos perder bajo ningún concepto
+    if(confirm('¿Seguro que quieres borrar la caché? La app se reiniciará.')) {
+        // 1. GUARDAMOS TU PERMISO DE ADMIN POR SEGURIDAD ANTES DE TOCAR NADA
         const eraAdmin = localStorage.getItem('es_admin_liga');
-        const equiposGuardados = localStorage.getItem('equipos_liga');
-        const userSettingsGuardados = localStorage.getItem('user_settings');
 
-        // 2. Borramos todo el almacenamiento local de golpe para asegurar una limpieza real y limpia
-        localStorage.clear();
+        // 2. Borramos la caché habitual de la app
+        localStorage.removeItem('cache_proximo_partido');
+        localStorage.removeItem('cache_clima');
+        localStorage.removeItem('cache_geo');
+        localStorage.removeItem('cache_grupos');
+        localStorage.removeItem('dismissed_changes');
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_')) {
+                localStorage.removeItem(key);
+            }
+        });
 
-        // 3. Restauramos de forma inmediata los datos vitales del usuario y su rol de admin
+        // 3. DEVOLVEMOS EL MODO ADMIN ALMACENADO Y FORZAMOS LECTURA
         if (eraAdmin === 'true') {
             localStorage.setItem('es_admin_liga', 'true');
-        }
-        if (equiposGuardados) {
-            localStorage.setItem('equipos_liga', equiposGuardados);
-        }
-        if (userSettingsGuardados) {
-            localStorage.setItem('user_settings', userSettingsGuardados);
+            localStorage.getItem('es_admin_liga'); // Fuerza a iOS a escribir en disco ya
         }
 
-        // 4. Recargamos la aplicación
-        location.reload();
+        // 4. Damos un pequeño respiro de 100ms antes de recargar para que iOS guarde los datos
+        setTimeout(() => {
+            location.reload();
+        }, 100);
     }
 }
 
