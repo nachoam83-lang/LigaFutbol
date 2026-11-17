@@ -139,33 +139,32 @@ def extraer_canal():
         except Exception:
             break
 
-    # --- 2. PDF (Búsqueda dinámica de horarios) ---
-    print("  📄 Buscando enlace dinámico del PDF en la web...")
+    # --- 2. PDF (Búsqueda estricta del enlace de días y horarios de partidos) ---
+    print("  📄 Buscando el PDF exacto de días y horarios de los partidos...")
     url_pdf = None
     try:
         url_pagina_canal = "https://www.ocioydeportecanal.es/es/page/view/escuela_futbol"
         response_pagina = requests.get(url_pagina_canal, verify=False, timeout=10)
         soup_pagina = BeautifulSoup(response_pagina.text, 'html.parser')
         
+        # Buscamos de forma estricta el enlace "AQUÍ" que pertenece a la frase de días y horarios de partidos
         for a in soup_pagina.find_all('a', href=True):
-            href = a.get('href', '')
             texto_a = a.text.strip().upper()
-            if ".pdf" in href.lower() or "aquí" in texto_a or "aqui" in texto_a:
-                texto_contexto = a.parent.text.lower() if a.parent else ""
-                if "horarios" in texto_contexto or "días" in texto_contexto or "partidos" in texto_contexto:
+            if texto_a in ["AQUÍ", "AQUI"]:
+                texto_padre = a.parent.text.strip().lower() if a.parent else ""
+                # Filtro exacto para coger el de partidos y evitar el general de categorías
+                if "días y horarios de los partidos" in texto_padre or "dias y horarios de los partidos" in texto_padre:
+                    href = a.get('href', '')
                     url_pdf = href if href.startswith("http") else f"{url_base}{href}"
                     break
-        
+
+        # Respaldo de seguridad si la web cambia la estructura en el futuro
         if not url_pdf:
-            for a in soup_pagina.find_all('a', href=True):
-                if ".pdf" in a.get('href', '').lower():
-                    url_pdf = a.get('href')
-                    if not url_pdf.startswith("http"):
-                        url_pdf = f"{url_base}{url_pdf}"
-                    break
+            print("    ⚠️ Usando enlace de respaldo seguro...")
+            url_pdf = "https://32760c338621fc279e50-75ecfd1a96ffdf4c500d931ef477c188.ssl.cf3.rackcdn.com/5d/b0/7b/6b/f8/8c/bb/8b/3c/46/ae/bd/a9/a6/41/5f/6afc3955ad0ce.pdf"
 
         if url_pdf:
-            print(f"    🔗 Enlace al PDF encontrado: {url_pdf}")
+            print(f"    🔗 Enlace al PDF correcto seleccionado: {url_pdf}")
             response_pdf = requests.get(url_pdf, verify=False, timeout=15)
             with pdfplumber.open(io.BytesIO(response_pdf.content)) as pdf:
                 for page in pdf.pages[1:]:
@@ -180,7 +179,15 @@ def extraer_canal():
                         for fila in tabla:
                             if not fila[0] or "-" not in str(fila[0]): continue
                             hora = str(fila[0]).split('-')[0].strip()
-                            equipos_en_fila = [str(c).strip() for c in fila if c and re.match(r"^[A-Z]{1,2}\d+$", str(c).strip())]
+                            
+                            equipos_en_fila = []
+                            for c in fila:
+                                if c:
+                                    limpio = str(c).replace('\n', ' ').strip()
+                                    match_eq = re.search(r"([A-Z]{1,2})\s*(\d+)", limpio)
+                                    if match_eq:
+                                        codigo_eq = f"{match_eq.group(1)}{match_eq.group(2)}"
+                                        equipos_en_fila.append(codigo_eq)
                             
                             for i in range(0, len(equipos_en_fila), 2):
                                 if i + 1 < len(equipos_en_fila):
@@ -193,8 +200,9 @@ def extraer_canal():
                                     if key in diccionario_partidos:
                                         diccionario_partidos[key]["FechaHora"] = f"{fecha_iso}T{hora}:00"
                                         diccionario_partidos[key]["Campo"] = f"Campo {campo_num}"
+                                        diccionario_partidos[key]["Cambio"] = True
         else:
-            print("    ⚠️ No se pudo localizar ningún PDF. Se mantienen los datos de la web.")
+            print("    ⚠️ No se pudo localizar el PDF de horarios.")
     except Exception as e:
         print(f"    ❌ Error PDF: {e}")
 
