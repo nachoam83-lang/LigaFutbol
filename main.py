@@ -52,6 +52,20 @@ async def recibir_solicitud_borrado(request: Request):
     except Exception as e:
         return {"status": "error", "mensaje": str(e)}
 
+# ─── RESOLVER O BORRAR UN AVISO PENDIENTE ───
+@app.post("/api/admin/resolver/{aviso_id}")
+def resolver_aviso(aviso_id: int):
+    global SOLICITUDES_PENDIENTES
+    SOLICITUDES_PENDIENTES = [aviso for aviso in SOLICITUDES_PENDIENTES if aviso.get("id") != aviso_id]
+    return {"status": "success", "total_restantes": len(SOLICITUDES_PENDIENTES)}
+
+# ─── LIMPIAR TODOS LOS PENDIENTES ───
+@app.post("/api/admin/limpiar")
+def limpiar_pendientes():
+    global SOLICITUDES_PENDIENTES
+    SOLICITUDES_PENDIENTES = []
+    return {"status": "success"}
+
 # ─── CONFIGURACIÓN GITHUB ───
 GITHUB_REPO = "nachoam83-lang/LigaFutbol"
 GITHUB_FILE = "static/grupos.json"
