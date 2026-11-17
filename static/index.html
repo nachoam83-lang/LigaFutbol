@@ -508,8 +508,15 @@
         }
 
         function gestionarSolicitudesAdmin() {
-            window.open("https://t.me/TuBotDeTelegram", "_blank");
-        }
+        // 1. Reemplaza 'TuBotDeTelegram' por el alias (username) real de tu bot de Telegram.
+        // 2. El parámetro '?start=admin_solicitudes' le indica al bot que debe arrancar 
+        //    mostrando el panel de gestión, los mensajes y los botones interactivos.
+        const urlTelegram = "https://t.me/@PSJ_Liga_aprobador_bot?start=admin_solicitudes";
+    
+        // Usar location.href en lugar de window.open evita por completo la pestaña en blanco 
+        // y abre la app de Telegram de forma fluida en iOS.
+        window.location.href = urlTelegram;
+}
 
         
         let cacheCalendarioGlobal = null;
