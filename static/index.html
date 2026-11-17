@@ -2204,36 +2204,9 @@ async function procesarAviso(id, accion) {
                                           : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-sm"><i class="fas fa-building mr-1"></i> Pabellón</span>`);
             }
             
-            // --- NUEVA LÓGICA DE BOTONES DE RUTA INTELIGENTES ---
-            const esSedeFijaCanal = isCanal(); // Liga Canal siempre en sede fija
-            const esPartidoEnCasa = esLocalFav || esSedeFijaCanal;
-
-            let botonesRutaHTML = "";
-            if (esPartidoEnCasa) {
-                botonesRutaHTML = `
-                    <div class="mt-2 text-center">
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dirCompleta)}&travelmode=walking" 
-                           target="_blank" 
-                           class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-3 py-1.5 rounded inline-flex items-center gap-1.5 shadow transition cursor-pointer">
-                            <i class="fas fa-walking"></i> Ir caminando
-                        </a>
-                    </div>
-                `;
-            } else {
-                botonesRutaHTML = `
-                    <div class="flex gap-2 mt-2 justify-center">
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dirCompleta)}&travelmode=driving" 
-                           target="_blank" 
-                           class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-1.5 rounded inline-flex items-center gap-1.5 shadow transition cursor-pointer">
-                            <i class="fas fa-car"></i> En coche
-                        </a>
-                        <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(dirCompleta)}&travelmode=transit" 
-                           target="_blank" 
-                           class="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded inline-flex items-center gap-1.5 shadow transition cursor-pointer">
-                            <i class="fas fa-bus"></i> Transporte público
-                        </a>
-                    </div>
-                `;
+            let htmlMapa = '';
+            if (!esResultado) {
+                htmlMapa = `<div class="text-xs flex justify-center items-center mt-3 pt-2 border-t cursor-pointer hover:bg-gray-50 rounded transition" onclick="copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this.querySelector('i'))" style="color: var(--text-sec); border-color: var(--border-color);" title="Copiar dirección"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: #f87171;"></i><span class="font-bold text-blue-500">${dirCompleta}</span></div>`;
             }
 
             let botonesExtra = '';
@@ -2320,7 +2293,6 @@ async function procesarAviso(id, accion) {
                         <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}</div></div>
                     </div>
                     ${htmlMapa}
-                    ${botonesRutaHTML}
                     ${botonesExtra}
                 </div>`;
         }
