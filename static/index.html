@@ -524,9 +524,16 @@
             }
         }
 
-        async function procesarAviso(id, accion) {
+async function procesarAviso(id, accion) {
             try {
-                // Hacemos la llamada POST para resolver la solicitud
+                // 1. Feedback visual inmediato en el botón para que se note que se ha pulsado
+                const btnAprobar = document.querySelector(`button[onclick*="procesarAviso(${id}, 'aprobar')"]`);
+                if (btnAprobar) {
+                    btnAprobar.innerText = "...";
+                    btnAprobar.disabled = true;
+                }
+
+                // 2. Llamada al servidor FastAPI
                 const res = await fetch(`/api/admin/resolver/${id}`, { 
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -535,14 +542,29 @@
 
                 if (res.ok) {
                     vibrar(50);
-                    // Actualizamos de inmediato la lista de avisos y los grupos de WhatsApp
-                    await comprobarAvisosAdmin();
-                    if (typeof cargarGrupos === 'function') cargarGrupos();
+                    
+                    // 3. Eliminamos el elemento visualmente de la pantalla de forma instantánea
+                    const contenedorAvisos = document.getElementById('contenedor-avisos-admin');
+                    if (contenedorAvisos) {
+                        contenedorAvisos.innerHTML = `<div class="text-xs text-white/90 py-1"><i class="fas fa-check mr-1"></i> Solicitud procesada correctamente.</div>`;
+                    }
+
+                    // 4. Sincronizamos con el servidor para actualizar el banner y los grupos
+                    setTimeout(async () => {
+                        await comprobarAvisosAdmin();
+                        if (typeof cargarGrupos === 'function') cargarGrupos();
+                    }, 400);
+
                 } else {
-                    alert("No se pudo procesar la solicitud en el servidor.");
+                    alert("El servidor no pudo procesar la solicitud.");
+                    if (btnAprobar) {
+                        btnAprobar.innerText = "Aprobar";
+                        btnAprobar.disabled = false;
+                    }
                 }
             } catch (e) {
-                alert("Error de conexión al procesar la solicitud.");
+                console.error("Error de red:", e);
+                alert("Error de red al intentar conectar con el servidor.");
             }
         }
 
