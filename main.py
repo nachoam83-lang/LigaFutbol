@@ -31,6 +31,27 @@ def verificar_pendientes():
     except Exception as e:
         return {"total": 0, "avisos": []}
 
+# ─── RECIBIR SOLICITUD DE BORRADO DESDE EL CLIENTE ───
+@app.post("/api/solicitar-borrado")
+async def recibir_solicitud_borrado(request: Request):
+    try:
+        # Leemos los datos que envía la app (ej: grupo, equipo, motivo...)
+        datos = await request.json()
+        
+        # Creamos el objeto del aviso
+        nuevo_aviso = {
+            "id": len(SOLICITUDES_PENDIENTES) + 1,
+            "detalles": datos,
+            "fecha": str(datetime.now())
+        }
+        
+        # Lo guardamos en la lista global para que aparezca en pendientes
+        SOLICITUDES_PENDIENTES.append(nuevo_aviso)
+        
+        return {"status": "success", "mensaje": "Solicitud guardada en pendientes"}
+    except Exception as e:
+        return {"status": "error", "mensaje": str(e)}
+
 # ─── CONFIGURACIÓN GITHUB ───
 GITHUB_REPO = "nachoam83-lang/LigaFutbol"
 GITHUB_FILE = "static/grupos.json"
