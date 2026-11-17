@@ -494,19 +494,26 @@
                         textoAviso.innerText = `Hay ${data.total} solicitud(es) pendientes.`;
                         
                         contenedorAvisos.innerHTML = `
-                            <div class="space-y-2 mt-2 w-full">
-                                ${data.avisos.map(aviso => `
-                                    <div class="bg-white text-gray-800 p-2.5 rounded-lg flex justify-between items-center text-xs shadow-md">
-                                        <div class="pr-2 truncate">
-                                            <span class="font-black text-gray-900">ID: ${aviso.id}</span>
-                                            <p class="text-[10px] text-gray-500 truncate">${JSON.stringify(aviso.detalles)}</p>
+                          <div class="space-y-2 mt-2 w-full">
+                                ${data.avisos.map(aviso => {
+                                    // Extraemos de forma limpia los campos del detalle
+                                    const equipo = aviso.detalles?.equipo || 'Equipo desconocido';
+                                    const motivo = aviso.detalles?.motivo || 'Sin motivo especificado';
+                                    
+                                    return `
+                                        <div class="bg-white text-gray-800 p-3 rounded-lg flex justify-between items-center text-xs shadow-md">
+                                            <div class="pr-2 overflow-hidden">
+                                                <div class="font-bold text-gray-900 text-sm truncate">🗑️ ${equipo}</div>
+                                                <div class="text-[11px] text-gray-600 mt-0.5"><strong>Motivo:</strong> ${motivo}</div>
+                                                <div class="text-[9px] text-gray-400 mt-1">Solicitud ID: ${aviso.id}</div>
+                                            </div>
+                                            <div class="flex gap-1.5 flex-shrink-0">
+                                                <button type="button" onclick="procesarAviso(${aviso.id}, 'aprobar')" class="bg-green-600 hover:bg-green-700 text-white font-bold px-3 py-1.5 rounded shadow transition cursor-pointer">Aprobar</button>
+                                                <button type="button" onclick="procesarAviso(${aviso.id}, 'rechazar')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded shadow transition cursor-pointer">Rechazar</button>
+                                            </div>
                                         </div>
-                                        <div class="flex gap-1.5 flex-shrink-0">
-                                            <button type="button" onclick="procesarAviso(${aviso.id}, 'aprobar')" class="bg-green-600 hover:bg-green-700 text-white font-bold px-3 py-1.5 rounded shadow transition cursor-pointer">Aprobar</button>
-                                            <button type="button" onclick="procesarAviso(${aviso.id}, 'rechazar')" class="bg-red-600 hover:bg-red-700 text-white font-bold px-3 py-1.5 rounded shadow transition cursor-pointer">Rechazar</button>
-                                        </div>
-                                    </div>
-                                `).join('')}
+                                    `;
+                                }).join('')}
                             </div>
                         `;
                     } else {
