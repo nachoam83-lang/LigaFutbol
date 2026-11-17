@@ -860,6 +860,8 @@
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
             renderizarAjustesGrupos();
+            // <--- AÑADIR ESTA LÍNEA AQUÍ PARA QUE REVISE EL ADMIN AL ENTRAR EN AJUSTES
+            comprobarAvisosAdmin();
         }
 
         async function guardarAjustes() {
