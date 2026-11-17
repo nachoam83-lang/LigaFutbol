@@ -24,7 +24,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 def verificar_pendientes():
     try:
         # Aquí puedes dejar la lista vacía por ahora o simular un aviso poniendo pendientes = [1] para probar
-        pendientes = [2] 
+        pendientes = [] 
         return {"total": len(pendientes), "avisos": pendientes}
     except Exception as e:
         return {"total": 0, "avisos": []}
