@@ -206,6 +206,14 @@
                     </select>
                 </div>
 
+                <div class="border-t pt-4" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Transporte para partidos fuera de casa</label>
+                    <select id="select-transporte-fuera" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                        <option value="driving">🚗 Coche</option>
+                        <option value="transit">🚌 Transporte público</option>
+                    </select>
+                </div>
+
                 <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-lg shadow transition text-sm">Guardar Cambios</button>
             </div>
             
@@ -1176,9 +1184,12 @@ async function procesarAviso(id, accion) {
                 const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
                 const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
                 
+                const esPartidoEnCasa = esLocalFav || esCanal;
+                const iconoRutaHtml = esPartidoEnCasa ? '<i class="fas fa-walking text-gray-800"></i>' : (userSettings.transportModeAway === 'transit' ? '<i class="fas fa-bus text-gray-800"></i>' : '<i class="fas fa-car text-gray-800"></i>');
+                
                 const htmlRuta = userSettings.showRoute === true ? `
                     <div class="flex items-center justify-center gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
-                        <i class="fas fa-car text-gray-800"></i>
+                        ${iconoRutaHtml}
                         <span id="ruta-agenda-${index}" class="text-blue-600"></span>
                     </div>
                 ` : '';
@@ -1475,17 +1486,22 @@ async function procesarAviso(id, accion) {
                                 } catch(e) {}
                             }
 
-                            if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
-                                const elRuta = document.getElementById(`ruta-agenda-${i}`);
-                                if (navigator.onLine === false) {
+                                    if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
+                                    const elRuta = document.getElementById(`ruta-agenda-${i}`);
+                                    if (navigator.onLine === false) {
                                     if (elRuta) elRuta.innerHTML = `<span class="text-gray-400 text-[11px]">Sin conexión</span>`;
-                                } else {
-                                    if (elRuta && !elRuta.innerHTML) elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
+                                    } else {
+                                    if (elRuta && elRuta.innerText === "Calculando...") elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
                                     try {
-                                        const routeKey = `${userSettings.homeLat},${userSettings.homeLon}_${lat},${lon}`;
+                                        const esPartidoEnCasa = (p.EquipoLocal === eq.equipoFavorito) || esCanal;
+                                        // 🏠 En casa -> Caminando ('foot'). 🚗/🚌 Fuera -> El modo elegido en ajustes
+                                        const mode = esPartidoEnCasa ? 'foot' : (userSettings.transportModeAway || 'driving');
+                                        
+                                        const routeKey = `${userSettings.homeLat},${userSettings.homeLon}_${lat},${lon}_${mode}`;
                                         let durationSec = cacheRuta[routeKey];
+                                        
                                         if (!Number.isFinite(durationSec)) {
-                                            const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/driving/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
+                                            const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/${mode}/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
                                             const routeData = await resRoute.json();
                                             if (routeData.routes && routeData.routes.length > 0) {
                                                 durationSec = routeData.routes[0].duration;
@@ -1493,6 +1509,7 @@ async function procesarAviso(id, accion) {
                                                 localStorage.setItem('cache_ruta', JSON.stringify(cacheRuta));
                                             }
                                         }
+
                                         if (Number.isFinite(durationSec)) {
                                             const durationMin = Math.ceil(durationSec / 60);
                                             const datePartido = new Date(p.FechaHora);
@@ -1501,11 +1518,14 @@ async function procesarAviso(id, accion) {
                                             const hh = String(datePartido.getHours()).padStart(2, '0');
                                             const mm = String(datePartido.getMinutes()).padStart(2, '0');
                                             if (elRuta) elRuta.innerHTML = `Sal a las ${hh}:${mm}`;
+                                        } else {
+                                            if (elRuta) elRuta.innerHTML = `No disponible`;
                                         }
-                                    } catch(e) {}
+                                    } catch(e) {
+                                        if (elRuta) elRuta.innerHTML = `No disponible`;
+                                    }
                                 }
                             }
-                        }
                     })()
                 );
             }
