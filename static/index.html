@@ -259,28 +259,32 @@
                     </select>
                 </div>
 
-                <!-- NUEVA CONFIGURACIÓN DE AVISOS DE CAMBIO -->
-                <div class="border-t pt-4 space-y-3" style="border-color: var(--border-color);">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <label class="block text-sm font-bold text-gray-800">Avisos de Cambio de Partidos</label>
-                            <p class="text-xs text-gray-500">Mostrar iconos y banner de advertencia en cambios</p>
-                        </div>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" id="toggle-avisos" class="sr-only peer">
-                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
-                        </label>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Tiempo que se mantiene el aviso (minutos)</label>
-                        <input type="number" id="input-tiempo-aviso" min="5" max="1440" placeholder="60" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-                        <p class="text-[11px] text-gray-400 mt-1">Tras cerrar el banner/aviso o pasar este tiempo, la advertencia dejará de mostrarse.</p>
-                    </div>
-                </div>
-
                 <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-lg shadow transition text-sm">Guardar Cambios</button>
             </div>
+
+            <!-- TARJETA 2: AVISOS DE CAMBIO DE PARTIDOS (INDEPENDIENTE) -->
+            <div class="card p-4 space-y-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-gray-800 text-sm">Avisos de Cambio de Partidos</h3>
+                        <p class="text-xs text-gray-500">Mostrar iconos y banner de advertencia en cambios</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-avisos" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                    </label>
+                </div>
+
+                <div class="border-t pt-3" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Tiempo que se mantiene el aviso (minutos)</label>
+                    <input type="number" id="input-tiempo-aviso" min="5" max="1440" placeholder="60" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                    <p class="text-[11px] text-gray-400 mt-1">Tras cerrar el banner/aviso o pasar este tiempo, la advertencia dejará de mostrarse.</p>
+                </div>
+
+                <button id="btn-guardar-avisos" onclick="guardarAjustes()" class="w-full bg-gray-800 text-white font-bold py-3 rounded-lg shadow transition text-sm hover:bg-gray-700">Guardar Configuración de Avisos</button>
+            </div>
+            
+             <!-- TARJETA 3: MANTENIMIENTO -->
             
             <div class="card p-4">
                 <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Mantenimiento</label>
