@@ -17,6 +17,38 @@ def test_ecm_connection():
     except Exception:
         return False
 
+from datetime import datetime
+
+def actualizar_backups_nocturnos():
+    archivos = [
+        ("datos_canal.json", "datos_canal_backup.json"),
+        ("datos_liga.json", "datos_liga_backup.json")
+    ]
+    
+    ahora = datetime.now()
+    print("🌙 Verificando condición de backup nocturno (23:59)...")
+    
+    for principal, backup in archivos:
+        if not os.path.exists(principal):
+            continue
+
+        # Si el backup no existe, lo creamos directamente
+        if not os.path.exists(backup):
+            shutil.copy(principal, backup)
+            print(f"📦 Backup inicial creado para {principal}.")
+            continue
+
+        # Comprobamos la fecha del archivo de backup actual
+        tiempo_mod_backup = os.path.getmtime(backup)
+        fecha_backup = datetime.fromtimestamp(tiempo_mod_backup)
+
+        # Si ya estamos en un día posterior y son las 23:00 o más tarde, actualizamos el backup
+        if ahora.date() > fecha_backup.date() and ahora.hour >= 23:
+            shutil.copy(principal, backup)
+            print(f"🌙 Backup nocturno actualizado para {principal} ({ahora.strftime('%Y-%m-%d %H:%M')}).")
+        else:
+            print(f"ℹ️ El backup de {principal} se mantiene estable.")
+
 def generar_backups():
     print("📦 Generando archivos de backup...")
     try:
