@@ -14,6 +14,7 @@ import urllib.parse
 import threading
 import html
 import hashlib
+import re
 
 app = FastAPI(title="API Liga Fútbol Sala")
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"])
@@ -131,6 +132,14 @@ GITHUB_FILE = "static/grupos.json"
 GITHUB_BRANCH = "main"
 github_lock = threading.Lock()
 
+_RE_ENLACE_WHATSAPP = re.compile(r"^https://chat\.whatsapp\.com/([A-Za-z0-9_-]{15,40})(?:\?\S*)?$")
+
+def normalizar_enlace_whatsapp(url):
+    """Devuelve el enlace canónico https://chat.whatsapp.com/CODIGO o None si no es un enlace de invitación válido.
+    Antes bastaba con que el texto contuviera 'chat.whatsapp.com', así que se colaban enlaces a otras webs."""
+    m = _RE_ENLACE_WHATSAPP.match((url or "").strip())
+    return f"https://chat.whatsapp.com/{m.group(1)}" if m else None
+
 class SolicitudGrupo(BaseModel):
     equipo: str
     url: str
@@ -228,14 +237,17 @@ def get_grupos_whatsapp():
 
 @app.post("/api/solicitar-grupo")
 def post_solicitar_grupo(req: SolicitudGrupo):
-    if "chat.whatsapp.com" not in req.url:
+    url_limpia = normalizar_enlace_whatsapp(req.url)
+    if not url_limpia:
         raise HTTPException(status_code=400, detail="Enlace de WhatsApp no válido")
-        
+    if not req.equipo.strip() or len(req.equipo) > 200:
+        raise HTTPException(status_code=400, detail="Equipo no válido")
+
     with github_lock:
         grupos, sha = leer_grupos()
         if req.equipo in grupos:
             raise HTTPException(status_code=409, detail="Este equipo ya tiene un grupo asignado")
-        grupos[req.equipo] = req.url
+        grupos[req.equipo] = url_limpia
         exito = guardar_grupos(grupos, sha)
         if not exito:
             return {"status": "warning", "mensaje": "Guardado localmente, pero falló en GitHub"}
