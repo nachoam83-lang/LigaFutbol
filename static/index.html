@@ -1183,38 +1183,36 @@
 
             window._partidosAgenda = proximosPartidos;
             
-            // --- CONTROL DEL BANNER MAESTRO (Lógica corregida tipo v1.02.00) ---
-            const dismissedMasterTime = parseInt(localStorage.getItem('dismissed_master_time') || '0');
-            const unHourPassed = (Date.now() - dismissedMasterTime) > 3600000; // 1 hora exacta (3.600.000 ms)
-            
-            let hayCambiosPendientesGlobales = false;
+            // --- CONTROL DEL BANNER MAESTRO (Unificado con dismissed_changes) ---
+            let hayCambiosSinDescartar = false;
             
             proximosPartidos.forEach(p => {
-                // Comprobamos si el partido tiene un cambio real activo detectado por el snapshot
                 if (p.Cambio || p.CambioLocal) {
-                    hayCambiosPendientesGlobales = true;
+                    const matchHash = getMatchHash(p);
+                    let estaDescartado = false;
+                    
+                    if (dismissed[matchHash]) {
+                        const tiempoTranscurrido = Date.now() - dismissed[matchHash];
+                        if (tiempoTranscurrido <= 3600000) {
+                            estaDescartado = true; // Sigue dentro de la hora de gracia
+                        }
+                    }
+
+                    if (!estaDescartado) {
+                        hayCambiosSinDescartar = true;
+                    }
                 }
             });
 
             const bannerMaestro = document.getElementById('banner-maestro-agenda');
             if (bannerMaestro) {
-                // Si ya no hay cambios reales en los datos del servidor, limpiamos el descarte y ocultamos el banner maestro
-                if (!hayCambiosPendientesGlobales) {
-                    localStorage.removeItem('dismissed_master_time');
-                    bannerMaestro.classList.add('hide');
+                if (hayCambiosSinDescartar) {
+                    bannerMaestro.classList.remove('hide');
                 } else {
-                    // Si hay cambios, evaluamos si debe mostrarse según la hora de gracia
-                    if (!dismissedMasterTime || unHourPassed) {
-                        bannerMaestro.classList.remove('hide');
-                        if (unHourPassed) {
-                            localStorage.removeItem('dismissed_master_time'); // Reseteamos el ciclo si pasó la hora y persiste el cambio
-                        }
-                    } else {
-                        bannerMaestro.classList.add('hide'); // Dentro de la hora de gracia, oculto
-                    }
+                    bannerMaestro.classList.add('hide');
                 }
             }
-            // ----------------------------------
+            // ------------------------------------------------------------------
 
             proximosPartidos.forEach((p, index) => {
                 const eq = p._equipoRef;
@@ -1404,7 +1402,7 @@
                 contenedorInactivos.id = 'contenedor-equipos-sin-partidos';
                 contenedorInactivos.className = 'mt-6 pt-4 border-t border-gray-200 space-y-3';
                 
-                let htmlInactivos = `<h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Equipos sin partidos próximos[cite: 1]</h4>`;
+                let htmlInactivos = `<h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Equipos sin partidos próximos</h4>`;
 
                 equiposSinPartidos.forEach(eq => {
                     const esCanal = (eq.idDeporte === "4");
@@ -1428,7 +1426,7 @@
                             </div>
 
                             <div class="text-white/80 text-xs font-bold px-2.5 py-1 bg-white/15 rounded-lg flex-shrink-0 ml-2">
-                                Ver ficha ➔[cite: 1]
+                                Ver ficha ➔
                             </div>
                         </div>
                     `;
@@ -1445,7 +1443,7 @@
                 contenedor.insertAdjacentHTML('beforeend', `
                     <div class="text-center text-[11px] text-gray-400 mt-3 mb-2 flex items-center justify-center gap-1">
                         <i class="fas fa-wifi" style="opacity:0.4"></i>
-                        Mostrando datos guardados · sin conexión[cite: 1]
+                        Mostrando datos guardados · sin conexión
                     </div>`);
             }
         }
@@ -2337,14 +2335,25 @@ function actualizarUIJornadas() {
         }
         
         function cerrarBannerMaestro() {
-            // Guardamos el timestamp actual en el localStorage del banner maestro
-            localStorage.setItem('dismissed_master_time', Date.now().toString());
-    
-            // Ocultamos el banner maestro de inmediato
+            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+            const ahora = Date.now();
+
+            if (window._partidosAgenda && Array.isArray(window._partidosAgenda)) {
+                window._partidosAgenda.forEach(p => {
+                    if (p.Cambio || p.CambioLocal) {
+                        const matchHash = getMatchHash(p);
+                        if (!dismissed[matchHash]) {
+                            dismissed[matchHash] = ahora;
+                        }
+                    }
+                });
+                localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
+            }
+
             const bannerMaestro = document.getElementById('banner-maestro-agenda');
-                if (bannerMaestro) {
-            bannerMaestro.classList.add('hide');
-           }
+            if (bannerMaestro) {
+                bannerMaestro.classList.add('hide');
+            }
         }
 
         function toggleFiltro() {
