@@ -1189,17 +1189,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
             
             let hayCambiosActivos = false;
             proximosPartidos.forEach(p => {
-                let haCambiado = p.Cambio || p.CambioLocal;
-                const matchHash = getMatchHash(p);
-                
-                const descarteIndividualVigente = dismissed[matchHash] && ((Date.now() - dismissed[matchHash]) <= 3600000);
-                const descarteMaestroVigente = dismissedMasterTime > 0 && ((Date.now() - dismissedMasterTime) <= 3600000);
-
-                if (haCambiado && (descarteIndividualVigente || descarteMaestroVigente)) {
-                    haCambiado = false;
-                }
-
-                if (haCambiado) {
+                if (p.Cambio || p.CambioLocal) {
                     hayCambiosActivos = true;
                 }
             });
@@ -1265,17 +1255,22 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                         : `<span class="text-[11px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded shadow-sm">Pabellón</span>`;
                 }
 
-                // --- EVALUACIÓN LIMPIA CON IF / OR ---
+                // --- EVALUACIÓN DE GRACIA Y EXPIRACIÓN DE 1 HORA PARA ICONOS ---
                 let haCambiado = p.Cambio || p.CambioLocal;
                 const matchHash = getMatchHash(p);
                 
-                const descarteIndividualVigente = dismissed[matchHash] && ((Date.now() - dismissed[matchHash]) <= 3600000);
-                const descarteMaestroVigente = dismissedMasterTime > 0 && ((Date.now() - dismissedMasterTime) <= 3600000);
-
-                if (haCambiado && (descarteIndividualVigente || descarteMaestroVigente)) {
-                    haCambiado = false;
+                if (haCambiado && dismissed[matchHash]) {
+                    const tiempoTranscurrido = Date.now() - dismissed[matchHash];
+                    if (tiempoTranscurrido <= 3600000) {
+                        // Sigue dentro de la hora de gracia: ocultamos el icono de advertencia
+                        haCambiado = false;
+                    } else {
+                        // Ha pasado más de 1 hora: el reloj expira, borramos el descarte y reaparece el icono
+                        delete dismissed[matchHash];
+                        localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
+                    }
                 }
-                // ------------------------------------
+                // -------------------------------------------------------------
 
                 const warningSvg = `
                     <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 drop-shadow-md">
