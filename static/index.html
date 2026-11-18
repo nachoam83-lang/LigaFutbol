@@ -1183,20 +1183,26 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
 
             window._partidosAgenda = proximosPartidos;
             
-            // --- CONTROL DEL BANNER MAESTRO ---
+            // --- CONTROL DEL BANNER MAESTRO INTELIGENTE ---
             const dismissedMasterTime = parseInt(localStorage.getItem('dismissed_master_time') || '0');
             const unHourPassed = (Date.now() - dismissedMasterTime) > 3600000; // 1 hora
             
             let hayCambiosActivos = false;
             proximosPartidos.forEach(p => {
-                if (p.Cambio || p.CambioLocal) {
+                // Solo consideramos cambio activo si el partido realmente lo marca de forma fresca
+                if ((p.Cambio || p.CambioLocal) && !dismissed[getMatchHash(p)]) {
                     hayCambiosActivos = true;
                 }
             });
 
             const bannerMaestro = document.getElementById('banner-maestro-agenda');
             if (bannerMaestro) {
-                if (hayCambiosActivos && (dismissedMasterTime === 0 || unHourPassed)) {
+                // Si ha pasado la hora, borramos el registro antiguo del banner para que pueda revaluarse limpiamente
+                if (unHourPassed && dismissedMasterTime > 0) {
+                    localStorage.removeItem('dismissed_master_time');
+                }
+
+                if (hayCambiosActivos && (!dismissedMasterTime || unHourPassed)) {
                     bannerMaestro.classList.remove('hide');
                 } else {
                     bannerMaestro.classList.add('hide');
