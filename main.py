@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException, Response, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from functools import lru_cache
 from pydantic import BaseModel
 import json
@@ -488,6 +488,23 @@ def get_clasificacion(id_deporte: str, id_competicion: str, id_categoria: str, i
     key = f"{id_deporte}_{id_competicion}_{id_categoria}_{id_grupo}"
     return datos["clasificacion"].get(key, [])
 
+def _ics_escape(texto):
+    """Escapa texto para iCalendar (RFC 5545). También evita que un valor con saltos de línea inyecte campos."""
+    return (str(texto).replace("\\", "\\\\").replace(";", "\\;").replace(",", "\\,")
+            .replace("\r\n", "\\n").replace("\n", "\\n").replace("\r", ""))
+
+def _ics_fold(linea):
+    """Líneas de máximo 75 octetos; las continuaciones empiezan con un espacio."""
+    partes = []
+    while len(linea.encode("utf-8")) > 75:
+        corte = 75
+        while len(linea[:corte].encode("utf-8")) > 75:
+            corte -= 1
+        partes.append(linea[:corte])
+        linea = " " + linea[corte:]
+    partes.append(linea)
+    return "\r\n".join(partes)
+
 @app.get("/api/ics")
 def get_ics(titulo: str, fecha: str, lugar: str, deporte: str = "2"):
     try:
@@ -500,10 +517,28 @@ def get_ics(titulo: str, fecha: str, lugar: str, deporte: str = "2"):
             hora_inicio_evento = fecha_dt - timedelta(minutes=30)
             hora_fin_evento = hora_inicio_evento + timedelta(minutes=105)
             tipo_campo = "Exterior" if ("EXTERIOR" in lugar.upper() or "AIRE LIBRE" in lugar.upper()) else "Pabellón"
-            descripcion = f"Convocatoria 30 min antes.\\nEl partido comienza a las {fecha_dt.strftime('%H:%M')}h.\\nCampo: {tipo_campo}."
+            descripcion = f"Convocatoria 30 min antes.\nEl partido comienza a las {fecha_dt.strftime('%H:%M')}h.\nCampo: {tipo_campo}."
         dtstart = hora_inicio_evento.strftime("%Y%m%dT%H%M%S")
         dtend = hora_fin_evento.strftime("%Y%m%dT%H%M%S")
     except Exception:
         return Response(status_code=400, content="Fecha inválida")
-    ics_content = f"BEGIN:VCALENDAR\r\nVERSION:2.0\r\PRODID:-//LigaFutbol//ES\r\nBEGIN:VEVENT\r\nSUMMARY:{titulo}\r\nDTSTART:{dtstart}\r\nDTEND:{dtend}\r\nLOCATION:{lugar}\r\nDESCRIPTION:{descripcion}\r\nEND:VEVENT\r\nEND:VCALENDAR"
+    # UID estable: si se vuelve a descargar el mismo partido, el calendario lo actualiza en vez de duplicarlo
+    uid = hashlib.md5(f"{titulo}|{fecha}|{lugar}|{deporte}".encode("utf-8")).hexdigest() + "@ligafutbol"
+    dtstamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    lineas = [
+        "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//LigaFutbol//ES", "CALSCALE:GREGORIAN", "METHOD:PUBLISH",
+        "BEGIN:VEVENT",
+        f"UID:{uid}",
+        f"DTSTAMP:{dtstamp}",
+        f"SUMMARY:{_ics_escape(titulo)}",
+        f"DTSTART:{dtstart}",
+        f"DTEND:{dtend}",
+        f"LOCATION:{_ics_escape(lugar)}",
+        f"DESCRIPTION:{_ics_escape(descripcion)}",
+        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Partido mañana", "TRIGGER:-P1D", "END:VALARM",
+        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Partido en 1 hora", "TRIGGER:-PT1H", "END:VALARM",
+        "END:VEVENT",
+        "END:VCALENDAR",
+    ]
+    ics_content = "\r\n".join(_ics_fold(l) for l in lineas) + "\r\n"
     return Response(content=ics_content, media_type="text/calendar", headers={"Content-Disposition": "attachment; filename=partido.ics"})
