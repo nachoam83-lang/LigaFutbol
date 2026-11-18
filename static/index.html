@@ -2320,27 +2320,14 @@ function actualizarUIJornadas() {
         }
         
 function cerrarBannerMaestro() {
-            // Guardamos el tiempo exacto del cierre maestro (la hora de gracia empieza aquí)
+            // 1. Guardamos solo el tiempo del cierre del banner maestro (válido por 1 hora)
             localStorage.setItem('dismissed_master_time', Date.now().toString());
-            
-            const now = Date.now();
-            let dismissedGlobal = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-            if (Array.isArray(dismissedGlobal)) dismissedGlobal = {};
 
-            // Marcamos también los hashes actuales de la agenda para que caduquen conjuntamente a la hora
-            if (window._partidosAgenda && Array.isArray(window._partidosAgenda)) {
-                window._partidosAgenda.forEach(p => {
-                    let hash = getMatchHash(p);
-                    dismissedGlobal[hash] = now;
-                });
-            }
-            localStorage.setItem('dismissed_changes', JSON.stringify(dismissedGlobal));
-
-            // Ocultamos el banner maestro visualmente de forma temporal
+            // 2. Ocultamos el banner maestro visualmente
             const bannerMaestro = document.getElementById('banner-maestro-agenda');
             if (bannerMaestro) bannerMaestro.classList.add('hide');
             
-            // Refrescamos la agenda para limpiar los iconos durante la hora de gracia
+            // 3. Refrescamos la agenda para que el banner desaparezca pero los iconos de las tarjetas NO se toquen
             if (window._partidosAgenda) {
                 renderAgendaDesdeDatos(window._partidosAgenda, { showingFromCache: false });
             }
