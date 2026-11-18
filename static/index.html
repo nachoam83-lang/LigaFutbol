@@ -2118,25 +2118,35 @@
                     if (!p.EquipoLocal && !p.EquipoVisitante) return;
                     const matchId = getMatchId(p);
                     const matchHash = getMatchHash(p);
+    
                     let pending = false;
                     const snapViejo = snapshotViejo[matchId];
+                    
                     if (snapViejo) {
-                        if (snapViejo.hash !== matchHash) pending = true; 
-                        else if (snapViejo.pending) pending = true; 
+                        // El cambio solo es real si el hash del partido ha cambiado respecto al snapshot guardado
+                        if (snapViejo.hash !== matchHash) {
+                            pending = true;
+                        } else {
+                            // Si el hash es el mismo, respetamos el estado anterior SOLO si venía marcado de la API o servidor
+                            pending = p.Cambio || p.CambioLocal || (snapViejo.pending && !p.SinCambios);
+                        }
                     } else {
-                        // Si es la primera vez que se evalúa este partido, no lo marcamos como cambio fantasma
-                        pending = false;
+                        // Si es un partido totalmente nuevo en el snapshot, miramos si la API trae el cambio
+                        pending = !!(p.Cambio || p.CambioLocal);
                     }
-                    
+                
                     snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
-                    
+
                     if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
                         p.CambioLocal = true;
                     }
                 });
+                
+                // Limpiamos los partidos que ya no existan en el calendario actual
                 Object.keys(snapshotNuevo).forEach(k => {
                     if (!cacheResultados.some(p => getMatchId(p) === k)) delete snapshotNuevo[k];
                 });
+                
                 localStorage.setItem(snapshotKey, JSON.stringify(snapshotNuevo));
 
                 localStorage.setItem(`cache_cal_${equipoActual.id}`, JSON.stringify(cacheCalendarioGlobal));
