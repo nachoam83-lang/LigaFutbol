@@ -6,9 +6,9 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.03.02                                           -->
-    <!--  Fecha: 17/11/2026                                                 -->
-    <!--  Cambios: Eliminación definitiva del banner maestro                 -->
+    <!--  Versión actual: v1.03.04                                           -->
+    <!--  Fecha: 18/11/2026                                                 -->
+    <!--  Cambios: Banner de alertas parametrizado con ajustes de usuario    -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -259,6 +259,26 @@
                     </select>
                 </div>
 
+                <!-- NUEVA CONFIGURACIÓN DE AVISOS DE CAMBIO -->
+                <div class="border-t pt-4 space-y-3" style="border-color: var(--border-color);">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <label class="block text-sm font-bold text-gray-800">Avisos de Cambio de Partidos</label>
+                            <p class="text-xs text-gray-500">Mostrar iconos y banner de advertencia en cambios</p>
+                        </div>
+                        <label class="relative inline-flex items-center cursor-pointer">
+                            <input type="checkbox" id="toggle-avisos" class="sr-only peer">
+                            <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                        </label>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Tiempo que se mantiene el aviso (minutos)</label>
+                        <input type="number" id="input-tiempo-aviso" min="5" max="1440" placeholder="60" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                        <p class="text-[11px] text-gray-400 mt-1">Tras cerrar el banner/aviso o pasar este tiempo, la advertencia dejará de mostrarse.</p>
+                    </div>
+                </div>
+
                 <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-lg shadow transition text-sm">Guardar Cambios</button>
             </div>
             
@@ -306,8 +326,8 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.03.02</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">17/11/2026 · Hora de salida inteligente</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.03.04</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">18/11/2026 · Control configurable de avisos y banners</p>
             </div>
         </div>
     </div>
@@ -403,6 +423,7 @@
         </div>
 
         <div id="tab-calendario" class="p-4">
+            <!-- BANNER DE ALERTA PARAMETRIZADO -->
             <div id="banner-alerta" class="hide bg-red-100 text-red-700 p-3 rounded-lg text-sm font-bold flex items-center justify-between shadow-sm relative mb-4">
                 <div class="flex items-center">
                     <i class="fas fa-exclamation-triangle mr-2 text-lg"></i> 
@@ -468,9 +489,20 @@
         });
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
-        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false, transportModeAway: 'driving' };
+        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { 
+            homeAddress: '', 
+            homeLat: null, 
+            homeLon: null, 
+            defaultMap: 'ask', 
+            showRoute: false, 
+            transportModeAway: 'driving',
+            showChangeAlerts: true,
+            alertDurationMinutes: 60 
+        };
         if (userSettings.showRoute === undefined) userSettings.showRoute = false; 
         if (userSettings.transportModeAway === undefined) userSettings.transportModeAway = 'driving';
+        if (userSettings.showChangeAlerts === undefined) userSettings.showChangeAlerts = true;
+        if (userSettings.alertDurationMinutes === undefined) userSettings.alertDurationMinutes = 60;
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
@@ -989,6 +1021,8 @@
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
             document.getElementById('select-transporte-fuera').value = userSettings.transportModeAway || 'driving';
+            document.getElementById('toggle-avisos').checked = userSettings.showChangeAlerts !== false;
+            document.getElementById('input-tiempo-aviso').value = userSettings.alertDurationMinutes || 60;
             renderizarAjustesGrupos();
             comprobarAvisosAdmin();
         }
@@ -999,6 +1033,10 @@
             userSettings.defaultMap = document.getElementById('select-mapa-defecto').value;
             userSettings.showRoute = document.getElementById('toggle-ruta').checked;
             userSettings.transportModeAway = document.getElementById('select-transporte-fuera').value;
+            userSettings.showChangeAlerts = document.getElementById('toggle-avisos').checked;
+            
+            const minutosInput = parseInt(document.getElementById('input-tiempo-aviso').value);
+            userSettings.alertDurationMinutes = !isNaN(minutosInput) && minutosInput >= 0 ? minutosInput : 60;
             
             if (dir !== "") {
                 document.getElementById('btn-guardar-ajustes').innerText = "Buscando dirección...";
@@ -1031,7 +1069,7 @@
                 localStorage.removeItem('cache_geo');
                 localStorage.removeItem('cache_grupos');
                 localStorage.removeItem('dismissed_changes');
-                localStorage.removeItem('dismissed_master_time');
+                localStorage.removeItem('dismissed_banner_time'); // Limpiamos también el control de tiempo del banner
                 Object.keys(localStorage).forEach(key => {
                     if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_') || key.startsWith('cache_ruta')) {
                         localStorage.removeItem(key);
@@ -1208,10 +1246,11 @@
                         : `<span class="text-[11px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded shadow-sm">Pabellón</span>`;
                 }
 
-                let haCambiado = p.Cambio || p.CambioLocal;
+                let haCambiado = (userSettings.showChangeAlerts !== false) && (p.Cambio || p.CambioLocal);
                 const matchHash = getMatchHash(p);
                 if (haCambiado && dismissed[matchHash]) {
-                    if (Date.now() - dismissed[matchHash] > 3600000) haCambiado = false;
+                    const duracionMs = (userSettings.alertDurationMinutes || 60) * 60 * 1000;
+                    if (Date.now() - dismissed[matchHash] > duracionMs) haCambiado = false;
                 }
                 const warningSvg = `
                     <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 drop-shadow-md">
@@ -1361,7 +1400,6 @@
 
             let todosLosPartidos = [];
             let showingFromCache = false;
-            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
             const isOnline = navigator.onLine !== false;
 
             try {
@@ -2109,16 +2147,19 @@
             jornadasData.sort((a,b) => Number(a.NumeroJornada) - Number(b.NumeroJornada));
 
             let misPartidosCambiados = cacheResultados.filter(p => (p.Cambio || p.CambioLocal) && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
-            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-            if (Array.isArray(dismissed)) dismissed = {};
-            let hasNewChanges = false;
             
-            misPartidosCambiados.forEach(p => {
-                let hash = getMatchHash(p);
-                if(!dismissed[hash]) hasNewChanges = true;
-            });
+            // VERIFICACIÓN PARAMETRIZADA DEL BANNER (Activación y Tiempo)
+            let mostrarBanner = false;
+            if (userSettings.showChangeAlerts !== false && misPartidosCambiados.length > 0) {
+                let dismissedBannerTime = parseInt(localStorage.getItem('dismissed_banner_time') || '0');
+                const duracionMs = (userSettings.alertDurationMinutes || 60) * 60 * 1000;
+                
+                if (Date.now() - dismissedBannerTime > duracionMs) {
+                    mostrarBanner = true;
+                }
+            }
             
-            document.getElementById('banner-alerta').classList.toggle('hide', !hasNewChanges);
+            document.getElementById('banner-alerta').classList.toggle('hide', !mostrarBanner);
 
             let indiceSeleccionadoCal = 0; 
             let indiceSeleccionadoRes = 0; 
@@ -2165,17 +2206,8 @@
         }
 
         function cerrarBanner() {
-            let misPartidosCambiados = cacheResultados.filter(p => (p.Cambio || p.CambioLocal) && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
-            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-            if (Array.isArray(dismissed)) dismissed = {};
-            const now = Date.now();
-            
-            misPartidosCambiados.forEach(p => {
-                let hash = getMatchHash(p);
-                dismissed[hash] = now;
-            });
-            
-            localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
+            // Guardamos el momento exacto en que se cerró el banner para respetar el tiempo configurado
+            localStorage.setItem('dismissed_banner_time', Date.now().toString());
             document.getElementById('banner-alerta').classList.add('hide');
         }
 
@@ -2217,9 +2249,10 @@
             let dismissedChanges = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
             if (Array.isArray(dismissedChanges)) dismissedChanges = {};
             
-            let haCambiado = p.Cambio || p.CambioLocal;
+            let haCambiado = (userSettings.showChangeAlerts !== false) && (p.Cambio || p.CambioLocal);
             if (haCambiado && dismissedChanges[matchHash]) {
-                if (Date.now() - dismissedChanges[matchHash] > 3600000) haCambiado = false;
+                const duracionMs = (userSettings.alertDurationMinutes || 60) * 60 * 1000;
+                if (Date.now() - dismissedChanges[matchHash] > duracionMs) haCambiado = false;
             }
 
             const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
