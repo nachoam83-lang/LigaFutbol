@@ -2325,23 +2325,27 @@ function actualizarUIJornadas() {
         }
         
 function cerrarBannerMaestro() {
-            const now = Date.now();
-            localStorage.setItem('dismissed_master_time', now.toString());
+            // Guardamos el tiempo exacto del cierre maestro (la hora de gracia empieza aquí)
+            localStorage.setItem('dismissed_master_time', Date.now().toString());
             
-            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-            if (Array.isArray(dismissed)) dismissed = {};
+            const now = Date.now();
+            let dismissedGlobal = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+            if (Array.isArray(dismissedGlobal)) dismissedGlobal = {};
 
+            // Marcamos también los hashes actuales de la agenda para que caduquen conjuntamente a la hora
             if (window._partidosAgenda && Array.isArray(window._partidosAgenda)) {
                 window._partidosAgenda.forEach(p => {
                     let hash = getMatchHash(p);
-                    dismissed[hash] = now;
+                    dismissedGlobal[hash] = now;
                 });
             }
-            localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
+            localStorage.setItem('dismissed_changes', JSON.stringify(dismissedGlobal));
 
+            // Ocultamos el banner maestro visualmente de forma temporal
             const bannerMaestro = document.getElementById('banner-maestro-agenda');
             if (bannerMaestro) bannerMaestro.classList.add('hide');
             
+            // Refrescamos la agenda para limpiar los iconos durante la hora de gracia
             if (window._partidosAgenda) {
                 renderAgendaDesdeDatos(window._partidosAgenda, { showingFromCache: false });
             }
