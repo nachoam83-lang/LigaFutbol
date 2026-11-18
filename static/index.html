@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -2337,22 +2337,14 @@ function actualizarUIJornadas() {
         }
         
         function cerrarBannerMaestro() {
-            const dismissedChanges = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-            const ahora = Date.now();
-
-                proximosPartidos.forEach(p => {
-                    if (p.Cambio || p.CambioLocal) {
-            const matchHash = getMatchHash(p);
-                if (!dismissedChanges[matchHash]) {
-                    dismissedChanges[matchHash] = ahora;
-                    }
-                }
-            });
-
-                localStorage.setItem('dismissed_changes', JSON.stringify(dismissedChanges));
+            // Guardamos el timestamp actual en el localStorage del banner maestro
+            localStorage.setItem('dismissed_master_time', Date.now().toString());
     
+            // Ocultamos el banner maestro de inmediato
             const bannerMaestro = document.getElementById('banner-maestro-agenda');
-                if (bannerMaestro) bannerMaestro.classList.add('hide');
+                if (bannerMaestro) {
+            bannerMaestro.classList.add('hide');
+           }
         }
 
         function toggleFiltro() {
