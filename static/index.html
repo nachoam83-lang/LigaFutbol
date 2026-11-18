@@ -1183,22 +1183,23 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
 
             window._partidosAgenda = proximosPartidos;
             
-            // --- CONTROL DEL BANNER MAESTRO BLINDADO ---
+            // --- CONTROL DEL BANNER MAESTRO ---
             const dismissedMasterTime = parseInt(localStorage.getItem('dismissed_master_time') || '0');
             const unHourPassed = (Date.now() - dismissedMasterTime) > 3600000; // 1 hora
             
-            // Comprobamos si quedan cambios reales que NO hayan sido descartados individualmente o por el maestro
             let hayCambiosActivos = false;
             proximosPartidos.forEach(p => {
-                let hasChange = p.Cambio || p.CambioLocal;
+                let haCambiado = p.Cambio || p.CambioLocal;
                 const matchHash = getMatchHash(p);
                 
-                // Si está descartado en dismissed_changes y no ha pasado 1 hora, lo ignoramos a nivel global
-                if (hasChange && dismissed[matchHash] && (Date.now() - dismissed[matchHash] <= 3600000)) {
-                    hasChange = false;
+                const descarteIndividualVigente = dismissed[matchHash] && ((Date.now() - dismissed[matchHash]) <= 3600000);
+                const descarteMaestroVigente = dismissedMasterTime > 0 && ((Date.now() - dismissedMasterTime) <= 3600000);
+
+                if (haCambiado && (descarteIndividualVigente || descarteMaestroVigente)) {
+                    haCambiado = false;
                 }
 
-                if (hasChange) {
+                if (haCambiado) {
                     hayCambiosActivos = true;
                 }
             });
@@ -1211,7 +1212,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                     bannerMaestro.classList.add('hide');
                 }
             }
-            // ----------------------------------------------------
+            // ----------------------------------
 
             proximosPartidos.forEach((p, index) => {
                 const eq = p._equipoRef;
@@ -1264,21 +1265,17 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                         : `<span class="text-[11px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded shadow-sm">Pabellón</span>`;
                 }
 
-                // --- EVALUACIÓN BLINDADA DEL CAMBIO INDIVIDUAL ---
+                // --- EVALUACIÓN LIMPIA CON IF / OR ---
                 let haCambiado = p.Cambio || p.CambioLocal;
                 const matchHash = getMatchHash(p);
                 
-                if (haCambiado && dismissed[matchHash]) {
-                    // Si está en dismissed_changes y no ha pasado 1 hora, lo apagamos por completo
-                    if (Date.now() - dismissed[matchHash] <= 3600000) {
-                        haCambiado = false;
-                    } else {
-                        // Si ya pasó la hora, limpiamos el registro obsoleto de dismissed_changes
-                        delete dismissed[matchHash];
-                        localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
-                    }
+                const descarteIndividualVigente = dismissed[matchHash] && ((Date.now() - dismissed[matchHash]) <= 3600000);
+                const descarteMaestroVigente = dismissedMasterTime > 0 && ((Date.now() - dismissedMasterTime) <= 3600000);
+
+                if (haCambiado && (descarteIndividualVigente || descarteMaestroVigente)) {
+                    haCambiado = false;
                 }
-                // --------------------------------------------------
+                // ------------------------------------
 
                 const warningSvg = `
                     <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 drop-shadow-md">
@@ -1382,7 +1379,9 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
             contenedor.dataset.rendered = 'true';
             contenedor.removeAttribute('aria-busy');
             
-            // SECCIÓN: EQUIPOS SIN PARTIDOS PRÓXIMOS
+            // ══════════════════════════════════════════════════════════════════════
+            // SECCIÓN: EQUIPOS SIN PARTIDOS PRÓXIMOS (Tarjetas limpias al final)
+            // ══════════════════════════════════════════════════════════════════════
             let contenedorInactivos = document.getElementById('contenedor-equipos-sin-partidos');
             if (contenedorInactivos) contenedorInactivos.remove();
 
@@ -1398,7 +1397,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                 contenedorInactivos.id = 'contenedor-equipos-sin-partidos';
                 contenedorInactivos.className = 'mt-6 pt-4 border-t border-gray-200 space-y-3';
                 
-                let htmlInactivos = `<h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Equipos sin partidos próximos</h4>`;
+                let htmlInactivos = `<h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Equipos sin partidos próximos[cite: 1]</h4>`;
 
                 equiposSinPartidos.forEach(eq => {
                     const esCanal = (eq.idDeporte === "4");
@@ -1422,7 +1421,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                             </div>
 
                             <div class="text-white/80 text-xs font-bold px-2.5 py-1 bg-white/15 rounded-lg flex-shrink-0 ml-2">
-                                Ver ficha ➔
+                                Ver ficha ➔[cite: 1]
                             </div>
                         </div>
                     `;
@@ -1431,6 +1430,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                 contenedorInactivos.innerHTML = htmlInactivos;
                 contenedor.appendChild(contenedorInactivos);
             }
+            // ----------------------------------------------------------------------
 
             cargarClimaYRutas();
 
@@ -1438,7 +1438,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                 contenedor.insertAdjacentHTML('beforeend', `
                     <div class="text-center text-[11px] text-gray-400 mt-3 mb-2 flex items-center justify-center gap-1">
                         <i class="fas fa-wifi" style="opacity:0.4"></i>
-                        Mostrando datos guardados · sin conexión
+                        Mostrando datos guardados · sin conexión[cite: 1]
                     </div>`);
             }
         }
