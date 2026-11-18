@@ -1151,7 +1151,7 @@
             });
         });
 
-        function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
+function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
             const contenedor = document.getElementById('lista-agenda');
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
 
@@ -1361,25 +1361,19 @@
             contenedor.dataset.rendered = 'true';
             contenedor.removeAttribute('aria-busy');
             
-            contenedor.dataset.rendered = 'true';
-            contenedor.removeAttribute('aria-busy');
-            
             // ══════════════════════════════════════════════════════════════════════
-            // NUEVO: Renderizar tarjetas limpias de equipos sin partidos próximos
+            // Renderizar tarjetas limpias de equipos sin partidos próximos
             // ══════════════════════════════════════════════════════════════════════
             let contenedorInactivos = document.getElementById('contenedor-equipos-sin-partidos');
-            if (contenedorInactivos) contenedorInactivos.remove(); // Limpiamos el anterior si existe
+            if (contenedorInactivos) contenedorInactivos.remove();
 
-            // 1. Identificar qué equipos tienen partidos en la lista actual
             const equiposConPartidosIds = new Set();
             proximosPartidos.forEach(p => {
                 if (p._equipoRef) equiposConPartidosIds.add(p._equipoRef.id);
             });
 
-            // 2. Buscar qué equipos de "equipos" (guardados) NO están en esa lista
             const equiposSinPartidos = equipos.filter(eq => !equiposConPartidosIds.has(eq.id));
 
-            // 3. Si hay equipos sin partidos, creamos la sección al final
             if (equiposSinPartidos.length > 0) {
                 contenedorInactivos = document.createElement('div');
                 contenedorInactivos.id = 'contenedor-equipos-sin-partidos';
@@ -1387,7 +1381,7 @@
                 
                 let htmlInactivos = `<h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Equipos sin partidos próximos</h4>`;
 
-                equiposSinPartidos.forEach(eq => {
+                equiposSinPartidos.exportar = equiposSinPartidos.forEach(eq => {
                     const esCanal = (eq.idDeporte === "4");
                     const colorFondo = esCanal ? '#00509E' : '#006D6F';
                     let categoriaNombre = eq.nombreCompeticion || '';
@@ -1418,7 +1412,6 @@
                 contenedorInactivos.innerHTML = htmlInactivos;
                 contenedor.appendChild(contenedorInactivos);
             }
-            // ----------------------------------------------------------------------
 
             cargarClimaYRutas();
 
@@ -1430,18 +1423,7 @@
                     </div>`);
             }
         }
-            
-            cargarClimaYRutas();
-
-            if (showingFromCache) {
-                contenedor.insertAdjacentHTML('beforeend', `
-                    <div class="text-center text-[11px] text-gray-400 mt-3 mb-2 flex items-center justify-center gap-1">
-                        <i class="fas fa-wifi" style="opacity:0.4"></i>
-                        Mostrando datos guardados · sin conexión
-                    </div>`);
-            }
-        }
-
+        
         async function cargarAgendaFamiliar() {
             const contenedor = document.getElementById('lista-agenda');
             const agendaYaPintada = contenedor.dataset.rendered === 'true' && contenedor.children.length > 0;
