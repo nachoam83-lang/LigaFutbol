@@ -1154,6 +1154,7 @@
 function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
             const contenedor = document.getElementById('lista-agenda');
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+            if (Array.isArray(dismissed)) dismissed = {};
 
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             const dentroDeUnMes = new Date(hoy); dentroDeUnMes.setMonth(dentroDeUnMes.getMonth() + 1);
@@ -1259,6 +1260,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                 if (haCambiado && dismissed[matchHash]) {
                     if (Date.now() - dismissed[matchHash] > 3600000) haCambiado = false;
                 }
+
                 const warningSvg = `
                     <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 drop-shadow-md">
                         <path d="M12 2.5L1.5 21h21L12 2.5z" fill="#FACC15" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
@@ -1362,7 +1364,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
             contenedor.removeAttribute('aria-busy');
             
             // ══════════════════════════════════════════════════════════════════════
-            // Renderizar tarjetas limpias de equipos sin partidos próximos
+            // SECCIÓN: EQUIPOS SIN PARTIDOS PRÓXIMOS (Tarjetas limpias al final)
             // ══════════════════════════════════════════════════════════════════════
             let contenedorInactivos = document.getElementById('contenedor-equipos-sin-partidos');
             if (contenedorInactivos) contenedorInactivos.remove();
@@ -1381,7 +1383,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                 
                 let htmlInactivos = `<h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Equipos sin partidos próximos</h4>`;
 
-                equiposSinPartidos.exportar = equiposSinPartidos.forEach(eq => {
+                equiposSinPartidos.forEach(eq => {
                     const esCanal = (eq.idDeporte === "4");
                     const colorFondo = esCanal ? '#00509E' : '#006D6F';
                     let categoriaNombre = eq.nombreCompeticion || '';
@@ -1412,6 +1414,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                 contenedorInactivos.innerHTML = htmlInactivos;
                 contenedor.appendChild(contenedorInactivos);
             }
+            // ----------------------------------------------------------------------
 
             cargarClimaYRutas();
 
@@ -2291,48 +2294,24 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
             document.getElementById('banner-alerta').classList.add('hide');
         }
         
-        function cerrarBannerMaestro() {
-            // 1. Guardamos el tiempo del cierre maestro (válido por 1 hora)
-            localStorage.setItem('dismissed_master_time', Date.now().toString());
-            
+function cerrarBannerMaestro() {
             const now = Date.now();
-            let dismissedGlobal = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-            if (Array.isArray(dismissedGlobal)) dismissedGlobal = {};
+            localStorage.setItem('dismissed_master_time', now.toString());
+            
+            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+            if (Array.isArray(dismissed)) dismissed = {};
 
-            // 2. Cerramos los avisos de la agenda principal
             if (window._partidosAgenda && Array.isArray(window._partidosAgenda)) {
                 window._partidosAgenda.forEach(p => {
                     let hash = getMatchHash(p);
-                    dismissedGlobal[hash] = now;
+                    dismissed[hash] = now;
                 });
             }
-            localStorage.setItem('dismissed_changes', JSON.stringify(dismissedGlobal));
+            localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
 
-            // 3. Recorremos también todos los equipos guardados para apagar sus banners internos de alerta
-            if (typeof equipos !== 'undefined' && Array.isArray(equipos)) {
-                equipos.forEach(eq => {
-                    const cachedRes = localStorage.getItem(`cache_res_${eq.id}`);
-                    if (cachedRes) {
-                        try {
-                            const partidosEq = JSON.parse(cachedRes);
-                            let dismissedEq = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-                            partidosEq.forEach(p => {
-                                if (p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito) {
-                                    let hash = getMatchHash(p);
-                                    dismissedEq[hash] = now;
-                                }
-                            });
-                            localStorage.setItem('dismissed_changes', JSON.stringify(dismissedEq));
-                        } catch(e) {}
-                    }
-                });
-            }
-
-            // 4. Ocultamos el banner maestro visualmente
             const bannerMaestro = document.getElementById('banner-maestro-agenda');
             if (bannerMaestro) bannerMaestro.classList.add('hide');
             
-            // 5. Refrescamos la agenda principal
             if (window._partidosAgenda) {
                 renderAgendaDesdeDatos(window._partidosAgenda, { showingFromCache: false });
             }
