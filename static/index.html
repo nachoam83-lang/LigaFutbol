@@ -119,16 +119,44 @@
         </div>
     </div>
     
-    <!-- Modal de Información / Features -->
+<!-- Modal de Información / Features -->
     <div id="modal-info-app" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalInfoApp()">
-        <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
-            <h3 class="text-lg font-black text-center mb-2" style="color: var(--primary-color);">ℹ️ Funcionamiento y Features</h3>
-            <div class="text-xs text-gray-600 space-y-3 mt-3">
-                <p><b>📅 Agenda Inteligente:</b> Muestra tus partidos próximos a 1 mes vista y calcula la hora de salida recomendada según tu ubicación y transporte.</p>
-                <p><b>💬 Gestión de Grupos:</b> Permite enlazar y verificar los grupos de WhatsApp de tus equipos de forma sencilla.</p>
-                <p><b>🔔 Alertas de Cambios:</b> Detecta modificaciones de horarios o campos en tiempo real mediante avisos visuales.</p>
+        <div class="bg-white w-[95%] max-w-md rounded-2xl p-5 shadow-xl max-h-[85vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-black text-center mb-2" style="color: var(--primary-color);">ℹ️ Funcionamiento y Guía</h3>
+            
+            <div class="space-y-3 text-sm text-gray-700 mt-3">
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">👤 1. Alta y Gestión de Jugadores (con foto)</h4>
+                    <p class="text-xs text-gray-600">Da de alta nuevos jugadores con su nombre y dorsal. Además, puedes <b>subir una foto o avatar personalizado</b> desde la galería de tu dispositivo para que las fichas y alineaciones sean totalmente visuales.</p>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">📅 2. Agenda Inteligente y Calendario (.ics)</h4>
+                    <p class="text-xs text-gray-600">Consulta partidos a un mes vista. Cada encuentro incluye un botón para descargar un archivo <b>.ics</b> que añade automáticamente el partido a tu calendario personal con avisos previos.</p>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">🚗 3. Tiempo de Viaje y Salida</h4>
+                    <p class="text-xs text-gray-600">Calcula de forma orientativa el tiempo y la ruta hasta el campo o pabellón, ayudándote a saber la hora exacta en la que debes salir de casa.</p>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">💬 4. Enlaces a Grupos de WhatsApp</h4>
+                    <p class="text-xs text-gray-600">Registra y consulta los enlaces de invitación a los grupos de WhatsApp. Las altas pasan por un filtro de seguridad y validación de los administradores.</p>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">📤 5. Compartir Datos y Partidos</h4>
+                    <p class="text-xs text-gray-600">Envía los detalles de cualquier partido (horario, campo, rival) directamente por WhatsApp o correo a tus compañeros y familiares con un solo toque.</p>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">🔄 6. Solución de Fallos (Limpiar Caché)</h4>
+                    <p class="text-xs text-gray-600">Si notas datos antiguos o extraños, ve a los <b>Ajustes</b> y pulsa en <b>"Limpiar Caché y Actualizar"</b> para dejar la app fresca y sincronizada al instante.</p>
+                </div>
             </div>
-            <button onclick="cerrarModalInfoApp()" class="w-full mt-5 bg-gray-200 text-gray-800 font-bold py-2.5 rounded-lg text-sm">Cerrar</button>
+
+            <button onclick="cerrarModalInfoApp()" class="w-full mt-5 bg-gray-200 text-gray-800 font-bold py-2.5 rounded-lg text-sm hover:bg-gray-300 transition-colors">Cerrar</button>
         </div>
     </div>
     
