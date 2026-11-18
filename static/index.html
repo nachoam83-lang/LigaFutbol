@@ -2113,8 +2113,13 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                     if (snapViejo) {
                         if (snapViejo.hash !== matchHash) pending = true; 
                         else if (snapViejo.pending) pending = true; 
+                    } else {
+                        // Si es la primera vez que se evalúa este partido, no lo marcamos como cambio fantasma
+                        pending = false;
                     }
+                    
                     snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
+                    
                     if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
                         p.CambioLocal = true;
                     }
