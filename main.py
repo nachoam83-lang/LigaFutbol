@@ -365,6 +365,10 @@ def calcular_jornadas_canal(partidos, categoria):
         p["JornadaBase"] = mapa_fechas.get(p["Fecha"], 99)
         p["Descolgado"] = False
         p["NumeroJornada"] = p["JornadaBase"]
+        # El extractor de Canal marca Cambio=True en todo partido que aparece en el PDF
+        # de horarios, no solo en los que cambian. Se ignora: la app detecta los cambios
+        # reales comparando fecha y campo con lo que vio la última vez (snapshot).
+        p["Cambio"] = False
 
     partidos.sort(key=lambda x: (x["JornadaBase"], x["FechaHora"]))
     equipos = set()
