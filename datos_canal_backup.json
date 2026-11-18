@@ -354,8 +354,8 @@
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-07T09:00:00",
-      "Campo": "Campo 1",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Cadete/Juvenil 8",
       "EquipoVisitante": "Cadete/Juvenil 5",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -366,8 +366,8 @@
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-07T09:00:00",
-      "Campo": "Campo 2",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Cadete/Juvenil 14",
       "EquipoVisitante": "Cadete/Juvenil 16",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -378,8 +378,8 @@
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-07T09:00:00",
-      "Campo": "Campo 3",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Cadete/Juvenil 6",
       "EquipoVisitante": "Cadete/Juvenil 10",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -390,8 +390,8 @@
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-07T14:00:00",
-      "Campo": "Campo 3",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Cadete/Juvenil 4",
       "EquipoVisitante": "Cadete/Juvenil 1",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -402,20 +402,8 @@
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-14T09:00:00",
-      "Campo": "Campo 1",
-      "EquipoLocal": "Cadete/Juvenil 16",
-      "EquipoVisitante": "Cadete/Juvenil 1",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 2,
-      "ResultadoEquipoVisitante": 1,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 0,
       "FechaHora": "2026-11-14T12:00:00",
-      "Campo": "Campo 2",
+      "Campo": "Campo",
       "EquipoLocal": "Cadete/Juvenil 14",
       "EquipoVisitante": "Cadete/Juvenil 4",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -427,19 +415,19 @@
     {
       "NumeroJornada": 0,
       "FechaHora": "2026-11-14T12:00:00",
-      "Campo": "Campo 3",
-      "EquipoLocal": "Cadete/Juvenil 11",
-      "EquipoVisitante": "Cadete/Juvenil 6",
+      "Campo": "Campo",
+      "EquipoLocal": "Cadete/Juvenil 16",
+      "EquipoVisitante": "Cadete/Juvenil 1",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 3,
+      "ResultadoEquipoLocal": 2,
+      "ResultadoEquipoVisitante": 1,
       "Cambio": false
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-14T13:00:00",
-      "Campo": "Campo 1",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Cadete/Juvenil 13",
       "EquipoVisitante": "Cadete/Juvenil 5",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -450,8 +438,8 @@
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-14T14:00:00",
-      "Campo": "Campo 1",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Cadete/Juvenil 15",
       "EquipoVisitante": "Cadete/Juvenil 2",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -462,31 +450,55 @@
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-21T13:00:00",
-      "Campo": "Campo 1",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
+      "EquipoLocal": "Cadete/Juvenil 11",
+      "EquipoVisitante": "Cadete/Juvenil 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 3,
+      "Cambio": false
+    },
+    {
+      "NumeroJornada": 0,
+      "FechaHora": "2026-11-21T09:00:00",
+      "Campo": "Campo 3",
       "EquipoLocal": "Cadete/Juvenil 16",
       "EquipoVisitante": "Cadete/Juvenil 5",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-21T13:00:00",
+      "FechaHora": "2026-11-21T09:00:00",
       "Campo": "Campo 2",
-      "EquipoLocal": "Cadete/Juvenil 11",
-      "EquipoVisitante": "Cadete/Juvenil 10",
+      "EquipoLocal": "Cadete/Juvenil 15",
+      "EquipoVisitante": "Cadete/Juvenil 6",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
-      "FechaHora": "2026-11-21T13:00:00",
+      "FechaHora": "2026-11-21T10:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Cadete/Juvenil 14",
+      "EquipoVisitante": "Cadete/Juvenil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 0,
+      "FechaHora": "2026-11-21T10:00:00",
       "Campo": "Campo 3",
       "EquipoLocal": "Cadete/Juvenil 13",
       "EquipoVisitante": "Cadete/Juvenil 9",
@@ -494,43 +506,31 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 0,
+      "FechaHora": "2026-11-21T12:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Cadete/Juvenil 11",
+      "EquipoVisitante": "Cadete/Juvenil 10",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
       "FechaHora": "2026-11-21T14:00:00",
       "Campo": "Campo 1",
-      "EquipoLocal": "Cadete/Juvenil 15",
-      "EquipoVisitante": "Cadete/Juvenil 6",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 0,
-      "FechaHora": "2026-11-21T14:00:00",
-      "Campo": "Campo 2",
-      "EquipoLocal": "Cadete/Juvenil 14",
-      "EquipoVisitante": "Cadete/Juvenil 8",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 0,
-      "FechaHora": "2026-11-21T14:00:00",
-      "Campo": "Campo 3",
       "EquipoLocal": "Cadete/Juvenil 2",
       "EquipoVisitante": "Cadete/Juvenil 4",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -542,7 +542,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -554,7 +554,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -566,7 +566,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -578,7 +578,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -590,7 +590,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -602,7 +602,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -614,7 +614,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -626,7 +626,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -638,7 +638,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -650,7 +650,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -662,7 +662,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -674,7 +674,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -686,7 +686,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -698,7 +698,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -710,7 +710,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -722,7 +722,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -734,7 +734,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -746,7 +746,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -758,7 +758,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -770,7 +770,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -782,7 +782,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -794,7 +794,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -806,7 +806,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -818,7 +818,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -830,7 +830,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -842,7 +842,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -854,7 +854,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -866,7 +866,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -878,7 +878,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -890,7 +890,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -902,7 +902,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -914,7 +914,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -926,7 +926,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -938,7 +938,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -950,7 +950,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -962,7 +962,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -974,7 +974,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -986,7 +986,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -998,7 +998,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -1010,7 +1010,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 0,
@@ -1022,7 +1022,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 1,
@@ -2216,6 +2216,30 @@
       "NumeroJornada": 5,
       "FechaHora": "2026-10-31T12:00:00",
       "Campo": "Campo",
+      "EquipoLocal": "Prebenjamín 15",
+      "EquipoVisitante": "Prebenjamín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 3,
+      "Cambio": false
+    },
+    {
+      "NumeroJornada": 5,
+      "FechaHora": "2026-10-31T12:00:00",
+      "Campo": "Campo",
+      "EquipoLocal": "Prebenjamín 2",
+      "EquipoVisitante": "Prebenjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 7,
+      "Cambio": false
+    },
+    {
+      "NumeroJornada": 5,
+      "FechaHora": "2026-10-31T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Alevín 1",
       "EquipoVisitante": "Alevín 16",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2274,44 +2298,8 @@
     },
     {
       "NumeroJornada": 5,
-      "FechaHora": "2026-11-07T09:00:00",
-      "Campo": "Campo 4",
-      "EquipoLocal": "Prebenjamín 15",
-      "EquipoVisitante": "Prebenjamín 11",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 3,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 5,
-      "FechaHora": "2026-11-07T09:00:00",
-      "Campo": "Campo 5",
-      "EquipoLocal": "Prebenjamín 2",
-      "EquipoVisitante": "Prebenjamín 9",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 7,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 5,
-      "FechaHora": "2026-11-07T10:00:00",
-      "Campo": "Campo 1",
-      "EquipoLocal": "Infantil 4",
-      "EquipoVisitante": "Infantil 8",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 1,
-      "ResultadoEquipoVisitante": 1,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 5,
-      "FechaHora": "2026-11-07T13:00:00",
-      "Campo": "Campo 4",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Prebenjamín 6",
       "EquipoVisitante": "Prebenjamín 10",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2322,20 +2310,32 @@
     },
     {
       "NumeroJornada": 5,
-      "FechaHora": "2026-11-07T13:00:00",
-      "Campo": "Campo 2",
-      "EquipoLocal": "Infantil 11",
-      "EquipoVisitante": "Infantil 2",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
+      "EquipoLocal": "Prebenjamín 14",
+      "EquipoVisitante": "Prebenjamín 8",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 2,
-      "ResultadoEquipoVisitante": 4,
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 3,
       "Cambio": false
     },
     {
       "NumeroJornada": 5,
-      "FechaHora": "2026-11-07T14:00:00",
-      "Campo": "Campo 1",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
+      "EquipoLocal": "Infantil 4",
+      "EquipoVisitante": "Infantil 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 1,
+      "ResultadoEquipoVisitante": 1,
+      "Cambio": false
+    },
+    {
+      "NumeroJornada": 5,
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Infantil 5",
       "EquipoVisitante": "Infantil 9",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2346,8 +2346,20 @@
     },
     {
       "NumeroJornada": 5,
-      "FechaHora": "2026-11-07T14:00:00",
-      "Campo": "Campo 2",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
+      "EquipoLocal": "Infantil 11",
+      "EquipoVisitante": "Infantil 2",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 2,
+      "ResultadoEquipoVisitante": 4,
+      "Cambio": false
+    },
+    {
+      "NumeroJornada": 5,
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Infantil 13",
       "EquipoVisitante": "Infantil 16",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2358,22 +2370,10 @@
     },
     {
       "NumeroJornada": 5,
-      "FechaHora": "2026-11-14T13:00:00",
-      "Campo": "Campo 4",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Prebenjamín 15",
       "EquipoVisitante": "Prebenjamín 5",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 3,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 5,
-      "FechaHora": "2026-11-14T14:00:00",
-      "Campo": "Campo 5",
-      "EquipoLocal": "Prebenjamín 14",
-      "EquipoVisitante": "Prebenjamín 8",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
@@ -2466,20 +2466,8 @@
     },
     {
       "NumeroJornada": 6,
-      "FechaHora": "2026-11-07T10:00:00",
-      "Campo": "Campo 3",
-      "EquipoLocal": "Alevín 16",
-      "EquipoVisitante": "Alevín 13",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 1,
-      "ResultadoEquipoVisitante": 2,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 6,
-      "FechaHora": "2026-11-07T11:00:00",
-      "Campo": "Campo 2",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Alevín 14",
       "EquipoVisitante": "Alevín 1",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2491,7 +2479,19 @@
     {
       "NumeroJornada": 6,
       "FechaHora": "2026-11-07T12:00:00",
-      "Campo": "Campo 2",
+      "Campo": "Campo",
+      "EquipoLocal": "Alevín 16",
+      "EquipoVisitante": "Alevín 13",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 1,
+      "ResultadoEquipoVisitante": 2,
+      "Cambio": false
+    },
+    {
+      "NumeroJornada": 6,
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Alevín 2",
       "EquipoVisitante": "Alevín 11",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2503,19 +2503,7 @@
     {
       "NumeroJornada": 6,
       "FechaHora": "2026-11-07T12:00:00",
-      "Campo": "Campo 3",
-      "EquipoLocal": "Infantil 14",
-      "EquipoVisitante": "Infantil 1",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 4,
-      "ResultadoEquipoVisitante": 2,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 6,
-      "FechaHora": "2026-11-07T13:00:00",
-      "Campo": "Campo 3",
+      "Campo": "Campo",
       "EquipoLocal": "Alevín 4",
       "EquipoVisitante": "Alevín 17",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2526,20 +2514,20 @@
     },
     {
       "NumeroJornada": 6,
-      "FechaHora": "2026-11-14T09:00:00",
-      "Campo": "Campo 2",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Infantil 14",
-      "EquipoVisitante": "Infantil 10",
+      "EquipoVisitante": "Infantil 1",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 2,
-      "ResultadoEquipoVisitante": 1,
+      "ResultadoEquipoLocal": 4,
+      "ResultadoEquipoVisitante": 2,
       "Cambio": false
     },
     {
       "NumeroJornada": 6,
-      "FechaHora": "2026-11-14T14:00:00",
-      "Campo": "Campo 4",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Prebenjamín 1",
       "EquipoVisitante": "Prebenjamín 13",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2550,8 +2538,8 @@
     },
     {
       "NumeroJornada": 6,
-      "FechaHora": "2026-11-14T14:00:00",
-      "Campo": "Campo 2",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Infantil 6",
       "EquipoVisitante": "Infantil 5",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2562,8 +2550,8 @@
     },
     {
       "NumeroJornada": 6,
-      "FechaHora": "2026-11-14T14:00:00",
-      "Campo": "Campo 3",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Infantil 9",
       "EquipoVisitante": "Infantil 16",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2574,39 +2562,51 @@
     },
     {
       "NumeroJornada": 6,
-      "FechaHora": "2026-11-21T09:00:00",
-      "Campo": "Campo 4",
-      "EquipoLocal": "Prebenjamín 11",
-      "EquipoVisitante": "Prebenjamín 6",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
+      "EquipoLocal": "Infantil 14",
+      "EquipoVisitante": "Infantil 10",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
+      "ResultadoEquipoLocal": 2,
+      "ResultadoEquipoVisitante": 1,
       "Cambio": false
     },
     {
       "NumeroJornada": 6,
       "FechaHora": "2026-11-21T09:00:00",
-      "Campo": "Campo 5",
+      "Campo": "Campo 4",
       "EquipoLocal": "Prebenjamín 10",
       "EquipoVisitante": "Prebenjamín 9",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 6,
-      "FechaHora": "2026-11-21T12:00:00",
-      "Campo": "Campo 2",
+      "FechaHora": "2026-11-21T13:00:00",
+      "Campo": "Campo 5",
+      "EquipoLocal": "Prebenjamín 11",
+      "EquipoVisitante": "Prebenjamín 6",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 6,
+      "FechaHora": "2026-11-21T13:00:00",
+      "Campo": "Campo 1",
       "EquipoLocal": "Infantil 15",
       "EquipoVisitante": "Infantil 13",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 6,
@@ -2618,7 +2618,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 6,
@@ -2630,12 +2630,24 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 7,
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
+      "EquipoLocal": "Benjamín 9",
+      "EquipoVisitante": "Benjamín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 6,
+      "ResultadoEquipoVisitante": 4,
       "Cambio": false
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-07T10:00:00",
-      "Campo": "Campo 2",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Benjamín 6",
       "EquipoVisitante": "Benjamín 10",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2646,8 +2658,8 @@
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-07T11:00:00",
-      "Campo": "Campo 1",
+      "FechaHora": "2026-11-07T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Benjamín 11",
       "EquipoVisitante": "Benjamín 2",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2659,19 +2671,7 @@
     {
       "NumeroJornada": 7,
       "FechaHora": "2026-11-07T12:00:00",
-      "Campo": "Campo 1",
-      "EquipoLocal": "Benjamín 9",
-      "EquipoVisitante": "Benjamín 5",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 6,
-      "ResultadoEquipoVisitante": 4,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 7,
-      "FechaHora": "2026-11-07T13:00:00",
-      "Campo": "Campo 1",
+      "Campo": "Campo",
       "EquipoLocal": "Alevín 5",
       "EquipoVisitante": "Alevín 9",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2682,20 +2682,20 @@
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-14T09:00:00",
-      "Campo": "Campo 3",
-      "EquipoLocal": "Alevín 15",
-      "EquipoVisitante": "Alevín 3",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
+      "EquipoLocal": "Benjamín 4",
+      "EquipoVisitante": "Benjamín 8",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 1,
-      "ResultadoEquipoVisitante": 6,
+      "ResultadoEquipoLocal": 10,
+      "ResultadoEquipoVisitante": 2,
       "Cambio": false
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-14T10:00:00",
-      "Campo": "Campo 2",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Benjamín 16",
       "EquipoVisitante": "Benjamín 13",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2706,8 +2706,8 @@
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-14T10:00:00",
-      "Campo": "Campo 3",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Benjamín 11",
       "EquipoVisitante": "Benjamín 1",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2718,8 +2718,8 @@
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-14T11:00:00",
-      "Campo": "Campo 3",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Alevín 11",
       "EquipoVisitante": "Alevín 1",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2730,8 +2730,8 @@
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-14T11:00:00",
-      "Campo": "Campo 2",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Alevín 10",
       "EquipoVisitante": "Alevín 14",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2742,8 +2742,20 @@
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-14T11:00:00",
-      "Campo": "Campo 1",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
+      "EquipoLocal": "Alevín 13",
+      "EquipoVisitante": "Alevín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 5,
+      "ResultadoEquipoVisitante": 1,
+      "Cambio": false
+    },
+    {
+      "NumeroJornada": 7,
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Alevín 4",
       "EquipoVisitante": "Alevín 8",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2755,31 +2767,19 @@
     {
       "NumeroJornada": 7,
       "FechaHora": "2026-11-14T12:00:00",
-      "Campo": "Campo 1",
-      "EquipoLocal": "Alevín 13",
-      "EquipoVisitante": "Alevín 5",
+      "Campo": "Campo",
+      "EquipoLocal": "Alevín 15",
+      "EquipoVisitante": "Alevín 3",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 5,
-      "ResultadoEquipoVisitante": 1,
+      "ResultadoEquipoLocal": 1,
+      "ResultadoEquipoVisitante": 6,
       "Cambio": false
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-14T13:00:00",
-      "Campo": "Campo 2",
-      "EquipoLocal": "Benjamín 4",
-      "EquipoVisitante": "Benjamín 8",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 10,
-      "ResultadoEquipoVisitante": 2,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 7,
-      "FechaHora": "2026-11-14T13:00:00",
-      "Campo": "Campo 3",
+      "FechaHora": "2026-11-14T12:00:00",
+      "Campo": "Campo",
       "EquipoLocal": "Alevín 17",
       "EquipoVisitante": "Alevín 6",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
@@ -2790,31 +2790,67 @@
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-21T09:00:00",
+      "FechaHora": "2026-11-21T10:00:00",
       "Campo": "Campo 1",
-      "EquipoLocal": "Benjamín 4",
-      "EquipoVisitante": "Benjamín 9",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 7,
-      "FechaHora": "2026-11-21T09:00:00",
-      "Campo": "Campo 2",
       "EquipoLocal": "Benjamín 5",
       "EquipoVisitante": "Benjamín 6",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
-      "FechaHora": "2026-11-21T10:00:00",
+      "FechaHora": "2026-11-21T11:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 6",
+      "EquipoVisitante": "Alevín 11",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 7,
+      "FechaHora": "2026-11-21T11:00:00",
+      "Campo": "Campo 1",
+      "EquipoLocal": "Infantil 8",
+      "EquipoVisitante": "Infantil 1",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 7,
+      "FechaHora": "2026-11-21T12:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Infantil 2",
+      "EquipoVisitante": "Infantil 14",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 7,
+      "FechaHora": "2026-11-21T13:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Benjamín 4",
+      "EquipoVisitante": "Benjamín 9",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 7,
+      "FechaHora": "2026-11-21T13:00:00",
       "Campo": "Campo 2",
       "EquipoLocal": "Alevín 2",
       "EquipoVisitante": "Alevín 14",
@@ -2822,43 +2858,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 7,
-      "FechaHora": "2026-11-21T11:00:00",
-      "Campo": "Campo 2",
-      "EquipoLocal": "Alevín 6",
-      "EquipoVisitante": "Alevín 11",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 7,
-      "FechaHora": "2026-11-21T11:00:00",
-      "Campo": "Campo 3",
-      "EquipoLocal": "Infantil 8",
-      "EquipoVisitante": "Infantil 1",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 7,
-      "FechaHora": "2026-11-21T12:00:00",
-      "Campo": "Campo 3",
-      "EquipoLocal": "Infantil 2",
-      "EquipoVisitante": "Infantil 14",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
@@ -2870,7 +2870,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
@@ -2882,7 +2882,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
@@ -2894,19 +2894,19 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
       "FechaHora": "2026-11-28T13:00:00",
-      "Campo": "Campo 4",
+      "Campo": "Campo 5",
       "EquipoLocal": "Prebenjamín 1",
       "EquipoVisitante": "Prebenjamín 8",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
@@ -2918,7 +2918,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
@@ -2930,7 +2930,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
@@ -2942,71 +2942,35 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
       "FechaHora": "2026-12-12T13:00:00",
-      "Campo": "Campo 4",
+      "Campo": "Campo 5",
       "EquipoLocal": "Prebenjamín 13",
       "EquipoVisitante": "Prebenjamín 11",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 7,
       "FechaHora": "2026-12-19T13:00:00",
-      "Campo": "Campo 4",
+      "Campo": "Campo 5",
       "EquipoLocal": "Prebenjamín 6",
       "EquipoVisitante": "Prebenjamín 14",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
       "FechaHora": "2026-11-21T09:00:00",
-      "Campo": "Campo 3",
-      "EquipoLocal": "Alevín 1",
-      "EquipoVisitante": "Alevín 8",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 8,
-      "FechaHora": "2026-11-21T10:00:00",
-      "Campo": "Campo 1",
-      "EquipoLocal": "Alevín 10",
-      "EquipoVisitante": "Alevín 4",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 8,
-      "FechaHora": "2026-11-21T10:00:00",
-      "Campo": "Campo 3",
-      "EquipoLocal": "Alevín 3",
-      "EquipoVisitante": "Alevín 5",
-      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
-      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
-      "ResultadoEquipoLocal": 0,
-      "ResultadoEquipoVisitante": 0,
-      "Cambio": false
-    },
-    {
-      "NumeroJornada": 8,
-      "FechaHora": "2026-11-21T11:00:00",
       "Campo": "Campo 1",
       "EquipoLocal": "Alevín 17",
       "EquipoVisitante": "Alevín 12",
@@ -3014,7 +2978,43 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-21T11:00:00",
+      "Campo": "Campo 2",
+      "EquipoLocal": "Alevín 10",
+      "EquipoVisitante": "Alevín 4",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-21T12:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 1",
+      "EquipoVisitante": "Alevín 8",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
+    },
+    {
+      "NumeroJornada": 8,
+      "FechaHora": "2026-11-21T14:00:00",
+      "Campo": "Campo 3",
+      "EquipoLocal": "Alevín 3",
+      "EquipoVisitante": "Alevín 5",
+      "URLEscudoEquipoLocal": "/static/escudo_canal.png",
+      "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
+      "ResultadoEquipoLocal": 0,
+      "ResultadoEquipoVisitante": 0,
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3026,7 +3026,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3038,7 +3038,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3050,7 +3050,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3062,7 +3062,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3074,7 +3074,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3086,7 +3086,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3098,7 +3098,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3110,7 +3110,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3122,7 +3122,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3134,7 +3134,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3146,7 +3146,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3158,7 +3158,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3170,7 +3170,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3182,7 +3182,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3194,7 +3194,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3206,7 +3206,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3218,7 +3218,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3230,7 +3230,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
@@ -3242,19 +3242,19 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 8,
       "FechaHora": "2027-01-09T13:00:00",
-      "Campo": "Campo 4",
+      "Campo": "Campo 5",
       "EquipoLocal": "Prebenjamín 14",
       "EquipoVisitante": "Prebenjamín 9",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3266,7 +3266,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3278,7 +3278,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3290,7 +3290,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3302,7 +3302,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3314,7 +3314,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3326,7 +3326,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3338,7 +3338,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3350,7 +3350,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3362,7 +3362,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3374,7 +3374,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3386,7 +3386,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3398,7 +3398,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3410,7 +3410,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3422,7 +3422,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3434,7 +3434,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3446,7 +3446,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3458,7 +3458,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3470,7 +3470,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3482,31 +3482,31 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
       "FechaHora": "2027-01-16T13:00:00",
-      "Campo": "Campo 4",
+      "Campo": "Campo 5",
       "EquipoLocal": "Prebenjamín 13",
       "EquipoVisitante": "Prebenjamín 10",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
       "FechaHora": "2027-01-23T13:00:00",
-      "Campo": "Campo 4",
+      "Campo": "Campo 5",
       "EquipoLocal": "Prebenjamín 11",
       "EquipoVisitante": "Prebenjamín 2",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3518,7 +3518,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3530,7 +3530,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 9,
@@ -3542,7 +3542,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3554,7 +3554,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3566,7 +3566,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3578,7 +3578,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3590,7 +3590,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3602,7 +3602,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3614,7 +3614,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3626,7 +3626,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3638,7 +3638,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3650,7 +3650,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3662,7 +3662,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3674,7 +3674,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3686,7 +3686,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3698,7 +3698,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3710,7 +3710,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3722,7 +3722,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3734,7 +3734,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3746,7 +3746,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3758,7 +3758,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3770,7 +3770,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3782,7 +3782,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3794,19 +3794,19 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
       "FechaHora": "2027-02-06T13:00:00",
-      "Campo": "Campo 4",
+      "Campo": "Campo 5",
       "EquipoLocal": "Prebenjamín 10",
       "EquipoVisitante": "Prebenjamín 2",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3818,7 +3818,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 10,
@@ -3830,7 +3830,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3842,7 +3842,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3854,7 +3854,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3866,7 +3866,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3878,7 +3878,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3890,7 +3890,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3902,7 +3902,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3914,7 +3914,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3926,7 +3926,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3938,7 +3938,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3950,7 +3950,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3962,7 +3962,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3974,7 +3974,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3986,7 +3986,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -3998,7 +3998,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4010,7 +4010,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4022,7 +4022,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4034,7 +4034,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4046,19 +4046,19 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
       "FechaHora": "2027-02-13T13:00:00",
-      "Campo": "Campo 4",
+      "Campo": "Campo 5",
       "EquipoLocal": "Prebenjamín 6",
       "EquipoVisitante": "Prebenjamín 15",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4070,7 +4070,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4082,7 +4082,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4094,7 +4094,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4106,7 +4106,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4118,19 +4118,19 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
       "FechaHora": "2027-02-20T13:00:00",
-      "Campo": "Campo 4",
+      "Campo": "Campo 5",
       "EquipoLocal": "Prebenjamín 14",
       "EquipoVisitante": "Prebenjamín 2",
       "URLEscudoEquipoLocal": "/static/escudo_canal.png",
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 11,
@@ -4142,7 +4142,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4154,7 +4154,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4166,7 +4166,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4178,7 +4178,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4190,7 +4190,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4202,7 +4202,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4214,7 +4214,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4226,7 +4226,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4238,7 +4238,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4250,7 +4250,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4262,7 +4262,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4274,7 +4274,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4286,7 +4286,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4298,7 +4298,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4310,7 +4310,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4322,7 +4322,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4334,7 +4334,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 12,
@@ -4346,7 +4346,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4358,7 +4358,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4370,7 +4370,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4382,7 +4382,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4394,7 +4394,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4406,7 +4406,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4418,7 +4418,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4430,7 +4430,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4442,7 +4442,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4454,7 +4454,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4466,7 +4466,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4478,7 +4478,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4490,7 +4490,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4502,7 +4502,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 13,
@@ -4514,7 +4514,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 14,
@@ -4526,7 +4526,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 14,
@@ -4538,7 +4538,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 14,
@@ -4550,7 +4550,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 14,
@@ -4562,7 +4562,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 14,
@@ -4574,7 +4574,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 14,
@@ -4586,7 +4586,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 14,
@@ -4598,7 +4598,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 14,
@@ -4610,7 +4610,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 15,
@@ -4622,7 +4622,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 15,
@@ -4634,7 +4634,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 15,
@@ -4646,7 +4646,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 15,
@@ -4658,7 +4658,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 15,
@@ -4670,7 +4670,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 15,
@@ -4682,7 +4682,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 15,
@@ -4694,7 +4694,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     },
     {
       "NumeroJornada": 15,
@@ -4706,7 +4706,7 @@
       "URLEscudoEquipoVisitante": "/static/escudo_canal.png",
       "ResultadoEquipoLocal": 0,
       "ResultadoEquipoVisitante": 0,
-      "Cambio": false
+      "Cambio": true
     }
   ],
   "clasificacion": {
