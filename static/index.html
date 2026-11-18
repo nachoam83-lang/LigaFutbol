@@ -1183,34 +1183,35 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
 
             window._partidosAgenda = proximosPartidos;
             
-            // --- CONTROL DEL BANNER MAESTRO INTELIGENTE ---
-            // --- CONTROL DEL BANNER MAESTRO (v1.03.01 - Lógica Limpia) ---
+            // --- CONTROL DEL BANNER MAESTRO (Lógica corregida tipo v1.02.00) ---
             const dismissedMasterTime = parseInt(localStorage.getItem('dismissed_master_time') || '0');
             const unHourPassed = (Date.now() - dismissedMasterTime) > 3600000; // 1 hora exacta (3.600.000 ms)
             
             let hayCambiosPendientesGlobales = false;
+            
             proximosPartidos.forEach(p => {
-                // Comprobamos si el partido tiene cambio activo real y no está descartado individualmente
-                const matchHash = getMatchHash(p);
-                const dismissedChanges = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
-                
-                if ((p.Cambio || p.CambioLocal) && !dismissedChanges[matchHash]) {
+                // Comprobamos si el partido tiene un cambio real activo detectado por el snapshot
+                if (p.Cambio || p.CambioLocal) {
                     hayCambiosPendientesGlobales = true;
                 }
             });
 
             const bannerMaestro = document.getElementById('banner-maestro-agenda');
             if (bannerMaestro) {
-                // Si ha pasado la hora de gracia, limpiamos el timestamp antiguo del banner maestro
-                if (unHourPassed && dismissedMasterTime > 0) {
+                // Si ya no hay cambios reales en los datos del servidor, limpiamos el descarte y ocultamos el banner maestro
+                if (!hayCambiosPendientesGlobales) {
                     localStorage.removeItem('dismissed_master_time');
-                }
-
-                // El banner solo aparece si hay cambios pendientes Y (nunca se cerró O ya pasó la hora)
-                if (hayCambiosPendientesGlobales && (!dismissedMasterTime || unHourPassed)) {
-                    bannerMaestro.classList.remove('hide');
-                } else {
                     bannerMaestro.classList.add('hide');
+                } else {
+                    // Si hay cambios, evaluamos si debe mostrarse según la hora de gracia
+                    if (!dismissedMasterTime || unHourPassed) {
+                        bannerMaestro.classList.remove('hide');
+                        if (unHourPassed) {
+                            localStorage.removeItem('dismissed_master_time'); // Reseteamos el ciclo si pasó la hora y persiste el cambio
+                        }
+                    } else {
+                        bannerMaestro.classList.add('hide'); // Dentro de la hora de gracia, oculto
+                    }
                 }
             }
             // ----------------------------------
