@@ -1153,6 +1153,27 @@
             }
 
             window._partidosAgenda = proximosPartidos;
+            
+            // --- CONTROL DEL BANNER MAESTRO ---
+            const dismissedMasterTime = parseInt(localStorage.getItem('dismissed_master_time') || '0');
+            const unHourPassed = (Date.now() - dismissedMasterTime) > 3600000; // 1 hora
+            
+            let hayCambiosActivos = false;
+            proximosPartidos.forEach(p => {
+                if (p.Cambio || p.CambioLocal) {
+                    hayCambiosActivos = true;
+                }
+            });
+
+            const bannerMaestro = document.getElementById('banner-maestro-agenda');
+            if (bannerMaestro) {
+                if (hayCambiosActivos && (dismissedMasterTime === 0 || unHourPassed)) {
+                    bannerMaestro.classList.remove('hide');
+                } else {
+                    bannerMaestro.classList.add('hide');
+                }
+            }
+            // ----------------------------------
 
             proximosPartidos.forEach((p, index) => {
                 const eq = p._equipoRef;
@@ -2187,6 +2208,25 @@
             
             localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
             document.getElementById('banner-alerta').classList.add('hide');
+        }
+        
+        function cerrarBannerMaestro() {
+            localStorage.setItem('dismissed_master_time', Date.now().toString());
+            
+            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+            if (window._partidosAgenda) {
+                window._partidosAgenda.forEach(p => {
+                    dismissed[getMatchHash(p)] = Date.now();
+                });
+                localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
+            }
+
+            const bannerMaestro = document.getElementById('banner-maestro-agenda');
+            if (bannerMaestro) bannerMaestro.classList.add('hide');
+            
+            if (window._partidosAgenda) {
+                renderAgendaDesdeDatos(window._partidosAgenda, { showingFromCache: false });
+            }
         }
 
         function toggleFiltro() {
