@@ -1151,7 +1151,7 @@
             });
         });
 
-function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
+        function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
             const contenedor = document.getElementById('lista-agenda');
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
             if (Array.isArray(dismissed)) dismissed = {};
