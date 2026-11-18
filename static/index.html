@@ -2233,23 +2233,37 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
             if (tab === 'clasificacion') renderizarClasificacionUI();
         }
 
-        function actualizarUIJornadas() {
+function actualizarUIJornadas() {
             if (!cacheCalendarioGlobal || !cacheResultados) return;
             
             let jornadasData = cacheCalendarioGlobal.jornadas || [];
             jornadasData.sort((a,b) => Number(a.NumeroJornada) - Number(b.NumeroJornada));
 
-            let misPartidosCambiados = cacheResultados.filter(p => (p.Cambio || p.CambioLocal) && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
+            // --- VALIDACIÓN BLINDADA DE CAMBIOS CON DESCARTE ---
             let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
             if (Array.isArray(dismissed)) dismissed = {};
-            let hasNewChanges = false;
-            
-            misPartidosCambiados.forEach(p => {
-                let hash = getMatchHash(p);
-                if(!dismissed[hash]) hasNewChanges = true;
+            const dismissedMasterTime = parseInt(localStorage.getItem('dismissed_master_time') || '0');
+            const unHourPassed = (Date.now() - dismissedMasterTime) > 3600000;
+            const descarteMaestroVigente = dismissedMasterTime > 0 && !unHourPassed;
+
+            let misPartidosCambiados = cacheResultados.filter(p => {
+                let haCambiado = p.Cambio || p.CambioLocal;
+                if (!haCambiado) return false;
+                if (p.EquipoLocal !== equipoActual.equipoFavorito && p.EquipoVisitante !== equipoActual.equipoFavorito) return false;
+
+                const matchHash = getMatchHash(p);
+                const descarteIndividualVigente = dismissed[matchHash] && ((Date.now() - dismissed[matchHash]) <= 3600000);
+
+                // Si el usuario descartó el partido individualmente o cerró el maestro, anulamos el cambio
+                if (descarteIndividualVigente || descarteMaestroVigente) {
+                    return false;
+                }
+                return true;
             });
-            
+
+            let hasNewChanges = misPartidosCambiados.length > 0;
             document.getElementById('banner-alerta').classList.toggle('hide', !hasNewChanges);
+            // ---------------------------------------------------
 
             let indiceSeleccionadoCal = 0; 
             let indiceSeleccionadoRes = 0; 
