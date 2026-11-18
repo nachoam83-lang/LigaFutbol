@@ -1183,13 +1183,22 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
 
             window._partidosAgenda = proximosPartidos;
             
-            // --- CONTROL DEL BANNER MAESTRO ---
+            // --- CONTROL DEL BANNER MAESTRO BLINDADO ---
             const dismissedMasterTime = parseInt(localStorage.getItem('dismissed_master_time') || '0');
             const unHourPassed = (Date.now() - dismissedMasterTime) > 3600000; // 1 hora
             
+            // Comprobamos si quedan cambios reales que NO hayan sido descartados individualmente o por el maestro
             let hayCambiosActivos = false;
             proximosPartidos.forEach(p => {
-                if (p.Cambio || p.CambioLocal) {
+                let hasChange = p.Cambio || p.CambioLocal;
+                const matchHash = getMatchHash(p);
+                
+                // Si está descartado en dismissed_changes y no ha pasado 1 hora, lo ignoramos a nivel global
+                if (hasChange && dismissed[matchHash] && (Date.now() - dismissed[matchHash] <= 3600000)) {
+                    hasChange = false;
+                }
+
+                if (hasChange) {
                     hayCambiosActivos = true;
                 }
             });
@@ -1202,7 +1211,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                     bannerMaestro.classList.add('hide');
                 }
             }
-            // ----------------------------------
+            // ----------------------------------------------------
 
             proximosPartidos.forEach((p, index) => {
                 const eq = p._equipoRef;
@@ -1255,11 +1264,21 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                         : `<span class="text-[11px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded shadow-sm">Pabellón</span>`;
                 }
 
+                // --- EVALUACIÓN BLINDADA DEL CAMBIO INDIVIDUAL ---
                 let haCambiado = p.Cambio || p.CambioLocal;
                 const matchHash = getMatchHash(p);
+                
                 if (haCambiado && dismissed[matchHash]) {
-                    if (Date.now() - dismissed[matchHash] > 3600000) haCambiado = false;
+                    // Si está en dismissed_changes y no ha pasado 1 hora, lo apagamos por completo
+                    if (Date.now() - dismissed[matchHash] <= 3600000) {
+                        haCambiado = false;
+                    } else {
+                        // Si ya pasó la hora, limpiamos el registro obsoleto de dismissed_changes
+                        delete dismissed[matchHash];
+                        localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
+                    }
                 }
+                // --------------------------------------------------
 
                 const warningSvg = `
                     <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 drop-shadow-md">
@@ -1363,9 +1382,7 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
             contenedor.dataset.rendered = 'true';
             contenedor.removeAttribute('aria-busy');
             
-            // ══════════════════════════════════════════════════════════════════════
-            // SECCIÓN: EQUIPOS SIN PARTIDOS PRÓXIMOS (Tarjetas limpias al final)
-            // ══════════════════════════════════════════════════════════════════════
+            // SECCIÓN: EQUIPOS SIN PARTIDOS PRÓXIMOS
             let contenedorInactivos = document.getElementById('contenedor-equipos-sin-partidos');
             if (contenedorInactivos) contenedorInactivos.remove();
 
@@ -1414,7 +1431,6 @@ function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline =
                 contenedorInactivos.innerHTML = htmlInactivos;
                 contenedor.appendChild(contenedorInactivos);
             }
-            // ----------------------------------------------------------------------
 
             cargarClimaYRutas();
 
