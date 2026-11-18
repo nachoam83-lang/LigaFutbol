@@ -2336,18 +2336,23 @@ function actualizarUIJornadas() {
             document.getElementById('banner-alerta').classList.add('hide');
         }
         
-function cerrarBannerMaestro() {
-            // 1. Guardamos solo el tiempo del cierre del banner maestro (válido por 1 hora)
-            localStorage.setItem('dismissed_master_time', Date.now().toString());
+        function cerrarBannerMaestro() {
+            const dismissedChanges = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+            const ahora = Date.now();
 
-            // 2. Ocultamos el banner maestro visualmente
+                proximosPartidos.forEach(p => {
+                    if (p.Cambio || p.CambioLocal) {
+            const matchHash = getMatchHash(p);
+                if (!dismissedChanges[matchHash]) {
+                    dismissedChanges[matchHash] = ahora;
+                    }
+                }
+            });
+
+                localStorage.setItem('dismissed_changes', JSON.stringify(dismissedChanges));
+    
             const bannerMaestro = document.getElementById('banner-maestro-agenda');
-            if (bannerMaestro) bannerMaestro.classList.add('hide');
-            
-            // 3. Refrescamos la agenda para que el banner desaparezca pero los iconos de las tarjetas NO se toquen
-            if (window._partidosAgenda) {
-                renderAgendaDesdeDatos(window._partidosAgenda, { showingFromCache: false });
-            }
+                if (bannerMaestro) bannerMaestro.classList.add('hide');
         }
 
         function toggleFiltro() {
