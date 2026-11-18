@@ -177,6 +177,20 @@
             <h1 id="main-title" class="text-xl font-bold tracking-wide">Agenda Familiar</h1>
             <button onclick="toggleDrawer()" class="text-white hover:opacity-80 transition"><i class="fas fa-user text-2xl"></i></button>
         </div>
+        
+    <!-- BANNER MAESTRO DE CAMBIOS -->
+    <div id="banner-maestro-agenda" class="hide bg-amber-500 text-white p-3.5 mx-4 mt-4 rounded-xl shadow-lg flex items-center justify-between relative z-10 animate-pulse">
+        <div class="flex items-center gap-3">
+            <i class="fas fa-exclamation-triangle text-2xl"></i>
+            <div>
+                <p class="text-xs font-black uppercase">¡Atención a los cambios!</p>
+                <p class="text-[11px] font-medium leading-tight">Hay modificaciones de horarios o campos en tus partidos próximos.</p>
+            </div>
+        </div>
+        <button onclick="cerrarBannerMaestro()" class="text-white hover:text-gray-200 bg-black/20 rounded-full w-8 h-8 flex items-center justify-center ml-2 flex-shrink-0">
+            <i class="fas fa-times text-base"></i>
+        </button>
+    </div>
 
         <div id="lista-agenda" class="p-4 space-y-4"></div>
     </div>
