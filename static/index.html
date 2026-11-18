@@ -118,7 +118,20 @@
             </div>
         </div>
     </div>
-
+    
+    <!-- Modal de Información / Features -->
+    <div id="modal-info-app" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalInfoApp()">
+        <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl max-h-[80vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-black text-center mb-2" style="color: var(--primary-color);">ℹ️ Funcionamiento y Features</h3>
+            <div class="text-xs text-gray-600 space-y-3 mt-3">
+                <p><b>📅 Agenda Inteligente:</b> Muestra tus partidos próximos a 1 mes vista y calcula la hora de salida recomendada según tu ubicación y transporte.</p>
+                <p><b>💬 Gestión de Grupos:</b> Permite enlazar y verificar los grupos de WhatsApp de tus equipos de forma sencilla.</p>
+                <p><b>🔔 Alertas de Cambios:</b> Detecta modificaciones de horarios o campos en tiempo real mediante avisos visuales.</p>
+            </div>
+            <button onclick="cerrarModalInfoApp()" class="w-full mt-5 bg-gray-200 text-gray-800 font-bold py-2.5 rounded-lg text-sm">Cerrar</button>
+        </div>
+    </div>
+    
     <!-- Modal para Enviar Solicitud -->
     <div id="modal-grupo" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalGrupo()">
         <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
@@ -716,6 +729,18 @@
             const modal = document.getElementById('modal-grupo');
             modal.classList.remove('hide');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+        
+        function abrirModalInfoApp() {
+            const modal = document.getElementById('modal-info-app');
+            modal.classList.remove('hide');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function cerrarModalInfoApp() {
+            const modal = document.getElementById('modal-info-app');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hide'), 300);
         }
 
         function abrirModalGrupoIdx(idx) {
