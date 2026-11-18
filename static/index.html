@@ -6,9 +6,9 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.02.00 (Corregida sin falsos positivos)          -->
-    <!--  Fecha: 16/11/2026                                                 -->
-    <!--  Cambios: Creación de Grupos WhatsApp por Equipos (GitHub API)      -->
+    <!--  Versión actual: v1.03.01                                           -->
+    <!--  Fecha: 17/11/2026                                                 -->
+    <!--  Cambios: Banner maestro no intrusivo y estabilidad v1.02.00        -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -118,7 +118,48 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal de Información / Features -->
+    <div id="modal-info-app" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalInfoApp()">
+        <div class="bg-white w-[95%] max-w-md rounded-2xl p-5 shadow-xl max-h-[85vh] overflow-y-auto" onclick="event.stopPropagation()">
+            <h3 class="text-lg font-black text-center mb-2" style="color: var(--primary-color);">ℹ️ Funcionamiento y Guía</h3>
+            
+            <div class="space-y-3 text-sm text-gray-700 mt-3">
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">👤 1. Alta y Gestión de Jugadores (con foto)</h4>
+                    <p class="text-xs text-gray-600">Da de alta nuevos jugadores con su nombre y dorsal. Además, puedes <b>subir una foto o avatar personalizado</b> desde la galería de tu dispositivo para que las fichas y alineaciones sean totalmente visuales.</p>
+                </div>
 
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">📅 2. Agenda Inteligente y Calendario (.ics)</h4>
+                    <p class="text-xs text-gray-600">Consulta partidos a un mes vista. Cada encuentro incluye un botón para descargar un archivo <b>.ics</b> que añade automáticamente el partido a tu calendario personal con avisos previos.</p>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">🚗 3. Tiempo de Viaje y Salida</h4>
+                    <p class="text-xs text-gray-600">Calcula de forma orientativa el tiempo y la ruta hasta el campo o pabellón, ayudándote a saber la hora exacta en la que debes salir de casa.</p>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">💬 4. Enlaces a Grupos de WhatsApp</h4>
+                    <p class="text-xs text-gray-600">Registra y consulta los enlaces de invitación a los grupos de WhatsApp. Las altas pasan por un filtro de seguridad y validación de los administradores.</p>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">📤 5. Compartir Datos y Partidos</h4>
+                    <p class="text-xs text-gray-600">Envía los detalles de cualquier partido (horario, campo, rival) directamente por WhatsApp o correo a tus compañeros y familiares con un solo toque.</p>
+                </div>
+
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-100">
+                    <h4 class="font-bold text-gray-900 mb-1 text-xs">🔄 6. Solución de Fallos (Limpiar Caché)</h4>
+                    <p class="text-xs text-gray-600">Si notas datos antiguos o extraños, ve a los <b>Ajustes</b> y pulsa en <b>"Limpiar Caché y Actualizar"</b> para dejar la app fresca y sincronizada al instante.</p>
+                </div>
+            </div>
+
+            <button onclick="cerrarModalInfoApp()" class="w-full mt-5 bg-gray-200 text-gray-800 font-bold py-2.5 rounded-lg text-sm hover:bg-gray-300 transition-colors">Cerrar</button>
+        </div>
+    </div>
+    
     <!-- Modal para Enviar Solicitud -->
     <div id="modal-grupo" class="fixed inset-0 bg-black/50 z-[80] hide flex items-center justify-center opacity-0 transition-opacity" onclick="cerrarModalGrupo()">
         <div class="bg-white w-[90%] max-w-sm rounded-2xl p-5 shadow-xl" onclick="event.stopPropagation()">
@@ -164,15 +205,34 @@
             <h1 id="main-title" class="text-xl font-bold tracking-wide">Agenda Familiar</h1>
             <button onclick="toggleDrawer()" class="text-white hover:opacity-80 transition"><i class="fas fa-user text-2xl"></i></button>
         </div>
+        
+        <!-- BANNER MAESTRO NO INTRUSIVO (Informativo pasivo) -->
+        <div id="banner-maestro-agenda" class="hide bg-amber-500 text-white p-3.5 mx-4 mt-4 rounded-xl shadow-lg flex items-center justify-between relative z-10">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-exclamation-triangle text-2xl"></i>
+                <div>
+                    <p class="text-xs font-black uppercase">¡Atención a los cambios!</p>
+                    <p class="text-[11px] font-medium leading-tight">Hay modificaciones de horarios o campos en tus partidos próximos.</p>
+                </div>
+            </div>
+            <button onclick="cerrarBannerMaestro()" class="text-white hover:text-gray-200 bg-black/20 rounded-full w-8 h-8 flex items-center justify-center ml-2 flex-shrink-0">
+                <i class="fas fa-times text-base"></i>
+            </button>
+        </div>
 
         <div id="lista-agenda" class="p-4 space-y-4"></div>
     </div>
 
     <!-- PANTALLA DE AJUSTES -->
     <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen pb-24">
-        <div class="text-white h-[88px] px-4 flex items-center shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
-            <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
-            <h1 class="text-xl font-bold">Ajustes</h1>
+        <div class="text-white h-[88px] px-4 flex items-center justify-between shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
+            <div class="flex items-center">
+                <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
+                <h1 class="text-xl font-bold">Ajustes</h1>
+            </div>
+            <button onclick="abrirModalInfoApp()" class="text-white hover:opacity-80 transition p-2">
+                <i class="fas fa-info-circle text-2xl"></i>
+            </button>
         </div>
         <div class="p-4 space-y-4">
              
@@ -193,6 +253,14 @@
                         <input type="checkbox" id="toggle-ruta" class="sr-only peer">
                         <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
                     </label>
+                </div>
+
+                <div class="border-t pt-4" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Transporte para partidos fuera de casa</label>
+                    <select id="select-transporte-fuera" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                        <option value="driving">🚗 Coche</option>
+                        <option value="foot">🚶‍♂️ Caminando</option>
+                    </select>
                 </div>
 
                 <div class="border-t pt-4" style="border-color: var(--border-color);">
@@ -252,8 +320,8 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.02.00</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">16/11/2026 · Grupos WhatsApp API</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.03.01</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">17/11/2026 · Hora de salida inteligente</p>
             </div>
         </div>
     </div>
@@ -414,8 +482,9 @@
         });
         if (equiposModificados) localStorage.setItem('equipos_liga', JSON.stringify(equipos));
 
-        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false };
+        let userSettings = JSON.parse(localStorage.getItem('user_settings')) || { homeAddress: '', homeLat: null, homeLon: null, defaultMap: 'ask', showRoute: false, transportModeAway: 'driving' };
         if (userSettings.showRoute === undefined) userSettings.showRoute = false; 
+        if (userSettings.transportModeAway === undefined) userSettings.transportModeAway = 'driving';
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
@@ -660,11 +729,11 @@
                 const tieneGrupo = !!url;
                 
                 let html = `
-                    <div class="flex justify-between items-center bg-gray-50 p-2 rounded border border-gray-200 mb-2">
-                        <div class="flex flex-col flex-1 pr-2">
-                            <span class="text-xs font-bold text-gray-800 leading-tight">${eq.nombre}</span>
-                            <span class="text-[10px] text-gray-500 truncate">${eq.equipoFavorito} (${eq.nombreCompeticion})</span>
-                        </div>
+                    <div class="flex justify-between items-center bg-gray-50 px-3 py-2 rounded-xl border border-gray-200 mb-2 h-[68px] overflow-hidden">
+                        <div class="flex flex-col flex-1 pr-2 justify-center min-w-0">
+                        <span class="text-xs font-bold text-gray-800 truncate leading-tight">${eq.nombre}</span>
+                        <span class="text-[10px] text-gray-500 truncate mt-0.5">${eq.equipoFavorito} (${eq.nombreCompeticion})</span>
+                    </div>
                 `;
 
                 if (tieneGrupo) {
@@ -694,6 +763,18 @@
             const modal = document.getElementById('modal-grupo');
             modal.classList.remove('hide');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+        
+        function abrirModalInfoApp() {
+            const modal = document.getElementById('modal-info-app');
+            modal.classList.remove('hide');
+            setTimeout(() => modal.classList.remove('opacity-0'), 10);
+        }
+
+        function cerrarModalInfoApp() {
+            const modal = document.getElementById('modal-info-app');
+            modal.classList.add('opacity-0');
+            setTimeout(() => modal.classList.add('hide'), 300);
         }
 
         function abrirModalGrupoIdx(idx) {
@@ -921,6 +1002,7 @@
             document.getElementById('input-casa').value = userSettings.homeAddress || '';
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
+            document.getElementById('select-transporte-fuera').value = userSettings.transportModeAway || 'driving';
             renderizarAjustesGrupos();
             comprobarAvisosAdmin();
         }
@@ -930,6 +1012,7 @@
             userSettings.homeAddress = dir;
             userSettings.defaultMap = document.getElementById('select-mapa-defecto').value;
             userSettings.showRoute = document.getElementById('toggle-ruta').checked;
+            userSettings.transportModeAway = document.getElementById('select-transporte-fuera').value;
             
             if (dir !== "") {
                 document.getElementById('btn-guardar-ajustes').innerText = "Buscando dirección...";
@@ -962,8 +1045,9 @@
                 localStorage.removeItem('cache_geo');
                 localStorage.removeItem('cache_grupos');
                 localStorage.removeItem('dismissed_changes');
+                localStorage.removeItem('dismissed_master_time');
                 Object.keys(localStorage).forEach(key => {
-                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_') || key.startsWith('snapshot_v1_')) {
+                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_') || key.startsWith('cache_ruta')) {
                         localStorage.removeItem(key);
                     }
                 });
@@ -1086,6 +1170,25 @@
             }
 
             window._partidosAgenda = proximosPartidos;
+            
+            // --- BANNER MAESTRO NO INTRUSIVO ---
+            const dismissedMasterTime = parseInt(localStorage.getItem('dismissed_master_time') || '0');
+            const unHourPassed = (Date.now() - dismissedMasterTime) > 3600000;
+            
+            let hayCambiosActivos = false;
+            proximosPartidos.forEach(p => {
+                if (p.Cambio || p.CambioLocal) hayCambiosActivos = true;
+            });
+
+            const bannerMaestro = document.getElementById('banner-maestro-agenda');
+            if (bannerMaestro) {
+                if (hayCambiosActivos && (dismissedMasterTime === 0 || unHourPassed)) {
+                    bannerMaestro.classList.remove('hide');
+                } else {
+                    bannerMaestro.classList.add('hide');
+                }
+            }
+            // ----------------------------------
 
             proximosPartidos.forEach((p, index) => {
                 const eq = p._equipoRef;
@@ -1154,10 +1257,13 @@
                 const styleFav = `style="color: #A67C00; font-weight: 900; font-size: 16px;"`;
                 const styleNormal = `style="color: var(--text-main); font-weight: 700; font-size: 16px;"`;
                 
+                const esPartidoEnCasa = esLocalFav || esCanal;
+                const iconoRutaHtml = esPartidoEnCasa ? '<i class="fas fa-walking text-gray-800"></i>' : (userSettings.transportModeAway === 'transit' ? '<i class="fas fa-bus text-gray-800"></i>' : '<i class="fas fa-car text-gray-800"></i>');
+
                 const htmlRuta = userSettings.showRoute === true ? `
                     <div class="flex items-center justify-center gap-2 mt-2 mb-1 text-sm font-bold text-gray-700 w-full px-1">
-                        <i class="fas fa-car text-gray-800"></i>
-                        <span id="ruta-agenda-${index}" class="text-blue-600"></span>
+                        ${iconoRutaHtml}
+                        <span id="ruta-agenda-${index}" class="text-blue-600">Calculando...</span>
                     </div>
                 ` : '';
 
@@ -1343,7 +1449,6 @@
                             let pending = false;
                             const snapViejo = snapshotViejo[matchId];
                             
-                            // Corrección estricta: NO evaluamos 'pending' fantasma a menos que el hash haya cambiado de verdad
                             if (snapViejo && snapViejo.hash !== matchHash) {
                                 pending = true;
                             } else if (p.Cambio || p.CambioLocal) {
@@ -1353,13 +1458,9 @@
                             if (pending) {
                                 copiaP.CambioLocal = true;
                                 if (!dismissed[matchHash]) {
-                                    // Si el descarte ha expirado (+1 hora), lo limpiamos
                                     if (dismissed[matchHash] && (Date.now() - dismissed[matchHash] > 3600000)) {
                                         delete dismissed[matchHash];
                                         localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
-                                    }
-                                    if (!dismissed[matchHash]) {
-                                        // Solo activamos aviso si hay cambio real verificado
                                     }
                                 }
                             }
@@ -1455,6 +1556,60 @@
                                         if (el) el.innerHTML = `<i class="fas ${icono}"></i>`;
                                     }
                                 } catch(e) {}
+                            }
+
+                            if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
+                                const elRuta = document.getElementById(`ruta-agenda-${i}`);
+                                if (navigator.onLine === false) {
+                                    if (elRuta) elRuta.innerHTML = `<span class="text-gray-400 text-[11px]">Sin conexión</span>`;
+                                } else {
+                                    if (elRuta && elRuta.innerText === "Calculando...") elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
+                                    try {
+                                        const esPartidoEnCasa = (p.EquipoLocal === eq.equipoFavorito) || esCanal;
+                                        const modoActual = esPartidoEnCasa ? 'foot' : (userSettings.transportModeAway || 'driving');
+                                        let durationSec = 0;
+
+                                        if (modoActual === 'foot') {
+                                            const toRad = x => x * Math.PI / 180;
+                                            const R = 6371e3;
+                                            const dLat = toRad(lat - userSettings.homeLat);
+                                            const dLon = toRad(lon - userSettings.homeLon);
+                                            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                                                      Math.cos(toRad(userSettings.homeLat)) * Math.cos(toRad(lat)) *
+                                                      Math.sin(dLon/2) * Math.sin(dLon/2);
+                                            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+                                            const distanciaMetros = R * c * 1.3;
+                                            durationSec = distanciaMetros / 1.1;
+                                        } else {
+                                            const routeKey = `${userSettings.homeLat},${userSettings.homeLon}_${lat},${lon}_driving`;
+                                            durationSec = cacheRuta[routeKey];
+                                            
+                                            if (!Number.isFinite(durationSec)) {
+                                                const resRoute = await fetchWithTimeout(`https://router.project-osrm.org/route/v1/driving/${userSettings.homeLon},${userSettings.homeLat};${lon},${lat}?overview=false`);
+                                                const routeData = await resRoute.json();
+                                                if (routeData.routes && routeData.routes.length > 0) {
+                                                    durationSec = routeData.routes[0].duration;
+                                                    cacheRuta[routeKey] = durationSec;
+                                                    localStorage.setItem('cache_ruta', JSON.stringify(cacheRuta));
+                                                }
+                                            }
+                                        }
+
+                                        if (Number.isFinite(durationSec)) {
+                                            const durationMin = Math.ceil(durationSec / 60);
+                                            const datePartido = new Date(p.FechaHora);
+                                            const margenMin = esCanal ? 2 : 30;
+                                            datePartido.setMinutes(datePartido.getMinutes() - margenMin - durationMin);
+                                            const hh = String(datePartido.getHours()).padStart(2, '0');
+                                            const mm = String(datePartido.getMinutes()).padStart(2, '0');
+                                            if (elRuta) elRuta.innerHTML = `Sal a las ${hh}:${mm}`;
+                                        } else {
+                                            if (elRuta) elRuta.innerHTML = `No disponible`;
+                                        }
+                                    } catch(e) {
+                                        if (elRuta) elRuta.innerHTML = `No disponible`;
+                                    }
+                                }
                             }
                         }
                     })()
@@ -1872,8 +2027,6 @@
                     const snapViejo = snapshotViejo[matchId];
                     if (snapViejo) {
                         if (snapViejo.hash !== matchHash) pending = true; 
-                    } else if (p.Cambio || p.CambioLocal) {
-                        pending = true;
                     }
                     snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
                     if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
@@ -1908,7 +2061,7 @@
                     cacheCalendarioGlobal = JSON.parse(cachedCal);
                     cacheResultados = JSON.parse(cachedRes);
                     cacheClasificacion = JSON.parse(cachedClas);
-                    cacheClasificacionPartidos = cacheResultados;
+                    cacheClasificacionPartidos = cachedRes;
                     
                     setTimeout(() => {
                         document.getElementById('pantalla-carga').classList.add('oculto');
@@ -2063,6 +2216,12 @@
             
             localStorage.setItem('dismissed_changes', JSON.stringify(dismissed));
             document.getElementById('banner-alerta').classList.add('hide');
+        }
+        
+        function cerrarBannerMaestro() {
+            localStorage.setItem('dismissed_master_time', Date.now().toString());
+            const bannerMaestro = document.getElementById('banner-maestro-agenda');
+            if (bannerMaestro) bannerMaestro.classList.add('hide');
         }
 
         function toggleFiltro() {
