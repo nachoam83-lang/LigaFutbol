@@ -2,8 +2,8 @@ name: Extracción Automática de Datos
 
 on:
   schedule:
-    # Se ejecuta cada 30 minutos
-    - cron: '*/20 * * * *'
+    # Se ejecuta cada 3 horas
+    - cron: '0 */3 * * *'
   workflow_dispatch: # <--- BOTÓN PARA LANZARLO A MANO
 
 jobs:
