@@ -6,9 +6,9 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.03.04                                           -->
+    <!--  Versión actual: v1.03.05                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
-    <!--  Cambios: Banner de alertas parametrizado con ajustes de usuario    -->
+    <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -206,6 +206,15 @@
             <button onclick="toggleDrawer()" class="text-white hover:opacity-80 transition"><i class="fas fa-user text-2xl"></i></button>
         </div>
         
+        <!-- AVISO DE CAMBIOS EN LA AGENDA FAMILIAR -->
+        <div id="banner-agenda" class="hide mx-4 mt-4 bg-red-100 text-red-700 p-3 rounded-lg text-sm shadow-sm" role="alert">
+            <div class="flex items-start justify-between gap-2">
+                <div class="font-black flex items-center gap-2"><i class="fas fa-exclamation-triangle text-lg"></i><span id="banner-agenda-titulo">Cambios en tus partidos</span></div>
+                <button onclick="cerrarBannerAgenda()" class="text-red-700 hover:text-red-900" aria-label="Cerrar aviso"><i class="fas fa-times text-lg"></i></button>
+            </div>
+            <ul id="banner-agenda-lista" class="mt-2 space-y-2"></ul>
+        </div>
+
         <div id="lista-agenda" class="p-4 space-y-4"></div>
     </div>
 
@@ -330,8 +339,8 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.03.04</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">18/11/2026 · Control configurable de avisos y banners</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.03.05</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">18/11/2026 · Aviso de cambios de partido en la agenda</p>
             </div>
         </div>
     </div>
@@ -976,6 +985,107 @@
             return `${p.NumeroJornada}_${p.EquipoLocal}_vs_${p.EquipoVisitante}_${dateMs}_${p.Campo || ''}`;
         }
 
+        // <cambios>
+        // ── AVISOS DE CAMBIOS DE PARTIDO ──────────────────────────────────────────
+        // Para cada equipo se compara la fecha/hora y el campo de sus partidos con lo que la app
+        // vio la última vez (snapshot_v4_<id equipo>). Si algo cambia se guarda un aviso en
+        // "avisos_cambios", que se muestra en la Agenda Familiar hasta que se cierra, caduca
+        // (tiempo de Ajustes) o se juega el partido. No hace falta abrir el equipo.
+        function escHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+        function leerJSON(clave) { try { const v = JSON.parse(localStorage.getItem(clave)); return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; } catch { return {}; } }
+        function escribirJSON(clave, valor) { try { localStorage.setItem(clave, JSON.stringify(valor)); } catch {} }
+        function esPartidoFavorito(eq, p) { return p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito; }
+        // Identifica un partido aunque cambie de jornada (ECM tiene Id; Canal se identifica por el cruce de equipos)
+        function claveCambio(p) { return p.Id ? `id${p.Id}` : `${p.EquipoLocal}_${p.EquipoVisitante}`; }
+        function mismoEstado(a, b) { return !!a && !!b && a.f === b.f && a.c === b.c; }
+
+        function avisosActivos(ahora = Date.now()) {
+            const hoy = new Date(ahora); hoy.setHours(0, 0, 0, 0);
+            const duracionMs = ((typeof userSettings !== 'undefined' && userSettings.alertDurationMinutes) || 60) * 60 * 1000;
+            const avisos = leerJSON('avisos_cambios');
+            let modificado = false;
+            Object.keys(avisos).forEach(k => {
+                const a = avisos[k];
+                const caducado = !a || (ahora - a.t) > duracionMs;
+                const pasado = a && a.ahora && a.ahora.f && new Date(a.ahora.f) < hoy;
+                if (caducado || pasado) { delete avisos[k]; modificado = true; }
+            });
+            if (modificado) escribirJSON('avisos_cambios', avisos);
+            return avisos;
+        }
+
+        function registrarCambios(eq, partidos, ahora = Date.now()) {
+            if (!Array.isArray(partidos) || partidos.length === 0) return;
+            const claveSnap = `snapshot_v4_${eq.id}`;
+            let hayBase = false;
+            try { hayBase = localStorage.getItem(claveSnap) !== null; } catch {}
+            const snap = leerJSON(claveSnap);
+            const nuevo = {};
+            const avisos = avisosActivos(ahora);
+            const hoy = new Date(ahora); hoy.setHours(0, 0, 0, 0);
+
+            partidos.forEach(p => {
+                if (!p.FechaHora || !esPartidoFavorito(eq, p)) return;
+                const k = claveCambio(p);
+                const estado = { f: p.FechaHora, c: p.Campo || '' };
+                nuevo[k] = estado;
+                const antes = snap[k];
+                if (!hayBase || !antes) return;               // primera vez que se ve: solo se guarda, no avisa
+                if (mismoEstado(antes, estado)) return;       // sin cambios
+                if (antes.c === 'Campo') return;              // Canal: primera asignación de hora y campo desde el PDF, no es un cambio
+                if (new Date(p.FechaHora) < hoy) return;      // partido ya pasado
+                const clave = `${eq.id}|${k}`;
+                const previo = avisos[clave];
+                if (previo && mismoEstado(previo.antes, estado)) { delete avisos[clave]; return; }   // ha vuelto a como estaba
+                avisos[clave] = { t: ahora, eq: eq.nombre, loc: p.EquipoLocal, vis: p.EquipoVisitante, antes: previo ? previo.antes : antes, ahora: estado };
+            });
+            escribirJSON(claveSnap, nuevo);
+            escribirJSON('avisos_cambios', avisos);
+        }
+
+        // Pone los indicadores que usan las tarjetas de la vista de equipo a partir de los avisos activos
+        function marcarCambiosLocales(eq, partidos) {
+            if (!Array.isArray(partidos)) return;
+            const avisos = avisosActivos();
+            partidos.forEach(p => {
+                p.Cambio = false;
+                p.CambioLocal = esPartidoFavorito(eq, p) && !!avisos[`${eq.id}|${claveCambio(p)}`];
+            });
+        }
+
+        function fechaCambio(f) {
+            const d = new Date(f);
+            if (isNaN(d.getTime())) return '?';
+            const dias = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
+            return `${dias[d.getDay()]} ${d.getDate()}/${d.getMonth() + 1} ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+        }
+        function campoCorto(c) { c = String(c || '').trim(); return c ? (c.length > 32 ? c.substring(0, 32) + '…' : c) : '—'; }
+
+        function renderBannerAgenda() {
+            const banner = document.getElementById('banner-agenda');
+            const lista = document.getElementById('banner-agenda-lista');
+            if (!banner || !lista) return;
+            const mostrar = (typeof userSettings === 'undefined' || userSettings.showChangeAlerts !== false);
+            const avisos = mostrar ? Object.values(avisosActivos()) : [];
+            if (avisos.length === 0) { banner.classList.add('hide'); lista.innerHTML = ''; return; }
+            avisos.sort((a, b) => new Date(a.ahora.f) - new Date(b.ahora.f));
+            document.getElementById('banner-agenda-titulo').textContent = avisos.length === 1 ? 'Cambio en un partido' : `Cambios en ${avisos.length} partidos`;
+            lista.innerHTML = avisos.map(a => {
+                const lineas = [];
+                if (a.antes.f !== a.ahora.f) lineas.push(`Hora: ${escHtml(fechaCambio(a.antes.f))} → <b>${escHtml(fechaCambio(a.ahora.f))}</b>`);
+                if (a.antes.c !== a.ahora.c) lineas.push(`Campo: ${escHtml(campoCorto(a.antes.c))} → <b>${escHtml(campoCorto(a.ahora.c))}</b>`);
+                return `<li><div class="font-black">${escHtml(a.eq)} · ${escHtml(acortarNombre(a.loc))} vs ${escHtml(acortarNombre(a.vis))}</div><div class="text-xs font-semibold">${lineas.join('<br>')}</div></li>`;
+            }).join('');
+            banner.classList.remove('hide');
+        }
+
+        function cerrarBannerAgenda() {
+            escribirJSON('avisos_cambios', {});
+            renderBannerAgenda();
+            if (window._ultimaAgenda) renderAgendaDesdeDatos(window._ultimaAgenda[0], window._ultimaAgenda[1]);
+        }
+        // </cambios>
+
         function getEstadoPartido(p) {
             if (p.EstadoPartido === undefined && p.Cerrado === undefined) {
                 return (p.ResultadoEquipoLocal > 0 || p.ResultadoEquipoVisitante > 0) ? 'jugado' : 'pendiente';
@@ -1073,9 +1183,10 @@
                 localStorage.removeItem('cache_geo');
                 localStorage.removeItem('cache_grupos');
                 localStorage.removeItem('dismissed_changes');
+                localStorage.removeItem('avisos_cambios');
                 localStorage.removeItem('dismissed_banner_time'); // Limpiamos también el control de tiempo del banner
                 Object.keys(localStorage).forEach(key => {
-                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_') || key.startsWith('cache_ruta')) {
+                    if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_') || key.startsWith('snapshot_v4_') || key.startsWith('cache_ruta')) {
                         localStorage.removeItem(key);
                     }
                 });
@@ -1170,7 +1281,9 @@
 
         function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
             const contenedor = document.getElementById('lista-agenda');
-            let dismissed = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
+            window._ultimaAgenda = [partidos, { showingFromCache, isOnline }];
+            renderBannerAgenda();
+            const avisosAgenda = avisosActivos();
 
             const hoy = new Date(); hoy.setHours(0,0,0,0);
             const dentroDeUnMes = new Date(hoy); dentroDeUnMes.setMonth(dentroDeUnMes.getMonth() + 1);
@@ -1250,12 +1363,7 @@
                         : `<span class="text-[11px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded shadow-sm">Pabellón</span>`;
                 }
 
-                let haCambiado = (userSettings.showChangeAlerts !== false) && (p.Cambio || p.CambioLocal);
-                const matchHash = getMatchHash(p);
-                if (haCambiado && dismissed[matchHash]) {
-                    const duracionMs = (userSettings.alertDurationMinutes || 60) * 60 * 1000;
-                    if (Date.now() - dismissed[matchHash] > duracionMs) haCambiado = false;
-                }
+                const haCambiado = (userSettings.showChangeAlerts !== false) && !!avisosAgenda[`${eq.id}|${claveCambio(p)}`];
                 const warningSvg = `
                     <svg viewBox="0 0 24 24" fill="none" class="w-8 h-8 drop-shadow-md">
                         <path d="M12 2.5L1.5 21h21L12 2.5z" fill="#FACC15" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
@@ -1392,7 +1500,7 @@
                         const clasif   = rawClas ? JSON.parse(rawClas) : [];
                         partidos.forEach(p => {
                             if (p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito) {
-                                partidosCache.push({ ...p, _equipoRef: eq, _clasifRef: clasif, _fromCache: true });
+                                partidosCache.push({ ...p, Cambio: false, _equipoRef: eq, _clasifRef: clasif, _fromCache: true });
                             }
                         });
                     } catch {}
@@ -1442,32 +1550,17 @@
 
                     if (!Array.isArray(partidos)) return;
 
+                    // Solo con datos recién descargados: compara con lo último visto y guarda los avisos
+                    if (!fromCache) registrarCambios(eq, partidos);
+                    const avisosEq = avisosActivos();
+
                     partidos.forEach(p => {
-                        if (p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito) {
-                            let copiaP = { ...p };
+                        if (esPartidoFavorito(eq, p)) {
+                            let copiaP = { ...p, Cambio: false };
                             copiaP._equipoRef = eq;
                             copiaP._clasifRef = clasif;
                             if (fromCache) copiaP._fromCache = true;
-
-                            const matchId = getMatchId(p);
-                            const matchHash = getMatchHash(p);
-                            const snapshotKey = `snapshot_v3_${eq.id}`;
-                            let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
-                            if (Array.isArray(snapshotViejo)) snapshotViejo = {};
-
-                            let pending = false;
-                            const snapViejo = snapshotViejo[matchId];
-                            
-                            if (snapViejo && snapViejo.hash !== matchHash) {
-                                pending = true;
-                            } else if (p.Cambio || p.CambioLocal) {
-                                pending = true;
-                            }
-
-                            if (pending) {
-                                copiaP.CambioLocal = true;
-                            }
-
+                            if (avisosEq[`${eq.id}|${claveCambio(p)}`]) copiaP.CambioLocal = true;
                             todosLosPartidos.push(copiaP);
                         }
                     });
@@ -2017,29 +2110,8 @@
                 
                 if (!cacheResultados || cacheResultados.length === 0) throw new Error("Datos vacíos");
 
-                const snapshotKey = `snapshot_v3_${equipoActual.id}`;
-                let snapshotViejo = JSON.parse(localStorage.getItem(snapshotKey)) || {};
-                if (Array.isArray(snapshotViejo)) snapshotViejo = {};
-                const snapshotNuevo = { ...snapshotViejo };
-
-                cacheResultados.forEach(p => {
-                    if (!p.EquipoLocal && !p.EquipoVisitante) return;
-                    const matchId = getMatchId(p);
-                    const matchHash = getMatchHash(p);
-                    let pending = false;
-                    const snapViejo = snapshotViejo[matchId];
-                    if (snapViejo) {
-                        if (snapViejo.hash !== matchHash) pending = true; 
-                    }
-                    snapshotNuevo[matchId] = { hash: matchHash, pending: pending };
-                    if (pending && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito)) {
-                        p.CambioLocal = true;
-                    }
-                });
-                Object.keys(snapshotNuevo).forEach(k => {
-                    if (!cacheResultados.some(p => getMatchId(p) === k)) delete snapshotNuevo[k];
-                });
-                localStorage.setItem(snapshotKey, JSON.stringify(snapshotNuevo));
+                registrarCambios(equipoActual, cacheResultados);
+                marcarCambiosLocales(equipoActual, cacheResultados);
 
                 localStorage.setItem(`cache_cal_${equipoActual.id}`, JSON.stringify(cacheCalendarioGlobal));
                 localStorage.setItem(`cache_res_${equipoActual.id}`, JSON.stringify(cacheResultados));
@@ -2065,6 +2137,7 @@
                     cacheResultados = JSON.parse(cachedRes);
                     cacheClasificacion = JSON.parse(cachedClas);
                     cacheClasificacionPartidos = cachedRes;
+                    marcarCambiosLocales(equipoActual, cacheResultados);
                     
                     setTimeout(() => {
                         document.getElementById('pantalla-carga').classList.add('oculto');
@@ -2097,6 +2170,9 @@
                 cacheCalendarioGlobal = await resCal.json(); cacheResultados = await resRes.json(); cacheClasificacion = await resClasif.json();
                 
                 if (!cacheResultados || cacheResultados.length === 0) throw new Error("Datos vacíos");
+
+                registrarCambios(equipoActual, cacheResultados);
+                marcarCambiosLocales(equipoActual, cacheResultados);
 
                 localStorage.setItem(`cache_cal_${equipoActual.id}`, JSON.stringify(cacheCalendarioGlobal));
                 localStorage.setItem(`cache_res_${equipoActual.id}`, JSON.stringify(cacheResultados));
