@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.01                                           -->
+    <!--  Versión actual: v1.04.02                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -330,6 +330,45 @@
                 <button id="btn-guardar-ajustes" onclick="guardarAjustes()" class="w-full bg-gray-800 text-white font-bold py-3.5 rounded-lg shadow transition text-sm">Guardar Cambios</button>
             </div>
 
+            <!-- TARJETA: CALENDARIO Y AVISOS DE SALIDA -->
+            <div class="card p-4 space-y-4">
+                <div>
+                    <h3 class="font-bold text-gray-800 text-sm">Calendario y alarmas</h3>
+                    <p class="text-xs text-gray-500">Se aplican al pulsar "Al Calendario" en un partido.</p>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-800">Aviso el día antes</label>
+                        <p class="text-xs text-gray-500">Una alarma 24 h antes de la convocatoria</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="toggle-alarma-dia" class="sr-only peer">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                    </label>
+                </div>
+                <div class="border-t pt-3" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Minutos antes del evento</label>
+                    <input type="number" id="input-alarma-evento" min="0" max="1440" placeholder="60" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                    <p class="text-[11px] text-gray-400 mt-1">Deja vacío para no añadir esta alarma.</p>
+                </div>
+                <div class="border-t pt-3" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Minutos antes de salir de casa</label>
+                    <input type="number" id="input-alarma-salida" min="0" max="240" placeholder="15" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                    <p class="text-[11px] text-gray-400 mt-1">Necesita "Tiempo de Viaje" activado y la agenda cargada. Deja vacío para no añadirla.</p>
+                </div>
+                <div class="border-t pt-3" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Llegar antes del partido (minutos)</label>
+                    <input type="number" id="input-margen-llegada" min="0" max="180" placeholder="30" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                    <p class="text-[11px] text-gray-400 mt-1">Afecta a la hora de salida y a la convocatoria del calendario (no a Escuela Canal).</p>
+                </div>
+                <div class="border-t pt-3" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Avisar de lluvia desde (%)</label>
+                    <input type="number" id="input-umbral-lluvia" min="0" max="100" placeholder="40" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                    <p class="text-[11px] text-gray-400 mt-1">Solo en campos exteriores y con previsión a 15 días.</p>
+                </div>
+                <button onclick="guardarAjustes()" class="w-full bg-gray-800 text-white font-bold py-3 rounded-lg shadow transition text-sm hover:bg-gray-700">Guardar Configuración</button>
+            </div>
+
             <!-- TARJETA 2: AVISOS DE CAMBIO DE PARTIDOS (INDEPENDIENTE) -->
             <div class="card p-4 space-y-4">
                 <div class="flex justify-between items-center">
@@ -575,6 +614,11 @@
         if (userSettings.transportModeAway === undefined) userSettings.transportModeAway = 'driving';
         if (userSettings.showChangeAlerts === undefined) userSettings.showChangeAlerts = true;
         if (userSettings.alertDurationMinutes === undefined) userSettings.alertDurationMinutes = 60;
+        if (userSettings.alarmDayBefore === undefined) userSettings.alarmDayBefore = true;
+        if (userSettings.alarmEventMin === undefined) userSettings.alarmEventMin = 60;
+        if (userSettings.alarmDepartMin === undefined) userSettings.alarmDepartMin = 15;
+        if (userSettings.arrivalMargin === undefined) userSettings.arrivalMargin = 30;
+        if (userSettings.rainThreshold === undefined) userSettings.rainThreshold = 40;
         
         let cacheGeo = JSON.parse(localStorage.getItem('cache_geo')) || {};
 
@@ -1196,6 +1240,11 @@
             document.getElementById('select-transporte-fuera').value = userSettings.transportModeAway || 'driving';
             document.getElementById('toggle-avisos').checked = userSettings.showChangeAlerts !== false;
             document.getElementById('input-tiempo-aviso').value = userSettings.alertDurationMinutes || 60;
+            document.getElementById('toggle-alarma-dia').checked = userSettings.alarmDayBefore !== false;
+            document.getElementById('input-alarma-evento').value = userSettings.alarmEventMin ?? '';
+            document.getElementById('input-alarma-salida').value = userSettings.alarmDepartMin ?? '';
+            document.getElementById('input-margen-llegada').value = userSettings.arrivalMargin ?? 30;
+            document.getElementById('input-umbral-lluvia').value = userSettings.rainThreshold ?? 40;
             renderizarAjustesGrupos();
             comprobarAvisosAdmin();
         }
@@ -1210,6 +1259,18 @@
             
             const minutosInput = parseInt(document.getElementById('input-tiempo-aviso').value);
             userSettings.alertDurationMinutes = !isNaN(minutosInput) && minutosInput >= 0 ? minutosInput : 60;
+
+            const entero = (id, min, max, vacio) => {
+                const raw = document.getElementById(id).value.trim();
+                if (raw === '') return vacio;
+                const n = parseInt(raw);
+                return isNaN(n) ? vacio : Math.max(min, Math.min(max, n));
+            };
+            userSettings.alarmDayBefore = document.getElementById('toggle-alarma-dia').checked;
+            userSettings.alarmEventMin = entero('input-alarma-evento', 0, 1440, null);
+            userSettings.alarmDepartMin = entero('input-alarma-salida', 0, 240, null);
+            userSettings.arrivalMargin = entero('input-margen-llegada', 0, 180, 30) ?? 30;
+            userSettings.rainThreshold = entero('input-umbral-lluvia', 0, 100, 40) ?? 40;
             
             if (dir !== "") {
                 document.getElementById('btn-guardar-ajustes').innerText = "Buscando dirección...";
@@ -1664,6 +1725,22 @@
         }
 
         // <clima>
+        let viajePartido = {};
+        function margenLlegada() { const m = parseInt(userSettings.arrivalMargin); return (!isNaN(m) && m >= 0) ? m : 30; }
+        function urlIcs(p, eq, dir, titulo) {
+            const esCanal = eq.idDeporte === '4';
+            const mins = [];
+            if (userSettings.alarmDayBefore !== false) mins.push(1440);
+            const ev = parseInt(userSettings.alarmEventMin);
+            if (userSettings.alarmEventMin !== null && !isNaN(ev) && ev >= 0) mins.push(ev);
+            const dep = parseInt(userSettings.alarmDepartMin);
+            const viaje = viajePartido[`${eq.id}|${claveCambio(p)}`];
+            if (userSettings.showRoute === true && userSettings.alarmDepartMin !== null && !isNaN(dep) && Number.isFinite(viaje)) {
+                mins.push(viaje + (esCanal ? 2 : 0) + dep);   // minutos antes del inicio del evento (convocatoria en ECM, partido en Canal)
+            }
+            const lista = [...new Set(mins)].filter(m => m >= 0 && m <= 43200).slice(0, 5);
+            return `/api/ics?titulo=${encodeURIComponent(titulo)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dir)}&deporte=${eq.idDeporte}&alarmas=${lista.join(',')}&margen=${margenLlegada()}`;
+        }
         function describirClima(code) {
             if (code === 0) return { i: 'fa-sun', col: '#CA8A04', t: 'Despejado' };
             if (code === 1 || code === 2) return { i: 'fa-cloud-sun', col: '#B45309', t: 'Poco nuboso' };
@@ -1795,8 +1872,9 @@
 
                                         if (Number.isFinite(durationSec)) {
                                             const durationMin = Math.ceil(durationSec / 60);
+                                            viajePartido[`${eq.id}|${claveCambio(p)}`] = durationMin;
                                             const datePartido = new Date(p.FechaHora);
-                                            const margenMin = esCanal ? 2 : 30;
+                                            const margenMin = esCanal ? 2 : margenLlegada();
                                             datePartido.setMinutes(datePartido.getMinutes() - margenMin - durationMin);
                                             const hh = String(datePartido.getHours()).padStart(2, '0');
                                             const mm = String(datePartido.getMinutes()).padStart(2, '0');
@@ -2496,7 +2574,7 @@
                 botonesExtra = `
                     <div class="flex gap-2 mt-3">
                         <a href="https://wa.me/?text=${encodeURIComponent(texto)}" target="_blank" class="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold py-2 rounded-lg text-xs"><i class="fab fa-whatsapp"></i> Compartir</a>
-                        <a href="/api/ics?titulo=${encodeURIComponent(`Partido: ${equipoActual.equipoFavorito} vs ${rival}`)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dirCompleta)}&deporte=${equipoActual.idDeporte}" class="flex-1 flex items-center justify-center gap-2 text-white font-bold py-2 rounded-lg text-xs" style="background-color: var(--primary-color);"><i class="far fa-calendar-plus"></i> Al Calendario</a>
+                        <a href="${urlIcs(p, equipoActual, dirCompleta, `Partido: ${equipoActual.equipoFavorito} vs ${rival}`)}" class="flex-1 flex items-center justify-center gap-2 text-white font-bold py-2 rounded-lg text-xs" style="background-color: var(--primary-color);"><i class="far fa-calendar-plus"></i> Al Calendario</a>
                     </div>`;
             }
 

@@ -631,23 +631,40 @@ def _ics_fold(linea):
     partes.append(linea)
     return "\r\n".join(partes)
 
+def _parse_alarmas(texto):
+    """'1440,60' -> [1440, 60]. Ignora valores no válidos; máximo 5 avisos, entre 0 min y 30 días."""
+    salida = []
+    for trozo in (texto or "").split(","):
+        trozo = trozo.strip()
+        if trozo.isdigit() and 0 <= int(trozo) <= 43200 and int(trozo) not in salida:
+            salida.append(int(trozo))
+    return salida[:5]
+
+def _texto_antes(minutos):
+    if minutos == 0: return "Ahora"
+    if minutos % 1440 == 0: d = minutos // 1440; return "En 1 día" if d == 1 else f"En {d} días"
+    if minutos % 60 == 0: h = minutos // 60; return "En 1 hora" if h == 1 else f"En {h} horas"
+    return f"En {minutos} min"
+
 @app.get("/api/ics")
-def get_ics(titulo: str, fecha: str, lugar: str, deporte: str = "2"):
+def get_ics(titulo: str, fecha: str, lugar: str, deporte: str = "2", alarmas: str = "1440,60", margen: int = 30):
     try:
+        margen = max(0, min(int(margen), 180))
         fecha_dt = datetime.fromisoformat(fecha)
         if deporte == "4":
             hora_inicio_evento = fecha_dt
             hora_fin_evento = fecha_dt + timedelta(minutes=60)
             descripcion = "Partido de Liga Interna (Escuela Canal)."
         else:
-            hora_inicio_evento = fecha_dt - timedelta(minutes=30)
-            hora_fin_evento = hora_inicio_evento + timedelta(minutes=105)
+            hora_inicio_evento = fecha_dt - timedelta(minutes=margen)
+            hora_fin_evento = hora_inicio_evento + timedelta(minutes=75 + margen)
             tipo_campo = "Exterior" if ("EXTERIOR" in lugar.upper() or "AIRE LIBRE" in lugar.upper()) else "Pabellón"
-            descripcion = f"Convocatoria 30 min antes.\nEl partido comienza a las {fecha_dt.strftime('%H:%M')}h.\nCampo: {tipo_campo}."
+            descripcion = f"Convocatoria {margen} min antes.\nEl partido comienza a las {fecha_dt.strftime('%H:%M')}h.\nCampo: {tipo_campo}."
         dtstart = hora_inicio_evento.strftime("%Y%m%dT%H%M%S")
         dtend = hora_fin_evento.strftime("%Y%m%dT%H%M%S")
     except Exception:
         return Response(status_code=400, content="Fecha inválida")
+    lista_alarmas = _parse_alarmas(alarmas) if alarmas.strip() != "" else []
     # UID estable: si se vuelve a descargar el mismo partido, el calendario lo actualiza en vez de duplicarlo
     uid = hashlib.md5(f"{titulo}|{fecha}|{lugar}|{deporte}".encode("utf-8")).hexdigest() + "@ligafutbol"
     dtstamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -661,10 +678,9 @@ def get_ics(titulo: str, fecha: str, lugar: str, deporte: str = "2"):
         f"DTEND:{dtend}",
         f"LOCATION:{_ics_escape(lugar)}",
         f"DESCRIPTION:{_ics_escape(descripcion)}",
-        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Partido mañana", "TRIGGER:-P1D", "END:VALARM",
-        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Partido en 1 hora", "TRIGGER:-PT1H", "END:VALARM",
-        "END:VEVENT",
-        "END:VCALENDAR",
     ]
+    for m in lista_alarmas:
+        lineas += ["BEGIN:VALARM", "ACTION:DISPLAY", f"DESCRIPTION:{_ics_escape(_texto_antes(m) + ': ' + titulo)}", f"TRIGGER:-PT{m}M", "END:VALARM"]
+    lineas += ["END:VEVENT", "END:VCALENDAR"]
     ics_content = "\r\n".join(_ics_fold(l) for l in lineas) + "\r\n"
     return Response(content=ics_content, media_type="text/calendar", headers={"Content-Disposition": "attachment; filename=partido.ics"})
