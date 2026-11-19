@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.04                                           -->
+    <!--  Versión actual: v1.04.05                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -61,6 +61,9 @@
         .ag-dia { display: flex; align-items: baseline; gap: 8px; margin: 18px 2px 8px; }
         .ag-dia b { font-size: 15px; font-weight: 800; color: var(--text-main); }
         .ag-dia span { font-size: 12px; font-weight: 700; color: var(--text-sec); }
+        .ag-resumen { margin: -4px 2px 10px; display: flex; flex-wrap: wrap; gap: 6px; font-size: 12px; font-weight: 700; color: #3F4B54; }
+        .ag-resumen .r { background: #fff; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; display: inline-flex; gap: 6px; align-items: center; }
+        .ag-resumen .r.alerta { background: var(--amber-bg); border-color: transparent; color: var(--amber-fg); }
         .mcard { background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--sport, var(--primary-color)); border-radius: 14px; box-shadow: 0 1px 3px rgba(20,32,43,.06); padding: 10px 12px; cursor: pointer; margin-bottom: 10px; }
         .mcard.atenuado { opacity: .75; }
         .mc-top { display: flex; align-items: center; gap: 6px; min-height: 30px; }
@@ -1610,6 +1613,51 @@
             </article>`;
         }
 
+        function claveDia(d) { return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`; }
+
+        function direccionPartido(p) { return (p._equipoRef.idDeporte === '4') ? 'canal' : construirDireccion(p).toUpperCase(); }
+
+        function resumenDia(lista, clave) {
+            const conHora = lista.filter(p => !esSinHora(p) && p.EquipoLocal && p.EquipoVisitante);
+            const hijos = [...new Set(lista.map(p => p._equipoRef.nombre))];
+            const partes = [`<span class="r"><i class="far fa-futbol"></i>${lista.length} ${lista.length === 1 ? 'partido' : 'partidos'}</span>`];
+            if (hijos.length > 1) partes.push(`<span class="r">${hijos.map(escHtml).join(' · ')}</span>`);
+            // partidos a la vez en campos distintos
+            const choques = [];
+            for (let i = 0; i < conHora.length; i++) for (let j = i + 1; j < conHora.length; j++) {
+                const a = conHora[i], b = conHora[j];
+                if (Math.abs(new Date(a.FechaHora) - new Date(b.FechaHora)) < 75 * 60000 && direccionPartido(a) !== direccionPartido(b)) choques.push([a, b]);
+            }
+            if (choques.length) {
+                const [a, b] = choques[0];
+                const h = p => new Date(p.FechaHora).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
+                partes.push(`<span class="r alerta"><i class="fas fa-exclamation-triangle"></i>Coinciden: ${escHtml(a._equipoRef.nombre)} ${h(a)} y ${escHtml(b._equipoRef.nombre)} ${h(b)} en campos distintos</span>`);
+            }
+            partes.push(`<span class="r" id="ag-salida-${clave}" style="display:none"></span>`);
+            return `<div class="ag-resumen">${partes.join('')}</div>`;
+        }
+
+        function actualizarResumenDias() {
+            const mapa = {};
+            (window._partidosAgenda || []).forEach(p => {
+                if (esSinHora(p) || !p.EquipoLocal || !p.EquipoVisitante) return;
+                const eq = p._equipoRef;
+                const v = viajePartido[`${eq.id}|${claveCambio(p)}`];
+                if (!Number.isFinite(v)) return;
+                const esCanal = eq.idDeporte === '4';
+                const sal = new Date(p.FechaHora); sal.setMinutes(sal.getMinutes() - (esCanal ? 2 : margenLlegada()) - v);
+                const k = claveDia(new Date(p.FechaHora));
+                if (!mapa[k] || sal < mapa[k].sal) mapa[k] = { sal, nombre: eq.nombre };
+            });
+            Object.keys(mapa).forEach(k => {
+                const el = document.getElementById(`ag-salida-${k}`);
+                if (!el) return;
+                const m = mapa[k];
+                el.innerHTML = `<i class="fas fa-door-open"></i>Primera salida ${String(m.sal.getHours()).padStart(2, '0')}:${String(m.sal.getMinutes()).padStart(2, '0')} (${escHtml(m.nombre)})`;
+                el.style.display = 'inline-flex';
+            });
+        }
+
         function renderAgendaDesdeDatos(partidos, { showingFromCache = false, isOnline = navigator.onLine !== false } = {}) {
             const contenedor = document.getElementById('lista-agenda');
             window._ultimaAgenda = [partidos, { showingFromCache, isOnline }];
@@ -1649,15 +1697,17 @@
             }
 
             window._partidosAgenda = mostrados;
+            const porDia = {};
+            mostrados.forEach(p => { (porDia[claveDia(new Date(p.FechaHora))] ||= []).push(p); });
             let diaActual = '';
             const partes = [];
             mostrados.forEach((p, index) => {
                 const d = new Date(p.FechaHora);
-                const clave = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+                const clave = claveDia(d);
                 if (clave !== diaActual) {
                     diaActual = clave;
                     const [t, sub] = etiquetaDia(d);
-                    partes.push(`<div class="ag-dia"><b>${escHtml(t)}</b>${sub ? `<span>${escHtml(sub)}</span>` : ''}</div>`);
+                    partes.push(`<div class="ag-dia"><b>${escHtml(t)}</b>${sub ? `<span>${escHtml(sub)}</span>` : ''}</div>${resumenDia(porDia[clave], clave)}`);
                 }
                 partes.push(htmlTarjetaAgenda(p, index, avisosAgenda));
             });
@@ -2115,6 +2165,7 @@
                 );
             }
             await Promise.all(promesas);
+            actualizarResumenDias();
         }
 
         function abrirModalMapa(dir) {
