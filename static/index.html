@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.03                                           -->
+    <!--  Versión actual: v1.04.04                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -68,7 +68,13 @@
         .mc-hijo img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: #fff; flex: 0 0 auto; }
         .mc-hijo span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
         .mc-ico { width: 28px; height: 28px; border-radius: 8px; background: #EEF1F3; color: #26343F; display: flex; align-items: center; justify-content: center; font-size: 14px; flex: 0 0 auto; }
-        .mc-hora { margin-left: auto; font-size: 22px; font-weight: 900; color: var(--text-main); letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+        .mc-cuando { margin-left: auto; text-align: right; line-height: 1.05; }
+        .mc-fecha { font-size: 12px; font-weight: 800; color: var(--text-sec); text-transform: capitalize; }
+        .mc-dir { display: flex; align-items: flex-start; gap: 6px; margin-top: 8px; font-size: 12px; font-weight: 600; color: #3F4B54; line-height: 1.3; }
+        .mc-dir i { margin-top: 2px; color: var(--primary-color); }
+        .mc-dir span { min-width: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .mc-sinhora { font-size: 13px; font-weight: 800; color: var(--amber-fg); background: var(--amber-bg); border-radius: 6px; padding: 3px 8px; display: inline-block; margin-top: 2px; }
+        .mc-hora { margin-left: 0; font-size: 22px; font-weight: 900; color: var(--text-main); letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
         .mc-hora.tachada { text-decoration: line-through; color: var(--text-sec); }
         .mc-body { display: flex; gap: 10px; align-items: stretch; margin-top: 6px; }
         .mc-teams { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -1438,6 +1444,17 @@
         let filtroHijo = '';
         let filtroDeporte = '';
 
+        function nombreCampoCorto(p, esCanal, dir) {
+            if (esCanal) return `${p.Campo && p.Campo !== 'Campo' ? p.Campo + ' · ' : ''}${dir}`;
+            const nom = p.CampoJuego?.Nombre ? p.CampoJuego.Nombre.replace(/\s*-\s*(TECHAD[OA]|CUBIERT[OA]|EXTERIOR)\s*$/i, '') : '';
+            return nom && !dir.toUpperCase().includes(nom.toUpperCase()) ? `${nom} · ${dir}` : dir;
+        }
+
+        function esSinHora(p) {
+            const d = new Date(p.FechaHora);
+            return !isNaN(d) && d.getHours() === 0 && d.getMinutes() === 0;
+        }
+
         function colorHijo(nombre) {
             const nombres = [...new Set(equipos.map(e => e.nombre))];
             const i = nombres.indexOf(nombre);
@@ -1511,6 +1528,8 @@
             const colorDeporte = esCanal ? '#00509E' : '#006D6F';
             const dateObj = new Date(p.FechaHora);
             const horaStr = dateObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const sinHora = esSinHora(p);
+            const fechaCorta = dateObj.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '');
 
             let posLocal = '', posVis = '';
             if (Array.isArray(clasif)) {
@@ -1528,6 +1547,7 @@
                 escVis = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
             }
 
+            const descansa = !p.EquipoLocal || !p.EquipoVisitante;
             const estado = getEstadoPartido(p);
             const aplazado = estado === 'aplazado';
             const aviso = (userSettings.showChangeAlerts !== false) ? avisosAgenda[`${eq.id}|${claveCambio(p)}`] : null;
@@ -1550,7 +1570,8 @@
             if (aplazado) badges.push(`<span class="mc-badge mc-b-aplazado"><i class="fas fa-ban"></i>Aplazado</span>`);
             if (aviso) badges.push(`<span class="mc-badge mc-b-cambio"><i class="fas fa-exclamation-triangle"></i>${textoCambio(aviso)}</span>`);
 
-            const equipo = (nombre, esc, fav, pos) => `
+            const equipo = (nombre, esc, fav, pos) => !nombre ? `
+                <div class="mc-team"><div class="esc" style="display:flex;align-items:center;justify-content:center;background:#EEF1F3"><i class="fas fa-bed" style="color:#3F4B54"></i></div><div class="nom" style="color:var(--text-sec)">DESCANSA</div></div>` : `
                 <div class="mc-team ${fav ? 'fav' : ''}">
                     <div class="esc"><img src="${escHtml(esc)}" alt="" style="object-fit:${(esCanal || esc.startsWith('data:')) ? 'cover' : 'contain'}"></div>
                     <div class="nom">${escHtml(acortarNombre(nombre))}</div>
@@ -1563,7 +1584,10 @@
                     <div class="mc-hijo" style="--c:${colorHijo(eq.nombre)}"><img src="${escHtml(eq.escudoFavorito || '/static/logo.png')}" alt=""><span>${escHtml(eq.nombre)}</span></div>
                     <span class="mc-ico" title="${NOMBRES_DEPORTE[eq.idDeporte] || ''}">${getDeporteIcon(eq.idDeporte).replace('text-white text-xl', '')}</span>
                     <span class="mc-ico" title="${esPartidoEnCasa ? 'En casa' : 'Fuera'}"><i class="fas ${esPartidoEnCasa ? 'fa-home' : 'fa-plane'}"></i></span>
-                    <div class="mc-hora ${aplazado ? 'tachada' : ''}">${horaStr}</div>
+                    <div class="mc-cuando">
+                        <div class="mc-fecha">${escHtml(fechaCorta)}</div>
+                        ${sinHora ? '<span class="mc-sinhora">Hora por confirmar</span>' : `<div class="mc-hora ${aplazado ? 'tachada' : ''}">${horaStr}</div>`}
+                    </div>
                 </div>
                 <div class="mc-body">
                     <div class="mc-teams">
@@ -1572,6 +1596,7 @@
                     </div>
                     <div class="mc-side" id="side-agenda-${index}">${badges.join('')}</div>
                 </div>
+                ${descansa ? '' : `<div class="mc-dir"><i class="fas fa-map-marker-alt"></i><span>${escHtml(nombreCampoCorto(p, esCanal, dirCompleta))}</span></div>
                 ${filaRuta}
                 <div class="mc-foot">
                     ${campo}
@@ -1581,7 +1606,7 @@
                         <button type="button" class="mc-btn ruta" onclick="event.stopPropagation(); abrirModalMapa(${dirJs})" title="Abrir ruta" aria-label="Abrir ruta"><i class="fas fa-location-arrow"></i></button>
                         <button type="button" class="mc-btn" onclick="event.stopPropagation(); copiarDireccion(${dirJs}, this)" title="Copiar dirección" aria-label="Copiar dirección"><i class="fas fa-copy"></i></button>
                     </div>
-                </div>
+                </div>`}
             </article>`;
         }
 
@@ -1813,7 +1838,8 @@
             const valida = fechaObj && !isNaN(fechaObj);
             const ahora = new Date();
             const pasado = valida && fechaObj < new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
-            const hora = valida ? fechaObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false }) : '--:--';
+            const sinHora = valida && esSinHora(p);
+            const hora = valida ? (sinHora ? 'Por confirmar' : fechaObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false })) : '--:--';
             const fechaLarga = valida ? (() => { const t = fechaObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); return t.charAt(0).toUpperCase() + t.slice(1); })() : 'Fecha por confirmar';
             const dir = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
             const dirJs = escHtml(JSON.stringify(dir));
@@ -1833,7 +1859,7 @@
             } else if (pasado) {
                 centro = `<div class="fi-hora" style="color:var(--text-sec)">${hora}</div><span class="fi-etq" style="background:#EEF1F3;color:#3F4B54">Sin resultado</span>`;
             } else {
-                centro = `<div class="fi-hora">${hora}</div><div class="fi-sub">${valida ? fechaObj.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : ''}</div>`;
+                centro = `<div class="fi-hora" style="${sinHora ? 'font-size:16px;color:var(--amber-fg)' : ''}">${hora}</div><div class="fi-sub">${valida ? fechaObj.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : ''}</div>`;
             }
 
             const campoTxt = esCanal ? escHtml(p.Campo || 'Campo') : escHtml((p.CampoJuego?.Nombre || p.Campo || 'Campo por confirmar'));
@@ -1848,7 +1874,7 @@
             const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
             const fechaCorta = valida ? `${String(fechaObj.getDate()).padStart(2, '0')}/${String(fechaObj.getMonth() + 1).padStart(2, '0')}/${fechaObj.getFullYear()}` : '';
             const textoWa = `${eq.nombre} tiene partido el ${fechaCorta} a las ${hora}h contra ${rival} en ${dir}.`;
-            const futuro = valida && !pasado && estado !== 'jugado' && estado !== 'aplazado';
+            const futuro = valida && !sinHora && !pasado && estado !== 'jugado' && estado !== 'aplazado';
             const urlGrupo = getGrupoEquipo(eq);
             const idx = equipos.indexOf(eq);
 
@@ -1971,6 +1997,11 @@
                 
                 promesas.push(
                     (async () => {
+                        if (esSinHora(p)) {
+                            const elR = document.getElementById(`ruta-agenda-${i}`);
+                            if (elR) elR.innerHTML = '<span class="text-gray-500 text-[12px]">Salida cuando haya hora</span>';
+                            return;
+                        }
                         let lat = p.CampoJuego?.Latitud || p.Latitud;
                         let lon = p.CampoJuego?.Longitud || p.Longitud;
 
