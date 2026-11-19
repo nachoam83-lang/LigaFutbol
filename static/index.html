@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.00                                           -->
+    <!--  Versión actual: v1.04.01                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -79,7 +79,7 @@
         .mc-team.fav .nom { color: var(--gold-text); }
         .mc-team .pos { margin-left: auto; font-size: 11px; font-weight: 800; color: #3F4B54; background: #EEF1F3; border-radius: 6px; padding: 1px 6px; flex: 0 0 auto; }
         .mc-side { width: 104px; flex: 0 0 104px; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
-        .mc-badge { height: 24px; border-radius: 6px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 4px; padding: 0 7px; white-space: nowrap; overflow: hidden; }
+        .mc-badge { height: 22px; border-radius: 6px; font-size: 11px; font-weight: 800; display: flex; align-items: center; gap: 4px; padding: 0 7px; white-space: nowrap; overflow: hidden; }
         .mc-b-cambio { background: var(--amber-bg); color: var(--amber-fg); }
         .mc-b-lluvia { background: var(--rain-bg); color: var(--rain-fg); }
         .mc-b-aplazado { background: var(--red-bg); color: var(--red-fg); }
@@ -1152,7 +1152,7 @@
 
             const est = String(p.EstadoPartido || '').toLowerCase().trim();
 
-            if (/aplaz|suspend|cancel|anulad|retirad|no celebra|no disp|no se jug/.test(est)) return 'aplazado';
+            if (/aplaz|suspend|cancel|anulad|retirad|desprogram|no celebra|no disp|no se jug/.test(est)) return 'aplazado';
             if (/jugad|finaliz|cerrad|disputad|celebrad|acab|conclu|termin/.test(est)) return 'jugado';
             if (/pendiente|por jugar|programad|previst/.test(est)) return 'pendiente';
 
@@ -1663,6 +1663,32 @@
             }
         }
 
+        // <clima>
+        function describirClima(code) {
+            if (code === 0) return { i: 'fa-sun', col: '#CA8A04', t: 'Despejado' };
+            if (code === 1 || code === 2) return { i: 'fa-cloud-sun', col: '#B45309', t: 'Poco nuboso' };
+            if (code === 3) return { i: 'fa-cloud', col: '#6B7280', t: 'Nublado' };
+            if (code >= 45 && code <= 48) return { i: 'fa-smog', col: '#6B7280', t: 'Niebla' };
+            if (code >= 51 && code <= 67) return { i: 'fa-cloud-rain', col: '#1D4E89', t: 'Lluvia' };
+            if (code >= 71 && code <= 77) return { i: 'fa-snowflake', col: '#3B82F6', t: 'Nieve' };
+            if (code >= 80 && code <= 82) return { i: 'fa-cloud-showers-heavy', col: '#1D4E89', t: 'Chubascos' };
+            if (code >= 95) return { i: 'fa-cloud-bolt', col: '#B45309', t: 'Tormenta' };
+            return null;
+        }
+        function umbralLluvia() { const u = parseInt(userSettings.rainThreshold); return (!isNaN(u) && u >= 0 && u <= 100) ? u : 40; }
+        function pintarClima(i, p, d) {
+            const info = describirClima(d.c);
+            if (!info) return;
+            const el = document.getElementById(`clima-agenda-${i}`);
+            const temp = (typeof d.t === 'number') ? `${Math.round(d.t)}°` : '';
+            if (el) { el.title = `${info.t}${temp ? ', ' + temp : ''}`; el.innerHTML = `<i class="fas ${info.i}" style="color:${info.col}"></i>${temp ? `<span>${temp}</span>` : ''}`; }
+            const side = document.getElementById(`side-agenda-${i}`);
+            if (side && typeof d.pp === 'number' && d.pp >= umbralLluvia() && esCampoExterior(p) && !side.querySelector('.mc-b-lluvia')) {
+                side.insertAdjacentHTML('beforeend', `<span class="mc-badge mc-b-lluvia" title="Probabilidad de lluvia en campo exterior"><i class="fas fa-cloud-rain"></i>Lluvia ${Math.round(d.pp)}%</span>`);
+            }
+        }
+        // </clima>
+
         async function cargarClimaYRutas() {
             if (!window._partidosAgenda) return;
             const partidos = window._partidosAgenda;
@@ -1699,44 +1725,35 @@
                         }
 
                         if (lat && lon) {
-                            const cacheKeyClima = lat + '_' + lon + '_' + p.FechaHora;
-                            if (cacheClima[cacheKeyClima]) {
-                                const el = document.getElementById(`clima-agenda-${i}`);
-                                if (el) el.innerHTML = `<i class="fas ${cacheClima[cacheKeyClima]}"></i>`;
+                            const cacheKeyClima = 'v2_' + lat + '_' + lon + '_' + p.FechaHora;
+                            const previo = cacheClima[cacheKeyClima];
+                            if (previo && typeof previo === 'object' && (Date.now() - previo.ts) < 3 * 3600 * 1000) {
+                                pintarClima(i, p, previo);
                             } else {
                                 try {
-                                    const fechaPartido = new Date(p.FechaHora);
-                                    const hoy = new Date();
-                                    const diffDias = (fechaPartido - hoy) / (1000 * 60 * 60 * 24);
-                                    
+                                    const diffDias = (new Date(p.FechaHora) - new Date()) / (1000 * 60 * 60 * 24);
                                     if (diffDias > 15 || diffDias < -1) throw new Error();
-
                                     const fecha = p.FechaHora.split('T')[0];
-                                    const resClima = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code&start_date=${fecha}&end_date=${fecha}`);
+                                    const resClima = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code,temperature_2m,precipitation_probability&timezone=Europe%2FMadrid&start_date=${fecha}&end_date=${fecha}`);
                                     const climaData = await resClima.json();
-                                    
                                     const horaObj = p.FechaHora.split('T')[1];
                                     const horaStr = horaObj ? horaObj.substring(0, 2) + ":00" : "12:00";
-                                    const idx = climaData.hourly.time.findIndex(t => t.endsWith(horaStr));
-                                    const code = idx !== -1 ? climaData.hourly.weather_code[idx] : climaData.hourly.weather_code[12];
-
-                                    let icono = '';
-                                    if (code === 0) icono = 'fa-sun text-yellow-500';
-                                    else if (code === 1 || code === 2) icono = 'fa-cloud-sun text-yellow-600';
-                                    else if (code === 3) icono = 'fa-cloud text-gray-400';
-                                    else if (code >= 45 && code <= 48) icono = 'fa-smog text-gray-500';
-                                    else if (code >= 51 && code <= 67) icono = 'fa-cloud-rain text-blue-500';
-                                    else if (code >= 71 && code <= 77) icono = 'fa-snowflake text-blue-300';
-                                    else if (code >= 80 && code <= 82) icono = 'fa-cloud-showers-heavy text-blue-600';
-                                    else if (code >= 95) icono = 'fa-cloud-bolt text-yellow-500';
-
-                                    if (icono) {
-                                        cacheClima[cacheKeyClima] = icono;
-                                        localStorage.setItem('cache_clima', JSON.stringify(cacheClima));
-                                        const el = document.getElementById(`clima-agenda-${i}`);
-                                        if (el) el.innerHTML = `<i class="fas ${icono}"></i>`;
+                                    let idx = climaData.hourly.time.findIndex(t => t.endsWith(horaStr));
+                                    if (idx === -1) idx = 12;
+                                    const datos = {
+                                        c: climaData.hourly.weather_code[idx],
+                                        t: climaData.hourly.temperature_2m ? climaData.hourly.temperature_2m[idx] : null,
+                                        pp: climaData.hourly.precipitation_probability ? climaData.hourly.precipitation_probability[idx] : null,
+                                        ts: Date.now()
+                                    };
+                                    if (datos.c !== undefined && datos.c !== null) {
+                                        cacheClima[cacheKeyClima] = datos;
+                                        try { localStorage.setItem('cache_clima', JSON.stringify(cacheClima)); } catch {}
+                                        pintarClima(i, p, datos);
                                     }
-                                } catch(e) {}
+                                } catch(e) {
+                                    if (previo && typeof previo === 'object') pintarClima(i, p, previo);
+                                }
                             }
 
                             if (userSettings.showRoute === true && userSettings.homeLat && userSettings.homeLon) {
