@@ -3,7 +3,7 @@ name: Extracción Automática de Datos
 on:
   schedule:
     # Se ejecuta cada 3 horas
-    - cron: '0 */3 * * *'
+    - cron: '*/15 * * * *'
   workflow_dispatch: # <--- BOTÓN PARA LANZARLO A MANO
 
 jobs:
