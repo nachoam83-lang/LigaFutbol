@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.02                                           -->
+    <!--  Versión actual: v1.04.03                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -93,6 +93,32 @@
         .mc-btn.wa { background: #25D366; color: #fff; font-size: 18px; }
         .ag-vacio { text-align: center; color: var(--text-sec); margin-top: 48px; padding: 0 16px; }
         .ag-vacio button { margin-top: 14px; min-height: 40px; padding: 0 18px; border-radius: 10px; background: var(--primary-color); color: #fff; font-weight: 800; font-size: 13px; }
+        /* ficha de partido */
+        #modal-ficha { position: fixed; inset: 0; z-index: 75; display: flex; align-items: flex-end; justify-content: center; background: rgba(20,32,43,.55); }
+        #modal-ficha .fi-hoja { width: 100%; max-width: 448px; max-height: 92vh; overflow-y: auto; background: var(--bg-color); border-radius: 20px 20px 0 0; padding-bottom: 20px; }
+        .fi-cab { position: sticky; top: 0; background: var(--bg-color); display: flex; align-items: center; gap: 8px; padding: 14px 16px 10px; z-index: 2; border-bottom: 1px solid var(--line); }
+        .fi-cab h2 { font-size: 15px; font-weight: 800; flex: 1; min-width: 0; }
+        .fi-x { width: 40px; height: 40px; border-radius: 10px; background: #E4E8EB; color: #26343F; font-size: 16px; }
+        .fi-panel { background: #fff; border: 1px solid var(--line); border-radius: 14px; margin: 12px 16px 0; padding: 14px; }
+        .fi-equipos { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; text-align: center; }
+        .fi-esc { width: 56px; height: 56px; border-radius: 50%; background: #fff; border: 1px solid var(--line); overflow: hidden; margin: 0 auto 6px; }
+        .fi-esc img { width: 100%; height: 100%; }
+        .fi-nom { font-size: 13px; font-weight: 800; line-height: 1.15; }
+        .fi-nom.fav { color: var(--gold-text); }
+        .fi-centro { min-width: 76px; }
+        .fi-marcador { font-size: 32px; font-weight: 900; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+        .fi-hora { font-size: 28px; font-weight: 900; font-variant-numeric: tabular-nums; }
+        .fi-sub { font-size: 12px; font-weight: 700; color: var(--text-sec); }
+        .fi-etq { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 800; border-radius: 6px; padding: 2px 8px; }
+        .fi-fila { display: flex; gap: 10px; align-items: flex-start; padding: 10px 0; border-top: 1px solid var(--line); font-size: 14px; }
+        .fi-fila:first-child { border-top: 0; padding-top: 0; }
+        .fi-fila > i { width: 22px; text-align: center; color: var(--primary-color); margin-top: 2px; }
+        .fi-fila b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; color: var(--text-sec); }
+        .fi-aviso { background: var(--amber-bg); color: var(--amber-fg); border-radius: 12px; margin: 12px 16px 0; padding: 12px 14px; font-size: 13px; font-weight: 700; }
+        .fi-acc { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 16px 0; }
+        .fi-acc a, .fi-acc button { min-height: 44px; border-radius: 12px; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; background: #fff; border: 1px solid var(--line); color: var(--text-main); }
+        .fi-acc .prim { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
+        .fi-acc .wa { background: #25D366; color: #fff; border-color: #25D366; }
         /* </agenda-ui> */
 
         .card-favorito { background-color: rgba(0, 109, 111, 0.15) !important; border-color: rgba(0, 109, 111, 0.5) !important; }
@@ -254,6 +280,11 @@
         <div class="loader-juego mb-6"><div class="escudo-wrapper"><img id="carga-escudo" src="/static/logo.png" alt="Escudo"></div></div>
         <h2 id="carga-texto" class="text-2xl font-black mb-2 tracking-wider">CARGANDO AGENDA</h2>
         <p class="text-sm text-white/70">Obteniendo partidos y clasificaciones...</p>
+    </div>
+
+    <!-- FICHA DE PARTIDO -->
+    <div id="modal-ficha" class="hide" role="dialog" aria-modal="true" aria-label="Ficha del partido" onclick="if (event.target === this) cerrarFicha()">
+        <div class="fi-hoja" id="ficha-contenido"></div>
     </div>
 
     <!-- PANTALLA PRINCIPAL (AGENDA) -->
@@ -1527,7 +1558,7 @@
                 </div>`;
 
             return `
-            <article class="mcard ${aplazado ? 'atenuado' : ''}" style="--sport:${colorDeporte}" onclick="abrirEquipo(${equipos.indexOf(eq)})">
+            <article class="mcard ${aplazado ? 'atenuado' : ''}" style="--sport:${colorDeporte}" data-ficha="${escHtml(registrarFicha(p, eq))}">
                 <div class="mc-top">
                     <div class="mc-hijo" style="--c:${colorHijo(eq.nombre)}"><img src="${escHtml(eq.escudoFavorito || '/static/logo.png')}" alt=""><span>${escHtml(eq.nombre)}</span></div>
                     <span class="mc-ico" title="${NOMBRES_DEPORTE[eq.idDeporte] || ''}">${getDeporteIcon(eq.idDeporte).replace('text-white text-xl', '')}</span>
@@ -1723,6 +1754,167 @@
                 }
             }
         }
+
+        // <ficha>
+        const _fichas = {};
+        function claveFicha(p, eq) { return `${eq.id}|${getMatchId(p)}`; }
+        function registrarFicha(p, eq) { const k = claveFicha(p, eq); _fichas[k] = { p, eq }; return k; }
+
+        document.addEventListener('click', e => {
+            const tarjeta = e.target.closest && e.target.closest('[data-ficha]');
+            if (!tarjeta) return;
+            const interno = e.target.closest('a, button, [onclick]');
+            if (interno && tarjeta.contains(interno)) return;
+            abrirFicha(tarjeta.getAttribute('data-ficha'));
+        });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('modal-ficha').classList.contains('hide')) cerrarFicha(); });
+
+        function cerrarFicha() {
+            document.getElementById('modal-ficha').classList.add('hide');
+            document.body.style.overflow = '';
+        }
+
+        function coordsPartido(p, eq, dir) {
+            if (eq.idDeporte === '4' || dir.includes('El Parque Santander')) return { lat: 40.44372331454751, lon: -3.706714444750114 };
+            const lat = p.CampoJuego?.Latitud || p.Latitud, lon = p.CampoJuego?.Longitud || p.Longitud;
+            if (lat && lon) return { lat, lon };
+            return cacheGeo[dir] || null;
+        }
+
+        async function obtenerClima(lat, lon, fechaHora) {
+            const clave = 'v2_' + lat + '_' + lon + '_' + fechaHora;
+            const previo = cacheClima[clave];
+            if (previo && typeof previo === 'object' && (Date.now() - previo.ts) < 3 * 3600 * 1000) return previo;
+            const diff = (new Date(fechaHora) - new Date()) / 86400000;
+            if (diff > 15 || diff < -1) return null;
+            try {
+                const fecha = fechaHora.split('T')[0];
+                const res = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code,temperature_2m,precipitation_probability&timezone=Europe%2FMadrid&start_date=${fecha}&end_date=${fecha}`);
+                const j = await res.json();
+                const hh = (fechaHora.split('T')[1] || '12:00').substring(0, 2) + ':00';
+                let idx = j.hourly.time.findIndex(t => t.endsWith(hh)); if (idx === -1) idx = 12;
+                const d = { c: j.hourly.weather_code[idx], t: j.hourly.temperature_2m ? j.hourly.temperature_2m[idx] : null, pp: j.hourly.precipitation_probability ? j.hourly.precipitation_probability[idx] : null, ts: Date.now() };
+                if (d.c === undefined || d.c === null) return null;
+                cacheClima[clave] = d; try { localStorage.setItem('cache_clima', JSON.stringify(cacheClima)); } catch {}
+                return d;
+            } catch { return previo && typeof previo === 'object' ? previo : null; }
+        }
+
+        function abrirFicha(clave) {
+            const f = _fichas[clave];
+            if (!f) return;
+            const { p, eq } = f;
+            const esCanal = eq.idDeporte === '4';
+            const esLocalFav = p.EquipoLocal === eq.equipoFavorito, esVisFav = p.EquipoVisitante === eq.equipoFavorito;
+            const esFavorito = esLocalFav || esVisFav;
+            const enCasa = esLocalFav || esCanal;
+            const estado = getEstadoPartido(p);
+            const fechaObj = p.FechaHora ? new Date(p.FechaHora) : null;
+            const valida = fechaObj && !isNaN(fechaObj);
+            const ahora = new Date();
+            const pasado = valida && fechaObj < new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+            const hora = valida ? fechaObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false }) : '--:--';
+            const fechaLarga = valida ? (() => { const t = fechaObj.toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }); return t.charAt(0).toUpperCase() + t.slice(1); })() : 'Fecha por confirmar';
+            const dir = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
+            const dirJs = escHtml(JSON.stringify(dir));
+
+            let escL = p.URLEscudoEquipoLocal || '/static/logo.png', escV = p.URLEscudoEquipoVisitante || '/static/logo.png';
+            if (esCanal) { escL = esLocalFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png'; escV = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png'; }
+            const imgEsc = (u) => `<div class="fi-esc"><img src="${escHtml(u)}" alt="" style="object-fit:${(esCanal || u.startsWith('data:')) ? 'cover' : 'contain'}"></div>`;
+
+            const avisos = (userSettings.showChangeAlerts !== false) ? avisosActivos() : {};
+            const aviso = esFavorito ? avisos[`${eq.id}|${claveCambio(p)}`] : null;
+
+            let centro;
+            if (estado === 'jugado') {
+                centro = `<div class="fi-marcador">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</div><span class="fi-etq" style="background:var(--green-bg);color:var(--green-fg)">Finalizado</span><div class="fi-sub">${valida ? fechaObj.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : ''}</div>`;
+            } else if (estado === 'aplazado') {
+                centro = `<div class="fi-hora" style="text-decoration:line-through;color:var(--text-sec)">${hora}</div><span class="fi-etq" style="background:var(--red-bg);color:var(--red-fg)">Aplazado</span>`;
+            } else if (pasado) {
+                centro = `<div class="fi-hora" style="color:var(--text-sec)">${hora}</div><span class="fi-etq" style="background:#EEF1F3;color:#3F4B54">Sin resultado</span>`;
+            } else {
+                centro = `<div class="fi-hora">${hora}</div><div class="fi-sub">${valida ? fechaObj.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : ''}</div>`;
+            }
+
+            const campoTxt = esCanal ? escHtml(p.Campo || 'Campo') : escHtml((p.CampoJuego?.Nombre || p.Campo || 'Campo por confirmar'));
+            const tipo = esCanal ? '' : (esCampoExterior(p) ? '<span class="fi-etq" style="background:#FFEDD5;color:#9A3412;margin:0 0 0 6px">Exterior</span>' : '<span class="fi-etq" style="background:#DBEAFE;color:#1E40AF;margin:0 0 0 6px">Pabellón</span>');
+
+            const lineasAviso = [];
+            if (aviso) {
+                if (aviso.antes.f !== aviso.ahora.f) lineasAviso.push(`Hora: ${escHtml(fechaCambio(aviso.antes.f))} → <b>${escHtml(fechaCambio(aviso.ahora.f))}</b>`);
+                if (aviso.antes.c !== aviso.ahora.c) lineasAviso.push(`Campo: ${escHtml(campoCorto(aviso.antes.c))} → <b>${escHtml(campoCorto(aviso.ahora.c))}</b>`);
+            }
+
+            const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
+            const fechaCorta = valida ? `${String(fechaObj.getDate()).padStart(2, '0')}/${String(fechaObj.getMonth() + 1).padStart(2, '0')}/${fechaObj.getFullYear()}` : '';
+            const textoWa = `${eq.nombre} tiene partido el ${fechaCorta} a las ${hora}h contra ${rival} en ${dir}.`;
+            const futuro = valida && !pasado && estado !== 'jugado' && estado !== 'aplazado';
+            const urlGrupo = getGrupoEquipo(eq);
+            const idx = equipos.indexOf(eq);
+
+            const filas = [];
+            filas.push(`<div class="fi-fila"><i class="far fa-calendar-alt"></i><div><b>Fecha</b>${escHtml(fechaLarga)}</div></div>`);
+            filas.push(`<div class="fi-fila"><i class="fas fa-map-marker-alt"></i><div><b>Campo</b>${campoTxt}${tipo}<div class="fi-sub" style="margin-top:2px">${escHtml(dir)}</div></div></div>`);
+            if (futuro) {
+                filas.push(`<div class="fi-fila" id="fi-clima-fila" style="display:none"><i class="fas fa-cloud-sun"></i><div><b>Tiempo previsto</b><span id="fi-clima-txt"></span></div></div>`);
+                if (userSettings.showRoute === true) filas.push(`<div class="fi-fila" id="fi-salida-fila" style="display:none"><i class="fas ${enCasa ? 'fa-walking' : (userSettings.transportModeAway === 'transit' ? 'fa-bus' : 'fa-car')}"></i><div><b>Cuándo salir</b><span id="fi-salida-txt"></span></div></div>`);
+                else filas.push(`<div class="fi-fila"><i class="fas fa-route"></i><div><b>Cuándo salir</b><span class="fi-sub">Activa "Tiempo de Viaje" en Ajustes para ver la hora de salida.</span></div></div>`);
+            }
+
+            document.getElementById('ficha-contenido').innerHTML = `
+                <div class="fi-cab">
+                    <h2>${p.NumeroJornada ? `Jornada ${escHtml(p.NumeroJornada)} · ` : ''}${escHtml(eq.nombreCompeticion || NOMBRES_DEPORTE[eq.idDeporte] || 'Partido')}</h2>
+                    <button type="button" class="fi-x" onclick="cerrarFicha()" aria-label="Cerrar ficha"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="fi-panel">
+                    <div style="display:flex;gap:6px;align-items:center;margin-bottom:12px">
+                        <div class="mc-hijo" style="--c:${colorHijo(eq.nombre)}"><img src="${escHtml(eq.escudoFavorito || '/static/logo.png')}" alt=""><span>${escHtml(eq.nombre)}</span></div>
+                        <span class="mc-ico">${getDeporteIcon(eq.idDeporte).replace('text-white text-xl', '')}</span>
+                        <span class="mc-ico" title="${enCasa ? 'En casa' : 'Fuera'}"><i class="fas ${enCasa ? 'fa-home' : 'fa-plane'}"></i></span>
+                    </div>
+                    <div class="fi-equipos">
+                        <div>${imgEsc(escL)}<div class="fi-nom ${esLocalFav ? 'fav' : ''}">${escHtml(acortarNombre(p.EquipoLocal))}</div></div>
+                        <div class="fi-centro">${centro}</div>
+                        <div>${imgEsc(escV)}<div class="fi-nom ${esVisFav ? 'fav' : ''}">${escHtml(acortarNombre(p.EquipoVisitante))}</div></div>
+                    </div>
+                </div>
+                ${lineasAviso.length ? `<div class="fi-aviso"><i class="fas fa-exclamation-triangle"></i> Cambio en este partido<div style="font-weight:600;margin-top:4px">${lineasAviso.join('<br>')}</div></div>` : ''}
+                <div class="fi-panel">${filas.join('')}</div>
+                <div class="fi-acc">
+                    <button type="button" class="prim" onclick="abrirModalMapa(${dirJs})"><i class="fas fa-location-arrow"></i> Abrir ruta</button>
+                    <button type="button" onclick="copiarDireccion(${dirJs}, this.querySelector('i'))"><i class="fas fa-copy"></i> Copiar dirección</button>
+                    ${futuro && esFavorito ? `<a href="${escHtml(urlIcs(p, eq, dir, `Partido: ${eq.equipoFavorito} vs ${rival}`))}"><i class="far fa-calendar-plus"></i> Al calendario</a>` : ''}
+                    ${futuro && esFavorito ? `<a href="https://wa.me/?text=${encodeURIComponent(textoWa)}" target="_blank" rel="noopener" class="wa"><i class="fab fa-whatsapp"></i> Compartir</a>` : ''}
+                    ${urlGrupo ? `<a href="${escHtml(urlGrupo)}" target="_blank" rel="noopener" class="wa"><i class="fab fa-whatsapp"></i> Grupo del equipo</a>` : ''}
+                    <button type="button" onclick="cerrarFicha(); abrirEquipo(${idx})"><i class="fas fa-users"></i> Ver equipo</button>
+                </div>`;
+
+            const modal = document.getElementById('modal-ficha');
+            modal.classList.remove('hide');
+            document.body.style.overflow = 'hidden';
+            modal.querySelector('.fi-hoja').scrollTop = 0;
+
+            if (futuro) {
+                const viaje = viajePartido[`${eq.id}|${claveCambio(p)}`];
+                if (userSettings.showRoute === true && Number.isFinite(viaje)) {
+                    const sal = new Date(fechaObj); sal.setMinutes(sal.getMinutes() - (esCanal ? 2 : margenLlegada()) - viaje);
+                    const modo = enCasa ? 'a pie' : (userSettings.transportModeAway === 'transit' ? 'en bus' : 'en coche');
+                    document.getElementById('fi-salida-txt').innerHTML = `<b style="font-size:16px;text-transform:none;letter-spacing:0;color:var(--text-main);display:inline">Sal a las ${String(sal.getHours()).padStart(2, '0')}:${String(sal.getMinutes()).padStart(2, '0')}</b> <span class="fi-sub">· ${viaje} min ${modo}</span>`;
+                    document.getElementById('fi-salida-fila').style.display = 'flex';
+                }
+                const c = coordsPartido(p, eq, dir);
+                if (c) obtenerClima(c.lat, c.lon, p.FechaHora).then(d => {
+                    const info = d && describirClima(d.c);
+                    const el = document.getElementById('fi-clima-txt');
+                    if (!info || !el || modal.classList.contains('hide')) return;
+                    const temp = typeof d.t === 'number' ? `${Math.round(d.t)}°` : '';
+                    const lluvia = (typeof d.pp === 'number') ? ` · ${Math.round(d.pp)}% de lluvia` : '';
+                    el.innerHTML = `<i class="fas ${info.i}" style="color:${info.col};margin-right:6px"></i><span style="font-weight:700">${info.t}${temp ? ', ' + temp : ''}</span><span class="fi-sub">${lluvia}</span>`;
+                    document.getElementById('fi-clima-fila').style.display = 'flex';
+                });
+            }
+        }
+        // </ficha>
 
         // <clima>
         let viajePartido = {};
@@ -2637,7 +2829,7 @@
             const opacidadFecha = atenuarJugado ? 'opacity-60' : '';
 
             return `
-                <div class="${claseTarjeta}">
+                <div class="${claseTarjeta} cursor-pointer" data-ficha="${escHtml(registrarFicha(p, equipoActual))}">
                     <div class="flex justify-between items-center mb-2">
                         <div class="font-extrabold text-[13px] uppercase ${opacidadFecha}" style="color: var(--primary-color);">${textoFecha}</div>
                         ${htmlCampo}
