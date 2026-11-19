@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from datetime import datetime, timedelta, timezone
-from functools import lru_cache
 from pydantic import BaseModel
 import json
 import os
@@ -12,6 +11,8 @@ import urllib.request
 import urllib.error
 import urllib.parse
 import threading
+import time
+import gzip
 import html
 import hashlib
 import re
@@ -318,35 +319,148 @@ def ping():
 def read_index():
     return FileResponse("static/index.html")
 
-@lru_cache(maxsize=1)
-def _leer_json_liga():
-    if not os.path.exists("datos_liga.json"): return None
-    with open("datos_liga.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+# ─── CARGA DE DATOS: GitHub (raw) con respaldo local ───
+# Los JSON de datos se leen de GitHub, así que actualizarlos NO requiere redesplegar en Render
+# (se pueden ignorar en Render > Settings > Build & Deploy > Build Filters).
+# Orden de preferencia: GitHub (main) -> última copia buena en memoria -> GitHub (backup)
+#                       -> archivo local (main) -> archivo local (backup).
+# Variables de entorno opcionales en Render:
+#   DATOS_DESDE_GITHUB=0        desactiva GitHub y usa solo los archivos locales (marcha atrás sin tocar código)
+#   DATOS_TTL_SEGUNDOS=300      cada cuánto se comprueba si hay datos nuevos (por defecto 5 min)
+RAW_BASE = f"https://raw.githubusercontent.com/{GITHUB_REPO}/{GITHUB_BRANCH}/"
+DATOS_DESDE_GITHUB = os.getenv("DATOS_DESDE_GITHUB", "1") != "0"
+try:
+    DATOS_TTL = max(30, int(os.getenv("DATOS_TTL_SEGUNDOS", "300")))
+except ValueError:
+    DATOS_TTL = 300
+DATOS_REINTENTO = 60              # tras un fallo de red, no se vuelve a intentar hasta pasados estos segundos
+DATOS_TIMEOUT = 10                # segundos de espera máxima por operación de red
+DATOS_MAX_BYTES = 80 * 1024 * 1024
+_SIN_CAMBIOS = object()
 
-@lru_cache(maxsize=1)
-def _leer_json_canal():
-    if not os.path.exists("datos_canal.json"): return {"equipos": {}, "partidos": [], "clasificacion": {}}
-    with open("datos_canal.json", "r", encoding="utf-8") as f:
-        return json.load(f)
+def _descargar_json(archivo, etag=None):
+    """Descarga un JSON de GitHub raw. Devuelve (datos, etag) o _SIN_CAMBIOS si el servidor responde 304."""
+    token = os.getenv("GITHUB_TOKEN")
+    for con_token in ((False, True) if token else (False,)):
+        cabeceras = {"User-Agent": "LigaFutbol-App", "Accept-Encoding": "gzip", "Cache-Control": "no-cache"}
+        if etag: cabeceras["If-None-Match"] = etag
+        if con_token: cabeceras["Authorization"] = f"token {token}"     # solo si el repo pasa a ser privado
+        req = urllib.request.Request(RAW_BASE + archivo, headers=cabeceras)
+        try:
+            with urllib.request.urlopen(req, timeout=DATOS_TIMEOUT) as resp:
+                crudo = resp.read(DATOS_MAX_BYTES + 1)
+                if len(crudo) > DATOS_MAX_BYTES: raise ValueError("archivo demasiado grande")
+                if (resp.headers.get("Content-Encoding") or "").lower() == "gzip":
+                    crudo = gzip.decompress(crudo)
+                return json.loads(crudo), resp.headers.get("ETag")
+        except urllib.error.HTTPError as e:
+            if e.code == 304: return _SIN_CAMBIOS
+            if e.code in (401, 403, 404) and not con_token and token: continue
+            raise
+
+def _leer_json_local(archivo):
+    try:
+        if os.path.exists(archivo):
+            with open(archivo, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception as e:
+        print(f"⚠️ No se pudo leer {archivo}: {e}")
+    return None
+
+class _FuenteDatos:
+    def __init__(self, archivo, backup, valido, vacio):
+        self.archivo, self.backup, self.valido, self.vacio = archivo, backup, valido, vacio
+        self.datos = None
+        self.origen = "ninguno"
+        self.etag_visto = None          # ETag del último contenido recibido de GitHub (válido o no)
+        self.ts = 0.0                   # cuándo se comprobó por última vez
+        self.ultima_descarga = None
+        self.error = None
+        self.lock = threading.Lock()
+
+    def obtener(self):
+        ahora = time.time()
+        if self.datos is not None and ahora - self.ts < DATOS_TTL:
+            return self.datos
+        # Si otro hilo ya está refrescando y hay datos, se sirven los actuales sin esperar
+        if not self.lock.acquire(blocking=self.datos is None):
+            return self.datos
+        try:
+            if self.datos is not None and time.time() - self.ts < DATOS_TTL:
+                return self.datos
+            self._refrescar()
+            return self.datos
+        finally:
+            self.lock.release()
+
+    def _reintentar_pronto(self):
+        self.ts = time.time() - DATOS_TTL + DATOS_REINTENTO
+
+    def _refrescar(self):
+        if DATOS_DESDE_GITHUB:
+            try:
+                res = _descargar_json(self.archivo, self.etag_visto if self.datos is not None else None)
+                if res is _SIN_CAMBIOS:
+                    self.ts = time.time(); self.error = None
+                    return
+                datos, etag = res
+                self.etag_visto = etag
+                if self.valido(datos):
+                    self.datos, self.origen = datos, "github"
+                    self.ts = time.time(); self.ultima_descarga = self.ts; self.error = None
+                    return
+                self.error = f"{self.archivo} en GitHub no es válido (vacío o incompleto)"
+            except Exception as e:
+                self.error = f"{type(e).__name__}: {str(e)[:150]}"
+            print(f"⚠️ {self.error}")
+            if self.datos is not None and self.valido(self.datos):
+                self._reintentar_pronto()                      # se conserva la última copia buena
+                return
+            try:                                               # backup remoto (copia nocturna de GitHub)
+                res = _descargar_json(self.backup)
+                if res is not _SIN_CAMBIOS and self.valido(res[0]):
+                    self.datos, self.origen = res[0], "github-backup"
+                    self._reintentar_pronto()
+                    return
+            except Exception as e:
+                print(f"⚠️ Tampoco se pudo leer {self.backup} de GitHub: {type(e).__name__}")
+        # Respaldo local (los archivos que se desplegaron con la app)
+        datos = _leer_json_local(self.archivo)
+        if self.valido(datos):
+            self.datos, self.origen = datos, "local"
+        else:
+            print(f"⚠️ Usando backup local para {self.archivo}")
+            backup = _leer_json_local(self.backup)
+            if backup is not None:
+                self.datos, self.origen = backup, "local-backup"
+            else:
+                self.datos, self.origen = (datos if datos is not None else self.vacio), "ninguno"
+        if DATOS_DESDE_GITHUB: self._reintentar_pronto()
+        else: self.ts = time.time()
+
+    def estado(self):
+        fmt = lambda t: datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ") if t else None
+        return {"origen": self.origen, "etag": self.etag_visto, "ultima_descarga_ok": fmt(self.ultima_descarga),
+                "ultima_comprobacion": fmt(self.ts) if self.datos is not None else None, "error": self.error,
+                "tiene_datos": self.datos is not None and self.valido(self.datos)}
+
+_FUENTE_LIGA = _FuenteDatos("datos_liga.json", "datos_liga_backup.json",
+                            lambda d: isinstance(d, dict) and bool(d.get("competiciones")), None)
+_FUENTE_CANAL = _FuenteDatos("datos_canal.json", "datos_canal_backup.json",
+                             lambda d: isinstance(d, dict) and len(d.get("partidos", [])) > 0,
+                             {"equipos": {}, "partidos": [], "clasificacion": {}})
 
 def cargar_datos():
-    datos = _leer_json_liga()
-    if not datos or not datos.get("competiciones"):
-        print("⚠️ Usando backup para datos_liga.json")
-        if os.path.exists("datos_liga_backup.json"):
-            with open("datos_liga_backup.json", "r", encoding="utf-8") as f:
-                return json.load(f)
-    return datos
+    return _FUENTE_LIGA.obtener()
 
 def cargar_datos_canal():
-    datos = _leer_json_canal()
-    if not datos or len(datos.get("partidos", [])) == 0:
-        print("⚠️ Usando backup para datos_canal.json")
-        if os.path.exists("datos_canal_backup.json"):
-            with open("datos_canal_backup.json", "r", encoding="utf-8") as f:
-                return json.load(f)
-    return datos
+    return _FUENTE_CANAL.obtener()
+
+@app.get("/api/datos-estado")
+def get_datos_estado():
+    """De dónde salen ahora los datos (github / local / backup) y cuándo se comprobó por última vez."""
+    return {"desde_github": DATOS_DESDE_GITHUB, "ttl_segundos": DATOS_TTL,
+            "liga": _FUENTE_LIGA.estado(), "canal": _FUENTE_CANAL.estado()}
 
 def corregir_anio(fecha_str):
     if not fecha_str or len(fecha_str) < 7: return fecha_str
