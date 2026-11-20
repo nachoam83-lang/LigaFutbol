@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.08                                           -->
+    <!--  Versión actual: v1.04.09                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -89,6 +89,14 @@
         .mc-hijo { display: flex; align-items: center; gap: 6px; background: var(--c); color: #fff; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 2px 10px 2px 2px; min-width: 0; }
         .mc-hijo img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: #fff; flex: 0 0 auto; }
         .mc-hijo span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+.mc-comp { font-size: 11px; font-weight: 700; color: var(--text-sec); margin: 2px 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .ag-ir { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .ag-ir button { min-height: 40px; border-radius: 10px; background: #fff; border: 1.5px solid var(--line); font-size: 12px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .ag-ir button i { color: var(--primary-color); }
+        .ag-ir-cap { margin-top: 12px; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: var(--text-sec); }
+        .fi-ir { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 16px 0; }
+        .fi-ir button { min-height: 44px; border-radius: 12px; background: #fff; border: 1px solid var(--line); font-size: 12px; font-weight: 800; color: var(--text-main); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
+        .fi-ir button i { color: var(--primary-color); font-size: 15px; }
         .mc-ico { width: 28px; height: 28px; border-radius: 8px; background: #EEF1F3; color: #26343F; display: flex; align-items: center; justify-content: center; font-size: 14px; flex: 0 0 auto; }
         .mc-cuando { margin-left: auto; text-align: right; line-height: 1.05; }
         .mc-fecha { font-size: 12px; font-weight: 800; color: var(--text-sec); text-transform: capitalize; }
@@ -1467,7 +1475,7 @@
         // <agenda-ui>
         const COLORES_HIJO = ['#006D6F', '#8A3A6B', '#B45309', '#1D4ED8', '#4D7C0F', '#BE123C'];
         const NOMBRES_DEPORTE = { '1': 'Baloncesto', '2': 'Fútbol sala', '3': 'Voleibol', '4': 'Escuela Canal' };
-        const VISTAS_AGENDA = [['finde', 'Finde'], ['semana', 'Semana'], ['mes', 'Mes']];
+        const VISTAS_AGENDA = [['semana', 'Semana'], ['mes', 'Mes']];
         let vistaAgenda = (() => { try { const v = localStorage.getItem('vista_agenda'); return VISTAS_AGENDA.some(x => x[0] === v) ? v : 'semana'; } catch { return 'semana'; } })();
         let filtroHijo = '';
         let filtroDeporte = '';
@@ -1489,16 +1497,10 @@
             return COLORES_HIJO[(i < 0 ? 0 : i) % COLORES_HIJO.length];
         }
 
-        function rangoVista(v, ahora = new Date()) {
+        function rangoVista(v, ahora = new Date()) {  // 'semana' (7 días) o 'mes'
             const y = ahora.getFullYear(), m = ahora.getMonth(), d = ahora.getDate(), dow = ahora.getDay();
             const hoy = new Date(y, m, d);
             if (v === 'mes') return [hoy, new Date(y, m + 1, d)];
-            if (v === 'finde') {
-                if (dow === 6) return [hoy, new Date(y, m, d + 2)];
-                if (dow === 0) return [hoy, new Date(y, m, d + 1)];
-                const sab = new Date(y, m, d + (6 - dow));
-                return [sab, new Date(sab.getFullYear(), sab.getMonth(), sab.getDate() + 2)];
-            }
             return [hoy, new Date(y, m, d + 7)];
         }
 
@@ -1548,6 +1550,16 @@
                 const chips = [`<button type="button" class="ag-chip todos" aria-pressed="${filtroDeporte === ''}" onclick="cambiarFiltroDeporte('')">Todos</button>`];
                 deportes.forEach(d => chips.push(`<button type="button" class="ag-chip solo-texto" aria-pressed="${filtroDeporte === d}" onclick="cambiarFiltroDeporte('${d}')"><i class="fas ${icono(d)} ico"></i>${NOMBRES_DEPORTE[d] || 'Deporte'}</button>`));
                 html += `<div class="ag-fila"><span class="ag-etq">Deporte</span><div class="ag-chips">${chips.join('')}</div></div>`;
+            }
+            const enAmbito = equipos.filter(e => (!filtroHijo || e.nombre === filtroHijo) && (!filtroDeporte || e.idDeporte === filtroDeporte));
+            if (enAmbito.length === 1) {
+                const e = enAmbito[0];
+                html += `<div class="ag-ir-cap">${escHtml(e.nombre)}${e.nombreCompeticion ? ' · ' + escHtml(e.nombreCompeticion) : ''}</div>
+                    <div class="ag-ir" role="group" aria-label="Secciones del equipo">
+                        <button type="button" onclick="irAEquipo(${e.id}, 'calendario')"><i class="far fa-calendar-alt"></i>Calendario</button>
+                        <button type="button" onclick="irAEquipo(${e.id}, 'resultados')"><i class="fas fa-futbol"></i>Resultados</button>
+                        <button type="button" onclick="irAEquipo(${e.id}, 'clasificacion')"><i class="fas fa-list-ol"></i>Clasificación</button>
+                    </div>`;
             }
             cont.innerHTML = html;
             cont.classList.remove('hide');
@@ -1628,6 +1640,7 @@
                         ${sinHora ? '<span class="mc-sinhora">Hora por confirmar</span>' : `<div class="mc-hora ${aplazado ? 'tachada' : ''}">${horaStr}</div>`}
                     </div>
                 </div>
+                ${eq.nombreCompeticion ? `<div class="mc-comp">${escHtml(eq.nombreCompeticion)}</div>` : ''}
                 <div class="mc-body">
                     <div class="mc-teams">
                         ${equipo(p.EquipoLocal, escLocal, esLocalFav, posLocal, 'local')}
@@ -1707,7 +1720,7 @@
                 .sort((a, b) => new Date(a.FechaHora) - new Date(b.FechaHora));
 
             const enRango = v => { const [i, f] = rangoVista(v); return futuros.filter(p => { const d = new Date(p.FechaHora); return d >= i && d < f; }); };
-            const conteos = { finde: enRango('finde').length, semana: enRango('semana').length, mes: enRango('mes').length };
+            const conteos = { semana: enRango('semana').length, mes: enRango('mes').length };
             const mostrados = enRango(vistaAgenda);
 
             contenedor.innerHTML = '';
@@ -1722,8 +1735,8 @@
             renderControlesAgenda(conteos);
 
             if (mostrados.length === 0) {
-                const otra = vistaAgenda === 'mes' ? null : (conteos.semana > 0 && vistaAgenda === 'finde' ? 'semana' : (conteos.mes > 0 ? 'mes' : null));
-                const nombreVista = { finde: 'este fin de semana', semana: 'en los próximos 7 días', mes: 'en el próximo mes' }[vistaAgenda];
+                const otra = (vistaAgenda === 'semana' && conteos.mes > 0) ? 'mes' : null;
+                const nombreVista = { semana: 'en los próximos 7 días', mes: 'en el próximo mes' }[vistaAgenda];
                 const nombreOtra = otra ? VISTAS_AGENDA.find(x => x[0] === otra)[1] : '';
                 contenedor.innerHTML = `<div class="ag-vacio"><i class="far fa-calendar-check text-5xl mb-3" style="opacity:.3"></i><p class="font-bold">No hay partidos ${nombreVista}</p>${showingFromCache ? '<p class="text-sm mt-1">Sin conexión: datos guardados.</p>' : ''}${otra ? `<button type="button" onclick="cambiarVistaAgenda('${otra}')">Ver ${nombreOtra.toLowerCase()} (${conteos[otra]})</button>` : ''}</div>`;
                 window._partidosAgenda = [];
@@ -2041,7 +2054,11 @@
                     ${futuro && esFavorito ? `<a href="${escHtml(urlIcs(p, eq, dir, `Partido: ${eq.equipoFavorito} vs ${rival}`))}"><i class="far fa-calendar-plus"></i> Al calendario</a>` : ''}
                     ${futuro && esFavorito ? `<a href="https://wa.me/?text=${encodeURIComponent(textoWa)}" target="_blank" rel="noopener" class="wa"><i class="fab fa-whatsapp"></i> Compartir</a>` : ''}
                     ${urlGrupo ? `<a href="${escHtml(urlGrupo)}" target="_blank" rel="noopener" class="wa"><i class="fab fa-whatsapp"></i> Grupo del equipo</a>` : ''}
-                    <button type="button" onclick="cerrarFicha(); abrirEquipo(${idx})"><i class="fas fa-users"></i> Ver equipo</button>
+                </div>
+                <div class="fi-ir" role="group" aria-label="Secciones del equipo">
+                    <button type="button" onclick="cerrarFicha(); irAEquipo(${eq.id}, 'calendario')"><i class="far fa-calendar-alt"></i>Calendario</button>
+                    <button type="button" onclick="cerrarFicha(); irAEquipo(${eq.id}, 'resultados')"><i class="fas fa-futbol"></i>Resultados</button>
+                    <button type="button" onclick="cerrarFicha(); irAEquipo(${eq.id}, 'clasificacion')"><i class="fas fa-list-ol"></i>Clasificación</button>
                 </div>`;
 
             const modal = document.getElementById('modal-ficha');
@@ -2518,36 +2535,31 @@
         }
 
         function procesarFotoLogo(input) {
-            const file = input.files[0];
+            const file = input.files && input.files[0];
             if (!file) return;
-            if (!file.type.startsWith('image/')) {
-                alert('Selecciona una imagen válida.');
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const img = new Image();
-                img.onload = () => {
-                    const size = Math.min(img.width, img.height);
-                    const ox = (img.width - size) / 2;
-                    const oy = (img.height - size) / 2;
+            if (file.type && !file.type.startsWith('image/')) { alert('Selecciona una imagen válida.'); input.value = ''; return; }
+            const fallo = () => { alert('No se pudo leer la foto. Prueba con otra imagen (JPG o PNG) o haz la foto con la cámara.'); input.value = ''; };
+            const url = URL.createObjectURL(file);
+            const img = new Image();
+            img.onload = () => {
+                try {
+                    const size = Math.min(img.naturalWidth, img.naturalHeight);
+                    const ox = (img.naturalWidth - size) / 2, oy = (img.naturalHeight - size) / 2;
                     const canvas = document.createElement('canvas');
-                    canvas.width = 200;
-                    canvas.height = 200;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, ox, oy, size, size, 0, 0, 200, 200);
+                    canvas.width = 200; canvas.height = 200;
+                    canvas.getContext('2d').drawImage(img, ox, oy, size, size, 0, 0, 200, 200);
                     const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
                     logoPersonalizado = dataUrl;
                     document.getElementById('preview-logo').innerHTML = `<img src="${dataUrl}" class="w-full h-full object-cover">`;
                     document.getElementById('btn-quitar-logo').classList.remove('hide');
                     document.getElementById('btn-guardar').disabled = false;
-                };
-                img.src = e.target.result;
+                } catch (e) { fallo(); return; }
+                URL.revokeObjectURL(url);
+                input.value = '';
             };
-            reader.readAsDataURL(file);
-            input.value = '';
+            img.onerror = () => { URL.revokeObjectURL(url); fallo(); };
+            img.src = url;
         }
-
         function quitarLogoPersonalizado() {
             logoPersonalizado = null;
             document.getElementById('preview-logo').innerHTML = '<i class="fas fa-camera text-gray-400"></i>';
@@ -2602,14 +2614,23 @@
                 if (index !== -1) { delete cacheProximoPartido[equipoData.id]; equipos[index] = equipoData; }
             } else equipos.push(equipoData);
             
-            localStorage.setItem('equipos_liga', JSON.stringify(equipos));
-            localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido));
+            try {
+                localStorage.setItem('equipos_liga', JSON.stringify(equipos));
+            } catch (e) {
+                // Almacenamiento lleno: se liberan cachés que se regeneran solas y se reintenta
+                Object.keys(localStorage).filter(k => /^(cache_clima|cache_res_|cache_cal_|cache_clas_|cache_proximo_partido)/.test(k)).forEach(k => localStorage.removeItem(k));
+                try { localStorage.setItem('equipos_liga', JSON.stringify(equipos)); }
+                catch (e2) { alert('No se pudo guardar: el almacenamiento del navegador está lleno. Prueba con una foto más pequeña.'); return; }
+            }
+            try { localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido)); } catch {}
             editandoEquipoId = null; 
             vibrar(50);
             volverInicio();
         }
 
-        async function abrirEquipo(index) {
+        function irAEquipo(id, tab) { const i = equipos.findIndex(e => e.id === id); if (i !== -1) abrirEquipo(i, tab); }
+
+        async function abrirEquipo(index, tabInicial = 'calendario') {
             equipoActual = equipos[index];
             if (equipoActual.idDeporte === "4") document.body.classList.add('theme-canal');
             else document.body.classList.remove('theme-canal');
@@ -2627,7 +2648,7 @@
                 document.getElementById('screen-agenda').classList.add('hide');
                 document.getElementById('screen-ajustes').classList.add('hide');
                 document.getElementById('screen-detalle').classList.remove('hide');
-                cambiarTab('calendario');
+                cambiarTab(tabInicial);
                 return;
             }
 
@@ -2663,7 +2684,7 @@
                     document.getElementById('screen-ajustes').classList.add('hide');
                     document.getElementById('screen-detalle').classList.remove('hide');
                     actualizarUIJornadas();
-                    cambiarTab('calendario');
+                    cambiarTab(tabInicial);
                 }, 500);
             } catch (e) {
                 const cachedCal = localStorage.getItem(`cache_cal_${equipoActual.id}`);
@@ -2683,7 +2704,7 @@
                         document.getElementById('screen-ajustes').classList.add('hide');
                         document.getElementById('screen-detalle').classList.remove('hide');
                         actualizarUIJornadas();
-                        cambiarTab('calendario');
+                        cambiarTab(tabInicial);
                     }, 500);
                 } else {
                     document.getElementById('pantalla-carga').classList.add('oculto');
