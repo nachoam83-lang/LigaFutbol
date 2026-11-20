@@ -6,9 +6,9 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.16                                           -->
+    <!--  Versión actual: v1.04.00                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
-    <!--  Cambios: filtros visuales, mes móvil 30 días y restauración de cabeceras       -->
+    <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -84,6 +84,10 @@
         .ag-filter-sheet .ag-controles { display: none; max-height: calc(78vh - 54px); overflow-y: auto; border-top: 1px solid var(--line); }
         .ag-filter-sheet.open .ag-controles:not(.hide) { display: block; }
         #lista-agenda { padding-top: 10px; padding-bottom: 88px !important; scroll-margin-top: 88px; }
+        #screen-agenda.hide ~ #agenda-filter-overlay,
+        #screen-agenda.hide ~ #agenda-filter-sheet { display: none !important; }
+        body.ficha-open #agenda-filter-overlay,
+        body.ficha-open #agenda-filter-sheet { display: none !important; }
         body.agenda-sheet-open { overflow: hidden; }
         .copiable { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
         .copiable.pulsando { background: rgba(0,109,111,.10); border-radius: 8px; }
@@ -317,6 +321,7 @@
         }
 
         /* v1.04.16 — filtros de agenda e iconografía; cabeceras originales sin cambios */
+        /* v1.04.17 — el filtro inferior solo se muestra en Agenda y no tapa las acciones de partido */
         .ag-fila { gap: 0; }
         .ag-fila + .ag-fila { margin-top: 10px; }
         .ag-fila .ag-chips { flex: 1 1 100%; width: 100%; }
@@ -551,7 +556,7 @@
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="toggle-ruta" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#68737D]"></div>
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
                     </label>
                 </div>
 
@@ -621,7 +626,7 @@
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="toggle-avisos" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#68737D]"></div>
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
                     </label>
                 </div>
 
@@ -681,8 +686,8 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.03.05</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">19/11/2026 · Nueva agenda: semana, fin de semana y filtros por hijo</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.00</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">19/11/2026 · Nueva interface de usuario</p>
             </div>
         </div>
     </div>
@@ -1485,6 +1490,7 @@
         }, { passive: true });
 
         function abrirAjustes() {
+            cerrarFiltrosAgenda();
             document.getElementById('screen-agenda').classList.add('hide');
             document.getElementById('screen-ajustes').classList.remove('hide');
             document.getElementById('input-casa').value = userSettings.homeAddress || '';
@@ -2199,6 +2205,7 @@
 
         function cerrarFicha() {
             document.getElementById('modal-ficha').classList.add('hide');
+            document.body.classList.remove('ficha-open');
             document.body.style.overflow = '';
         }
 
@@ -2260,6 +2267,7 @@
         }
 
         function abrirFicha(clave, desdeEquipo = false) {
+            cerrarFiltrosAgenda();
             const f = _fichas[clave];
             if (!f) return;
             const { p, eq } = f;
@@ -2370,6 +2378,7 @@
 
             const modal = document.getElementById('modal-ficha');
             modal.dataset.fichaActiva = clave;
+            document.body.classList.add('ficha-open');
             modal.classList.remove('hide');
             document.body.style.overflow = 'hidden';
             modal.querySelector('.fi-hoja').scrollTop = 0;
@@ -2735,6 +2744,7 @@
         }
 
         function mostrarFormulario() { 
+            cerrarFiltrosAgenda();
             document.getElementById('screen-agenda').classList.add('hide'); 
             document.getElementById('screen-ajustes').classList.add('hide');
             document.getElementById('screen-detalle').classList.add('hide'); 
@@ -2742,6 +2752,7 @@
         }
         
         function volverInicio() { 
+            cerrarFiltrosAgenda();
             document.getElementById('screen-formulario').classList.add('hide'); 
             document.getElementById('screen-ajustes').classList.add('hide');
             document.getElementById('screen-detalle').classList.add('hide'); 
@@ -2993,6 +3004,7 @@
         function irAEquipo(id, tab) { const i = equipos.findIndex(e => e.id === id); if (i !== -1) abrirEquipo(i, tab); }
 
         async function abrirEquipo(index, tabInicial = 'calendario') {
+            cerrarFiltrosAgenda();
             equipoActual = equipos[index];
             if (equipoActual.idDeporte === "4") document.body.classList.add('theme-canal');
             else document.body.classList.remove('theme-canal');
