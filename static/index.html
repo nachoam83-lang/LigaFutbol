@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.09                                           -->
+    <!--  Versión actual: v1.04.10                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -155,6 +155,21 @@
         .fi-acc a, .fi-acc button { min-height: 44px; border-radius: 12px; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; background: #fff; border: 1px solid var(--line); color: var(--text-main); }
         .fi-acc .prim { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
         .fi-acc .wa { background: #25D366; color: #fff; border-color: #25D366; }
+        .mcard.otro { border-left-color: #CBD5DB; box-shadow: none; }
+        .mcard.fav { background: linear-gradient(0deg, rgba(0,109,111,.05), rgba(0,109,111,.05)), #fff; }
+        body.theme-canal .mcard.fav { background: linear-gradient(0deg, rgba(0,80,158,.06), rgba(0,80,158,.06)), #fff; }
+        .mcard.fav { border-left-color: var(--primary-color); }
+        .mcard.sin-ficha { cursor: default; }
+        .mc-gol { margin-left: auto; font-size: 22px; font-weight: 900; color: #6B7780; font-variant-numeric: tabular-nums; min-width: 28px; text-align: right; }
+        .mc-gol.gana { color: var(--text-main); }
+        .mc-estado { font-size: 11px; font-weight: 800; border-radius: 6px; padding: 3px 8px; white-space: nowrap; }
+        .mc-acc { display: flex; gap: 8px; margin-top: 8px; }
+        .mc-acc a { flex: 1; min-height: 40px; border-radius: 10px; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; color: #fff; }
+        .mc-cab { font-size: 12px; font-weight: 800; color: var(--text-sec); }
+        .jn-nav { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; }
+        .jn-btn { width: 42px; height: 46px; border-radius: 999px; background: #fff; border: 1.5px solid var(--line); color: var(--primary-color); font-size: 16px; flex: 0 0 auto; }
+        .jn-btn:disabled { opacity: .35; }
+        #select-jornada-cal, #select-jornada-res { padding-left: 8px !important; padding-right: 8px !important; letter-spacing: 0 !important; min-width: 0; }
         /* </agenda-ui> */
 
         .card-favorito { background-color: rgba(0, 109, 111, 0.15) !important; border-color: rgba(0, 109, 111, 0.5) !important; }
@@ -610,7 +625,9 @@
                 <button onclick="cerrarBanner()" class="text-red-700 hover:text-red-900 ml-2"><i class="fas fa-times text-lg"></i></button>
             </div>
             <div class="flex gap-2 mb-4">
+                <button type="button" class="jn-btn" onclick="moverJornada('cal', -1)" aria-label="Jornada anterior"><i class="fas fa-chevron-left"></i></button>
                 <select id="select-jornada-cal" onchange="renderizarCalendarioUI()" class="flex-1 h-[46px] px-4 rounded-full shadow-md text-sm font-black uppercase tracking-widest text-white text-center appearance-none" style="background-color: var(--primary-color); border: none; outline: none;"></select>
+                <button type="button" class="jn-btn" onclick="moverJornada('cal', 1)" aria-label="Jornada siguiente"><i class="fas fa-chevron-right"></i></button>
                 <button onclick="toggleFiltro()" id="btn-filtro-cal" class="h-[46px] px-4 rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);"><i class="fas fa-filter mr-1"></i> Todos</button>
             </div>
             <div id="lista-calendario" class="space-y-3"></div>
@@ -618,7 +635,9 @@
 
         <div id="tab-resultados" class="hide p-4">
             <div class="flex gap-2 mb-4">
+                <button type="button" class="jn-btn" onclick="moverJornada('res', -1)" aria-label="Jornada anterior"><i class="fas fa-chevron-left"></i></button>
                 <select id="select-jornada-res" onchange="renderizarResultadosUI()" class="flex-1 h-[46px] px-4 rounded-full shadow-md text-sm font-black uppercase tracking-widest text-white text-center appearance-none" style="background-color: var(--primary-color); border: none; outline: none;"></select>
+                <button type="button" class="jn-btn" onclick="moverJornada('res', 1)" aria-label="Jornada siguiente"><i class="fas fa-chevron-right"></i></button>
                 <button onclick="toggleFiltro()" id="btn-filtro-res" class="h-[46px] px-4 rounded-full shadow-sm text-sm font-black uppercase tracking-widest transition flex items-center justify-center" style="background-color: rgba(0, 109, 111, 0.05); border: 1px solid rgba(0, 109, 111, 0.2); color: var(--primary-color);"><i class="fas fa-filter mr-1"></i> Todos</button>
             </div>
             <div id="lista-resultados" class="space-y-3"></div>
@@ -2875,163 +2894,119 @@
             const esLocalFav = p.EquipoLocal === equipoActual.equipoFavorito;
             const esVisFav = p.EquipoVisitante === equipoActual.equipoFavorito;
             const esFavorito = esLocalFav || esVisFav;
-            const claseTarjeta = esFavorito ? (esCanal ? 'card p-3 card-favorito-canal' : 'card p-3 card-favorito') : 'card p-3';
             const esDescanso = !p.EquipoLocal || !p.EquipoVisitante;
-            const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
             const esResultado = (modo === 'resultados');
 
             const estado = getEstadoPartido(p);
             const esAplazado = estado === 'aplazado';
             const esJugado = estado === 'jugado';
-            
+
             const matchHash = getMatchHash(p);
             let dismissedChanges = JSON.parse(localStorage.getItem('dismissed_changes') || '{}');
             if (Array.isArray(dismissedChanges)) dismissedChanges = {};
-            
             let haCambiado = (userSettings.showChangeAlerts !== false) && (p.Cambio || p.CambioLocal);
             if (haCambiado && dismissedChanges[matchHash]) {
                 const duracionMs = (userSettings.alertDurationMinutes || 60) * 60 * 1000;
                 if (Date.now() - dismissedChanges[matchHash] > duracionMs) haCambiado = false;
             }
 
+            const fechaObj = p.FechaHora ? new Date(p.FechaHora) : null;
+            const valida = fechaObj && !isNaN(fechaObj);
+            const sinHora = valida && esSinHora(p);
+            const fechaCorta = valida ? fechaObj.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '') : 'Fecha por confirmar';
+            const hora = valida && !sinHora ? fechaObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false }) : '';
             const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
-            const hora = p.FechaHora ? p.FechaHora.split('T')[1].substring(0,5) : '';
-            const textoFecha = esResultado ? `${fecha}` : `<i class="far fa-calendar-alt mr-1"></i> ${fecha} · ${hora}h`;
+            const horaTxt = p.FechaHora ? p.FechaHora.split('T')[1].substring(0, 5) : '';
 
-            const warningSvg = `
-                <svg viewBox="0 0 24 24" fill="none" class="w-9 h-9 mb-1 drop-shadow-md z-10">
-                    <path d="M12 2.5L1.5 21h21L12 2.5z" fill="#FACC15" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
-                    <path d="M12 8.5v5.5" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
-                    <circle cx="12" cy="17.5" r="1.5" fill="#000"/>
-                </svg>
-            `;
-
-            const warningSvgSmall = `
-                <svg viewBox="0 0 24 24" fill="none" class="w-6 h-6 ml-2 drop-shadow-sm">
-                    <path d="M12 2.5L1.5 21h21L12 2.5z" fill="#FACC15" stroke="#000" stroke-width="2.5" stroke-linejoin="round"/>
-                    <path d="M12 8.5v5.5" stroke="#000" stroke-width="2.5" stroke-linecap="round"/>
-                    <circle cx="12" cy="17.5" r="1.5" fill="#000"/>
-                </svg>
-            `;
+            const cab = esResultado
+                ? `<span class="mc-fecha" style="font-size:13px">${escHtml(fechaCorta)}</span>`
+                : `<span class="mc-fecha" style="font-size:13px">${escHtml(fechaCorta)}</span>${sinHora ? '<span class="mc-sinhora" style="margin:0 0 0 8px">Hora por confirmar</span>' : (hora ? `<span style="font-size:18px;font-weight:900;margin-left:8px;font-variant-numeric:tabular-nums">${hora}</span>` : '')}`;
 
             if (esDescanso) {
-                const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
-                const textoFechaDescanso = esResultado ? `${fecha}` : `<i class="far fa-calendar-alt mr-1"></i> ${fecha}`;
+                const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
                 return `
-                    <div class="${claseTarjeta}">
-                        <div class="flex justify-between items-center mb-2">
-                            <div class="font-extrabold text-[13px] uppercase flex items-center" style="color: var(--primary-color);">
-                                ${textoFechaDescanso}
-                                ${haCambiado && esFavorito ? warningSvgSmall : ''}
-                            </div>
-                        </div>
-                        <div class="flex flex-col items-center justify-center w-full py-2" style="color: var(--primary-color);">
-                            ${escudoDescansa ? `<div class="escudo-circulo mb-2"><img src="${escudoDescansa}"></div>` : ''}
-                            <div class="text-sm font-bold text-center"><i class="fas fa-bed mr-2"></i> Descansa: ${acortarNombre(nombreDescansa)}</div>
-                        </div>
-                    </div>`;
+                    <article class="mcard otro ${esFavorito ? 'fav' : ''} sin-ficha">
+                        <div class="mc-top"><div class="mc-cuando" style="margin:0;text-align:left">${cab}</div>${haCambiado && esFavorito ? '<span class="mc-badge mc-b-cambio" style="margin-left:auto"><i class="fas fa-exclamation-triangle"></i>Cambio</span>' : ''}</div>
+                        <div class="mc-team" style="margin-top:4px"><div class="esc" style="display:flex;align-items:center;justify-content:center;background:#EEF1F3"><i class="fas fa-bed" style="color:#3F4B54"></i></div><div class="nom" style="color:var(--text-sec)">Descansa: ${escHtml(acortarNombre(nombreDescansa))}</div></div>
+                    </article>`;
             }
 
             const dirCompleta = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
-            
-            let htmlCampo = '';
-            if (!esResultado) {
-                htmlCampo = esCanal ? `<span class="inline-flex items-center text-white font-bold bg-[#00509E] px-2 py-0.5 rounded text-sm">${p.Campo || 'Campo'}</span>` 
-                    : (esCampoExterior(p) ? `<span class="inline-flex items-center text-orange-600 font-bold bg-orange-100 px-2 py-0.5 rounded text-sm"><i class="fas fa-cloud-sun mr-1"></i> Exterior</span>` 
-                                          : `<span class="inline-flex items-center text-blue-600 font-bold bg-blue-100 px-2 py-0.5 rounded text-sm"><i class="fas fa-building mr-1"></i> Pabellón</span>`);
-            }
-            
-            let htmlMapa = '';
-            if (!esResultado) {
-                htmlMapa = `<div class="text-xs flex justify-center items-center mt-3 pt-2 border-t cursor-pointer hover:bg-gray-50 rounded transition" onclick="copiarDireccion('${dirCompleta.replace(/'/g, "\\'")}', this.querySelector('i'))" style="color: var(--text-sec); border-color: var(--border-color);" title="Copiar dirección"><i class="fas fa-map-marker-alt mt-0.5 mr-1 shrink-0" style="color: #f87171;"></i><span class="font-bold text-blue-500">${dirCompleta}</span></div>`;
-            }
-
-            let botonesExtra = '';
-            if (!esResultado && esFavorito) {
-                const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
-                const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${hora}h contra ${rival} en ${dirCompleta}.`;
-                botonesExtra = `
-                    <div class="flex gap-2 mt-3">
-                        <a href="https://wa.me/?text=${encodeURIComponent(texto)}" target="_blank" class="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold py-2 rounded-lg text-xs"><i class="fab fa-whatsapp"></i> Compartir</a>
-                        <a href="${urlIcs(p, equipoActual, dirCompleta, `Partido: ${equipoActual.equipoFavorito} vs ${rival}`)}" class="flex-1 flex items-center justify-center gap-2 text-white font-bold py-2 rounded-lg text-xs" style="background-color: var(--primary-color);"><i class="far fa-calendar-plus"></i> Al Calendario</a>
-                    </div>`;
-            }
 
             let escudoLocal = p.URLEscudoEquipoLocal || '/static/logo.png';
             let escudoVisitante = p.URLEscudoEquipoVisitante || '/static/logo.png';
-
             if (esCanal) {
                 escudoLocal = esLocalFav ? (equipoActual.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
                 escudoVisitante = esVisFav ? (equipoActual.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
+            } else if ((equipoActual.escudoFavorito || '').startsWith('data:')) {
+                if (esLocalFav) escudoLocal = equipoActual.escudoFavorito;
+                if (esVisFav) escudoVisitante = equipoActual.escudoFavorito;
+            }
+            const estiloEsc = (rol, fav) => esCanal
+                ? (rol === 'vis' ? 'background-color:rgba(0,80,158,.3);border:3px solid #00509E;box-sizing:border-box;' : 'border:3px solid #fff;box-sizing:border-box;')
+                : (fav ? 'border:3px solid var(--primary-color);box-sizing:border-box;' : '');
+            const gl = Number(p.ResultadoEquipoLocal ?? 0), gv = Number(p.ResultadoEquipoVisitante ?? 0);
+            const fila = (nombre, esc, fav, rol, goles, gana) => `
+                <div class="mc-team ${fav ? 'fav' : ''}">
+                    <div class="esc" style="${estiloEsc(rol, fav)}"><img src="${escHtml(esc)}" alt="" style="object-fit:${(esCanal || esc.startsWith('data:')) ? 'cover' : 'contain'}"></div>
+                    <div class="nom">${escHtml(acortarNombre(nombre))}</div>
+                    ${esJugado ? `<span class="mc-gol ${gana ? 'gana' : ''}">${goles}</span>` : ''}
+                </div>`;
+
+            let etiqueta = '';
+            if (esAplazado) etiqueta = '<span class="mc-estado" style="background:var(--red-bg);color:var(--red-fg)"><i class="fas fa-ban"></i> Aplazado</span>';
+            else if (esJugado) etiqueta = '<span class="mc-estado" style="background:var(--green-bg);color:var(--green-fg)">Finalizado</span>';
+            else if (esResultado) etiqueta = '<span class="mc-estado" style="background:#EEF1F3;color:#3F4B54">Pendiente</span>';
+            if (haCambiado && esFavorito) etiqueta += ' <span class="mc-badge mc-b-cambio" style="display:inline-flex"><i class="fas fa-exclamation-triangle"></i>Cambio</span>';
+
+            let campo = '';
+            if (!esResultado) {
+                campo = esCanal ? `<span class="mc-campo" style="background:#00509E;color:#fff">${escHtml(p.Campo || 'Campo')}</span>`
+                    : (esCampoExterior(p) ? '<span class="mc-campo" style="background:#FFEDD5;color:#9A3412">Exterior</span>' : '<span class="mc-campo" style="background:#DBEAFE;color:#1E40AF">Pabellón</span>');
             }
 
-            const isCustomLocal = escudoLocal.startsWith('data:');
-            const isCustomVis = escudoVisitante.startsWith('data:');
-
-            let classImgLocal = (esCanal || isCustomLocal) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-            let classImgVis = (esCanal || isCustomVis) ? 'escudo-main-img' : 'w-full h-full object-contain p-0.5';
-            if (!esCanal && esLocalFav) classImgLocal += ' escudo-fav-zoom';
-            if (!esCanal && esVisFav)   classImgVis   += ' escudo-fav-zoom';
-
-            let styleEscLocal = '';
-            let styleEscVis = '';
-            if (esCanal) {
-                styleEscLocal = 'style="border: 3px solid white; box-sizing: border-box;"';
-                styleEscVis = 'style="background-color: rgba(0, 80, 158, 0.3); border: 3px solid var(--primary-color); box-sizing: border-box;"';
-            } else {
-                const bordeFav = 'border: 4px solid var(--primary-color); box-sizing: border-box;';
-                styleEscLocal = esLocalFav ? `style="${bordeFav}"` : '';
-                styleEscVis = esVisFav ? `style="${bordeFav}"` : '';
+            const mostrarDir = !esResultado && !esJugado && dirCompleta;
+            const futuro = !esResultado && esFavorito && !esJugado && !esAplazado && !sinHora && valida;
+            let acciones = '';
+            if (futuro) {
+                const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
+                const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${horaTxt}h contra ${rival} en ${dirCompleta}.`;
+                acciones = `<div class="mc-acc">
+                    <a href="https://wa.me/?text=${encodeURIComponent(texto)}" target="_blank" rel="noopener" style="background:#25D366"><i class="fab fa-whatsapp"></i> Compartir</a>
+                    <a href="${escHtml(urlIcs(p, equipoActual, dirCompleta, `Partido: ${equipoActual.equipoFavorito} vs ${rival}`))}" style="background:var(--primary-color)"><i class="far fa-calendar-plus"></i> Al calendario</a>
+                </div>`;
             }
-
-            let htmlEscLocal = `<div class="escudo-circulo" ${styleEscLocal}><img src="${escudoLocal}" class="${classImgLocal}"></div>`;
-            let htmlEscVis = `<div class="escudo-circulo" ${styleEscVis}><img src="${escudoVisitante}" class="${classImgVis}"></div>`;
-            
-            let classLocal = esLocalFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
-            let classVis = esVisFav ? (esCanal ? 'text-[#00509E] font-black' : 'text-[#006D6F] font-black') : (esFavorito ? 'text-gray-700 font-bold' : 'text-gray-800 font-bold');
-
-            const atenuarJugado = !esResultado && esJugado && !esAplazado;
-            if (atenuarJugado) {
-                classLocal += ' opacity-50';
-                classVis += ' opacity-50';
-            }
-
-            let marcador;
-            if (esResultado) {
-                if (esJugado) {
-                    marcador = `<span class="text-xl font-black" style="color: var(--primary-color);">${p.ResultadoEquipoLocal ?? 0} - ${p.ResultadoEquipoVisitante ?? 0}</span>`;
-                } else if (esAplazado) {
-                    marcador = `<i class="fas fa-hourglass-half text-2xl" style="color: #d97706;" title="Aplazado"></i>`;
-                } else {
-                    marcador = `<span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">Pendiente</span>`;
-                }
-            } else if (esAplazado) {
-                marcador = `<i class="fas fa-hourglass-half text-2xl" style="color: #d97706;" title="Aplazado"></i>`;
-            } else if (esJugado) {
-                marcador = `<i class="fas fa-flag-checkered text-2xl text-gray-400" title="Jugado"></i>`;
-            } else {
-                marcador = `<span class="text-xs font-bold px-2 py-1 rounded border" style="background-color: var(--bg-color); border-color: var(--border-color); color: var(--text-sec);">vs</span>`;
-            }
-
-            const opacidadFecha = atenuarJugado ? 'opacity-60' : '';
 
             return `
-                <div class="${claseTarjeta} cursor-pointer" data-ficha="${escHtml(registrarFicha(p, equipoActual))}">
-                    <div class="flex justify-between items-center mb-2">
-                        <div class="font-extrabold text-[13px] uppercase ${opacidadFecha}" style="color: var(--primary-color);">${textoFecha}</div>
-                        ${htmlCampo}
+                <article class="mcard ${esFavorito ? 'fav' : 'otro'} ${esJugado && !esResultado ? 'atenuado' : ''}" data-ficha="${escHtml(registrarFicha(p, equipoActual))}">
+                    <div class="mc-top"><div class="mc-cuando" style="margin:0;text-align:left;display:flex;align-items:baseline;flex-wrap:wrap">${cab}</div><div style="margin-left:auto;display:flex;gap:6px;align-items:center">${campo}</div></div>
+                    ${(etiqueta) ? `<div style="margin-top:4px">${etiqueta}</div>` : ''}
+                    <div class="mc-teams" style="margin-top:6px">
+                        ${fila(p.EquipoLocal, escudoLocal, esLocalFav, 'local', gl, esJugado && gl > gv)}
+                        ${fila(p.EquipoVisitante, escudoVisitante, esVisFav, 'vis', gv, esJugado && gv > gl)}
                     </div>
-                    <div class="flex justify-between items-center w-full my-2">
-                        <div class="flex-1 flex flex-col items-center">${htmlEscLocal}<div class="text-[13px] ${classLocal} text-center leading-tight">${acortarNombre(p.EquipoLocal)}</div></div>
-                        <div class="px-2 flex flex-col items-center justify-center">
-                            ${haCambiado && esFavorito ? warningSvg : ''}
-                            <div class="h-10 flex items-center">${marcador}</div>
-                        </div>
-                        <div class="flex-1 flex flex-col items-center">${htmlEscVis}<div class="text-[13px] ${classVis} text-center leading-tight">${acortarNombre(p.EquipoVisitante)}</div></div>
-                    </div>
-                    ${htmlMapa}
-                    ${botonesExtra}
-                </div>`;
+                    ${mostrarDir ? `<div class="mc-dir copiable" data-copiar="${escHtml(dirCompleta)}" title="Mantén pulsado para copiar la dirección"><i class="fas fa-map-marker-alt"></i><span>${escHtml(dirCompleta)}</span></div>` : ''}
+                    ${acciones}
+                </article>`;
+        }
+
+        function cabeceraJornada(j, lista) {
+            const fechas = lista.map(x => x.FechaHora && new Date(x.FechaHora)).filter(d => d && !isNaN(d)).sort((a, b) => a - b);
+            let rango = '';
+            if (fechas.length) {
+                const f = d => d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }).replace('.', '');
+                rango = f(fechas[0]) === f(fechas[fechas.length - 1]) ? f(fechas[0]) : `${f(fechas[0])} – ${f(fechas[fechas.length - 1])}`;
+            }
+            return `<div class="ag-dia"><b>Jornada ${escHtml(j)}</b>${rango ? `<span>${escHtml(rango)}</span>` : ''}</div>`;
+        }
+
+        function moverJornada(tab, delta) {
+            const sel = document.getElementById(tab === 'cal' ? 'select-jornada-cal' : 'select-jornada-res');
+            const nuevo = sel.selectedIndex + delta;
+            if (nuevo < 1 && delta < 0 && sel.selectedIndex === 0) return;
+            sel.selectedIndex = Math.max(1, Math.min(sel.options.length - 1, nuevo || 1));
+            if (tab === 'cal') renderizarCalendarioUI(); else renderizarResultadosUI();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         function renderizarCalendarioUI() {
@@ -3050,12 +3025,7 @@
                 if (jornadasOrdenadas.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay partidos.</p>';
 
                 jornadasOrdenadas.forEach(j => {
-                    contenedor.innerHTML += `
-                        <div class="flex justify-center mt-8 mb-4">
-                            <span class="px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest shadow-md text-white" style="background-color: var(--primary-color);">
-                                Jornada ${j}
-                            </span>
-                        </div>`;
+                    contenedor.innerHTML += cabeceraJornada(j, agrupados[j]);
                     agrupados[j].forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'calendario'); });
                 });
             } else {
@@ -3081,12 +3051,7 @@
                 if (jornadasOrdenadas.length === 0) contenedor.innerHTML = '<p class="text-center mt-5" style="color: var(--text-sec);">No hay resultados.</p>';
 
                 jornadasOrdenadas.forEach(j => {
-                    contenedor.innerHTML += `
-                        <div class="flex justify-center mt-8 mb-4">
-                            <span class="px-6 py-2 rounded-full text-sm font-black uppercase tracking-widest shadow-md text-white" style="background-color: var(--primary-color);">
-                                Jornada ${j}
-                            </span>
-                        </div>`;
+                    contenedor.innerHTML += cabeceraJornada(j, agrupados[j]);
                     agrupados[j].forEach(p => { contenedor.innerHTML += generarHTMLPartido(p, 'resultados'); });
                 });
             } else {
