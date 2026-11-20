@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.07                                           -->
+    <!--  Versión actual: v1.04.08                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -171,7 +171,7 @@
         .team-select-card img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 6px; }
         .team-select-card span { font-size: 11px; text-align: center; font-weight: 700; color: var(--text-main); line-height: 1.1; }
 
-        .streak-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin: 0 1px; }
+        .streak-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin: 0 1px; }
         .streak-v { background-color: #10b981; }
         .streak-e { background-color: #9ca3af; }
         .streak-d { background-color: #ef4444; }
@@ -626,11 +626,17 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="text-xs font-bold uppercase border-b" style="background-color: var(--bg-color); color: var(--text-sec); border-color: var(--border-color);">
                         <tr>
-                            <th class="p-2">Pos</th><th class="p-2">Equipo</th><th class="p-2 text-center">PJ</th><th class="p-2 text-center">Racha</th><th class="p-2 text-right">PTS</th>
+                            <th class="p-2">Pos</th><th class="p-2">Equipo</th><th class="p-2 text-center">PJ</th><th class="p-2 text-center" title="Diferencia de goles">DG</th><th class="p-2 text-center">Racha</th><th class="p-2 text-right">PTS</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-clasificacion" class="divide-y text-[13px]" style="border-color: var(--border-color);"></tbody>
                 </table>
+            </div>
+            <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-3 text-[11px] font-bold" style="color: var(--text-sec);">
+                <span><span class="streak-dot streak-v"></span> Victoria</span>
+                <span><span class="streak-dot streak-e"></span> Empate</span>
+                <span><span class="streak-dot streak-d"></span> Derrota</span>
+                <span>Racha = últimos 5 · DG = goles a favor − en contra</span>
             </div>
         </div>
 
@@ -3083,7 +3089,7 @@
                 btnComp.style.color = 'var(--primary-color)';
             }
 
-            if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="5" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
+            if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
 
             function calcularRacha(nombreEquipo) {
                 const partidosEquipo = todosLosPartidos.filter(p => {
@@ -3098,6 +3104,18 @@
                     const isLocal = p.EquipoLocal === nombreEquipo; const gf = isLocal ? p.ResultadoEquipoLocal : p.ResultadoEquipoVisitante; const gc = isLocal ? p.ResultadoEquipoVisitante : p.ResultadoEquipoLocal;
                     if (gf > gc) return '<span class="streak-dot streak-v"></span>'; if (gf < gc) return '<span class="streak-dot streak-d"></span>'; return '<span class="streak-dot streak-e"></span>';
                 }).join('');
+            }
+
+            function balance(f) {
+                if (f.PG !== undefined && f.PE !== undefined && f.PP !== undefined) return [f.PG, f.PE, f.PP];
+                let g = 0, e = 0, pp = 0;
+                todosLosPartidos.forEach(p => {
+                    if (!(p.EquipoLocal === f.NombreEquipo || p.EquipoVisitante === f.NombreEquipo) || getEstadoPartido(p) !== 'jugado') return;
+                    const loc = p.EquipoLocal === f.NombreEquipo;
+                    const gf = loc ? p.ResultadoEquipoLocal : p.ResultadoEquipoVisitante, gc = loc ? p.ResultadoEquipoVisitante : p.ResultadoEquipoLocal;
+                    if (gf > gc) g++; else if (gf < gc) pp++; else e++;
+                });
+                return [g, e, pp];
             }
 
             const bigEscudo = isCanal() ? '' : 'escudo-lg';
@@ -3133,11 +3151,14 @@
                     rowClass = isCanal() ? 'bg-[#E0F0FF]' : 'bg-[#e6f2f2]';
                 }
 
+                const bal = balance(f);
+                const dg = (f.GF ?? 0) - (f.GC ?? 0);
                 tbody.innerHTML += `
                     <tr class="${rowClass}" style="${rowStyle}">
                         <td class="p-2 font-bold ${posColor} align-middle">${f.Posicion}</td>
-                        <td class="p-2 font-medium flex items-center"><div class="escudo-circulo-sm ${bigEscudo}" ${styleEsc}><img src="${escudoUrl}" class="${classImg}"></div><span class="leading-tight pr-1 uppercase ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></td>
+                        <td class="p-2 font-medium"><div class="flex items-center"><div class="escudo-circulo-sm ${bigEscudo}" ${styleEsc}><img src="${escudoUrl}" class="${classImg}"></div><span class="leading-tight pr-1 uppercase ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></div><div class="text-[11px] font-bold mt-0.5" style="color: var(--text-sec); padding-left: ${isCanal() ? 40 : 52}px;">${bal[0]}G · ${bal[1]}E · ${bal[2]}P · ${f.GF ?? 0}-${f.GC ?? 0}</div></td>
                         <td class="p-2 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
+                        <td class="p-2 text-center align-middle font-bold" style="color: ${dg > 0 ? '#1E6B34' : (dg < 0 ? '#9B1C1C' : 'var(--text-sec)')};">${dg > 0 ? '+' : ''}${dg}</td>
                         <td class="p-2 text-center align-middle">${calcularRacha(f.NombreEquipo)}</td>
                         <td class="p-2 text-right font-black align-middle text-base ${ptsColor}">${f.Puntos}</td>
                     </tr>`;
