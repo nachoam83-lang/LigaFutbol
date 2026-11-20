@@ -6,9 +6,9 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.05.00                                           -->
+    <!--  Versión actual: v1.04.13                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
-    <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
+    <!--  Cambios: rediseño de agenda, ficha, clasificación y alarmas          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -35,6 +35,13 @@
         html, body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background-color: var(--bg-color); overscroll-behavior-y: none; overflow-x: clip; color: var(--text-main); }
         .hide { display: none !important; }
         .tab-active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); font-weight: bold; }
+        .detalle-cabecera { position: sticky; top: 0; }
+        .detalle-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); height: 52px; border-top: 1px solid rgba(255,255,255,.12); background: var(--header-bg); }
+        .detalle-tabs button { display: flex; align-items: center; justify-content: center; gap: 7px; min-width: 0; color: rgba(255,255,255,.72); font-size: 12px; font-weight: 800; border-bottom: 3px solid transparent; padding: 0 4px; }
+        .detalle-tabs button i { font-size: 15px; }
+        .detalle-tabs button.tab-active { color: #fff; border-bottom-color: #fff; }
+        .detalle-tabs button:focus-visible { outline: 2px solid #fff; outline-offset: -3px; }
+        #screen-detalle { padding-bottom: max(18px, env(safe-area-inset-bottom)); }
         .card { background: var(--card-bg); border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border: 1px solid var(--border-color); transition: all 0.2s; }
         
         /* <agenda-ui> tokens y tarjeta */
@@ -46,23 +53,38 @@
             --green-bg: #E6F4EA; --green-fg: #1E6B34;
             --line: #E3E8EB;
         }
-        .ag-controles { background: var(--bg-color); padding: 12px 16px 8px; border-bottom: 1px solid var(--line); }
-        .ag-seg { display: flex; background: #E4E8EB; border-radius: 10px; padding: 3px; gap: 2px; }
-        .ag-seg button { flex: 1; min-height: 36px; border-radius: 8px; font-size: 13px; font-weight: 700; color: #3F4B54; display: flex; align-items: center; justify-content: center; gap: 6px; transition: background .15s; }
-        .ag-seg button[aria-pressed="true"] { background: #fff; color: var(--primary-color); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
-        .ag-seg button .n { font-size: 11px; font-weight: 800; background: #D3D9DD; color: #3F4B54; border-radius: 999px; padding: 1px 7px; }
-        .ag-seg button[aria-pressed="true"] .n { background: var(--primary-color); color: #fff; }
-        .ag-fila { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
-        .ag-etq { flex: 0 0 56px; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: var(--text-sec); }
-        .ag-chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; }
+        .ag-controles { background: var(--bg-color); padding: 12px 16px 16px; }
+        .ag-seg { display: flex; background: #E4E8EB; border-radius: 10px; padding: 3px; gap: 3px; }
+        .ag-seg button { flex: 1; min-height: 42px; border-radius: 8px; font-size: 14px; font-weight: 800; color: #3F4B54; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background .15s; }
+        .ag-seg button[aria-pressed="true"] { background: #68737D; color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.16); }
+        .ag-seg button .n { font-size: 11px; font-weight: 800; background: rgba(38,52,63,.12); color: inherit; border-radius: 999px; padding: 2px 7px; }
+        .ag-seg button[aria-pressed="true"] .n { background: rgba(255,255,255,.22); color: #fff; }
+        .ag-fila { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+        .ag-etq { flex: 0 0 58px; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: var(--text-sec); }
+        .ag-chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; flex: 1; min-width: 0; padding: 2px 1px; }
         .ag-chips::-webkit-scrollbar { display: none; }
-        .ag-chip { flex: 0 0 auto; min-height: 36px; display: flex; align-items: center; gap: 6px; padding: 0 12px 0 4px; border-radius: 999px; background: #fff; border: 1.5px solid var(--line); font-size: 13px; font-weight: 700; color: var(--text-main); }
-        .ag-chip.solo-texto { padding-left: 12px; }
-        .ag-chip[aria-pressed="true"] { border-color: var(--c, var(--primary-color)); background: var(--c, var(--primary-color)); color: #fff; }
-        .ag-chip img { width: 26px; height: 26px; border-radius: 50%; object-fit: cover; background: #fff; border: 1px solid var(--line); }
+        .ag-chip { flex: 0 0 auto; min-height: 42px; display: flex; align-items: center; gap: 8px; padding: 0 13px 0 5px; border-radius: 999px; background: #fff; border: 1.5px solid var(--line); font-size: 14px; font-weight: 800; color: var(--text-main); }
+        .ag-chip.solo-texto { padding-left: 14px; }
+        .ag-chip[aria-pressed="true"] { border-color: #68737D; background: #68737D; color: #fff; }
+        .ag-chip img { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; background: var(--c, #fff); border: 2px solid #fff; box-shadow: 0 1px 2px rgba(0,0,0,.16); }
         .ag-chip.todos { padding-left: 14px; }
-        .ag-chip[aria-pressed="true"].todos { background: var(--primary-color); border-color: var(--primary-color); }
-        .ag-chip .ico { width: 24px; text-align: center; font-size: 14px; }
+        .ag-chip[aria-pressed="true"].todos { background: #68737D; border-color: #68737D; }
+        .ag-chip .ico { width: 24px; text-align: center; font-size: 16px; color: #68737D; }
+        .ag-chip[aria-pressed="true"] .ico { color: #fff; }
+        .ag-ir-cap { margin-top: 16px; font-size: 11px; font-weight: 800; letter-spacing: .5px; text-transform: uppercase; color: var(--text-sec); }
+        .ag-ir { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin-top: 8px; }
+        .ag-ir button { min-height: 46px; border-radius: 12px; background: #fff; border: 1px solid var(--line); color: #34414B; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .ag-ir button i { color: #68737D; }
+        .ag-filter-overlay { position: fixed; inset: 0; z-index: 88; background: rgba(20,32,43,.42); opacity: 1; transition: opacity .2s; }
+        .ag-filter-sheet { position: fixed; z-index: 89; left: 50%; bottom: 0; transform: translateX(-50%); width: min(100%,448px); max-height: 78vh; height: 54px; overflow: hidden; background: #fff; border-radius: 16px 16px 0 0; box-shadow: 0 -5px 22px rgba(20,32,43,.16); transition: height .25s ease, max-height .25s ease; padding-bottom: env(safe-area-inset-bottom); }
+        .ag-filter-sheet.open { height: auto; }
+        .ag-sheet-handle { height: 54px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--header-bg); color: #fff; font-size: 12px; font-weight: 800; letter-spacing: .3px; }
+        .ag-sheet-handle i { font-size: 17px; transition: transform .2s; }
+        .ag-filter-sheet.open .ag-sheet-handle i { transform: rotate(180deg); }
+        .ag-filter-sheet .ag-controles { display: none; max-height: calc(78vh - 54px); overflow-y: auto; border-top: 1px solid var(--line); }
+        .ag-filter-sheet.open .ag-controles:not(.hide) { display: block; }
+        #lista-agenda { padding-bottom: 88px !important; }
+        body.agenda-sheet-open { overflow: hidden; }
         .copiable { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
         .copiable.pulsando { background: rgba(0,109,111,.10); border-radius: 8px; }
         #toast-copia { position: fixed; left: 50%; bottom: calc(28px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #14202B; color: #fff; font-size: 14px; font-weight: 700; padding: 12px 18px; border-radius: 14px; z-index: 300; box-shadow: 0 4px 14px rgba(0,0,0,.3); max-width: calc(100vw - 32px); text-align: center; line-height: 1.3; }
@@ -75,7 +97,7 @@
         .mc-lluvia { display: inline-flex; align-items: center; gap: 3px; color: var(--rain-fg); background: var(--rain-bg); border-radius: 6px; padding: 1px 6px; font-size: 12px; font-weight: 800; }
         .fi-mapa { margin: 12px 16px 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #E4E8EB; height: 180px; }
         .fi-mapa iframe { width: 100%; height: 100%; border: 0; display: block; }
-        .fi-horas { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; margin-top: 10px; }
+        .fi-horas { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin-top: 10px; }
         .fi-h { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 0; border-radius: 10px; background: #F3F5F6; font-size: 12px; font-weight: 700; }
         .fi-h.ini { background: var(--primary-color); color: #fff; }
         .fi-h .hh { font-size: 11px; font-weight: 800; opacity: .85; }
@@ -92,10 +114,10 @@
         .mcard { background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--sport, var(--primary-color)); border-radius: 14px; box-shadow: 0 1px 3px rgba(20,32,43,.06); padding: 10px 12px; cursor: pointer; margin-bottom: 10px; }
         .mcard.atenuado { opacity: .75; }
         .mc-top { display: flex; align-items: center; gap: 6px; min-height: 30px; }
-        .mc-hijo { display: flex; align-items: center; gap: 6px; background: var(--c); color: #fff; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 2px 10px 2px 2px; min-width: 0; }
-        .mc-hijo img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: #fff; flex: 0 0 auto; }
+        .mc-hijo { display: flex; align-items: center; gap: 7px; background: var(--c); color: #fff; font-size: 13px; font-weight: 900; border-radius: 999px; padding: 3px 12px 3px 3px; min-width: 0; }
+        .mc-hijo img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; background: #fff; border: 1px solid rgba(255,255,255,.8); flex: 0 0 auto; }
         .mc-hijo span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
-        .mc-comp { font-size: 11px; font-weight: 700; color: var(--text-sec); margin: 2px 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.mc-comp { font-size: 11px; font-weight: 700; color: var(--text-sec); margin: 2px 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .ag-ir { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         .ag-ir button { min-height: 40px; border-radius: 10px; background: #fff; border: 1.5px solid var(--line); font-size: 12px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 6px; }
         .ag-ir button i { color: var(--primary-color); }
@@ -111,6 +133,8 @@
         .mc-dir span { min-width: 0; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
         .mc-sinhora { font-size: 13px; font-weight: 800; color: var(--amber-fg); background: var(--amber-bg); border-radius: 6px; padding: 3px 8px; display: inline-block; margin-top: 2px; }
         .mc-hora { margin-left: 0; font-size: 22px; font-weight: 900; color: var(--text-main); letter-spacing: -.5px; font-variant-numeric: tabular-nums; }
+        .mc-hora.cambio { display: inline-flex; align-items: center; gap: 5px; color: var(--amber-fg); background: var(--amber-bg); border-radius: 8px; padding: 4px 7px; font-size: 20px; }
+        .mc-hora.cambio i { font-size: 13px; }
         .mc-hora.tachada { text-decoration: line-through; color: var(--text-sec); }
         .mc-body { display: flex; gap: 10px; align-items: stretch; margin-top: 6px; }
         .mc-teams { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 6px; }
@@ -125,22 +149,34 @@
         .mc-b-cambio { background: var(--amber-bg); color: var(--amber-fg); }
         .mc-b-lluvia { background: var(--rain-bg); color: var(--rain-fg); }
         .mc-b-aplazado { background: var(--red-bg); color: var(--red-fg); }
-        .mc-ruta { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; font-weight: 800; color: #1D4E89; }
+        .mc-ruta { display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 13px; font-weight: 800; color: #34414B; }
+        .mc-ruta > i { color: #68737D; }
+        .mc-ruta a { color: #34414B; text-decoration: underline; text-underline-offset: 2px; }
         .mc-foot { display: flex; align-items: center; gap: 8px; margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--line); }
         .mc-campo { font-size: 11px; font-weight: 800; border-radius: 6px; padding: 3px 8px; white-space: nowrap; max-width: 130px; overflow: hidden; text-overflow: ellipsis; }
         .mc-clima { display: flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; color: #26343F; min-width: 24px; }
         .mc-acciones { margin-left: auto; display: flex; gap: 6px; }
         .mc-btn { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; background: #EEF1F3; color: #26343F; font-size: 15px; }
-        .mc-btn.ruta { background: var(--primary-color); color: #fff; }
+        .mc-btn.ruta { background: #68737D; color: #fff; }
         .mc-btn.wa { background: #25D366; color: #fff; font-size: 18px; }
         .ag-vacio { text-align: center; color: var(--text-sec); margin-top: 48px; padding: 0 16px; }
         .ag-vacio button { margin-top: 14px; min-height: 40px; padding: 0 18px; border-radius: 10px; background: var(--primary-color); color: #fff; font-weight: 800; font-size: 13px; }
         /* ficha de partido */
         #modal-ficha { position: fixed; inset: 0; z-index: 75; display: flex; align-items: flex-end; justify-content: center; background: rgba(20,32,43,.55); }
         #modal-ficha .fi-hoja { width: 100%; max-width: 448px; max-height: 92vh; overflow-y: auto; background: var(--bg-color); border-radius: 20px 20px 0 0; padding-bottom: 20px; }
-        .fi-cab { position: sticky; top: 0; background: var(--bg-color); display: flex; align-items: center; gap: 8px; padding: 14px 16px 10px; z-index: 2; border-bottom: 1px solid var(--line); }
+        .fi-cab { position: sticky; top: 0; background: var(--bg-color); padding: 10px 16px 9px; z-index: 5; border-bottom: 1px solid var(--line); }
+        .fi-cab-top { display: flex; align-items: center; gap: 8px; min-height: 40px; }
         .fi-cab h2 { font-size: 15px; font-weight: 800; flex: 1; min-width: 0; }
-        .fi-x { width: 40px; height: 40px; border-radius: 10px; background: #E4E8EB; color: #26343F; font-size: 16px; }
+        .fi-x { width: 40px; height: 40px; border-radius: 10px; background: #E4E8EB; color: #26343F; font-size: 16px; flex: 0 0 auto; }
+        .fi-nav { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 7px; margin-top: 9px; }
+        .fi-nav button { min-height: 40px; border-radius: 10px; background: #fff; border: 1px solid var(--line); color: #46525C; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 5px; }
+        .fi-nav button i { color: #68737D; }
+        .fi-actions-sticky { position: sticky; bottom: 0; z-index: 4; margin-top: 12px; padding: 10px 16px calc(12px + env(safe-area-inset-bottom)); background: rgba(240,242,245,.97); backdrop-filter: blur(12px); border-top: 1px solid var(--line); }
+        .fi-grupo { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; min-height: 44px; border-radius: 12px; background: #25D366; color: #fff; font-size: 13px; font-weight: 900; }
+        .fi-acc { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin: 0; }
+        .fi-acc button, .fi-acc a { min-height: 48px; border-radius: 12px; background: #fff; border: 1px solid #DCE2E6; color: #34414B; font-size: 11px; font-weight: 800; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; }
+        .fi-acc i { color: #68737D; font-size: 16px; }
+        .fi-acc button:disabled { opacity: .45; }
         .fi-panel { background: #fff; border: 1px solid var(--line); border-radius: 14px; margin: 12px 16px 0; padding: 14px; }
         .fi-equipos { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: center; text-align: center; }
         .fi-esc { width: 56px; height: 56px; border-radius: 50%; background: #fff; border: 1px solid var(--line); overflow: hidden; margin: 0 auto 6px; }
@@ -161,7 +197,7 @@
         .fi-acc a, .fi-acc button { min-height: 44px; border-radius: 12px; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; background: #fff; border: 1px solid var(--line); color: var(--text-main); }
         .fi-acc .prim { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
         .fi-acc .wa { background: #25D366; color: #fff; border-color: #25D366; }
-        .aj-sec { font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--text-sec); display: flex; align-items: center; gap: 8px; margin: 8px 4px -4px; }
+.aj-sec { font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--text-sec); display: flex; align-items: center; gap: 8px; margin: 8px 4px -4px; }
         .aj-sec i { color: var(--primary-color); width: 18px; text-align: center; }
         .aj-guardar { position: sticky; bottom: 14px; z-index: 30; padding: 6px 0; }
         .aj-guardar button { box-shadow: 0 6px 18px rgba(20,32,43,.28); }
@@ -204,7 +240,17 @@
         .team-select-card img { width: 45px; height: 45px; object-fit: contain; margin-bottom: 6px; }
         .team-select-card span { font-size: 11px; text-align: center; font-weight: 700; color: var(--text-main); line-height: 1.1; }
 
-        .streak-dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin: 0 1px; }
+        .streak-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin: 0 1px; flex: 0 0 auto; }
+        .cl-equipo { display: flex; align-items: center; gap: 7px; min-width: 0; }
+        .cl-equipo-info { min-width: 0; flex: 1; }
+        .cl-equipo-nombre { font-size: 11px; line-height: 1.15; font-weight: 800; overflow-wrap: anywhere; }
+        .cl-equipo-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 3px 6px; margin-top: 4px; font-size: 9px; line-height: 1.2; font-weight: 700; color: var(--text-sec); }
+        .cl-racha { display: inline-flex; align-items: center; gap: 1px; }
+        #tabla-clasificacion { table-layout: fixed; }
+        #tabla-clasificacion td, #tabla-clasificacion th { overflow: hidden; }
+        .cl-pos-col { width: 34px; }
+        .cl-pj-col { width: 36px; }
+        .cl-pts-col { width: 42px; }
         .streak-v { background-color: #10b981; }
         .streak-e { background-color: #9ca3af; }
         .streak-d { background-color: #ef4444; }
@@ -233,6 +279,17 @@
             to { opacity: 1; transform: translateY(0); }
         }
         .tab-content-anim { animation: slideUpFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        .fi-acc { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 8px; margin: 0; }
+        .fi-acc a, .fi-acc button { min-height: 48px; border-radius: 12px; background: #fff; border: 1px solid #DCE2E6; color: #34414B; font-size: 11px; font-weight: 800; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; text-decoration: none; }
+        .fi-acc i { color: #68737D; font-size: 16px; }
+        .ag-equipos-ir { display: flex; flex-direction: column; margin-top: 7px; }
+        .ag-eq-ir { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid var(--line); }
+        .ag-eq-ir-titulo { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; font-size: 12px; line-height: 1.15; font-weight: 900; color: var(--text-main); }
+        .ag-eq-ir-titulo span, .ag-eq-ir-titulo small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .ag-eq-ir-titulo small { font-size: 10px; font-weight: 600; color: var(--text-sec); }
+        .ag-eq-ir-acciones { display: grid; grid-template-columns: repeat(3,40px); flex: 0 0 auto; gap: 5px; }
+        .ag-eq-ir-acciones button { min-width: 40px; min-height: 40px; border: 1px solid var(--line); border-radius: 10px; background: #fff; color: #68737D; font-size: 15px; }
+        .ag-eq-ir-acciones button:active { background: #E8ECEF; }
     </style>
 </head>
 <body class="pb-20">
@@ -373,9 +430,17 @@
             <ul id="banner-agenda-lista" class="mt-2 space-y-2"></ul>
         </div>
 
-        <div id="agenda-controles" class="ag-controles hide"></div>
         <div id="lista-agenda" class="px-4 pb-6 pt-2"></div>
     </div>
+
+    <!-- Filtros y accesos directos de la Agenda Familiar -->
+    <div id="agenda-filter-overlay" class="ag-filter-overlay hide" onclick="cerrarFiltrosAgenda()"></div>
+    <section id="agenda-filter-sheet" class="ag-filter-sheet" aria-label="Filtros de agenda" aria-expanded="false">
+        <button id="agenda-sheet-handle" type="button" class="ag-sheet-handle" onclick="toggleFiltrosAgenda()" aria-expanded="false">
+            <i class="fas fa-chevron-up"></i><span>Filtros y accesos a equipos</span>
+        </button>
+        <div id="agenda-controles" class="ag-controles"></div>
+    </section>
 
     <!-- PANTALLA DE AJUSTES -->
     <div id="screen-ajustes" class="hide max-w-md mx-auto min-h-screen pb-24">
@@ -414,6 +479,7 @@
                     <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Transporte para partidos fuera de casa</label>
                     <select id="select-transporte-fuera" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
                         <option value="driving">🚗 Coche</option>
+                        <option value="transit">🚌 Transporte público</option>
                         <option value="foot">🚶‍♂️ Caminando</option>
                     </select>
                 </div>
@@ -434,29 +500,29 @@
             <div class="card p-4 space-y-4">
                 <p class="text-xs text-gray-500">Las alarmas se aplican al pulsar "Al calendario" en un partido.</p>
                 <div class="flex justify-between items-center">
-                    <div>
-                        <label class="block text-sm font-bold text-gray-800">Aviso el día antes</label>
-                        <p class="text-xs text-gray-500">Una alarma 24 h antes de la convocatoria</p>
+                    <div class="pr-3">
+                        <label class="block text-sm font-bold text-gray-800">Activar alarmas</label>
+                        <p class="text-xs text-gray-500">Añade avisos al calendario al pulsar «Al calendario». No son notificaciones push de la app.</p>
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="toggle-alarma-dia" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                        <input type="checkbox" id="toggle-alarmas" class="sr-only peer" onchange="actualizarEstadoAlarmas()">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#68737D]"></div>
                     </label>
                 </div>
-                <div class="border-t pt-3" style="border-color: var(--border-color);">
-                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Minutos antes del evento</label>
+                <div id="bloque-alarma-evento" class="border-t pt-3" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Alarma · minutos antes del evento</label>
                     <input type="number" id="input-alarma-evento" min="0" max="1440" placeholder="60" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
                     <p class="text-[11px] text-gray-400 mt-1">Deja vacío para no añadir esta alarma.</p>
                 </div>
-                <div class="border-t pt-3" style="border-color: var(--border-color);">
-                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Minutos antes de salir de casa</label>
+                <div id="bloque-alarma-salida" class="border-t pt-3" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Alarma · minutos antes de salir de casa</label>
                     <input type="number" id="input-alarma-salida" min="0" max="240" placeholder="15" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-                    <p class="text-[11px] text-gray-400 mt-1">Necesita "Tiempo de Viaje" activado y la agenda cargada. Deja vacío para no añadirla.</p>
+                    <p class="text-[11px] text-gray-400 mt-1">Requiere «Tiempo de Viaje» y una ruta con duración calculada. Deja vacío para no añadirla.</p>
                 </div>
                 <div class="border-t pt-3" style="border-color: var(--border-color);">
-                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Llegar antes del partido (minutos)</label>
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Tiempo de convocatoria (minutos)</label>
                     <input type="number" id="input-margen-llegada" min="0" max="180" placeholder="30" class="w-full p-3 rounded-lg focus:outline-none text-sm font-medium" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
-                    <p class="text-[11px] text-gray-400 mt-1">Afecta a la hora de salida y a la convocatoria del calendario (no a Escuela Canal).</p>
+                    <p class="text-[11px] text-gray-400 mt-1">Tiempo previo al inicio del partido para calentamiento. Modifica el calendario considerando convocatoria y partido. No aplica a Escuela Canal.</p>
                 </div>
                 <div class="border-t pt-3" style="border-color: var(--border-color);">
                     <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Avisar de lluvia desde (%)</label>
@@ -588,7 +654,7 @@
             <div id="panel-logo-custom" class="hide card p-4">
                 <label class="block text-xs font-bold uppercase mb-3" style="color: var(--text-sec);">Logo personalizado (opcional)</label>
                 <div class="flex items-center gap-3">
-                    <div id="preview-logo" class="w-16 h-16 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-content overflow-hidden flex-shrink-0">
+                    <div id="preview-logo" class="w-16 h-16 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden flex-shrink-0">
                         <i class="fas fa-camera text-gray-400"></i>
                     </div>
                     <div class="flex-1 space-y-2">
@@ -612,7 +678,7 @@
 
     <!-- PANTALLA DETALLE DEL EQUIPO -->
     <div id="screen-detalle" class="hide max-w-md mx-auto">
-        <div class="text-white shadow-md sticky top-0 z-20" style="background-color: var(--header-bg);">
+        <div class="detalle-cabecera text-white shadow-md sticky top-0 z-50" style="background-color: var(--header-bg);">
             <div class="flex items-center p-4 h-[88px]">
                 <button onclick="volverInicio()" class="mr-3 w-8"><i class="fas fa-chevron-left text-xl"></i></button>
                 <div class="flex items-center flex-1 min-w-0">
@@ -629,6 +695,11 @@
                 </a>
                 <button onclick="refrescarPantallaJugador(this)" class="text-white hover:opacity-80 transition ml-2 flex-shrink-0"><i class="fas fa-sync-alt text-lg"></i></button>
             </div>
+            <nav class="detalle-tabs" role="tablist" aria-label="Secciones del equipo">
+                <button type="button" role="tab" aria-controls="tab-calendario" onclick="cambiarTab('calendario')" id="btn-tab-calendario" class="tab-active"><i class="fas fa-calendar"></i><span>Calendario</span></button>
+                <button type="button" role="tab" aria-controls="tab-resultados" onclick="cambiarTab('resultados')" id="btn-tab-resultados"><i class="fas fa-futbol"></i><span>Resultados</span></button>
+                <button type="button" role="tab" aria-controls="tab-clasificacion" onclick="cambiarTab('clasificacion')" id="btn-tab-clasificacion"><i class="fas fa-list-ol"></i><span>Clasificación</span></button>
+            </nav>
         </div>
 
         <div id="tab-calendario" class="p-4">
@@ -669,25 +740,17 @@
                 <table class="w-full text-left border-collapse">
                     <thead class="text-xs font-bold uppercase border-b" style="background-color: var(--bg-color); color: var(--text-sec); border-color: var(--border-color);">
                         <tr>
-                            <th class="p-2">Pos</th><th class="p-2">Equipo</th><th class="p-2 text-center">PJ</th><th class="p-2 text-center" title="Diferencia de goles">DG</th><th class="p-2 text-center">Racha</th><th class="p-2 text-right">PTS</th>
+                            <th class="p-2 cl-pos-col">Pos</th><th class="p-2">Equipo</th><th class="p-2 text-center cl-pj-col">PJ</th><th class="p-2 text-right cl-pts-col">PTS</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-clasificacion" class="divide-y text-[13px]" style="border-color: var(--border-color);"></tbody>
                 </table>
             </div>
-            <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-3 text-[11px] font-bold" style="color: var(--text-sec);">
-                <span><span class="streak-dot streak-v"></span> Victoria</span>
-                <span><span class="streak-dot streak-e"></span> Empate</span>
-                <span><span class="streak-dot streak-d"></span> Derrota</span>
-                <span>Racha = últimos 5 · DG = goles a favor − en contra</span>
+            <div class="flex items-center justify-center gap-2 mt-3" aria-label="Leyenda de resultados">
+                <span class="streak-dot streak-v"></span><span class="streak-dot streak-e"></span><span class="streak-dot streak-d"></span>
             </div>
         </div>
 
-        <div class="fixed bottom-0 w-full max-w-md border-t flex justify-around pt-2 pb-6 text-xs font-bold" style="background-color: var(--card-bg); border-color: var(--border-color); color: var(--text-sec);">
-            <button onclick="cambiarTab('calendario')" id="btn-tab-calendario" class="flex flex-col items-center tab-active w-1/3 relative"><i class="fas fa-calendar text-lg mb-1"></i> Calendario</button>
-            <button onclick="cambiarTab('resultados')" id="btn-tab-resultados" class="flex flex-col items-center w-1/3"><i class="fas fa-futbol text-lg mb-1"></i> Resultados</button>
-            <button onclick="cambiarTab('clasificacion')" id="btn-tab-clasificacion" class="flex flex-col items-center w-1/3"><i class="fas fa-list-ol text-lg mb-1"></i> Clasificación</button>
-        </div>
     </div>
 
     <script>
@@ -720,9 +783,11 @@
         };
         if (userSettings.showRoute === undefined) userSettings.showRoute = false; 
         if (userSettings.transportModeAway === undefined) userSettings.transportModeAway = 'driving';
+        if (!['driving', 'foot', 'transit'].includes(userSettings.transportModeAway)) userSettings.transportModeAway = 'driving';
         if (userSettings.showChangeAlerts === undefined) userSettings.showChangeAlerts = true;
         if (userSettings.alertDurationMinutes === undefined) userSettings.alertDurationMinutes = 60;
-        if (userSettings.alarmDayBefore === undefined) userSettings.alarmDayBefore = true;
+        // Compatibilidad con la versión anterior: el antiguo aviso de 24 h se migra a un interruptor general.
+        if (userSettings.alarmEnabled === undefined) userSettings.alarmEnabled = userSettings.alarmDayBefore !== false;
         if (userSettings.alarmEventMin === undefined) userSettings.alarmEventMin = 60;
         if (userSettings.alarmDepartMin === undefined) userSettings.alarmDepartMin = 15;
         if (userSettings.arrivalMargin === undefined) userSettings.arrivalMargin = 30;
@@ -1197,10 +1262,16 @@
         }
 
         // <cambios>
+        // ── AVISOS DE CAMBIOS DE PARTIDO ──────────────────────────────────────────
+        // Para cada equipo se compara la fecha/hora y el campo de sus partidos con lo que la app
+        // vio la última vez (snapshot_v4_<id equipo>). Si algo cambia se guarda un aviso en
+        // "avisos_cambios", que se muestra en la Agenda Familiar hasta que se cierra, caduca
+        // (tiempo de Ajustes) o se juega el partido. No hace falta abrir el equipo.
         function escHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
         function leerJSON(clave) { try { const v = JSON.parse(localStorage.getItem(clave)); return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; } catch { return {}; } }
         function escribirJSON(clave, valor) { try { localStorage.setItem(clave, JSON.stringify(valor)); } catch {} }
         function esPartidoFavorito(eq, p) { return p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito; }
+        // Identifica un partido aunque cambie de jornada (ECM tiene Id; Canal se identifica por el cruce de equipos)
         function claveCambio(p) { return p.Id ? `id${p.Id}` : `${p.EquipoLocal}_${p.EquipoVisitante}`; }
         function mismoEstado(a, b) { return !!a && !!b && a.f === b.f && a.c === b.c; }
 
@@ -1235,19 +1306,20 @@
                 const estado = { f: p.FechaHora, c: p.Campo || '' };
                 nuevo[k] = estado;
                 const antes = snap[k];
-                if (!hayBase || !antes) return;
-                if (mismoEstado(antes, estado)) return;
-                if (antes.c === 'Campo') return;
-                if (new Date(p.FechaHora) < hoy) return;
+                if (!hayBase || !antes) return;               // primera vez que se ve: solo se guarda, no avisa
+                if (mismoEstado(antes, estado)) return;       // sin cambios
+                if (antes.c === 'Campo') return;              // Canal: primera asignación de hora y campo desde el PDF, no es un cambio
+                if (new Date(p.FechaHora) < hoy) return;      // partido ya pasado
                 const clave = `${eq.id}|${k}`;
                 const previo = avisos[clave];
-                if (previo && mismoEstado(previo.antes, estado)) { delete avisos[clave]; return; }
+                if (previo && mismoEstado(previo.antes, estado)) { delete avisos[clave]; return; }   // ha vuelto a como estaba
                 avisos[clave] = { t: ahora, eq: eq.nombre, loc: p.EquipoLocal, vis: p.EquipoVisitante, antes: previo ? previo.antes : antes, ahora: estado };
             });
             escribirJSON(claveSnap, nuevo);
             escribirJSON('avisos_cambios', avisos);
         }
 
+        // Pone los indicadores que usan las tarjetas de la vista de equipo a partir de los avisos activos
         function marcarCambiosLocales(eq, partidos) {
             if (!Array.isArray(partidos)) return;
             const avisos = avisosActivos();
@@ -1285,7 +1357,6 @@
 
         function cerrarBannerAgenda() {
             escribirJSON('avisos_cambios', {});
-            localStorage.setItem('dismissed_banner_time', String(Date.now()));
             renderBannerAgenda();
             if (window._ultimaAgenda) renderAgendaDesdeDatos(window._ultimaAgenda[0], window._ultimaAgenda[1]);
         }
@@ -1342,13 +1413,24 @@
             document.getElementById('select-transporte-fuera').value = userSettings.transportModeAway || 'driving';
             document.getElementById('toggle-avisos').checked = userSettings.showChangeAlerts !== false;
             document.getElementById('input-tiempo-aviso').value = userSettings.alertDurationMinutes || 60;
-            document.getElementById('toggle-alarma-dia').checked = userSettings.alarmDayBefore !== false;
+            document.getElementById('toggle-alarmas').checked = userSettings.alarmEnabled === true;
             document.getElementById('input-alarma-evento').value = userSettings.alarmEventMin ?? '';
             document.getElementById('input-alarma-salida').value = userSettings.alarmDepartMin ?? '';
+            actualizarEstadoAlarmas();
             document.getElementById('input-margen-llegada').value = userSettings.arrivalMargin ?? 30;
             document.getElementById('input-umbral-lluvia').value = userSettings.rainThreshold ?? 40;
             renderizarAjustesGrupos();
             comprobarAvisosAdmin();
+        }
+
+        function actualizarEstadoAlarmas() {
+            const activo = document.getElementById('toggle-alarmas')?.checked === true;
+            [['bloque-alarma-evento', 'input-alarma-evento'], ['bloque-alarma-salida', 'input-alarma-salida']].forEach(([bloqueId, inputId]) => {
+                const bloque = document.getElementById(bloqueId);
+                const input = document.getElementById(inputId);
+                if (bloque) { bloque.style.opacity = activo ? '1' : '.45'; bloque.setAttribute('aria-disabled', String(!activo)); }
+                if (input) input.disabled = !activo;
+            });
         }
 
         async function guardarAjustes() {
@@ -1368,7 +1450,7 @@
                 const n = parseInt(raw);
                 return isNaN(n) ? vacio : Math.max(min, Math.min(max, n));
             };
-            userSettings.alarmDayBefore = document.getElementById('toggle-alarma-dia').checked;
+            userSettings.alarmEnabled = document.getElementById('toggle-alarmas').checked;
             userSettings.alarmEventMin = entero('input-alarma-evento', 0, 1440, null);
             userSettings.alarmDepartMin = entero('input-alarma-salida', 0, 240, null);
             userSettings.arrivalMargin = entero('input-margen-llegada', 0, 180, 30) ?? 30;
@@ -1406,7 +1488,7 @@
                 localStorage.removeItem('cache_grupos');
                 localStorage.removeItem('dismissed_changes');
                 localStorage.removeItem('avisos_cambios');
-                localStorage.removeItem('dismissed_banner_time');
+                localStorage.removeItem('dismissed_banner_time'); // Limpiamos también el control de tiempo del banner
                 Object.keys(localStorage).forEach(key => {
                     if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_') || key.startsWith('snapshot_v4_') || key.startsWith('cache_ruta')) {
                         localStorage.removeItem(key);
@@ -1526,11 +1608,13 @@
             return COLORES_HIJO[(i < 0 ? 0 : i) % COLORES_HIJO.length];
         }
 
-        function rangoVista(v, ahora = new Date()) {
-            const y = ahora.getFullYear(), m = ahora.getMonth(), d = ahora.getDate();
-            const hoy = new Date(y, m, d);
-            if (v === 'mes') return [hoy, new Date(y, m + 1, d)];
-            return [hoy, new Date(y, m, d + 7)];
+        function rangoVista(v, ahora = new Date()) {  // semana natural (lunes-domingo) o mes natural
+            const hoy = new Date(ahora.getFullYear(), ahora.getMonth(), ahora.getDate());
+            if (v === 'mes') return [new Date(hoy.getFullYear(), hoy.getMonth(), 1), new Date(hoy.getFullYear(), hoy.getMonth() + 1, 1)];
+            const desplazamiento = (hoy.getDay() + 6) % 7; // lunes = 0
+            const lunes = new Date(hoy); lunes.setDate(hoy.getDate() - desplazamiento);
+            const lunesSiguiente = new Date(lunes); lunesSiguiente.setDate(lunes.getDate() + 7);
+            return [lunes, lunesSiguiente];
         }
 
         function etiquetaDia(fecha, ahora = new Date()) {
@@ -1543,6 +1627,21 @@
             return [cap, ''];
         }
 
+        function toggleFiltrosAgenda(forzar) {
+            const sheet = document.getElementById('agenda-filter-sheet');
+            const overlay = document.getElementById('agenda-filter-overlay');
+            if (!sheet || !overlay) return;
+            const abrir = typeof forzar === 'boolean' ? forzar : !sheet.classList.contains('open');
+            sheet.classList.toggle('open', abrir);
+            overlay.classList.toggle('hide', !abrir);
+            sheet.setAttribute('aria-expanded', String(abrir));
+            const handle = document.getElementById('agenda-sheet-handle');
+            if (handle) handle.setAttribute('aria-expanded', String(abrir));
+            document.body.classList.toggle('agenda-sheet-open', abrir);
+        }
+        function cerrarFiltrosAgenda() { toggleFiltrosAgenda(false); }
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarFiltrosAgenda(); });
+
         function cambiarVistaAgenda(v) {
             vistaAgenda = v;
             try { localStorage.setItem('vista_agenda', v); } catch {}
@@ -1550,6 +1649,7 @@
         }
         function cambiarFiltroHijo(n) { filtroHijo = n; if (window._ultimaAgenda) renderAgendaDesdeDatos(window._ultimaAgenda[0], window._ultimaAgenda[1]); }
         function cambiarFiltroDeporte(d) { filtroDeporte = d; if (window._ultimaAgenda) renderAgendaDesdeDatos(window._ultimaAgenda[0], window._ultimaAgenda[1]); }
+        function colorEquipoAgenda(eq) { return eq && eq.idDeporte === '4' ? '#00509E' : '#006D6F'; }
 
         function textoCambio(a) {
             if (!a) return '';
@@ -1568,9 +1668,10 @@
                 const chips = [`<button type="button" class="ag-chip todos" aria-pressed="${filtroHijo === ''}" onclick="cambiarFiltroHijo('')">Todos</button>`];
                 nombres.forEach(n => {
                     const grupo = equipos.filter(e => e.nombre === n);
-                    const eq = grupo.find(e => (e.escudoFavorito || '').startsWith('data:')) || grupo[0];
-                    const custom = (eq.escudoFavorito || '').startsWith('data:');
-                    chips.push(`<button type="button" class="ag-chip" style="--c:${colorHijo(n)}" aria-pressed="${filtroHijo === n}" onclick='cambiarFiltroHijo(${escHtml(JSON.stringify(n))})'><img src="${escHtml(eq.escudoFavorito || '/static/logo.png')}" alt="" style="object-fit:${custom ? 'cover' : 'contain'}">${escHtml(n)}</button>`);
+                    const eq = grupo[0];
+                    const avatar = grupo.find(e => (e.escudoFavorito || '').startsWith('data:')) || eq;
+                    const custom = (avatar.escudoFavorito || '').startsWith('data:');
+                    chips.push(`<button type="button" class="ag-chip" style="--c:${colorEquipoAgenda(eq)}" aria-pressed="${filtroHijo === n}" onclick='cambiarFiltroHijo(${escHtml(JSON.stringify(n))})'><img src="${escHtml(avatar.escudoFavorito || '/static/logo.png')}" alt="" style="object-fit:${custom ? 'cover' : 'contain'}">${escHtml(n)}</button>`);
                 });
                 html += `<div class="ag-fila"><span class="ag-etq">Hijo</span><div class="ag-chips">${chips.join('')}</div></div>`;
             }
@@ -1581,17 +1682,25 @@
                 html += `<div class="ag-fila"><span class="ag-etq">Deporte</span><div class="ag-chips">${chips.join('')}</div></div>`;
             }
             const enAmbito = equipos.filter(e => (!filtroHijo || e.nombre === filtroHijo) && (!filtroDeporte || e.idDeporte === filtroDeporte));
-            if (enAmbito.length === 1) {
-                const e = enAmbito[0];
-                html += `<div class="ag-ir-cap">${escHtml(e.nombre)}${e.nombreCompeticion ? ' · ' + escHtml(e.nombreCompeticion) : ''}</div>
-                    <div class="ag-ir" role="group" aria-label="Secciones del equipo">
-                        <button type="button" onclick="irAEquipo(${e.id}, 'calendario')"><i class="far fa-calendar-alt"></i>Calendario</button>
-                        <button type="button" onclick="irAEquipo(${e.id}, 'resultados')"><i class="fas fa-futbol"></i>Resultados</button>
-                        <button type="button" onclick="irAEquipo(${e.id}, 'clasificacion')"><i class="fas fa-list-ol"></i>Clasificación</button>
-                    </div>`;
+            if (enAmbito.length) {
+                html += `<div class="ag-ir-cap">Accesos directos a equipos</div><div class="ag-equipos-ir">` + enAmbito.map(e => `
+                    <div class="ag-eq-ir">
+                        <div class="ag-eq-ir-titulo"><span>${escHtml(e.nombre)}</span>${e.nombreCompeticion ? `<small>${escHtml(e.nombreCompeticion)}</small>` : ''}</div>
+                        <div class="ag-eq-ir-acciones" role="group" aria-label="Secciones de ${escHtml(e.nombre)}">
+                            <button type="button" title="Calendario · ${escHtml(e.nombre)}" aria-label="Calendario · ${escHtml(e.nombre)}" onclick="cerrarFiltrosAgenda(); irAEquipo(${e.id}, 'calendario')"><i class="far fa-calendar-alt"></i></button>
+                            <button type="button" title="Resultados · ${escHtml(e.nombre)}" aria-label="Resultados · ${escHtml(e.nombre)}" onclick="cerrarFiltrosAgenda(); irAEquipo(${e.id}, 'resultados')"><i class="fas fa-futbol"></i></button>
+                            <button type="button" title="Clasificación · ${escHtml(e.nombre)}" aria-label="Clasificación · ${escHtml(e.nombre)}" onclick="cerrarFiltrosAgenda(); irAEquipo(${e.id}, 'clasificacion')"><i class="fas fa-list-ol"></i></button>
+                        </div>
+                    </div>`).join('') + `</div>`;
             }
             cont.innerHTML = html;
             cont.classList.remove('hide');
+            const handle = document.getElementById('agenda-sheet-handle');
+            if (handle) {
+                const periodo = vistaAgenda === 'semana' ? 'Semana' : 'Mes';
+                const resumen = [filtroHijo || 'Todos', filtroDeporte ? (NOMBRES_DEPORTE[filtroDeporte] || 'Deporte') : 'Todos los deportes'].join(' · ');
+                handle.querySelector('span').textContent = `${periodo} · ${resumen}`;
+            }
         }
 
         function htmlTarjetaAgenda(p, index, avisosAgenda) {
@@ -1604,7 +1713,8 @@
             const colorDeporte = esCanal ? '#00509E' : '#006D6F';
             const dateObj = new Date(p.FechaHora);
             const horaStr = dateObj.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
-            const sinHora = esSinHora(p);
+            const descansa = !p.EquipoLocal || !p.EquipoVisitante;
+            const sinHora = !descansa && esSinHora(p);
             const fechaCorta = dateObj.toLocaleDateString('es-ES', { weekday: 'short', day: 'numeric', month: 'short' }).replace(/\./g, '');
 
             let posLocal = '', posVis = '';
@@ -1621,12 +1731,9 @@
             if (esCanal) {
                 escLocal = esLocalFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
                 escVis = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
-            } else if ((eq.escudoFavorito || '').startsWith('data:')) {
-                if (esLocalFav) escLocal = eq.escudoFavorito;
-                if (esVisFav) escVis = eq.escudoFavorito;
             }
 
-            const descansa = !p.EquipoLocal || !p.EquipoVisitante;
+            const escudoDescanso = p.EquipoLocal ? escLocal : escVis;
             const estado = getEstadoPartido(p);
             const aplazado = estado === 'aplazado';
             const aviso = (userSettings.showChangeAlerts !== false) ? avisosAgenda[`${eq.id}|${claveCambio(p)}`] : null;
@@ -1637,13 +1744,14 @@
                     ? `<span class="mc-campo" style="background:#FFEDD5;color:#9A3412">Exterior</span>`
                     : `<span class="mc-campo" style="background:#DBEAFE;color:#1E40AF">Pabellón</span>`);
 
-            const iconoRuta = esPartidoEnCasa ? 'fa-walking' : (userSettings.transportModeAway === 'transit' ? 'fa-bus' : 'fa-car');
+            const iconoRuta = iconoModo(modoViaje(p, eq));
             const filaRuta = userSettings.showRoute === true
                 ? `<div class="mc-ruta"><i class="fas ${iconoRuta}"></i><span id="ruta-agenda-${index}">Calculando...</span></div>` : '';
 
             const urlGrupo = getGrupoEquipo(eq);
             const btnGrupo = urlGrupo ? `<a href="${escHtml(urlGrupo)}" onclick="event.stopPropagation()" class="mc-btn wa" title="Abrir grupo de WhatsApp" aria-label="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp"></i></a>` : '';
             const dirJs = escHtml(JSON.stringify(dirCompleta));
+            const modoRuta = modoViaje(p, eq);
 
             const badges = [];
             if (aplazado) badges.push(`<span class="mc-badge mc-b-aplazado"><i class="fas fa-ban"></i>Aplazado</span>`);
@@ -1651,7 +1759,7 @@
 
             const estiloEscCanal = { local: 'border:3px solid #fff;box-sizing:border-box;', vis: 'background-color:rgba(0,80,158,.3);border:3px solid #00509E;box-sizing:border-box;' };
             const equipo = (nombre, esc, fav, pos, rol) => !nombre ? `
-                <div class="mc-team"><div class="esc" style="display:flex;align-items:center;justify-content:center;background:#EEF1F3"><i class="fas fa-bed" style="color:#3F4B54"></i></div><div class="nom" style="color:var(--text-sec)">DESCANSA</div></div>` : `
+                <div class="mc-team"><div class="esc"><img src="${escHtml(escudoDescanso || '/static/logo.png')}" alt="Escudo del equipo"></div><div class="nom" style="color:var(--text-sec)">DESCANSA</div></div>` : `
                 <div class="mc-team ${fav ? 'fav' : ''}">
                     <div class="esc" style="${esCanal ? estiloEscCanal[rol] : ''}"><img src="${escHtml(esc)}" alt="" style="object-fit:${(esCanal || esc.startsWith('data:')) ? 'cover' : 'contain'}"></div>
                     <div class="nom">${escHtml(acortarNombre(nombre))}</div>
@@ -1661,12 +1769,12 @@
             return `
             <article class="mcard ${aplazado ? 'atenuado' : ''}" style="--sport:${colorDeporte}" data-ficha="${escHtml(registrarFicha(p, eq))}">
                 <div class="mc-top">
-                    <div class="mc-hijo" style="--c:${colorHijo(eq.nombre)}"><img src="${escHtml(eq.escudoFavorito || '/static/logo.png')}" alt=""><span>${escHtml(eq.nombre)}</span></div>
+                    <div class="mc-hijo" style="--c:${colorDeporte}"><img src="${escHtml(eq.escudoFavorito || '/static/logo.png')}" alt=""><span>${escHtml(eq.nombre)}</span></div>
                     <span class="mc-ico" title="${NOMBRES_DEPORTE[eq.idDeporte] || ''}">${getDeporteIcon(eq.idDeporte).replace('text-white text-xl', '')}</span>
                     <span class="mc-ico" title="${esPartidoEnCasa ? 'En casa' : 'Fuera'}"><i class="fas ${esPartidoEnCasa ? 'fa-home' : 'fa-plane'}"></i></span>
                     <div class="mc-cuando">
                         <div class="mc-fecha">${escHtml(fechaCorta)}</div>
-                        ${sinHora ? '<span class="mc-sinhora">Hora por confirmar</span>' : `<div class="mc-hora ${aplazado ? 'tachada' : ''}">${horaStr}</div>`}
+                        ${sinHora ? '<span class="mc-sinhora">Hora por confirmar</span>' : (!descansa ? `<div class="mc-hora ${aplazado ? 'tachada' : ''} ${(aviso && aviso.antes.f !== aviso.ahora.f) ? 'cambio' : ''}">${(aviso && aviso.antes.f !== aviso.ahora.f) ? '<i class="fas fa-clock" aria-hidden="true"></i>' : ''}${horaStr}</div>` : '')}
                     </div>
                 </div>
                 ${eq.nombreCompeticion ? `<div class="mc-comp">${escHtml(eq.nombreCompeticion)}</div>` : ''}
@@ -1677,14 +1785,14 @@
                     </div>
                     <div class="mc-side" id="side-agenda-${index}">${badges.join('')}</div>
                 </div>
-                ${descansa ? '' : `<div class="mc-dir copiable" data-copiar="${escHtml(dirCompleta)}" title="Mantén pulsado para copiar la dirección"><i class="fas fa-map-marker-alt"></i><span>${escHtml(nombreCampoCorto(p, esCanal, dirCompleta))}</span></div>
+                ${descansa ? '' : `<div class="mc-dir copiable" data-copiar="${escHtml(dirCompleta)}" title="Copiar dirección"><i class="fas fa-map-marker-alt"></i><span>${escHtml(nombreCampoCorto(p, esCanal, dirCompleta))}</span></div>
                 ${filaRuta}
                 <div class="mc-foot">
                     ${campo}
                     <div class="mc-clima" id="clima-agenda-${index}"></div>
                     <div class="mc-acciones">
                         ${btnGrupo}
-                        <button type="button" class="mc-btn ruta" onclick="event.stopPropagation(); abrirModalMapa(${dirJs})" title="Abrir ruta" aria-label="Abrir ruta"><i class="fas fa-location-arrow"></i></button>
+                        <button type="button" class="mc-btn ruta" onclick="event.stopPropagation(); abrirModalMapa(${dirJs}, '${modoRuta}')" title="Abrir navegador" aria-label="Abrir navegador"><i class="fas fa-location-arrow"></i></button>
                     </div>
                 </div>`}
             </article>`;
@@ -1699,6 +1807,7 @@
             const hijos = [...new Set(lista.map(p => p._equipoRef.nombre))];
             const partes = [`<span class="r"><i class="far fa-futbol"></i>${lista.length} ${lista.length === 1 ? 'partido' : 'partidos'}</span>`];
             if (hijos.length > 1) partes.push(`<span class="r">${hijos.map(escHtml).join(' · ')}</span>`);
+            // partidos a la vez en campos distintos
             const choques = [];
             for (let i = 0; i < conHora.length; i++) for (let j = i + 1; j < conHora.length; j++) {
                 const a = conHora[i], b = conHora[j];
@@ -1709,15 +1818,11 @@
                 const h = p => new Date(p.FechaHora).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit', hour12: false });
                 partes.push(`<span class="r alerta"><i class="fas fa-exclamation-triangle"></i>Coinciden: ${escHtml(a._equipoRef.nombre)} ${h(a)} y ${escHtml(b._equipoRef.nombre)} ${h(b)} en campos distintos</span>`);
             }
-            partes.push(`<span class="r" id="ag-salida-${clave}" style="display:none"></span>`);
+            if (userSettings.showRoute === true) partes.push(`<span class="r" id="ag-salida-${clave}" style="display:none"></span>`);
             return `<div class="ag-resumen">${partes.join('')}</div>`;
         }
 
         function actualizarResumenDias() {
-            document.querySelectorAll('[id^="ag-salida-"]').forEach(el => {
-                el.innerHTML = '';
-                el.style.display = 'none';
-            });
             if (userSettings.showRoute !== true) return;
             const mapa = {};
             (window._partidosAgenda || []).forEach(p => {
@@ -1726,6 +1831,7 @@
                 const v = viajePartido[`${eq.id}|${claveCambio(p)}`];
                 if (!Number.isFinite(v)) return;
                 const esCanal = eq.idDeporte === '4';
+                if (!esCanal && userSettings.transportModeAway === 'transit' && p.EquipoLocal !== eq.equipoFavorito) return;
                 const sal = new Date(p.FechaHora); sal.setMinutes(sal.getMinutes() - (esCanal ? 2 : margenLlegada()) - v);
                 const k = claveDia(new Date(p.FechaHora));
                 if (!mapa[k] || sal < mapa[k].sal) mapa[k] = { sal, nombre: eq.nombre };
@@ -1734,7 +1840,7 @@
                 const el = document.getElementById(`ag-salida-${k}`);
                 if (!el) return;
                 const m = mapa[k];
-                el.innerHTML = `<i class="fas fa-door-open"></i>Salir a las ${String(m.sal.getHours()).padStart(2, '0')}:${String(m.sal.getMinutes()).padStart(2, '0')} de casa (${escHtml(m.nombre)})`;
+                el.innerHTML = `<i class="fas fa-house"></i>Salir a las ${String(m.sal.getHours()).padStart(2, '0')}:${String(m.sal.getMinutes()).padStart(2, '0')} de casa`;
                 el.style.display = 'inline-flex';
             });
         }
@@ -1769,7 +1875,7 @@
 
             if (mostrados.length === 0) {
                 const otra = (vistaAgenda === 'semana' && conteos.mes > 0) ? 'mes' : null;
-                const nombreVista = { semana: 'en los próximos 7 días', mes: 'en el próximo mes' }[vistaAgenda];
+                const nombreVista = { semana: 'esta semana', mes: 'este mes' }[vistaAgenda];
                 const nombreOtra = otra ? VISTAS_AGENDA.find(x => x[0] === otra)[1] : '';
                 contenedor.innerHTML = `<div class="ag-vacio"><i class="far fa-calendar-check text-5xl mb-3" style="opacity:.3"></i><p class="font-bold">No hay partidos ${nombreVista}</p>${showingFromCache ? '<p class="text-sm mt-1">Sin conexión: datos guardados.</p>' : ''}${otra ? `<button type="button" onclick="cambiarVistaAgenda('${otra}')">Ver ${nombreOtra.toLowerCase()} (${conteos[otra]})</button>` : ''}</div>`;
                 window._partidosAgenda = [];
@@ -1883,6 +1989,7 @@
 
                     if (!Array.isArray(partidos)) return;
 
+                    // Solo con datos recién descargados: compara con lo último visto y guarda los avisos
                     if (!fromCache) registrarCambios(eq, partidos);
                     const avisosEq = avisosActivos();
 
@@ -1933,7 +2040,7 @@
                 m.classList.remove('hide'); bNo.focus();
             });
         }
-        async function copiarTexto(texto) {
+        async function copiarTexto(texto, mensaje = 'Dirección copiada') {
             try { await navigator.clipboard.writeText(texto); }
             catch {
                 const ta = document.createElement('textarea'); ta.value = texto; ta.style.position = 'fixed'; ta.style.opacity = '0';
@@ -1942,7 +2049,7 @@
                 ta.remove();
                 if (!ok) { mostrarToast('No se pudo copiar'); return; }
             }
-            vibrar(50); mostrarToast('Dirección copiada', 1800);
+            vibrar(50); mostrarToast(mensaje, 1800);
         }
         (function () {
             let timer = null, inicio = null;
@@ -1972,7 +2079,8 @@
             if (window._copiadoEn && Date.now() - window._copiadoEn < 700) return;
             const interno = e.target.closest('a, button, [onclick]');
             if (interno && tarjeta.contains(interno)) return;
-            abrirFicha(tarjeta.getAttribute('data-ficha'));
+            const desdeEquipo = !!tarjeta.closest('#lista-calendario, #lista-resultados');
+            abrirFicha(tarjeta.getAttribute('data-ficha'), desdeEquipo);
         });
         document.addEventListener('keydown', e => { if (e.key === 'Escape' && !document.getElementById('modal-ficha').classList.contains('hide')) cerrarFicha(); });
 
@@ -1995,15 +2103,20 @@
             const diff = (new Date(fechaHora) - new Date()) / 86400000;
             if (diff > 15 || diff < -1) return null;
             try {
-                const fecha = fechaHora.split('T')[0];
-                const res = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code,temperature_2m,precipitation_probability&timezone=Europe%2FMadrid&start_date=${fecha}&end_date=${fecha}`);
+                const fechaBase = new Date(fechaHora);
+                const inicioRango = new Date(fechaBase); inicioRango.setDate(inicioRango.getDate() - 1);
+                const finRango = new Date(fechaBase); finRango.setDate(finRango.getDate() + 1);
+                const fechaISO = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                const res = await fetchWithTimeout(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=weather_code,temperature_2m,precipitation_probability&timezone=Europe%2FMadrid&start_date=${fechaISO(inicioRango)}&end_date=${fechaISO(finRango)}`);
                 const j = await res.json();
-                const hIni = parseInt((fechaHora.split('T')[1] || '12').substring(0, 2));
+                const hIni = fechaBase.getHours();
                 const horas = [];
-                for (let h = hIni - 2; h <= hIni + 3; h++) {
-                    const idx = j.hourly.time.findIndex(t => t.endsWith(String(h).padStart(2, '0') + ':00'));
+                for (let delta = -2; delta <= 2; delta++) {
+                    const momento = new Date(fechaBase); momento.setHours(hIni + delta, 0, 0, 0);
+                    const marca = `${fechaISO(momento)}T${String(momento.getHours()).padStart(2,'0')}:00`;
+                    const idx = j.hourly.time.indexOf(marca);
                     if (idx === -1) continue;
-                    horas.push({ h, ini: h === hIni, c: j.hourly.weather_code[idx], t: j.hourly.temperature_2m ? j.hourly.temperature_2m[idx] : null, pp: j.hourly.precipitation_probability ? j.hourly.precipitation_probability[idx] : null });
+                    horas.push({ h: momento.getHours(), fecha: fechaISO(momento), ini: delta === 0, c: j.hourly.weather_code[idx], t: j.hourly.temperature_2m ? j.hourly.temperature_2m[idx] : null, pp: j.hourly.precipitation_probability ? j.hourly.precipitation_probability[idx] : null });
                 }
                 const ini = horas.find(x => x.ini);
                 if (!ini || ini.c === undefined || ini.c === null) return null;
@@ -2013,7 +2126,7 @@
             } catch { return previo && typeof previo === 'object' ? previo : null; }
         }
 
-        function abrirFicha(clave) {
+        function abrirFicha(clave, desdeEquipo = false) {
             const f = _fichas[clave];
             if (!f) return;
             const { p, eq } = f;
@@ -2021,6 +2134,7 @@
             const esLocalFav = p.EquipoLocal === eq.equipoFavorito, esVisFav = p.EquipoVisitante === eq.equipoFavorito;
             const esFavorito = esLocalFav || esVisFav;
             const enCasa = esLocalFav || esCanal;
+            const modo = modoViaje(p, eq);
             const estado = getEstadoPartido(p);
             const fechaObj = p.FechaHora ? new Date(p.FechaHora) : null;
             const valida = fechaObj && !isNaN(fechaObj);
@@ -2032,12 +2146,14 @@
             const dir = esCanal ? "El Parque Santander (Avenida de Filipinas, 11)" : construirDireccion(p);
             const dirJs = escHtml(JSON.stringify(dir));
 
+            // En ligas ECM se conserva el escudo oficial de cada equipo; no se sustituye por la foto del jugador.
             let escL = p.URLEscudoEquipoLocal || '/static/logo.png', escV = p.URLEscudoEquipoVisitante || '/static/logo.png';
             if (esCanal) { escL = esLocalFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png'; escV = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png'; }
-            const imgEsc = (u, rol) => `<div class="fi-esc" style="${esCanal ? (rol === 'vis' ? 'background-color:rgba(0,80,158,.3);border:3px solid #00509E;box-sizing:border-box;' : 'border:3px solid #fff;box-sizing:border-box;') : ''}"><img src="${escHtml(u)}" alt="" style="object-fit:${(esCanal || u.startsWith('data:')) ? 'cover' : 'contain'}"></div>`;
+            const imgEsc = (u, rol) => `<div class="fi-esc" style="${esCanal ? (rol === 'vis' ? 'background-color:rgba(0,80,158,.3);border:3px solid #00509E;box-sizing:border-box;' : 'border:3px solid #fff;box-sizing:border-box;') : ''}"><img src="${escHtml(u)}" alt="" style="object-fit:${esCanal || u.startsWith('data:') ? 'cover' : 'contain'}"></div>`;
 
             const avisos = (userSettings.showChangeAlerts !== false) ? avisosActivos() : {};
             const aviso = esFavorito ? avisos[`${eq.id}|${claveCambio(p)}`] : null;
+            const horaCambiada = !!(aviso && aviso.antes.f !== aviso.ahora.f);
 
             let centro;
             if (estado === 'jugado') {
@@ -2047,7 +2163,7 @@
             } else if (pasado) {
                 centro = `<div class="fi-hora" style="color:var(--text-sec)">${hora}</div><span class="fi-etq" style="background:#EEF1F3;color:#3F4B54">Sin resultado</span>`;
             } else {
-                centro = `<div class="fi-hora" style="${sinHora ? 'font-size:16px;color:var(--amber-fg)' : ''}">${hora}</div><div class="fi-sub">${valida ? fechaObj.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : ''}</div>`;
+                centro = `<div class="fi-hora" style="${sinHora ? 'font-size:16px;color:var(--amber-fg)' : (horaCambiada ? 'color:var(--amber-fg)' : '')}">${horaCambiada ? '<i class="fas fa-clock" aria-hidden="true"></i> ' : ''}${hora}</div><div class="fi-sub">${valida ? fechaObj.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }) : ''}</div>`;
             }
 
             const campoTxt = esCanal ? escHtml(p.Campo || 'Campo') : escHtml((p.CampoJuego?.Nombre || p.Campo || 'Campo por confirmar'));
@@ -2061,28 +2177,47 @@
 
             const rival = esLocalFav ? p.EquipoVisitante : p.EquipoLocal;
             const fechaCorta = valida ? `${String(fechaObj.getDate()).padStart(2, '0')}/${String(fechaObj.getMonth() + 1).padStart(2, '0')}/${fechaObj.getFullYear()}` : '';
-            const textoWa = `${eq.nombre} tiene partido el ${fechaCorta} a las ${hora}h contra ${rival} en ${dir}.`;
+            const textoWa = `${eq.nombre}: ${p.EquipoLocal} vs ${p.EquipoVisitante}. ${fechaCorta} ${hora}. ${dir}.`;
             const futuro = valida && !sinHora && !pasado && estado !== 'jugado' && estado !== 'aplazado';
             const urlGrupo = getGrupoEquipo(eq);
-
+            const mostrarNavegacionEquipo = !desdeEquipo && estado !== 'jugado' && !pasado;
             const cMapa = coordsPartido(p, eq, dir);
             const coordMapa = cMapa ? `${cMapa.lat},${cMapa.lon}` : (dir ? dir : '');
             const filas = [];
             filas.push(`<div class="fi-fila"><i class="far fa-calendar-alt"></i><div><b>Fecha</b>${escHtml(fechaLarga)}</div></div>`);
-            filas.push(`<div class="fi-fila copiable" data-copiar="${escHtml(dir)}"><i class="fas fa-map-marker-alt"></i><div><b>Campo</b>${campoTxt}${tipo}<div class="fi-sub" style="margin-top:2px">${escHtml(dir)}</div><div class="fi-sub" style="margin-top:4px;font-weight:600;opacity:.8">Mantén pulsado para copiar la dirección</div></div></div>`);
+            filas.push(`<div class="fi-fila copiable" data-copiar="${escHtml(dir)}"><i class="fas fa-map-marker-alt"></i><div><b>Campo</b>${campoTxt}${tipo}<div class="fi-sub" style="margin-top:2px">${escHtml(dir)}</div></div></div>`);
             if (futuro) {
                 filas.push(`<div class="fi-fila" id="fi-clima-fila" style="display:none"><i class="fas fa-cloud-sun"></i><div style="flex:1;min-width:0"><b>Tiempo previsto</b><span id="fi-clima-txt"></span><div id="fi-clima-horas"></div></div></div>`);
-                if (userSettings.showRoute === true) filas.push(`<div class="fi-fila" id="fi-salida-fila" style="display:none"><i class="fas ${enCasa ? 'fa-walking' : (userSettings.transportModeAway === 'transit' ? 'fa-bus' : 'fa-car')}"></i><div><b>Cuándo salir</b><span id="fi-salida-txt"></span></div></div>`);
+                if (userSettings.showRoute === true) {
+                    if (modo === 'transit') filas.push(`<div class="fi-fila"><i class="fas fa-bus"></i><div><b>Transporte público</b><a href="${escHtml(urlRutaTransito(dir))}" target="_blank" rel="noopener" style="font-weight:800;color:#34414B;text-decoration:underline">Consultar ruta y horarios</a></div></div>`);
+                    else filas.push(`<div class="fi-fila" id="fi-salida-fila" style="display:none"><i class="fas ${iconoModo(modo)}"></i><div><b>Cuándo salir</b><span id="fi-salida-txt"></span></div></div>`);
+                }
             }
+
+            const navegacionEquipo = mostrarNavegacionEquipo ? `
+                <div class="fi-nav" role="group" aria-label="Secciones del equipo">
+                    <button type="button" onclick="cerrarFicha(); irAEquipo(${eq.id}, 'calendario')"><i class="far fa-calendar-alt"></i>Calendario</button>
+                    <button type="button" onclick="cerrarFicha(); irAEquipo(${eq.id}, 'resultados')"><i class="fas fa-futbol"></i>Resultados</button>
+                    <button type="button" onclick="cerrarFicha(); irAEquipo(${eq.id}, 'clasificacion')"><i class="fas fa-list-ol"></i>Clasificación</button>
+                </div>` : '';
+            const acciones = futuro && esFavorito ? `
+                <div class="fi-acc">
+                    <button type="button" onclick="abrirModalMapa(${dirJs}, '${modo}')"><i class="fas fa-location-arrow"></i><span>Navegador</span></button>
+                    <a href="${escHtml(urlIcs(p, eq, dir, `Partido: ${eq.equipoFavorito} vs ${rival}`))}"><i class="far fa-calendar-plus"></i><span>Calendario</span></a>
+                    <button type="button" onclick='copiarTexto(${escHtml(JSON.stringify(textoWa))}, "Partido copiado")'><i class="far fa-copy"></i><span>Copiar</span></button>
+                </div>` : '';
 
             document.getElementById('ficha-contenido').innerHTML = `
                 <div class="fi-cab">
-                    <h2>${p.NumeroJornada ? `Jornada ${escHtml(p.NumeroJornada)} · ` : ''}${escHtml(eq.nombreCompeticion || NOMBRES_DEPORTE[eq.idDeporte] || 'Partido')}</h2>
-                    <button type="button" class="fi-x" onclick="cerrarFicha()" aria-label="Cerrar ficha"><i class="fas fa-times"></i></button>
+                    <div class="fi-cab-top">
+                        <h2>${p.NumeroJornada ? `Jornada ${escHtml(p.NumeroJornada)} · ` : ''}${escHtml(eq.nombreCompeticion || NOMBRES_DEPORTE[eq.idDeporte] || 'Partido')}</h2>
+                        <button type="button" class="fi-x" onclick="cerrarFicha()" aria-label="Cerrar ficha"><i class="fas fa-times"></i></button>
+                    </div>
+                    ${navegacionEquipo}
                 </div>
                 <div class="fi-panel">
-                    <div style="display:flex;gap:6px;align-items:center;margin-bottom:12px">
-                        <div class="mc-hijo" style="--c:${colorHijo(eq.nombre)}"><img src="${escHtml(eq.escudoFavorito || '/static/logo.png')}" alt=""><span>${escHtml(eq.nombre)}</span></div>
+                    <div style="display:flex;gap:7px;align-items:center;margin-bottom:12px">
+                        <div class="mc-hijo" style="--c:${colorEquipoAgenda(eq)}"><img src="${escHtml(eq.escudoFavorito || '/static/logo.png')}" alt=""><span>${escHtml(eq.nombre)}</span></div>
                         <span class="mc-ico">${getDeporteIcon(eq.idDeporte).replace('text-white text-xl', '')}</span>
                         <span class="mc-ico" title="${enCasa ? 'En casa' : 'Fuera'}"><i class="fas ${enCasa ? 'fa-home' : 'fa-plane'}"></i></span>
                     </div>
@@ -2095,17 +2230,10 @@
                 ${lineasAviso.length ? `<div class="fi-aviso"><i class="fas fa-exclamation-triangle"></i> Cambio en este partido<div style="font-weight:600;margin-top:4px">${lineasAviso.join('<br>')}</div></div>` : ''}
                 ${coordMapa ? `<div class="fi-mapa"><iframe title="Mapa del campo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(coordMapa)}&z=16&output=embed"></iframe></div>` : ''}
                 <div class="fi-panel">${filas.join('')}</div>
-                <div class="fi-acc">
-                    <button type="button" class="prim" onclick="abrirModalMapa(${dirJs})"><i class="fas fa-location-arrow"></i> Abrir ruta</button>
-                    ${futuro && esFavorito ? `<a href="${escHtml(urlIcs(p, eq, dir, `Partido: ${eq.equipoFavorito} vs ${rival}`))}"><i class="far fa-calendar-plus"></i> Al calendario</a>` : ''}
-                    ${futuro && esFavorito ? `<a href="https://wa.me/?text=${encodeURIComponent(textoWa)}" target="_blank" rel="noopener" class="wa"><i class="fab fa-whatsapp"></i> Compartir</a>` : ''}
-                    ${urlGrupo ? `<a href="${escHtml(urlGrupo)}" target="_blank" rel="noopener" class="wa"><i class="fab fa-whatsapp"></i> Grupo del equipo</a>` : ''}
-                </div>
-                <div class="fi-ir" role="group" aria-label="Secciones del equipo">
-                    <button type="button" onclick="cerrarFicha(); irAEquipo(${eq.id}, 'calendario')"><i class="far fa-calendar-alt"></i>Calendario</button>
-                    <button type="button" onclick="cerrarFicha(); irAEquipo(${eq.id}, 'resultados')"><i class="fas fa-futbol"></i>Resultados</button>
-                    <button type="button" onclick="cerrarFicha(); irAEquipo(${eq.id}, 'clasificacion')"><i class="fas fa-list-ol"></i>Clasificación</button>
-                </div>`;
+                ${(urlGrupo || acciones) ? `<div class="fi-actions-sticky">
+                    ${urlGrupo ? `<a class="fi-grupo" href="${escHtml(urlGrupo)}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Grupo del equipo</a>` : ''}
+                    ${acciones}
+                </div>` : ''}`;
 
             const modal = document.getElementById('modal-ficha');
             modal.classList.remove('hide');
@@ -2114,11 +2242,15 @@
 
             if (futuro) {
                 const viaje = viajePartido[`${eq.id}|${claveCambio(p)}`];
-                if (userSettings.showRoute === true && Number.isFinite(viaje)) {
+                if (userSettings.showRoute === true && modo !== 'transit' && Number.isFinite(viaje)) {
                     const sal = new Date(fechaObj); sal.setMinutes(sal.getMinutes() - (esCanal ? 2 : margenLlegada()) - viaje);
-                    const modo = enCasa ? 'a pie' : (userSettings.transportModeAway === 'transit' ? 'en bus' : 'en coche');
-                    document.getElementById('fi-salida-txt').innerHTML = `<b style="font-size:16px;text-transform:none;letter-spacing:0;color:var(--text-main);display:inline">Sal a las ${String(sal.getHours()).padStart(2, '0')}:${String(sal.getMinutes()).padStart(2, '0')}</b> <span class="fi-sub">· ${viaje} min ${modo}</span>`;
-                    document.getElementById('fi-salida-fila').style.display = 'flex';
+                    const modoTxt = modo === 'foot' ? 'a pie' : 'en coche';
+                    const destino = document.getElementById('fi-salida-txt');
+                    const filaSalida = document.getElementById('fi-salida-fila');
+                    if (destino && filaSalida) {
+                        destino.innerHTML = `<b style="font-size:16px;text-transform:none;letter-spacing:0;color:var(--text-main);display:inline">Sal a las ${String(sal.getHours()).padStart(2, '0')}:${String(sal.getMinutes()).padStart(2, '0')}</b> <span class="fi-sub">· ${viaje} min ${modoTxt}</span>`;
+                        filaSalida.style.display = 'flex';
+                    }
                 }
                 const c = coordsPartido(p, eq, dir);
                 if (c) obtenerClima(c.lat, c.lon, p.FechaHora).then(d => {
@@ -2130,12 +2262,14 @@
                     const temp = typeof ini.t === 'number' ? `${Math.round(ini.t)}°` : '';
                     el.innerHTML = `<i class="fas ${info.i}" style="color:${info.col};margin-right:6px"></i><span style="font-weight:700">${info.t}${temp ? ', ' + temp : ''}</span> <span class="fi-sub">al empezar</span>`;
                     const umbral = umbralLluvia();
-                    document.getElementById('fi-clima-horas').innerHTML = `<div class="fi-horas" style="grid-template-columns:repeat(${d.horas.length},1fr)">` + d.horas.map(x => {
+                    const horas = (d.horas || []).slice(0, 5);
+                    document.getElementById('fi-clima-horas').innerHTML = `<div class="fi-horas">` + horas.map(x => {
                         const inf = describirClima(x.c) || { i: 'fa-question', col: '#6B7280' };
                         const alto = typeof x.pp === 'number' && x.pp >= umbral;
-                        return `<div class="fi-h ${x.ini ? 'ini' : ''}" title="${inf.t || ''}"><span class="hh">${String(x.h).padStart(2, '0')}h</span><i class="fas ${inf.i}" style="${x.ini ? '' : 'color:' + inf.col}"></i><span>${typeof x.t === 'number' ? Math.round(x.t) + '°' : '–'}</span><span class="pp ${alto ? 'alto' : ''}">${typeof x.pp === 'number' ? Math.round(x.pp) + '%' : ''}</span></div>`;
-                    }).join('') + `</div><div class="fi-sub" style="margin-top:6px">Desde 2 h antes hasta 3 h después del inicio · % = probabilidad de lluvia</div>`;
-                    document.getElementById('fi-clima-fila').style.display = 'flex';
+                        return `<div class="fi-h ${x.ini ? 'ini' : ''}" title="${inf.t || ''}${x.fecha && x.fecha !== fechaISO(new Date(p.FechaHora)) ? ' · ' + x.fecha : ''}"><span class="hh">${String(x.h).padStart(2, '0')}h</span><i class="fas ${inf.i}" style="${x.ini ? '' : 'color:' + inf.col}"></i><span>${typeof x.t === 'number' ? Math.round(x.t) + '°' : '–'}</span><span class="pp ${alto ? 'alto' : ''}">${typeof x.pp === 'number' ? Math.round(x.pp) + '%' : ''}</span></div>`;
+                    }).join('') + `</div>`;
+                    const filaClima = document.getElementById('fi-clima-fila');
+                    if (filaClima) filaClima.style.display = 'flex';
                 });
             }
         }
@@ -2144,16 +2278,26 @@
         // <clima>
         let viajePartido = {};
         function margenLlegada() { const m = parseInt(userSettings.arrivalMargin); return (!isNaN(m) && m >= 0) ? m : 30; }
+        function modoViaje(p, eq) {
+            const enCasa = p.EquipoLocal === eq.equipoFavorito || eq.idDeporte === '4';
+            return enCasa ? 'foot' : (userSettings.transportModeAway || 'driving');
+        }
+        function iconoModo(modo) { return modo === 'transit' ? 'fa-bus' : (modo === 'foot' ? 'fa-walking' : 'fa-car'); }
+        function urlRutaTransito(destino) {
+            const origen = userSettings.homeAddress || (userSettings.homeLat && userSettings.homeLon ? `${userSettings.homeLat},${userSettings.homeLon}` : '');
+            return `https://www.google.com/maps/dir/?api=1${origen ? `&origin=${encodeURIComponent(origen)}` : ''}&destination=${encodeURIComponent(destino)}&travelmode=transit`;
+        }
         function urlIcs(p, eq, dir, titulo) {
             const esCanal = eq.idDeporte === '4';
             const mins = [];
-            if (userSettings.alarmDayBefore !== false) mins.push(1440);
-            const ev = parseInt(userSettings.alarmEventMin);
-            if (userSettings.alarmEventMin !== null && !isNaN(ev) && ev >= 0) mins.push(ev);
-            const dep = parseInt(userSettings.alarmDepartMin);
-            const viaje = viajePartido[`${eq.id}|${claveCambio(p)}`];
-            if (userSettings.showRoute === true && userSettings.alarmDepartMin !== null && !isNaN(dep) && Number.isFinite(viaje)) {
-                mins.push(viaje + (esCanal ? 2 : 0) + dep);
+            if (userSettings.alarmEnabled === true) {
+                const ev = parseInt(userSettings.alarmEventMin);
+                if (userSettings.alarmEventMin !== null && !isNaN(ev) && ev >= 0) mins.push(ev);
+                const dep = parseInt(userSettings.alarmDepartMin);
+                const viaje = viajePartido[`${eq.id}|${claveCambio(p)}`];
+                if (userSettings.showRoute === true && userSettings.transportModeAway !== 'transit' && userSettings.alarmDepartMin !== null && !isNaN(dep) && Number.isFinite(viaje)) {
+                    mins.push(viaje + (esCanal ? 2 : 0) + dep);   // minutos antes del inicio del evento
+                }
             }
             const lista = [...new Set(mins)].filter(m => m >= 0 && m <= 43200).slice(0, 5);
             return `/api/ics?titulo=${encodeURIComponent(titulo)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dir)}&deporte=${eq.idDeporte}&alarmas=${lista.join(',')}&margen=${margenLlegada()}`;
@@ -2263,6 +2407,10 @@
                                         const esPartidoEnCasa = (p.EquipoLocal === eq.equipoFavorito) || esCanal;
                                         const modoActual = esPartidoEnCasa ? 'foot' : (userSettings.transportModeAway || 'driving');
                                         let durationSec = 0;
+                                        if (modoActual === 'transit') {
+                                            if (elRuta) elRuta.innerHTML = `<a href="${escHtml(urlRutaTransito(dirCompleta))}" target="_blank" rel="noopener">Consultar transporte público</a>`;
+                                            return;
+                                        }
 
                                         if (modoActual === 'foot') {
                                             const toRad = x => x * Math.PI / 180;
@@ -2315,7 +2463,11 @@
             actualizarResumenDias();
         }
 
-        function abrirModalMapa(dir) {
+        function abrirModalMapa(dir, modo = 'driving') {
+            if (modo === 'transit') {
+                window.location.href = urlRutaTransito(dir);
+                return;
+            }
             if (userSettings.defaultMap && userSettings.defaultMap !== 'ask') {
                 rutaActualMapa = dir;
                 abrirRuta(userSettings.defaultMap);
@@ -2663,6 +2815,7 @@
             try {
                 localStorage.setItem('equipos_liga', JSON.stringify(equipos));
             } catch (e) {
+                // Almacenamiento lleno: se liberan cachés que se regeneran solas y se reintenta
                 Object.keys(localStorage).filter(k => /^(cache_clima|cache_res_|cache_cal_|cache_clas_|cache_proximo_partido)/.test(k)).forEach(k => localStorage.removeItem(k));
                 try { localStorage.setItem('equipos_liga', JSON.stringify(equipos)); }
                 catch (e2) { avisar('No se pudo guardar: el almacenamiento del navegador está lleno. Prueba con una foto más pequeña.'); return; }
@@ -2832,6 +2985,7 @@
 
             let misPartidosCambiados = cacheResultados.filter(p => (p.Cambio || p.CambioLocal) && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
             
+            // VERIFICACIÓN PARAMETRIZADA DEL BANNER (Activación y Tiempo)
             let mostrarBanner = false;
             if (userSettings.showChangeAlerts !== false && misPartidosCambiados.length > 0) {
                 let dismissedBannerTime = parseInt(localStorage.getItem('dismissed_banner_time') || '0');
@@ -2890,7 +3044,16 @@
 
         function cerrarBanner() {
             localStorage.setItem('dismissed_banner_time', Date.now().toString());
-            document.getElementById('banner-alerta').classList.add('hide');
+            escribirJSON('avisos_cambios', {});
+            const banner = document.getElementById('banner-alerta');
+            if (banner) banner.classList.add('hide');
+            renderBannerAgenda();
+            if (window._ultimaAgenda) renderAgendaDesdeDatos(window._ultimaAgenda[0], window._ultimaAgenda[1]);
+            if (Array.isArray(cacheResultados) && equipoActual) {
+                marcarCambiosLocales(equipoActual, cacheResultados);
+                if (!document.getElementById('tab-calendario').classList.contains('hide')) renderizarCalendarioUI();
+                if (!document.getElementById('tab-resultados').classList.contains('hide')) renderizarResultadosUI();
+            }
         }
 
         function toggleFiltro() {
@@ -2942,16 +3105,15 @@
             const fecha = p.FechaHora ? p.FechaHora.split('T')[0].split('-').reverse().join('/') : 'Fecha por confirmar';
             const horaTxt = p.FechaHora ? p.FechaHora.split('T')[1].substring(0, 5) : '';
 
-            const cab = esResultado
-                ? `<span class="mc-fecha" style="font-size:13px">${escHtml(fechaCorta)}</span>`
-                : `<span class="mc-fecha" style="font-size:13px">${escHtml(fechaCorta)}</span>${sinHora ? '<span class="mc-sinhora" style="margin:0 0 0 8px">Hora por confirmar</span>' : (hora ? `<span style="font-size:18px;font-weight:900;margin-left:8px;font-variant-numeric:tabular-nums">${hora}</span>` : '')}`;
+            const cab = `<span class="mc-fecha" style="font-size:13px">${escHtml(fechaCorta)}</span>${(!esDescanso && !esResultado && sinHora) ? '<span class="mc-sinhora" style="margin:0 0 0 8px">Hora por confirmar</span>' : ((!esDescanso && hora && !esResultado) ? `<span style="font-size:18px;font-weight:900;margin-left:8px;font-variant-numeric:tabular-nums">${hora}</span>` : '')}`;
 
             if (esDescanso) {
-                const nombreDescansa = p.EquipoLocal || p.EquipoVisitante;
+                const nombreDescansa = p.EquipoLocal || p.EquipoVisitante || equipoActual.equipoFavorito;
+                const escudoDescansa = p.EquipoLocal ? (p.URLEscudoEquipoLocal || '/static/logo.png') : (p.URLEscudoEquipoVisitante || '/static/logo.png');
                 return `
                     <article class="mcard otro ${esFavorito ? 'fav' : ''} sin-ficha">
                         <div class="mc-top"><div class="mc-cuando" style="margin:0;text-align:left">${cab}</div>${haCambiado && esFavorito ? '<span class="mc-badge mc-b-cambio" style="margin-left:auto"><i class="fas fa-exclamation-triangle"></i>Cambio</span>' : ''}</div>
-                        <div class="mc-team" style="margin-top:4px"><div class="esc" style="display:flex;align-items:center;justify-content:center;background:#EEF1F3"><i class="fas fa-bed" style="color:#3F4B54"></i></div><div class="nom" style="color:var(--text-sec)">Descansa: ${escHtml(acortarNombre(nombreDescansa))}</div></div>
+                        <div class="mc-team" style="margin-top:5px"><div class="esc"><img src="${escHtml(escudoDescansa)}" alt="Escudo del equipo" style="object-fit:contain"></div><div class="nom" style="color:var(--text-sec)">Descansa: ${escHtml(acortarNombre(nombreDescansa))}</div></div>
                     </article>`;
             }
 
@@ -2962,9 +3124,6 @@
             if (esCanal) {
                 escudoLocal = esLocalFav ? (equipoActual.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
                 escudoVisitante = esVisFav ? (equipoActual.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png';
-            } else if ((equipoActual.escudoFavorito || '').startsWith('data:')) {
-                if (esLocalFav) escudoLocal = equipoActual.escudoFavorito;
-                if (esVisFav) escudoVisitante = equipoActual.escudoFavorito;
             }
             const estiloEsc = (rol, fav) => esCanal
                 ? (rol === 'vis' ? 'background-color:rgba(0,80,158,.3);border:3px solid #00509E;box-sizing:border-box;' : 'border:3px solid #fff;box-sizing:border-box;')
@@ -3009,7 +3168,7 @@
                         ${fila(p.EquipoLocal, escudoLocal, esLocalFav, 'local', gl, esJugado && gl > gv)}
                         ${fila(p.EquipoVisitante, escudoVisitante, esVisFav, 'vis', gv, esJugado && gv > gl)}
                     </div>
-                    ${mostrarDir ? `<div class="mc-dir copiable" data-copiar="${escHtml(dirCompleta)}" title="Mantén pulsado para copiar la dirección"><i class="fas fa-map-marker-alt"></i><span>${escHtml(dirCompleta)}</span></div>` : ''}
+                    ${mostrarDir ? `<div class="mc-dir copiable" data-copiar="${escHtml(dirCompleta)}" title="Copiar dirección"><i class="fas fa-map-marker-alt"></i><span>${escHtml(dirCompleta)}</span></div>` : ''}
                     ${acciones}
                 </article>`;
         }
@@ -3088,7 +3247,7 @@
         function renderizarClasificacionUI() {
             const tbody = document.getElementById('tabla-clasificacion');
             const filas = cacheClasificacion;
-            const todosLosPartidos = cacheClasificacionPartidos;
+            const todosLosPartidos = Array.isArray(cacheClasificacionPartidos) ? cacheClasificacionPartidos : [];
             tbody.innerHTML = '';
             
             const btnComp = document.getElementById('btn-compartir-clasificacion');
@@ -3099,7 +3258,7 @@
                 btnComp.style.color = 'var(--primary-color)';
             }
 
-            if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="6" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
+            if (!Array.isArray(filas) || filas.length === 0) { tbody.innerHTML = '<tr><td colspan="4" class="text-center py-4" style="color: var(--text-sec);">No hay clasificación</td></tr>'; return; }
 
             function calcularRacha(nombreEquipo) {
                 const partidosEquipo = todosLosPartidos.filter(p => {
@@ -3162,14 +3321,21 @@
                 }
 
                 const bal = balance(f);
-                const dg = (f.GF ?? 0) - (f.GC ?? 0);
+                const racha = calcularRacha(f.NombreEquipo);
+                const gf = f.GF ?? 0, gc = f.GC ?? 0;
                 tbody.innerHTML += `
                     <tr class="${rowClass}" style="${rowStyle}">
-                        <td class="p-2 font-bold ${posColor} align-middle">${f.Posicion}</td>
-                        <td class="p-2 font-medium"><div class="flex items-center"><div class="escudo-circulo-sm ${bigEscudo}" ${styleEsc}><img src="${escudoUrl}" class="${classImg}"></div><span class="leading-tight pr-1 uppercase ${esFavorito && !esPrimero ? 'font-black' : 'font-bold'}" ${nameColor}>${f.NombreEquipo}${crownIcon}</span></div><div class="text-[11px] font-bold mt-0.5" style="color: var(--text-sec); padding-left: ${isCanal() ? 40 : 52}px;">${bal[0]}G · ${bal[1]}E · ${bal[2]}P · ${f.GF ?? 0}-${f.GC ?? 0}</div></td>
+                        <td class="p-2 font-bold ${posColor} align-middle text-center">${f.Posicion}</td>
+                        <td class="p-2 font-medium">
+                            <div class="cl-equipo">
+                                <div class="escudo-circulo-sm ${bigEscudo}" ${styleEsc}><img src="${escudoUrl}" class="${classImg}" alt=""></div>
+                                <div class="cl-equipo-info">
+                                    <div class="cl-equipo-nombre uppercase" ${nameColor}>${escHtml(f.NombreEquipo)}${crownIcon}</div>
+                                    <div class="cl-equipo-meta"><span>${bal[0]}G · ${bal[1]}E · ${bal[2]}P</span><span>${gf}-${gc}</span><span class="cl-racha" aria-label="Últimos cinco partidos">${racha}</span></div>
+                                </div>
+                            </div>
+                        </td>
                         <td class="p-2 text-center align-middle font-bold" style="color: var(--text-sec);">${partidosJugados}</td>
-                        <td class="p-2 text-center align-middle font-bold" style="color: ${dg > 0 ? '#1E6B34' : (dg < 0 ? '#9B1C1C' : 'var(--text-sec)')};">${dg > 0 ? '+' : ''}${dg}</td>
-                        <td class="p-2 text-center align-middle">${calcularRacha(f.NombreEquipo)}</td>
                         <td class="p-2 text-right font-black align-middle text-base ${ptsColor}">${f.Puntos}</td>
                     </tr>`;
             });
