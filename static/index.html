@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.11                                           -->
+    <!--  Versión actual: v1.04.12                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -65,7 +65,13 @@
         .ag-chip .ico { width: 24px; text-align: center; font-size: 14px; }
         .copiable { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
         .copiable.pulsando { background: rgba(0,109,111,.10); border-radius: 8px; }
-        #toast-copia { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); background: #14202B; color: #fff; font-size: 13px; font-weight: 700; padding: 10px 16px; border-radius: 999px; z-index: 200; box-shadow: 0 4px 14px rgba(0,0,0,.3); }
+        #toast-copia { position: fixed; left: 50%; bottom: calc(28px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: #14202B; color: #fff; font-size: 14px; font-weight: 700; padding: 12px 18px; border-radius: 14px; z-index: 300; box-shadow: 0 4px 14px rgba(0,0,0,.3); max-width: calc(100vw - 32px); text-align: center; line-height: 1.3; }
+        #modal-confirmar { position: fixed; inset: 0; z-index: 290; display: flex; align-items: center; justify-content: center; padding: 24px; background: rgba(20,32,43,.55); }
+        .cf-caja { background: #fff; border-radius: 16px; padding: 20px; width: 100%; max-width: 340px; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+        .cf-caja p { font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.35; }
+        .cf-bot { display: flex; gap: 10px; margin-top: 18px; }
+        .cf-bot button { flex: 1; min-height: 46px; border-radius: 12px; font-size: 15px; font-weight: 800; background: #E4E8EB; color: #26343F; }
+        .cf-bot button#confirmar-si { background: var(--primary-color); color: #fff; }
         .mc-lluvia { display: inline-flex; align-items: center; gap: 3px; color: var(--rain-fg); background: var(--rain-bg); border-radius: 6px; padding: 1px 6px; font-size: 12px; font-weight: 800; }
         .fi-mapa { margin: 12px 16px 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #E4E8EB; height: 180px; }
         .fi-mapa iframe { width: 100%; height: 100%; border: 0; display: block; }
@@ -335,6 +341,14 @@
         <div class="loader-juego mb-6"><div class="escudo-wrapper"><img id="carga-escudo" src="/static/logo.png" alt="Escudo"></div></div>
         <h2 id="carga-texto" class="text-2xl font-black mb-2 tracking-wider">CARGANDO AGENDA</h2>
         <p class="text-sm text-white/70">Obteniendo partidos y clasificaciones...</p>
+    </div>
+
+    <!-- CONFIRMAR (sustituye a los cuadros del navegador) -->
+    <div id="modal-confirmar" class="hide" role="alertdialog" aria-modal="true" aria-labelledby="confirmar-texto">
+        <div class="cf-caja">
+            <p id="confirmar-texto"></p>
+            <div class="cf-bot"><button type="button" id="confirmar-no"></button><button type="button" id="confirmar-si"></button></div>
+        </div>
     </div>
 
     <!-- FICHA DE PARTIDO -->
@@ -742,10 +756,10 @@
                 
                 if (pinIngresado === PIN_SECRETO) {
                     localStorage.setItem('es_admin_liga', 'true');
-                    alert("¡Modo Administrador activado en este dispositivo!");
+                    avisar("¡Modo Administrador activado en este dispositivo!");
                     comprobarAvisosAdmin();
                 } else {
-                    alert("PIN incorrecto.");
+                    avisar("PIN incorrecto.");
                 }
             } else {
                 timerToques = setTimeout(() => { toquesVersion = 0; }, 1500);
@@ -834,11 +848,11 @@
         }
 
         function cerrarModoAdmin() {
-            if (confirm("¿Seguro que deseas salir del Modo Administrador en este dispositivo?")) {
+            confirmar("¿Seguro que deseas salir del Modo Administrador en este dispositivo?").then(ok => { if (!ok) return;
                 localStorage.removeItem('es_admin_liga');
                 localStorage.removeItem('admin_activo');
                 location.reload(); 
-            }
+            });
         }
 
         async function procesarAviso(id, accion) {
@@ -868,14 +882,14 @@
                     }, 400);
 
                 } else {
-                    alert("El servidor no pudo procesar la solicitud.");
+                    avisar("El servidor no pudo procesar la solicitud.");
                     if (btnAprobar) {
                         btnAprobar.innerText = "Aprobar";
                         btnAprobar.disabled = false;
                     }
                 }
             } catch (e) {
-                alert("Error de red al intentar conectar con el servidor.");
+                avisar("Error de red al intentar conectar con el servidor.");
             }
         }
 
@@ -1032,7 +1046,7 @@
         async function enviarSolicitudBorrado() {
             const motivo = document.getElementById('input-motivo-borrado').value.trim();
             if (!motivo) {
-                alert("Por favor, escribe un motivo para solicitar el borrado.");
+                avisar("Por favor, escribe un motivo para solicitar el borrado.");
                 return;
             }
 
@@ -1049,14 +1063,14 @@
 
                 if (res.ok) {
                     vibrar(50);
-                    alert("Solicitud enviada al administrador. Si se aprueba, el grupo se eliminará.");
+                    avisar("Solicitud enviada al administrador. Si se aprueba, el grupo se eliminará.");
                     cerrarModalBorrado();
                     comprobarAvisosAdmin();
                 } else {
-                    alert("Error al enviar la solicitud.");
+                    avisar("Error al enviar la solicitud.");
                 }
             } catch (e) {
-                alert("Error de conexión.");
+                avisar("Error de conexión.");
             } finally {
                 btn.disabled = false;
                 btn.innerText = 'Solicitar Borrado';
@@ -1072,7 +1086,7 @@
         async function enviarSolicitudGrupo() {
             const url = document.getElementById('input-url-grupo').value.trim();
             if (!url || !url.includes("chat.whatsapp.com")) {
-                alert("Por favor, introduce un enlace válido de WhatsApp.");
+                avisar("Por favor, introduce un enlace válido de WhatsApp.");
                 return;
             }
 
@@ -1089,18 +1103,18 @@
 
                 if (res.ok) {
                     vibrar(50);
-                    alert("Enlace guardado correctamente. El grupo ya está activo.");
+                    avisar("Enlace guardado correctamente. El grupo ya está activo.");
                     cerrarModalGrupo();
                     await cargarGrupos();
                     comprobarAvisosAdmin();
                 } else if (res.status === 409) {
-                    alert("Este equipo ya tiene un grupo asignado. No se puede modificar.");
+                    avisar("Este equipo ya tiene un grupo asignado. No se puede modificar.");
                     cerrarModalGrupo();
                 } else {
-                    alert("Error al guardar el enlace. Inténtalo más tarde.");
+                    avisar("Error al guardar el enlace. Inténtalo más tarde.");
                 }
             } catch (e) {
-                alert("Error de conexión. Comprueba que tienes internet.");
+                avisar("Error de conexión. Comprueba que tienes internet.");
             } finally {
                 btn.disabled = false;
                 btn.innerText = 'Guardar Enlace';
@@ -1143,7 +1157,7 @@
                     iconElement.className = originalClass;
                 }, 2000);
             }).catch(err => {
-                alert('No se pudo copiar la dirección al portapapeles.');
+                avisar('No se pudo copiar la dirección al portapapeles.');
             });
         }
 
@@ -1373,7 +1387,7 @@
                     userSettings.homeLat = coords.lat;
                     userSettings.homeLon = coords.lon;
                 } else {
-                    alert("No se ha encontrado la dirección exacta. Prueba a poner solo la calle y la ciudad.");
+                    avisar("No se ha encontrado la dirección exacta. Prueba a poner solo la calle y la ciudad.");
                     userSettings.homeLat = null;
                     userSettings.homeLon = null;
                 }
@@ -1384,12 +1398,12 @@
             }
 
             localStorage.setItem('user_settings', JSON.stringify(userSettings));
-            alert('Ajustes guardados correctamente.');
+            avisar('Ajustes guardados correctamente.');
             volverInicio();
         }
 
         function limpiarCacheApp() {
-            if(confirm('¿Seguro que quieres borrar la caché? La app se reiniciará.')) {
+            confirmar('¿Seguro que quieres borrar la caché? La app se reiniciará.').then(ok => { if (!ok) return;
                 const eraAdmin = localStorage.getItem('es_admin_liga');
 
                 localStorage.removeItem('cache_proximo_partido');
@@ -1410,7 +1424,7 @@
                 }
 
                 location.reload();
-            }
+            });
         }
 
         function toggleDrawer() {
@@ -1900,11 +1914,27 @@
         }
 
         // <copiar>
-        function mostrarToast(texto) {
+        function mostrarToast(texto, ms) {
             let t = document.getElementById('toast-copia');
-            if (!t) { t = document.createElement('div'); t.id = 'toast-copia'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+            if (!t) { t = document.createElement('div'); t.id = 'toast-copia'; t.setAttribute('role', 'status'); t.setAttribute('aria-live', 'polite'); document.body.appendChild(t); }
             t.textContent = texto; t.style.display = 'block';
-            clearTimeout(t._h); t._h = setTimeout(() => { t.style.display = 'none'; }, 1800);
+            clearTimeout(t._h); t._h = setTimeout(() => { t.style.display = 'none'; }, ms || Math.max(2200, String(texto).length * 55));
+        }
+        function avisar(texto) { mostrarToast(String(texto)); }
+
+        function confirmar(texto, { si = 'Aceptar', no = 'Cancelar' } = {}) {
+            return new Promise(resolve => {
+                const m = document.getElementById('modal-confirmar');
+                document.getElementById('confirmar-texto').textContent = texto;
+                const bSi = document.getElementById('confirmar-si'), bNo = document.getElementById('confirmar-no');
+                bSi.textContent = si; bNo.textContent = no;
+                const cerrar = r => { m.classList.add('hide'); bSi.onclick = bNo.onclick = null; m.onclick = null; document.removeEventListener('keydown', tecla); resolve(r); };
+                const tecla = e => { if (e.key === 'Escape') cerrar(false); };
+                bSi.onclick = () => cerrar(true); bNo.onclick = () => cerrar(false);
+                m.onclick = e => { if (e.target === m) cerrar(false); };
+                document.addEventListener('keydown', tecla);
+                m.classList.remove('hide'); bNo.focus();
+            });
         }
         async function copiarTexto(texto) {
             try { await navigator.clipboard.writeText(texto); }
@@ -1915,7 +1945,7 @@
                 ta.remove();
                 if (!ok) { mostrarToast('No se pudo copiar'); return; }
             }
-            vibrar(50); mostrarToast('Dirección copiada');
+            vibrar(50); mostrarToast('Dirección copiada', 1800);
         }
         (function () {
             let timer = null, inicio = null;
@@ -2420,7 +2450,7 @@
         }
 
         function borrarEquipo(index) { 
-            if (confirm('¿Borrar este equipo?')) { 
+            confirmar('¿Borrar este equipo?').then(ok => { if (!ok) return; 
                 const eqId = equipos[index].id; 
                 delete cacheProximoPartido[eqId]; 
                 localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido)); 
@@ -2428,7 +2458,7 @@
                 localStorage.setItem('equipos_liga', JSON.stringify(equipos)); 
                 renderizarMenuLateral(); 
                 cargarAgendaFamiliar();
-            } 
+            }); 
         }
         
         async function cargarCompeticiones(idDeporte) {
@@ -2558,8 +2588,8 @@
         function procesarFotoLogo(input) {
             const file = input.files && input.files[0];
             if (!file) return;
-            if (file.type && !file.type.startsWith('image/')) { alert('Selecciona una imagen válida.'); input.value = ''; return; }
-            const fallo = () => { alert('No se pudo leer la foto. Prueba con otra imagen (JPG o PNG) o haz la foto con la cámara.'); input.value = ''; };
+            if (file.type && !file.type.startsWith('image/')) { avisar('Selecciona una imagen válida.'); input.value = ''; return; }
+            const fallo = () => { avisar('No se pudo leer la foto. Prueba con otra imagen (JPG o PNG) o haz la foto con la cámara.'); input.value = ''; };
             const url = URL.createObjectURL(file);
             const img = new Image();
             img.onload = () => {
@@ -2641,7 +2671,7 @@
                 // Almacenamiento lleno: se liberan cachés que se regeneran solas y se reintenta
                 Object.keys(localStorage).filter(k => /^(cache_clima|cache_res_|cache_cal_|cache_clas_|cache_proximo_partido)/.test(k)).forEach(k => localStorage.removeItem(k));
                 try { localStorage.setItem('equipos_liga', JSON.stringify(equipos)); }
-                catch (e2) { alert('No se pudo guardar: el almacenamiento del navegador está lleno. Prueba con una foto más pequeña.'); return; }
+                catch (e2) { avisar('No se pudo guardar: el almacenamiento del navegador está lleno. Prueba con una foto más pequeña.'); return; }
             }
             try { localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido)); } catch {}
             editandoEquipoId = null; 
