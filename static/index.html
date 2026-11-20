@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.15                                           -->
+    <!--  Versión actual: v1.04.16                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
-    <!--  Cambios: filtros visuales, mes móvil 30 días y cabecera segura       -->
+    <!--  Cambios: filtros visuales, mes móvil 30 días y restauración de cabeceras       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
@@ -83,7 +83,7 @@
         .ag-filter-sheet.open .ag-sheet-handle i { transform: rotate(180deg); }
         .ag-filter-sheet .ag-controles { display: none; max-height: calc(78vh - 54px); overflow-y: auto; border-top: 1px solid var(--line); }
         .ag-filter-sheet.open .ag-controles:not(.hide) { display: block; }
-        #lista-agenda { padding-bottom: 88px !important; }
+        #lista-agenda { padding-top: 10px; padding-bottom: 88px !important; scroll-margin-top: 88px; }
         body.agenda-sheet-open { overflow: hidden; }
         .copiable { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; touch-action: manipulation; }
         .copiable.pulsando { background: rgba(0,109,111,.10); border-radius: 8px; }
@@ -316,13 +316,7 @@
             .fi-horas { gap: 3px; }
         }
 
-        /* v1.04.15 — filtros de agenda e iconografía */
-        #screen-agenda > .agenda-header {
-            height: calc(88px + env(safe-area-inset-top, 0px));
-            padding-top: env(safe-area-inset-top, 0px);
-            box-sizing: border-box;
-            top: 0;
-        }
+        /* v1.04.16 — filtros de agenda e iconografía; cabeceras originales sin cambios */
         .ag-fila { gap: 0; }
         .ag-fila + .ag-fila { margin-top: 10px; }
         .ag-fila .ag-chips { flex: 1 1 100%; width: 100%; }
@@ -501,7 +495,7 @@
 
     <!-- PANTALLA PRINCIPAL (AGENDA) -->
     <div id="screen-agenda" class="max-w-md mx-auto min-h-screen">
-        <div class="agenda-header text-white h-[88px] px-4 flex justify-between items-center shadow-md sticky top-0 z-50" style="background-color: var(--header-bg);">
+        <div class="text-white h-[88px] px-4 flex justify-between items-center shadow-md sticky top-0 z-50" style="background-color: var(--header-bg);">
             <button onclick="abrirAjustes()" class="text-white hover:opacity-80 transition"><i class="fas fa-cog text-2xl"></i></button>
             <h1 id="main-title" class="text-xl font-bold tracking-wide">Agenda Familiar</h1>
             <button onclick="toggleDrawer()" class="text-white hover:opacity-80 transition"><i class="fas fa-user text-2xl"></i></button>
@@ -557,7 +551,7 @@
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="toggle-ruta" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#68737D]"></div>
                     </label>
                 </div>
 
@@ -627,7 +621,7 @@
                     </div>
                     <label class="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" id="toggle-avisos" class="sr-only peer">
-                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#006D6F]"></div>
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#68737D]"></div>
                     </label>
                 </div>
 
@@ -840,12 +834,6 @@
     </div>
 
     <script>
-        // Evita que el navegador restaure una posición antigua que deje el inicio bajo la cabecera.
-        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
-        window.addEventListener('pageshow', () => {
-            requestAnimationFrame(() => window.scrollTo(0, 0));
-        });
-
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('/static/sw.js').catch(err => console.log('SW fallo:', err));
@@ -1657,7 +1645,6 @@
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            window.scrollTo(0, 0);
             actualizarEtiquetaDesplegableAgenda();
             cargarAgendaFamiliar();
             cargarGrupos();
