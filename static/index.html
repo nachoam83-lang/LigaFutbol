@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.06                                           -->
+    <!--  Versión actual: v1.04.07                                           -->
     <!--  Fecha: 18/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -1602,10 +1602,11 @@
             if (aplazado) badges.push(`<span class="mc-badge mc-b-aplazado"><i class="fas fa-ban"></i>Aplazado</span>`);
             if (aviso) badges.push(`<span class="mc-badge mc-b-cambio"><i class="fas fa-exclamation-triangle"></i>${textoCambio(aviso)}</span>`);
 
-            const equipo = (nombre, esc, fav, pos) => !nombre ? `
+            const estiloEscCanal = { local: 'border:3px solid #fff;box-sizing:border-box;', vis: 'background-color:rgba(0,80,158,.3);border:3px solid #00509E;box-sizing:border-box;' };
+            const equipo = (nombre, esc, fav, pos, rol) => !nombre ? `
                 <div class="mc-team"><div class="esc" style="display:flex;align-items:center;justify-content:center;background:#EEF1F3"><i class="fas fa-bed" style="color:#3F4B54"></i></div><div class="nom" style="color:var(--text-sec)">DESCANSA</div></div>` : `
                 <div class="mc-team ${fav ? 'fav' : ''}">
-                    <div class="esc"><img src="${escHtml(esc)}" alt="" style="object-fit:${(esCanal || esc.startsWith('data:')) ? 'cover' : 'contain'}"></div>
+                    <div class="esc" style="${esCanal ? estiloEscCanal[rol] : ''}"><img src="${escHtml(esc)}" alt="" style="object-fit:${(esCanal || esc.startsWith('data:')) ? 'cover' : 'contain'}"></div>
                     <div class="nom">${escHtml(acortarNombre(nombre))}</div>
                     ${pos ? `<span class="pos" title="Posición en la clasificación">${pos}º</span>` : ''}
                 </div>`;
@@ -1623,8 +1624,8 @@
                 </div>
                 <div class="mc-body">
                     <div class="mc-teams">
-                        ${equipo(p.EquipoLocal, escLocal, esLocalFav, posLocal)}
-                        ${equipo(p.EquipoVisitante, escVis, esVisFav, posVis)}
+                        ${equipo(p.EquipoLocal, escLocal, esLocalFav, posLocal, 'local')}
+                        ${equipo(p.EquipoVisitante, escVis, esVisFav, posVis, 'vis')}
                     </div>
                     <div class="mc-side" id="side-agenda-${index}">${badges.join('')}</div>
                 </div>
@@ -1966,7 +1967,7 @@
 
             let escL = p.URLEscudoEquipoLocal || '/static/logo.png', escV = p.URLEscudoEquipoVisitante || '/static/logo.png';
             if (esCanal) { escL = esLocalFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png'; escV = esVisFav ? (eq.escudoFavorito || '/static/logo.png') : '/static/Equipo_Canal.png'; }
-            const imgEsc = (u) => `<div class="fi-esc"><img src="${escHtml(u)}" alt="" style="object-fit:${(esCanal || u.startsWith('data:')) ? 'cover' : 'contain'}"></div>`;
+            const imgEsc = (u, rol) => `<div class="fi-esc" style="${esCanal ? (rol === 'vis' ? 'background-color:rgba(0,80,158,.3);border:3px solid #00509E;box-sizing:border-box;' : 'border:3px solid #fff;box-sizing:border-box;') : ''}"><img src="${escHtml(u)}" alt="" style="object-fit:${(esCanal || u.startsWith('data:')) ? 'cover' : 'contain'}"></div>`;
 
             const avisos = (userSettings.showChangeAlerts !== false) ? avisosActivos() : {};
             const aviso = esFavorito ? avisos[`${eq.id}|${claveCambio(p)}`] : null;
@@ -2021,9 +2022,9 @@
                         <span class="mc-ico" title="${enCasa ? 'En casa' : 'Fuera'}"><i class="fas ${enCasa ? 'fa-home' : 'fa-plane'}"></i></span>
                     </div>
                     <div class="fi-equipos">
-                        <div>${imgEsc(escL)}<div class="fi-nom ${esLocalFav ? 'fav' : ''}">${escHtml(acortarNombre(p.EquipoLocal))}</div></div>
+                        <div>${imgEsc(escL, 'local')}<div class="fi-nom ${esLocalFav ? 'fav' : ''}">${escHtml(acortarNombre(p.EquipoLocal))}</div></div>
                         <div class="fi-centro">${centro}</div>
-                        <div>${imgEsc(escV)}<div class="fi-nom ${esVisFav ? 'fav' : ''}">${escHtml(acortarNombre(p.EquipoVisitante))}</div></div>
+                        <div>${imgEsc(escV, 'vis')}<div class="fi-nom ${esVisFav ? 'fav' : ''}">${escHtml(acortarNombre(p.EquipoVisitante))}</div></div>
                     </div>
                 </div>
                 ${lineasAviso.length ? `<div class="fi-aviso"><i class="fas fa-exclamation-triangle"></i> Cambio en este partido<div style="font-weight:600;margin-top:4px">${lineasAviso.join('<br>')}</div></div>` : ''}
