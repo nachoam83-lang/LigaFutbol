@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.18                                           -->
+    <!--  Versión actual: v1.04.19                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -407,6 +407,26 @@
         .ag-eq-ir-acciones button i { color: #3F4B54 !important; font-size: 16px; }
         .fi-acc a, .fi-acc button { text-decoration: none; }
         @media (max-width: 360px) { .mc-hijo span { max-width: 80px; } .mc-btns a, .mc-btns button { font-size: 11px; padding: 6px 4px; } }
+        /* v1.04.19 — tarjeta como antes (iconos), cajón compacto, selector de transporte por partido */
+        .mc-modo { width: 34px; height: 34px; border-radius: 10px; background: #EEF1F3; color: #34414B; display: flex; align-items: center; justify-content: center; flex: 0 0 auto; font-size: 14px; }
+        .mc-modo:active { background: #DDE3E7; }
+        .mc-ruta { margin-top: 6px; }
+        .mc-comp { margin: 2px 0 0 2px; }
+        .ag-dia { scroll-margin-top: 104px; }
+        .ag-filter-sheet { height: 44px; }
+        .ag-sheet-handle { height: 44px; }
+        .ag-filter-sheet .ag-controles { max-height: calc(70vh - 44px); padding: 10px 14px 12px; }
+        #lista-agenda { padding-bottom: 70px !important; }
+        .ag-seg button { min-height: 38px; }
+        .ag-fila { margin-top: 8px; }
+        .ag-chip, .ag-chip-deporte { min-height: 38px !important; font-size: 13px !important; }
+        .ag-chip img { width: 26px; height: 26px; }
+        .ag-ir-cap { margin-top: 10px; }
+        .ag-eq-ir { flex-direction: row !important; align-items: center !important; padding: 6px 0 !important; gap: 8px !important; }
+        .ag-eq-ir-acciones { grid-template-columns: repeat(3, 38px) !important; gap: 6px !important; flex: 0 0 auto; }
+        .ag-eq-ir-acciones button { width: 38px !important; min-height: 38px !important; height: 38px !important; border-radius: 10px !important; }
+        .ag-eq-ir-acciones button span { display: none; }
+        .ag-eq-ir-acciones button i { font-size: 15px !important; }
     </style>
 </head>
 <body class="pb-20">
@@ -590,6 +610,16 @@
                         <input type="checkbox" id="toggle-ruta" class="sr-only peer">
                         <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#68737D]"></div>
                     </label>
+                </div>
+
+                <div class="border-t pt-4" style="border-color: var(--border-color);">
+                    <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Transporte para partidos en casa</label>
+                    <select id="select-transporte-casa" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                        <option value="foot">🚶‍♂️ Caminando</option>
+                        <option value="driving">🚗 Coche</option>
+                        <option value="transit">🚌 Transporte público</option>
+                    </select>
+                    <p class="text-[11px] text-gray-400 mt-1">En cada tarjeta puedes cambiarlo al momento con el icono de transporte.</p>
                 </div>
 
                 <div class="border-t pt-4" style="border-color: var(--border-color);">
@@ -1529,6 +1559,7 @@
             document.getElementById('select-mapa-defecto').value = userSettings.defaultMap || 'ask';
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
             document.getElementById('select-transporte-fuera').value = userSettings.transportModeAway || 'driving';
+            document.getElementById('select-transporte-casa').value = userSettings.transportModeHome || 'foot';
             document.getElementById('toggle-avisos').checked = userSettings.showChangeAlerts !== false;
             document.getElementById('input-tiempo-aviso').value = userSettings.alertDurationMinutes || 60;
             document.getElementById('toggle-alarmas').checked = userSettings.alarmEnabled === true;
@@ -1557,6 +1588,7 @@
             userSettings.defaultMap = document.getElementById('select-mapa-defecto').value;
             userSettings.showRoute = document.getElementById('toggle-ruta').checked;
             userSettings.transportModeAway = document.getElementById('select-transporte-fuera').value;
+            userSettings.transportModeHome = document.getElementById('select-transporte-casa').value;
             userSettings.showChangeAlerts = document.getElementById('toggle-avisos').checked;
             
             const minutosInput = parseInt(document.getElementById('input-tiempo-aviso').value);
@@ -1892,9 +1924,10 @@
                     ? `<span class="mc-campo" style="background:#FFEDD5;color:#9A3412">Exterior</span>`
                     : `<span class="mc-campo" style="background:#DBEAFE;color:#1E40AF">Pabellón</span>`);
 
+            const claveF = registrarFicha(p, eq);
             const iconoRuta = iconoModo(modoViaje(p, eq));
             const filaRuta = userSettings.showRoute === true
-                ? `<div class="mc-ruta"><i class="fas ${iconoRuta}"></i><span id="ruta-agenda-${index}">Calculando...</span></div>` : '';
+                ? `<div class="mc-ruta"><button type="button" class="mc-modo" onclick="event.stopPropagation(); cambiarModoPartido('${escHtml(claveF)}')" title="Cambiar transporte: a pie, coche o público" aria-label="Cambiar transporte"><i class="fas ${iconoRuta}"></i></button><span id="ruta-agenda-${index}">Calculando...</span></div>` : '';
 
             const urlGrupo = getGrupoEquipo(eq);
             const dirJs = escHtml(JSON.stringify(dirCompleta));
@@ -1903,7 +1936,7 @@
             const badges = [];
             if (aplazado) badges.push(`<span class="mc-badge mc-b-aplazado"><i class="fas fa-ban"></i>Aplazado</span>`);
             const franjaCambio = aviso ? `<div class="mc-aviso"><i class="fas fa-exclamation-triangle" aria-hidden="true"></i><span>${textoCambio(aviso)}${aviso.antes.f !== aviso.ahora.f ? ' · antes ' + escHtml(fechaCambio(aviso.antes.f)) : ''}${aviso.antes.c !== aviso.ahora.c ? ' · antes ' + escHtml(campoCorto(aviso.antes.c)) : ''}</span></div>` : '';
-            const lugar = `<span class="mc-lugar ${esPartidoEnCasa ? 'casa' : 'fuera'}"><i class="fas ${esPartidoEnCasa ? 'fa-house' : 'fa-plane'}" aria-hidden="true"></i>${esPartidoEnCasa ? 'Casa' : 'Fuera'}</span>`;
+            const lugarNo = `<span class="mc-lugar ${esPartidoEnCasa ? 'casa' : 'fuera'}"><i class="fas ${esPartidoEnCasa ? 'fa-house' : 'fa-plane'}" aria-hidden="true"></i>${esPartidoEnCasa ? 'Casa' : 'Fuera'}</span>`;
 
             const estiloEscCanal = { local: 'border:3px solid #fff;box-sizing:border-box;', vis: 'background-color:rgba(0,80,158,.3);border:3px solid #00509E;box-sizing:border-box;' };
             const equipo = (nombre, esc, fav, pos, rol) => !nombre ? `
@@ -1915,15 +1948,17 @@
                 </div>`;
 
             return `
-            <article class="mcard ${aplazado ? 'atenuado' : ''}" style="--sport:${colorDeporte}" data-ficha="${escHtml(registrarFicha(p, eq))}">
+            <article class="mcard ${aplazado ? 'atenuado' : ''}" style="--sport:${colorDeporte}" data-ficha="${escHtml(claveF)}">
                 <div class="mc-top">
                     <div class="mc-hijo" style="--c:${colorDeporte}"><img src="${escHtml(eq.escudoFavorito || '/static/logo.png')}" alt=""><span>${escHtml(eq.nombre)}</span></div>
+                    <span class="mc-ico" title="${NOMBRES_DEPORTE[eq.idDeporte] || ''}">${getDeporteIcon(eq.idDeporte).replace('text-white text-xl', '')}</span>
+                    <span class="mc-ico" title="${esPartidoEnCasa ? 'En casa' : 'Fuera'}"><i class="fas ${esPartidoEnCasa ? 'fa-home' : 'fa-plane'}"></i></span>
                     <div class="mc-cuando">
                         <div class="mc-fecha">${escHtml(fechaCorta)}</div>
                         ${sinHora ? '<span class="mc-sinhora">Hora por confirmar</span>' : (!descansa ? `<div class="mc-hora ${aplazado ? 'tachada' : ''} ${(aviso && aviso.antes.f !== aviso.ahora.f) ? 'cambio' : ''}">${(aviso && aviso.antes.f !== aviso.ahora.f) ? '<i class="fas fa-clock" aria-hidden="true"></i>' : ''}${horaStr}</div>` : '')}
                     </div>
                 </div>
-                <div class="mc-comp"><span class="t">${getDeporteIcon(eq.idDeporte).replace('text-white text-xl', '')} ${escHtml(eq.nombreCompeticion || NOMBRES_DEPORTE[eq.idDeporte] || '')}</span>${descansa ? '' : lugar}</div>
+                <div class="mc-comp"><span class="t">${escHtml(eq.nombreCompeticion || NOMBRES_DEPORTE[eq.idDeporte] || '')}</span></div>
                 ${franjaCambio}
                 <div class="mc-body">
                     <div class="mc-teams">
@@ -1937,10 +1972,10 @@
                 <div class="mc-foot">
                     ${campo}
                     <div class="mc-clima" id="clima-agenda-${index}"></div>
-                </div>
-                <div class="mc-btns">
-                    ${urlGrupo ? `<a href="${escHtml(urlGrupo)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="wa"><i class="fab fa-whatsapp" aria-hidden="true"></i>Grupo</a>` : ''}
-                    <button type="button" class="ruta" onclick="event.stopPropagation(); abrirModalMapa(${dirJs}, '${modoRuta}')"><i class="fas fa-diamond-turn-right" aria-hidden="true"></i>${modoRuta === 'transit' ? 'Transporte público' : 'Cómo llegar'}</button>
+                    <div class="mc-acciones">
+                    ${urlGrupo ? `<a href="${escHtml(urlGrupo)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="mc-btn wa" title="Grupo de WhatsApp" aria-label="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp"></i></a>` : ''}
+                    <button type="button" class="mc-btn ruta" onclick="event.stopPropagation(); abrirModalMapa(${dirJs}, '${modoRuta}')" title="Abrir ruta" aria-label="Abrir ruta"><i class="fas fa-location-arrow"></i></button>
+                    </div>
                 </div>`}
             </article>`;
         }
@@ -1978,7 +2013,7 @@
                 const v = viajePartido[`${eq.id}|${claveCambio(p)}`];
                 if (!Number.isFinite(v)) return;
                 const esCanal = eq.idDeporte === '4';
-                if (!esCanal && userSettings.transportModeAway === 'transit' && p.EquipoLocal !== eq.equipoFavorito) return;
+                if (modoViaje(p, eq) === 'transit') return;
                 const sal = new Date(p.FechaHora); sal.setMinutes(sal.getMinutes() - (esCanal ? 2 : margenLlegada()) - v);
                 const k = claveDia(new Date(p.FechaHora));
                 if (!mapa[k] || sal < mapa[k].sal) mapa[k] = { sal, nombre: eq.nombre };
@@ -2047,8 +2082,10 @@
             });
             contenedor.innerHTML = partes.join('');
 
+            const primeraVez = contenedor.dataset.rendered !== 'true';
             contenedor.dataset.rendered = 'true';
             contenedor.removeAttribute('aria-busy');
+            if (primeraVez) window.scrollTo(0, 0);
             cargarClimaYRutas();
 
             if (showingFromCache) {
@@ -2455,7 +2492,20 @@
         function margenLlegada() { const m = parseInt(userSettings.arrivalMargin); return (!isNaN(m) && m >= 0) ? m : 30; }
         function modoViaje(p, eq) {
             const enCasa = p.EquipoLocal === eq.equipoFavorito || eq.idDeporte === '4';
-            return enCasa ? 'foot' : (userSettings.transportModeAway || 'driving');
+            const o = leerJSON('modo_partido')[claveFicha(p, eq)];
+            if (['foot', 'driving', 'transit'].includes(o)) return o;
+            return enCasa ? (userSettings.transportModeHome || 'foot') : (userSettings.transportModeAway || 'driving');
+        }
+        // Cambia el transporte de un partido concreto (a pie → coche → transporte público)
+        function cambiarModoPartido(clave) {
+            const f = _fichas[clave];
+            if (!f) return;
+            const orden = ['foot', 'driving', 'transit'];
+            const nuevo = orden[(orden.indexOf(modoViaje(f.p, f.eq)) + 1) % orden.length];
+            const m = leerJSON('modo_partido'); m[clave] = nuevo; escribirJSON('modo_partido', m);
+            mostrarToast({ foot: 'Transporte: a pie', driving: 'Transporte: en coche', transit: 'Transporte: público' }[nuevo], 1600);
+            if (!document.getElementById('screen-agenda').classList.contains('hide') && window._ultimaAgenda) renderAgendaDesdeDatos(window._ultimaAgenda[0], window._ultimaAgenda[1]);
+            else if (!document.getElementById('screen-detalle').classList.contains('hide') && cacheResultados) renderizarCalendarioUI();
         }
         function hhmm(d) { return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`; }
         async function duracionViajeMin(lat, lon, modo) {
@@ -2517,7 +2567,7 @@
                 if (userSettings.alarmEventMin !== null && !isNaN(ev) && ev >= 0) mins.push(ev);
                 const dep = parseInt(userSettings.alarmDepartMin);
                 const viaje = viajePartido[`${eq.id}|${claveCambio(p)}`];
-                if (userSettings.showRoute === true && userSettings.transportModeAway !== 'transit' && userSettings.alarmDepartMin !== null && !isNaN(dep) && Number.isFinite(viaje)) {
+                if (userSettings.showRoute === true && modoViaje(p, eq) !== 'transit' && userSettings.alarmDepartMin !== null && !isNaN(dep) && Number.isFinite(viaje)) {
                     mins.push(viaje + (esCanal ? 2 : 0) + dep);   // minutos antes del inicio del evento
                 }
             }
@@ -2655,7 +2705,7 @@
                                     if (elRuta && elRuta.innerText === "Calculando...") elRuta.innerHTML = `<span class="text-gray-400 text-[10px]">...</span>`;
                                     try {
                                         const esPartidoEnCasa = (p.EquipoLocal === eq.equipoFavorito) || esCanal;
-                                        const modoActual = esPartidoEnCasa ? 'foot' : (userSettings.transportModeAway || 'driving');
+                                        const modoActual = modoViaje(p, eq);
                                         let durationSec = 0;
                                         if (modoActual === 'transit') {
                                             if (elRuta) elRuta.innerHTML = `<a href="${escHtml(urlRutaTransito(dirCompleta))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Ver ruta y horarios en transporte público</a>`;
@@ -2835,6 +2885,7 @@
             document.getElementById('screen-detalle').classList.add('hide'); 
             document.getElementById('screen-agenda').classList.remove('hide'); 
             cargarAgendaFamiliar(); 
+            window.scrollTo(0, 0);
         }
 
         function moverEquipo(index, direccion) {
@@ -3411,7 +3462,7 @@
                 const texto = `${equipoActual.nombre} tiene partido el ${fecha} a las ${horaTxt}h contra ${rival} en ${dirCompleta}.`;
                 const dirJs = escHtml(JSON.stringify(dirCompleta));
                 const modoC = modoViaje(p, equipoActual);
-                if (userSettings.showRoute === true) filaViaje = `<div class="mc-ruta" data-viaje="${escHtml(claveFichaPartido)}"><i class="fas ${iconoModo(modoC)}" aria-hidden="true"></i><span>Calculando…</span></div>`;
+                if (userSettings.showRoute === true) filaViaje = `<div class="mc-ruta" data-viaje="${escHtml(claveFichaPartido)}"><button type="button" class="mc-modo" onclick="event.stopPropagation(); cambiarModoPartido('${escHtml(claveFichaPartido)}')" title="Cambiar transporte: a pie, coche o público" aria-label="Cambiar transporte"><i class="fas ${iconoModo(modoC)}" aria-hidden="true"></i></button><span>Calculando…</span></div>`;
                 acciones = `<div class="mc-acc">
                     <button type="button" class="ruta" onclick="event.stopPropagation(); abrirModalMapa(${dirJs}, '${modoC}')"><i class="fas fa-diamond-turn-right" aria-hidden="true"></i>${modoC === 'transit' ? 'Transporte' : 'Ruta'}</button>
                     <a href="${escHtml(urlIcs(p, equipoActual, dirCompleta, `Partido: ${equipoActual.equipoFavorito} vs ${rival}`))}" title="Añadir este partido al calendario del móvil"><i class="fas fa-calendar-plus" aria-hidden="true"></i>Agendar</a>
