@@ -6,8 +6,8 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.12                                           -->
-    <!--  Fecha: 18/11/2026                                                 -->
+    <!--  Versión actual: v1.05.00                                           -->
+    <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Aviso de cambios de partido en la Agenda Familiar          -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
@@ -95,7 +95,7 @@
         .mc-hijo { display: flex; align-items: center; gap: 6px; background: var(--c); color: #fff; font-size: 12px; font-weight: 800; border-radius: 999px; padding: 2px 10px 2px 2px; min-width: 0; }
         .mc-hijo img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: #fff; flex: 0 0 auto; }
         .mc-hijo span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
-.mc-comp { font-size: 11px; font-weight: 700; color: var(--text-sec); margin: 2px 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mc-comp { font-size: 11px; font-weight: 700; color: var(--text-sec); margin: 2px 0 0 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .ag-ir { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         .ag-ir button { min-height: 40px; border-radius: 10px; background: #fff; border: 1.5px solid var(--line); font-size: 12px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; justify-content: center; gap: 6px; }
         .ag-ir button i { color: var(--primary-color); }
@@ -161,7 +161,7 @@
         .fi-acc a, .fi-acc button { min-height: 44px; border-radius: 12px; font-size: 13px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; background: #fff; border: 1px solid var(--line); color: var(--text-main); }
         .fi-acc .prim { background: var(--primary-color); color: #fff; border-color: var(--primary-color); }
         .fi-acc .wa { background: #25D366; color: #fff; border-color: #25D366; }
-.aj-sec { font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--text-sec); display: flex; align-items: center; gap: 8px; margin: 8px 4px -4px; }
+        .aj-sec { font-size: 12px; font-weight: 800; letter-spacing: .6px; text-transform: uppercase; color: var(--text-sec); display: flex; align-items: center; gap: 8px; margin: 8px 4px -4px; }
         .aj-sec i { color: var(--primary-color); width: 18px; text-align: center; }
         .aj-guardar { position: sticky; bottom: 14px; z-index: 30; padding: 6px 0; }
         .aj-guardar button { box-shadow: 0 6px 18px rgba(20,32,43,.28); }
@@ -588,7 +588,7 @@
             <div id="panel-logo-custom" class="hide card p-4">
                 <label class="block text-xs font-bold uppercase mb-3" style="color: var(--text-sec);">Logo personalizado (opcional)</label>
                 <div class="flex items-center gap-3">
-                    <div id="preview-logo" class="w-16 h-16 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-center overflow-hidden flex-shrink-0">
+                    <div id="preview-logo" class="w-16 h-16 rounded-full bg-gray-100 border-2 border-dashed border-gray-300 flex items-center justify-content overflow-hidden flex-shrink-0">
                         <i class="fas fa-camera text-gray-400"></i>
                     </div>
                     <div class="flex-1 space-y-2">
@@ -1197,16 +1197,10 @@
         }
 
         // <cambios>
-        // ── AVISOS DE CAMBIOS DE PARTIDO ──────────────────────────────────────────
-        // Para cada equipo se compara la fecha/hora y el campo de sus partidos con lo que la app
-        // vio la última vez (snapshot_v4_<id equipo>). Si algo cambia se guarda un aviso en
-        // "avisos_cambios", que se muestra en la Agenda Familiar hasta que se cierra, caduca
-        // (tiempo de Ajustes) o se juega el partido. No hace falta abrir el equipo.
         function escHtml(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
         function leerJSON(clave) { try { const v = JSON.parse(localStorage.getItem(clave)); return (v && typeof v === 'object' && !Array.isArray(v)) ? v : {}; } catch { return {}; } }
         function escribirJSON(clave, valor) { try { localStorage.setItem(clave, JSON.stringify(valor)); } catch {} }
         function esPartidoFavorito(eq, p) { return p.EquipoLocal === eq.equipoFavorito || p.EquipoVisitante === eq.equipoFavorito; }
-        // Identifica un partido aunque cambie de jornada (ECM tiene Id; Canal se identifica por el cruce de equipos)
         function claveCambio(p) { return p.Id ? `id${p.Id}` : `${p.EquipoLocal}_${p.EquipoVisitante}`; }
         function mismoEstado(a, b) { return !!a && !!b && a.f === b.f && a.c === b.c; }
 
@@ -1241,20 +1235,19 @@
                 const estado = { f: p.FechaHora, c: p.Campo || '' };
                 nuevo[k] = estado;
                 const antes = snap[k];
-                if (!hayBase || !antes) return;               // primera vez que se ve: solo se guarda, no avisa
-                if (mismoEstado(antes, estado)) return;       // sin cambios
-                if (antes.c === 'Campo') return;              // Canal: primera asignación de hora y campo desde el PDF, no es un cambio
-                if (new Date(p.FechaHora) < hoy) return;      // partido ya pasado
+                if (!hayBase || !antes) return;
+                if (mismoEstado(antes, estado)) return;
+                if (antes.c === 'Campo') return;
+                if (new Date(p.FechaHora) < hoy) return;
                 const clave = `${eq.id}|${k}`;
                 const previo = avisos[clave];
-                if (previo && mismoEstado(previo.antes, estado)) { delete avisos[clave]; return; }   // ha vuelto a como estaba
+                if (previo && mismoEstado(previo.antes, estado)) { delete avisos[clave]; return; }
                 avisos[clave] = { t: ahora, eq: eq.nombre, loc: p.EquipoLocal, vis: p.EquipoVisitante, antes: previo ? previo.antes : antes, ahora: estado };
             });
             escribirJSON(claveSnap, nuevo);
             escribirJSON('avisos_cambios', avisos);
         }
 
-        // Pone los indicadores que usan las tarjetas de la vista de equipo a partir de los avisos activos
         function marcarCambiosLocales(eq, partidos) {
             if (!Array.isArray(partidos)) return;
             const avisos = avisosActivos();
@@ -1292,6 +1285,7 @@
 
         function cerrarBannerAgenda() {
             escribirJSON('avisos_cambios', {});
+            localStorage.setItem('dismissed_banner_time', String(Date.now()));
             renderBannerAgenda();
             if (window._ultimaAgenda) renderAgendaDesdeDatos(window._ultimaAgenda[0], window._ultimaAgenda[1]);
         }
@@ -1412,7 +1406,7 @@
                 localStorage.removeItem('cache_grupos');
                 localStorage.removeItem('dismissed_changes');
                 localStorage.removeItem('avisos_cambios');
-                localStorage.removeItem('dismissed_banner_time'); // Limpiamos también el control de tiempo del banner
+                localStorage.removeItem('dismissed_banner_time');
                 Object.keys(localStorage).forEach(key => {
                     if (key.startsWith('cache_cal_') || key.startsWith('cache_res_') || key.startsWith('cache_clas_') || key.startsWith('snapshot_v3_') || key.startsWith('snapshot_v4_') || key.startsWith('cache_ruta')) {
                         localStorage.removeItem(key);
@@ -1532,8 +1526,8 @@
             return COLORES_HIJO[(i < 0 ? 0 : i) % COLORES_HIJO.length];
         }
 
-        function rangoVista(v, ahora = new Date()) {  // 'semana' (7 días) o 'mes'
-            const y = ahora.getFullYear(), m = ahora.getMonth(), d = ahora.getDate(), dow = ahora.getDay();
+        function rangoVista(v, ahora = new Date()) {
+            const y = ahora.getFullYear(), m = ahora.getMonth(), d = ahora.getDate();
             const hoy = new Date(y, m, d);
             if (v === 'mes') return [hoy, new Date(y, m + 1, d)];
             return [hoy, new Date(y, m, d + 7)];
@@ -1705,7 +1699,6 @@
             const hijos = [...new Set(lista.map(p => p._equipoRef.nombre))];
             const partes = [`<span class="r"><i class="far fa-futbol"></i>${lista.length} ${lista.length === 1 ? 'partido' : 'partidos'}</span>`];
             if (hijos.length > 1) partes.push(`<span class="r">${hijos.map(escHtml).join(' · ')}</span>`);
-            // partidos a la vez en campos distintos
             const choques = [];
             for (let i = 0; i < conHora.length; i++) for (let j = i + 1; j < conHora.length; j++) {
                 const a = conHora[i], b = conHora[j];
@@ -1721,6 +1714,11 @@
         }
 
         function actualizarResumenDias() {
+            document.querySelectorAll('[id^="ag-salida-"]').forEach(el => {
+                el.innerHTML = '';
+                el.style.display = 'none';
+            });
+            if (userSettings.showRoute !== true) return;
             const mapa = {};
             (window._partidosAgenda || []).forEach(p => {
                 if (esSinHora(p) || !p.EquipoLocal || !p.EquipoVisitante) return;
@@ -1736,7 +1734,7 @@
                 const el = document.getElementById(`ag-salida-${k}`);
                 if (!el) return;
                 const m = mapa[k];
-                el.innerHTML = `<i class="fas fa-door-open"></i>Primera salida ${String(m.sal.getHours()).padStart(2, '0')}:${String(m.sal.getMinutes()).padStart(2, '0')} (${escHtml(m.nombre)})`;
+                el.innerHTML = `<i class="fas fa-door-open"></i>Salir a las ${String(m.sal.getHours()).padStart(2, '0')}:${String(m.sal.getMinutes()).padStart(2, '0')} de casa (${escHtml(m.nombre)})`;
                 el.style.display = 'inline-flex';
             });
         }
@@ -1885,7 +1883,6 @@
 
                     if (!Array.isArray(partidos)) return;
 
-                    // Solo con datos recién descargados: compara con lo último visto y guarda los avisos
                     if (!fromCache) registrarCambios(eq, partidos);
                     const avisosEq = avisosActivos();
 
@@ -2067,7 +2064,6 @@
             const textoWa = `${eq.nombre} tiene partido el ${fechaCorta} a las ${hora}h contra ${rival} en ${dir}.`;
             const futuro = valida && !sinHora && !pasado && estado !== 'jugado' && estado !== 'aplazado';
             const urlGrupo = getGrupoEquipo(eq);
-            const idx = equipos.indexOf(eq);
 
             const cMapa = coordsPartido(p, eq, dir);
             const coordMapa = cMapa ? `${cMapa.lat},${cMapa.lon}` : (dir ? dir : '');
@@ -2077,7 +2073,6 @@
             if (futuro) {
                 filas.push(`<div class="fi-fila" id="fi-clima-fila" style="display:none"><i class="fas fa-cloud-sun"></i><div style="flex:1;min-width:0"><b>Tiempo previsto</b><span id="fi-clima-txt"></span><div id="fi-clima-horas"></div></div></div>`);
                 if (userSettings.showRoute === true) filas.push(`<div class="fi-fila" id="fi-salida-fila" style="display:none"><i class="fas ${enCasa ? 'fa-walking' : (userSettings.transportModeAway === 'transit' ? 'fa-bus' : 'fa-car')}"></i><div><b>Cuándo salir</b><span id="fi-salida-txt"></span></div></div>`);
-                else filas.push(`<div class="fi-fila"><i class="fas fa-route"></i><div><b>Cuándo salir</b><span class="fi-sub">Activa "Tiempo de Viaje" en Ajustes para ver la hora de salida.</span></div></div>`);
             }
 
             document.getElementById('ficha-contenido').innerHTML = `
@@ -2158,7 +2153,7 @@
             const dep = parseInt(userSettings.alarmDepartMin);
             const viaje = viajePartido[`${eq.id}|${claveCambio(p)}`];
             if (userSettings.showRoute === true && userSettings.alarmDepartMin !== null && !isNaN(dep) && Number.isFinite(viaje)) {
-                mins.push(viaje + (esCanal ? 2 : 0) + dep);   // minutos antes del inicio del evento (convocatoria en ECM, partido en Canal)
+                mins.push(viaje + (esCanal ? 2 : 0) + dep);
             }
             const lista = [...new Set(mins)].filter(m => m >= 0 && m <= 43200).slice(0, 5);
             return `/api/ics?titulo=${encodeURIComponent(titulo)}&fecha=${encodeURIComponent(p.FechaHora)}&lugar=${encodeURIComponent(dir)}&deporte=${eq.idDeporte}&alarmas=${lista.join(',')}&margen=${margenLlegada()}`;
@@ -2668,7 +2663,6 @@
             try {
                 localStorage.setItem('equipos_liga', JSON.stringify(equipos));
             } catch (e) {
-                // Almacenamiento lleno: se liberan cachés que se regeneran solas y se reintenta
                 Object.keys(localStorage).filter(k => /^(cache_clima|cache_res_|cache_cal_|cache_clas_|cache_proximo_partido)/.test(k)).forEach(k => localStorage.removeItem(k));
                 try { localStorage.setItem('equipos_liga', JSON.stringify(equipos)); }
                 catch (e2) { avisar('No se pudo guardar: el almacenamiento del navegador está lleno. Prueba con una foto más pequeña.'); return; }
@@ -2838,7 +2832,6 @@
 
             let misPartidosCambiados = cacheResultados.filter(p => (p.Cambio || p.CambioLocal) && (p.EquipoLocal === equipoActual.equipoFavorito || p.EquipoVisitante === equipoActual.equipoFavorito));
             
-            // VERIFICACIÓN PARAMETRIZADA DEL BANNER (Activación y Tiempo)
             let mostrarBanner = false;
             if (userSettings.showChangeAlerts !== false && misPartidosCambiados.length > 0) {
                 let dismissedBannerTime = parseInt(localStorage.getItem('dismissed_banner_time') || '0');
@@ -2881,14 +2874,14 @@
             }
 
             const selectCal = document.getElementById('select-jornada-cal');
-            selectCal.innerHTML = '<option value="0">Todas las jornadas</option>';
+            selectCal.innerHTML = '<option value="0">Todas</option>';
             jornadasData.forEach((j, i) => {
                 const selected = (i === indiceSeleccionadoCal) ? 'selected' : '';
                 selectCal.innerHTML += `<option value="${j.NumeroJornada}" ${selected}>Jornada ${j.NumeroJornada}</option>`;
             });
             
             const selectRes = document.getElementById('select-jornada-res');
-            selectRes.innerHTML = '<option value="0">Todas las jornadas</option>';
+            selectRes.innerHTML = '<option value="0">Todas</option>';
             jornadasData.forEach((j, i) => {
                 const selected = (i === indiceSeleccionadoRes) ? 'selected' : '';
                 selectRes.innerHTML += `<option value="${j.NumeroJornada}" ${selected}>Jornada ${j.NumeroJornada}</option>`;
@@ -2896,7 +2889,6 @@
         }
 
         function cerrarBanner() {
-            // Guardamos el momento exacto en que se cerró el banner para respetar el tiempo configurado
             localStorage.setItem('dismissed_banner_time', Date.now().toString());
             document.getElementById('banner-alerta').classList.add('hide');
         }
