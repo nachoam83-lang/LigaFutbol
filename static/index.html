@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.22                                           -->
+    <!--  Versión actual: v1.04.23                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -97,6 +97,8 @@
         .cf-caja p { font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.35; }
         .cf-bot { display: flex; gap: 10px; margin-top: 18px; }
         .cf-bot button { flex: 1; min-height: 46px; border-radius: 12px; font-size: 15px; font-weight: 800; background: #E4E8EB; color: #26343F; }
+        /* interruptores de Ajustes: naranja vivo al activarse */
+        label > input.peer:checked + div { background-color: #F97316 !important; }
         .cf-bot button#confirmar-si { background: #68737D; color: #fff; }
         .mc-lluvia { display: inline-flex; align-items: center; gap: 3px; color: var(--rain-fg); background: var(--rain-bg); border-radius: 6px; padding: 1px 6px; font-size: 12px; font-weight: 800; }
         .fi-mapa { margin: 12px 16px 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #E4E8EB; height: 180px; }
@@ -748,7 +750,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.22</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.23</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">21/11/2026 · Agenda renovada, transporte por partido</p>
             </div>
         </div>
@@ -1739,7 +1741,7 @@
         const COLORES_HIJO = ['#006D6F', '#8A3A6B', '#B45309', '#1D4ED8', '#4D7C0F', '#BE123C'];
         const NOMBRES_DEPORTE = { '1': 'Baloncesto', '2': 'Fútbol sala', '3': 'Voleibol', '4': 'Escuela Canal' };
         const VISTAS_AGENDA = [['semana', 'Semana'], ['mes', 'Mes']];
-        let vistaAgenda = 'semana';   // la agenda siempre abre en la semana en curso
+        let vistaAgenda = 'mes';   // la agenda abre en los próximos 30 días (no queda vacía entre jornadas)
         let filtroHijo = '';
         let filtroDeporte = '';
 
