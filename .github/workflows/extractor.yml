@@ -29,6 +29,7 @@ jobs:
 
       - name: Ejecutar el extractor
         env:
+          PYTHONUNBUFFERED: "1"   # el log se ve en directo
           ECM_PROXY: ${{ secrets.ECM_PROXY }}   # opcional: proxy con IP española solo para ECM
           ECM_WORKER: ${{ secrets.ECM_WORKER }}        # opcional: Worker de Cloudflare con IP española
           ECM_WORKER_KEY: ${{ secrets.ECM_WORKER_KEY }}
