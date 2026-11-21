@@ -9,7 +9,19 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 # Sesión HTTP solo para ECM. Si existe ECM_PROXY (proxy con IP española), todo el tráfico de ECM sale por él.
 # El extractor de Canal NO usa esta sesión.
-SESSION = requests.Session()
+ECM_HOST = "https://juegosdeportivos.ecmadrid.org"
+
+class _SesionECM(requests.Session):
+    """Si existe ECM_WORKER (URL del Worker de Cloudflare en España), las peticiones a ECM pasan por él."""
+    def request(self, method, url, **kw):
+        w = os.getenv("ECM_WORKER", "").rstrip("/")
+        if w and str(url).startswith(ECM_HOST):
+            kw["headers"] = {**(kw.get("headers") or {}), "X-Key": os.getenv("ECM_WORKER_KEY", "")}
+            kw["params"] = None
+            url = f"{w}/?u={requests.utils.quote(str(url), safe='')}"
+        return super().request(method, url, **kw)
+
+SESSION = _SesionECM()
 if os.getenv("ECM_PROXY"):
     SESSION.proxies = {"http": os.environ["ECM_PROXY"], "https": os.environ["ECM_PROXY"]}
 
