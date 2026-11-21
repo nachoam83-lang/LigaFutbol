@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.26                                           -->
+    <!--  Versión actual: v1.04.27                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -859,7 +859,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.26</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.27</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">21/11/2026 · Agenda renovada, transporte por partido</p>
             </div>
         </div>
@@ -1684,18 +1684,30 @@
             if (!pushSoportado()) return null;
             try { const reg = await navigator.serviceWorker.ready; return await reg.pushManager.getSubscription(); } catch (e) { return null; }
         }
+        /* Registra/renueva la suscripción en el servidor. Devuelve 'ok', 'omitido', 'sin-permiso', 'sin-suscripcion', 'http NNN' o 'red'. */
         async function syncPush(forzar) {
             try {
-                if (!pushSoportado() || Notification.permission !== 'granted') return;
+                if (!pushSoportado() || Notification.permission !== 'granted') return 'sin-permiso';
                 const sub = await suscripcionActual();
-                if (!sub) return;
+                if (!sub) return 'sin-suscripcion';
                 const eq = equiposParaPush();
                 const hash = JSON.stringify(eq);
                 const ultimo = Number(localStorage.getItem('push_sync_ts') || 0);
-                if (!forzar && hash === localStorage.getItem('push_sync_h') && Date.now() - ultimo < 6 * 3600 * 1000) return;
+                if (!forzar && hash === localStorage.getItem('push_sync_h') && Date.now() - ultimo < 6 * 3600 * 1000) return 'omitido';
                 const r = await fetch(PUSH_API + '/push/sub', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sub: sub.toJSON(), equipos: eq }) });
-                if (r.ok) { localStorage.setItem('push_sync_ts', String(Date.now())); localStorage.setItem('push_sync_h', hash); }
-            } catch (e) { /* sin red: se reintenta la próxima vez */ }
+                if (r.ok) { localStorage.setItem('push_sync_ts', String(Date.now())); localStorage.setItem('push_sync_h', hash); return 'ok'; }
+                return 'http ' + r.status;
+            } catch (e) { return 'red'; }
+        }
+        /* Si el usuario las activó pero la suscripción desapareció (p. ej. el sistema la invalidó), se recrea sola. */
+        async function repararPush() {
+            try {
+                if (!pushSoportado() || localStorage.getItem('push_activo') !== '1' || Notification.permission !== 'granted') return;
+                const reg = await navigator.serviceWorker.ready;
+                let sub = await reg.pushManager.getSubscription();
+                if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(VAPID_PUBLIC) });
+                if (sub) await syncPush(true);
+            } catch (e) { /* se reintentará */ }
         }
         async function estadoPush() {
             const tg = document.getElementById('toggle-push'), tx = document.getElementById('push-estado');
@@ -1713,9 +1725,15 @@
                 tx.textContent = 'Las notificaciones están bloqueadas en los ajustes del navegador o del móvil. Permítelas y vuelve.';
                 return;
             }
-            const sub = await suscripcionActual();
+            let sub = await suscripcionActual();
+            if (!sub && localStorage.getItem('push_activo') === '1' && Notification.permission === 'granted') { await repararPush(); sub = await suscripcionActual(); }
             tg.checked = !!sub && Notification.permission === 'granted';
-            tx.textContent = tg.checked ? 'Activadas en este móvil. Avisan de los equipos que sigues.' : '';
+            if (!tg.checked) { tx.textContent = ''; return; }
+            tx.textContent = 'Activadas en este móvil. Comprobando conexión…';
+            const r = await syncPush(true);
+            tx.textContent = r === 'ok'
+                ? 'Activadas en este móvil ✓ Avisan de los equipos que sigues.'
+                : 'Activadas en el móvil, pero no se pudo registrar en el servidor (' + r + '). Revisa la conexión y vuelve a abrir Ajustes.';
         }
         async function alternarPush(activar) {
             const tg = document.getElementById('toggle-push'), tx = document.getElementById('push-estado');
@@ -1727,7 +1745,9 @@
                     const reg = await navigator.serviceWorker.ready;
                     let sub = await reg.pushManager.getSubscription();
                     if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(VAPID_PUBLIC) });
-                    await syncPush(true);
+                    localStorage.setItem('push_activo', '1');
+                    const r = await syncPush(true);
+                    if (r !== 'ok') { tx.textContent = 'Permiso concedido, pero no se pudo registrar en el servidor (' + r + '). Vuelve a intentarlo en unos segundos.'; return; }
                     mostrarToast('Notificaciones activadas');
                 } else {
                     const sub = await suscripcionActual();
@@ -1736,6 +1756,7 @@
                         await sub.unsubscribe();
                     }
                     localStorage.removeItem('push_sync_h');
+                    localStorage.removeItem('push_activo');
                     mostrarToast('Notificaciones desactivadas');
                 }
             } catch (e) {
@@ -1745,7 +1766,7 @@
             }
             estadoPush();
         }
-        window.addEventListener('load', () => setTimeout(() => syncPush(false), 3000));
+        window.addEventListener('load', () => setTimeout(() => { repararPush().then(() => syncPush(false)); }, 3000));
         document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncPush(false); });
 
         function abrirAjustes() {
@@ -1830,6 +1851,7 @@
         function limpiarCacheApp() {
             confirmar('¿Seguro que quieres borrar la caché? La app se reiniciará.').then(ok => { if (!ok) return;
                 const eraAdmin = localStorage.getItem('es_admin_liga');
+                const pushActivo = localStorage.getItem('push_activo');
 
                 localStorage.removeItem('cache_proximo_partido');
                 localStorage.removeItem('cache_clima');
@@ -1848,6 +1870,7 @@
                 if (eraAdmin === 'true') {
                     localStorage.setItem('es_admin_liga', 'true');
                 }
+                if (pushActivo === '1') localStorage.setItem('push_activo', '1');
 
                 location.reload();
             });
