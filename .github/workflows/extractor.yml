@@ -40,4 +40,5 @@ jobs:
           git config --local user.name "LigaFutbol Bot"
           git add .
           git diff --quiet && git diff --staged --quiet || git commit -m "🤖 Actualización automática por GitHub Actions"
+          git pull --rebase --autostash origin main || true
           git push
