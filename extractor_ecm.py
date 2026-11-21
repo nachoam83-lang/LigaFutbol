@@ -13,8 +13,11 @@ ECM_HOST = "https://juegosdeportivos.ecmadrid.org"
 
 class _SesionECM(requests.Session):
     """Si existe ECM_WORKER (URL del Worker de Cloudflare en España), las peticiones a ECM pasan por él."""
+    peticiones = 0   # peticiones a ECM en esta ejecución (el plan gratis de Workers admite 100.000 al día)
     def request(self, method, url, **kw):
         w = os.getenv("ECM_WORKER", "").rstrip("/")
+        if str(url).startswith(ECM_HOST):
+            self.peticiones += 1
         if w and str(url).startswith(ECM_HOST):
             kw["headers"] = {**(kw.get("headers") or {}), "X-Key": os.getenv("ECM_WORKER_KEY", "")}
             kw["params"] = None
@@ -204,5 +207,6 @@ def extraer_ecm():
             json.dump(datos_finales, f, ensure_ascii=False, indent=2)
         guardar_metadata(metadata)
         print("\n✅ ¡Extracción ECM completada!")
+        print(f"   Peticiones a ECM en esta pasada: {SESSION.peticiones} (límite gratis del Worker: 100.000/día)")
     else:
         print("\n❌ ERROR: No se pudo conectar con ECMADRID.")
