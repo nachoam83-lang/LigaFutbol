@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.21                                           -->
+    <!--  Versión actual: v1.04.22                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -97,18 +97,18 @@
         .cf-caja p { font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.35; }
         .cf-bot { display: flex; gap: 10px; margin-top: 18px; }
         .cf-bot button { flex: 1; min-height: 46px; border-radius: 12px; font-size: 15px; font-weight: 800; background: #E4E8EB; color: #26343F; }
-        .cf-bot button#confirmar-si { background: var(--primary-color); color: #fff; }
+        .cf-bot button#confirmar-si { background: #68737D; color: #fff; }
         .mc-lluvia { display: inline-flex; align-items: center; gap: 3px; color: var(--rain-fg); background: var(--rain-bg); border-radius: 6px; padding: 1px 6px; font-size: 12px; font-weight: 800; }
         .fi-mapa { margin: 12px 16px 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #E4E8EB; height: 180px; }
         .fi-mapa iframe { width: 100%; height: 100%; border: 0; display: block; }
         .fi-horas { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin-top: 10px; }
         .fi-h { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 0; border-radius: 10px; background: #F3F5F6; font-size: 12px; font-weight: 700; }
-        .fi-h.ini { background: var(--primary-color); color: #fff; }
+        .fi-h.ini { background: linear-gradient(160deg, #3F4D5C, #2B3642); color: #F4E4B8; box-shadow: 0 2px 6px rgba(43,54,66,.35), inset 0 0 0 1px rgba(214,177,92,.55); }
         .fi-h .hh { font-size: 11px; font-weight: 800; opacity: .85; }
         .fi-h i { font-size: 16px; }
         .fi-h .pp { font-size: 11px; font-weight: 800; color: #3F4B54; }
         .fi-h .pp.alto { color: var(--rain-fg); }
-        .fi-h.ini .pp, .fi-h.ini .pp.alto { color: #fff; }
+        .fi-h.ini .pp, .fi-h.ini .pp.alto { color: #F4E4B8; }
         .ag-dia { display: flex; align-items: baseline; gap: 8px; margin: 18px 2px 8px; }
         .ag-dia b { font-size: 15px; font-weight: 800; color: var(--text-main); }
         .ag-dia span { font-size: 12px; font-weight: 700; color: var(--text-sec); }
@@ -748,7 +748,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.21</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.22</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">21/11/2026 · Agenda renovada, transporte por partido</p>
             </div>
         </div>
@@ -1636,6 +1636,7 @@
                 localStorage.removeItem('cache_clima');
                 localStorage.removeItem('cache_geo');
                 localStorage.removeItem('cache_grupos');
+                localStorage.removeItem('modo_partido');
                 localStorage.removeItem('dismissed_changes');
                 localStorage.removeItem('avisos_cambios');
                 localStorage.removeItem('dismissed_banner_time'); // Limpiamos también el control de tiempo del banner
@@ -1973,7 +1974,7 @@
                     ${campo}
                     <div class="mc-clima" id="clima-agenda-${index}"></div>
                     <div class="mc-acciones">
-                    ${urlGrupo ? `<a href="${escHtml(urlGrupo)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="mc-btn wa" title="Grupo de WhatsApp" aria-label="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp"></i></a>` : ''}
+                    ${urlGrupo ? `<a href="${escHtml(urlGrupo)}" onclick="event.stopPropagation()" class="mc-btn wa" title="Grupo de WhatsApp" aria-label="Abrir grupo de WhatsApp"><i class="fab fa-whatsapp"></i></a>` : ''}
                     <button type="button" class="mc-btn ruta" onclick="event.stopPropagation(); abrirModalMapa(${dirJs}, '${modoRuta}')" title="Abrir ruta" aria-label="Abrir ruta"><i class="fas fa-location-arrow"></i></button>
                     </div>
                 </div>`}
@@ -2395,7 +2396,7 @@
             if (futuro) {
                 filas.push(`<div class="fi-fila" id="fi-clima-fila" style="display:none"><i class="fas fa-cloud-sun"></i><div style="flex:1;min-width:0"><b>Tiempo previsto</b><span id="fi-clima-txt"></span><div id="fi-clima-horas"></div></div></div>`);
                 if (userSettings.showRoute === true) {
-                    if (modo === 'transit') filas.push(`<div class="fi-fila"><i class="fas fa-bus"></i><div><b>Transporte público</b><a href="${escHtml(urlRutaTransito(dir))}" target="_blank" rel="noopener" style="font-weight:800;color:#34414B;text-decoration:underline">Consultar ruta y horarios</a></div></div>`);
+                    if (modo === 'transit') filas.push(`<div class="fi-fila"><i class="fas fa-bus"></i><div><b>Transporte público</b><a href="${escHtml(urlRutaTransito(dir))}" style="font-weight:800;color:#34414B;text-decoration:underline">Consultar ruta y horarios</a></div></div>`);
                     else filas.push(`<div class="fi-fila" id="fi-salida-fila" style="display:none"><i class="fas ${iconoModo(modo)}"></i><div><b>Cuándo salir</b><span id="fi-salida-txt"></span></div></div>`);
                 }
             }
@@ -2410,7 +2411,7 @@
                 <div class="fi-acc">
                     <button type="button" onclick="abrirModalMapa(${dirJs}, '${modo}')"><i class="fas fa-diamond-turn-right" aria-hidden="true"></i><span>${modo === 'transit' ? 'Transporte' : 'Ruta'}</span></button>
                     <a href="${escHtml(urlIcs(p, eq, dir, `Partido: ${eq.equipoFavorito} vs ${rival}`))}" title="Añadir este partido al calendario del móvil"><i class="fas fa-calendar-plus" aria-hidden="true"></i><span>Agendar</span></a>
-                    <a href="https://wa.me/?text=${encodeURIComponent(textoWa)}" target="_blank" rel="noopener" title="Compartir por WhatsApp"><i class="fas fa-share-nodes" aria-hidden="true"></i><span>Compartir</span></a>
+                    <a href="https://wa.me/?text=${encodeURIComponent(textoWa)}" title="Compartir por WhatsApp"><i class="fas fa-share-nodes" aria-hidden="true"></i><span>Compartir</span></a>
                 </div>` : '';
 
             document.getElementById('ficha-contenido').innerHTML = `
@@ -2437,7 +2438,7 @@
                 ${coordMapa ? `<div class="fi-mapa"><iframe title="Mapa del campo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(coordMapa)}&z=16&output=embed"></iframe></div>` : ''}
                 <div class="fi-panel">${filas.join('')}</div>
                 ${(urlGrupo || acciones) ? `<div class="fi-actions-sticky">
-                    ${urlGrupo ? `<a class="fi-grupo" href="${escHtml(urlGrupo)}" target="_blank" rel="noopener"><i class="fab fa-whatsapp"></i> Grupo del equipo</a>` : ''}
+                    ${urlGrupo ? `<a class="fi-grupo" href="${escHtml(urlGrupo)}"><i class="fab fa-whatsapp"></i> Grupo del equipo</a>` : ''}
                     ${acciones}
                 </div>` : ''}`;
 
@@ -2492,7 +2493,8 @@
         function margenLlegada() { const m = parseInt(userSettings.arrivalMargin); return (!isNaN(m) && m >= 0) ? m : 30; }
         function modoViaje(p, eq) {
             const enCasa = p.EquipoLocal === eq.equipoFavorito || eq.idDeporte === '4';
-            const o = leerJSON('modo_partido')[claveFicha(p, eq)];
+            const ov = leerJSON('modo_partido')[claveFicha(p, eq)];
+            const o = ov && typeof ov === 'object' && (Date.now() - ov.t) < 3600000 ? ov.m : null;
             if (['foot', 'driving', 'transit'].includes(o)) return o;
             return enCasa ? (userSettings.transportModeHome || 'foot') : (userSettings.transportModeAway || 'driving');
         }
@@ -2502,7 +2504,7 @@
             if (!f) return;
             const orden = ['foot', 'driving', 'transit'];
             const nuevo = orden[(orden.indexOf(modoViaje(f.p, f.eq)) + 1) % orden.length];
-            const m = leerJSON('modo_partido'); m[clave] = nuevo; escribirJSON('modo_partido', m);
+            const m = leerJSON('modo_partido'); m[clave] = { m: nuevo, t: Date.now() }; escribirJSON('modo_partido', m);
             mostrarToast({ foot: 'Transporte: a pie', driving: 'Transporte: en coche', transit: 'Transporte: público' }[nuevo], 1600);
             if (!document.getElementById('screen-agenda').classList.contains('hide') && window._ultimaAgenda) renderAgendaDesdeDatos(window._ultimaAgenda[0], window._ultimaAgenda[1]);
             else if (!document.getElementById('screen-detalle').classList.contains('hide') && cacheResultados) renderizarCalendarioUI();
@@ -2550,7 +2552,7 @@
                 const v = await calcularViaje(f.p, f.eq);
                 if (!v) { el.classList.add('hide'); return; }
                 s.innerHTML = v.modo === 'transit'
-                    ? `<a href="${escHtml(urlRutaTransito(v.dir))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Ver ruta y horarios en transporte público</a>`
+                    ? `<a href="${escHtml(urlRutaTransito(v.dir))}" onclick="event.stopPropagation()">Ver ruta y horarios en transporte público</a>`
                     : `Salir a las ${hhmm(v.salida)} de casa`;
             }));
         }
@@ -2708,7 +2710,7 @@
                                         const modoActual = modoViaje(p, eq);
                                         let durationSec = 0;
                                         if (modoActual === 'transit') {
-                                            if (elRuta) elRuta.innerHTML = `<a href="${escHtml(urlRutaTransito(dirCompleta))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Ver ruta y horarios en transporte público</a>`;
+                                            if (elRuta) elRuta.innerHTML = `<a href="${escHtml(urlRutaTransito(dirCompleta))}" onclick="event.stopPropagation()">Ver ruta y horarios en transporte público</a>`;
                                             return;
                                         }
 
@@ -3466,7 +3468,7 @@
                 acciones = `<div class="mc-acc">
                     <button type="button" class="ruta" onclick="event.stopPropagation(); abrirModalMapa(${dirJs}, '${modoC}')"><i class="fas fa-diamond-turn-right" aria-hidden="true"></i>${modoC === 'transit' ? 'Transporte' : 'Ruta'}</button>
                     <a href="${escHtml(urlIcs(p, equipoActual, dirCompleta, `Partido: ${equipoActual.equipoFavorito} vs ${rival}`))}" title="Añadir este partido al calendario del móvil"><i class="fas fa-calendar-plus" aria-hidden="true"></i>Agendar</a>
-                    <a href="https://wa.me/?text=${encodeURIComponent(texto)}" target="_blank" rel="noopener" title="Compartir por WhatsApp"><i class="fas fa-share-nodes" aria-hidden="true"></i>Compartir</a>
+                    <a href="https://wa.me/?text=${encodeURIComponent(texto)}" title="Compartir por WhatsApp"><i class="fas fa-share-nodes" aria-hidden="true"></i>Compartir</a>
                 </div>`;
             }
 
