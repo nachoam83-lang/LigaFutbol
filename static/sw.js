@@ -1,4 +1,4 @@
-const CACHE_NAME = 'liga-futbol-v1.04.25'; // <-- CAMBIA ESTO CADA VEZ QUE ACTUALICES (ej: v1.02.01)
+const CACHE_NAME = 'liga-futbol-v1.04.26'; // <-- CAMBIA ESTO CADA VEZ QUE ACTUALICES (ej: v1.02.01)
 const urlsToCache = [
     '/',
     '/static/index.html',
@@ -73,6 +73,31 @@ self.addEventListener('fetch', event => {
 
                 return cachedResponse || fetchPromise;
             });
+        })
+    );
+});
+
+
+// ═══ NOTIFICACIONES PUSH ═══
+self.addEventListener('push', event => {
+    let d = {};
+    try { d = event.data ? event.data.json() : {}; } catch (e) { d = { body: event.data ? event.data.text() : '' }; }
+    event.waitUntil(self.registration.showNotification(d.title || 'Ligas Infantiles', {
+        body: d.body || '',
+        icon: '/static/icon-192.png',
+        badge: '/static/icon-192.png',
+        tag: d.tag || undefined,
+        data: { url: d.url || '/' }
+    }));
+});
+
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+    const destino = (event.notification.data && event.notification.data.url) || '/';
+    event.waitUntil(
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(lista => {
+            for (const c of lista) { if ('focus' in c) return c.focus(); }
+            return self.clients.openWindow(destino);
         })
     );
 });

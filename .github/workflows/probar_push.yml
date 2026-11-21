@@ -1,0 +1,19 @@
+name: Probar avisos push
+
+on:
+  workflow_dispatch: # Botón para enviar una notificación de prueba a todos los móviles suscritos
+
+jobs:
+  probar:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Enviar notificación de prueba
+        env:
+          PYTHONUNBUFFERED: "1"
+          ECM_WORKER: ${{ secrets.ECM_WORKER }}
+          ECM_WORKER_KEY: ${{ secrets.ECM_WORKER_KEY }}
+          VAPID_PRIVATE: ${{ secrets.VAPID_PRIVATE }}
+        run: |
+          python3 -m venv ~/v && ~/v/bin/pip install -q pywebpush
+          ~/v/bin/python notificar_push.py --prueba

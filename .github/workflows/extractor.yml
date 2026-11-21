@@ -25,7 +25,12 @@ jobs:
       - name: Instalar dependencias
         run: |
           python3 -m venv ~/venv-liga
-          ~/venv-liga/bin/pip install -q requests beautifulsoup4 pdfplumber
+          ~/venv-liga/bin/pip install -q requests beautifulsoup4 pdfplumber pywebpush
+
+      - name: Guardar copia de los datos anteriores (para detectar cambios)
+        run: |
+          mkdir -p "$RUNNER_TEMP/old"
+          cp -f datos_liga.json datos_canal.json "$RUNNER_TEMP/old/" 2>/dev/null || true
 
       - name: Ejecutar el extractor
         env:
@@ -34,6 +39,15 @@ jobs:
           ECM_WORKER: ${{ secrets.ECM_WORKER }}        # opcional: Worker de Cloudflare con IP española
           ECM_WORKER_KEY: ${{ secrets.ECM_WORKER_KEY }}
         run: ~/venv-liga/bin/python extractor.py
+
+      - name: Enviar avisos push (si algo cambió en tus equipos)
+        continue-on-error: true   # un fallo de avisos nunca debe romper la extracción
+        env:
+          PYTHONUNBUFFERED: "1"
+          ECM_WORKER: ${{ secrets.ECM_WORKER }}
+          ECM_WORKER_KEY: ${{ secrets.ECM_WORKER_KEY }}
+          VAPID_PRIVATE: ${{ secrets.VAPID_PRIVATE }}
+        run: ~/venv-liga/bin/python notificar_push.py "$RUNNER_TEMP/old"
 
       - name: Guardar cambios en GitHub
         run: |

@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.25                                           -->
+    <!--  Versión actual: v1.04.26                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -795,6 +795,21 @@
                 </div>
             </div>
             
+            <!-- AVISOS PUSH -->
+            <div class="card p-4 space-y-2" id="card-push">
+                <div class="flex justify-between items-center gap-3">
+                    <div>
+                        <h3 class="font-bold text-gray-800 text-sm"><i class="fas fa-bell-concierge"></i> Notificaciones en el móvil</h3>
+                        <p class="text-xs text-gray-500">Te avisamos de cambios de hora, campo, aplazamientos y resultados de tus equipos, aunque la app esté cerrada.</p>
+                    </div>
+                    <label class="relative inline-flex items-center cursor-pointer shrink-0">
+                        <input type="checkbox" id="toggle-push" class="sr-only peer" onchange="alternarPush(this.checked)">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#68737D]"></div>
+                    </label>
+                </div>
+                <p id="push-estado" class="text-[11px] text-gray-400"></p>
+            </div>
+
             <div class="aj-guardar"><button id="btn-guardar-ajustes" type="button" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-xl text-sm" style="background-color: #68737D;">Guardar cambios</button></div>
 
             <h2 class="aj-sec"><i class="fas fa-tools"></i> Mantenimiento</h2>
@@ -844,7 +859,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.25</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.26</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">21/11/2026 · Agenda renovada, transporte por partido</p>
             </div>
         </div>
@@ -1650,6 +1665,89 @@
             touchStartY = 0;
         }, { passive: true });
 
+        /* ═══ NOTIFICACIONES PUSH ═══ */
+        const PUSH_API = 'https://ecm-probe.nachoam83.workers.dev';
+        const VAPID_PUBLIC = 'BO8JKke8i1735Lc4WXiqCGGAwO7BQK1mkPlpovUYSvfpsx8U-y2jxsqGFHQJHStxyy9PlXcFP02AKJ9Nw-bBKBI';
+
+        function pushSoportado() { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; }
+        function esIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1); }
+        function esAppInstalada() { return window.navigator.standalone === true || (window.matchMedia && matchMedia('(display-mode: standalone)').matches); }
+        function b64aBytes(b64) {
+            const pad = '='.repeat((4 - b64.length % 4) % 4);
+            const raw = atob((b64 + pad).replace(/-/g, '+').replace(/_/g, '/'));
+            return Uint8Array.from(raw, c => c.charCodeAt(0));
+        }
+        function equiposParaPush() {
+            return (equipos || []).map(e => ({ d: String(e.idDeporte ?? ''), c: String(e.idCompeticion ?? ''), k: String(e.idCategoria ?? ''), g: String(e.idGrupo ?? ''), n: String(e.equipoFavorito ?? '') }));
+        }
+        async function suscripcionActual() {
+            if (!pushSoportado()) return null;
+            try { const reg = await navigator.serviceWorker.ready; return await reg.pushManager.getSubscription(); } catch (e) { return null; }
+        }
+        async function syncPush(forzar) {
+            try {
+                if (!pushSoportado() || Notification.permission !== 'granted') return;
+                const sub = await suscripcionActual();
+                if (!sub) return;
+                const eq = equiposParaPush();
+                const hash = JSON.stringify(eq);
+                const ultimo = Number(localStorage.getItem('push_sync_ts') || 0);
+                if (!forzar && hash === localStorage.getItem('push_sync_h') && Date.now() - ultimo < 6 * 3600 * 1000) return;
+                const r = await fetch(PUSH_API + '/push/sub', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sub: sub.toJSON(), equipos: eq }) });
+                if (r.ok) { localStorage.setItem('push_sync_ts', String(Date.now())); localStorage.setItem('push_sync_h', hash); }
+            } catch (e) { /* sin red: se reintenta la próxima vez */ }
+        }
+        async function estadoPush() {
+            const tg = document.getElementById('toggle-push'), tx = document.getElementById('push-estado');
+            if (!tg || !tx) return;
+            tg.disabled = false;
+            if (!pushSoportado() || (esIOS() && !esAppInstalada())) {
+                tg.checked = false; tg.disabled = true;
+                tx.textContent = esIOS() && !esAppInstalada()
+                    ? 'En iPhone/iPad: pulsa Compartir → "Añadir a pantalla de inicio", abre la app desde ahí y vuelve aquí.'
+                    : 'Este navegador no admite notificaciones.';
+                return;
+            }
+            if (Notification.permission === 'denied') {
+                tg.checked = false; tg.disabled = true;
+                tx.textContent = 'Las notificaciones están bloqueadas en los ajustes del navegador o del móvil. Permítelas y vuelve.';
+                return;
+            }
+            const sub = await suscripcionActual();
+            tg.checked = !!sub && Notification.permission === 'granted';
+            tx.textContent = tg.checked ? 'Activadas en este móvil. Avisan de los equipos que sigues.' : '';
+        }
+        async function alternarPush(activar) {
+            const tg = document.getElementById('toggle-push'), tx = document.getElementById('push-estado');
+            try {
+                if (activar) {
+                    if (equipos.length === 0) { tg.checked = false; tx.textContent = 'Primero añade algún equipo para recibir avisos.'; return; }
+                    const perm = await Notification.requestPermission();
+                    if (perm !== 'granted') { tg.checked = false; await estadoPush(); return; }
+                    const reg = await navigator.serviceWorker.ready;
+                    let sub = await reg.pushManager.getSubscription();
+                    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(VAPID_PUBLIC) });
+                    await syncPush(true);
+                    mostrarToast('Notificaciones activadas');
+                } else {
+                    const sub = await suscripcionActual();
+                    if (sub) {
+                        fetch(PUSH_API + '/push/unsub', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ endpoint: sub.endpoint }) }).catch(() => {});
+                        await sub.unsubscribe();
+                    }
+                    localStorage.removeItem('push_sync_h');
+                    mostrarToast('Notificaciones desactivadas');
+                }
+            } catch (e) {
+                tg.checked = false;
+                tx.textContent = 'No se pudo activar: ' + (e && e.message ? e.message : e);
+                return;
+            }
+            estadoPush();
+        }
+        window.addEventListener('load', () => setTimeout(() => syncPush(false), 3000));
+        document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncPush(false); });
+
         function abrirAjustes() {
             cerrarFiltrosAgenda();
             document.getElementById('screen-agenda').classList.add('hide');
@@ -1660,6 +1758,7 @@
             document.getElementById('select-transporte-fuera').value = userSettings.transportModeAway || 'driving';
             document.getElementById('select-transporte-casa').value = userSettings.transportModeHome || 'foot';
             try { document.getElementById('select-tema').value = localStorage.getItem('tema') || 'auto'; } catch (e) {}
+            estadoPush();
             document.getElementById('toggle-avisos').checked = userSettings.showChangeAlerts !== false;
             document.getElementById('input-tiempo-aviso').value = userSettings.alertDurationMinutes || 60;
             document.getElementById('toggle-alarmas').checked = userSettings.alarmEnabled === true;
@@ -2997,6 +3096,7 @@
                 [equipos[index + 1], equipos[index]] = [equipos[index], equipos[index + 1]];
             }
             localStorage.setItem('equipos_liga', JSON.stringify(equipos));
+            syncPush(false);
             renderizarMenuLateral(); 
             cargarAgendaFamiliar(); 
         }
@@ -3008,6 +3108,7 @@
                 localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido)); 
                 equipos.splice(index, 1); 
                 localStorage.setItem('equipos_liga', JSON.stringify(equipos)); 
+                syncPush(false);
                 renderizarMenuLateral(); 
                 cargarAgendaFamiliar();
             }); 
@@ -3228,6 +3329,7 @@
             try { localStorage.setItem('cache_proximo_partido', JSON.stringify(cacheProximoPartido)); } catch {}
             editandoEquipoId = null; 
             vibrar(50);
+            syncPush(false);
             volverInicio();
         }
 
