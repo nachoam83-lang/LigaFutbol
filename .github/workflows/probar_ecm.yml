@@ -5,7 +5,7 @@ on:
 
 jobs:
   probar:
-    runs-on: ubuntu-24.04
+    runs-on: ${{ vars.RUNNER || 'ubuntu-24.04' }}
     steps:
       - name: IP de salida y acceso a ECM (sin proxy)
         run: |

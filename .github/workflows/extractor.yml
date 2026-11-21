@@ -8,7 +8,8 @@ on:
 
 jobs:
   extraer:
-    runs-on: ubuntu-24.04          # ← ANTES: ubuntu-latest
+    # Si existe la variable RUNNER (p. ej. "madrid"), corre en tu VM con IP española; si no, en GitHub.
+    runs-on: ${{ vars.RUNNER || 'ubuntu-24.04' }}
     concurrency:
       group: ${{ github.workflow }}-${{ github.ref }}
       cancel-in-progress: false
@@ -21,20 +22,15 @@ jobs:
         with:
           fetch-depth: 0 # Necesario para Git
 
-      - name: Configurar Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.9'
-
       - name: Instalar dependencias
         run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 pdfplumber
+          python3 -m venv ~/venv-liga
+          ~/venv-liga/bin/pip install -q requests beautifulsoup4 pdfplumber
 
       - name: Ejecutar el extractor
         env:
           ECM_PROXY: ${{ secrets.ECM_PROXY }}   # opcional: proxy con IP española solo para ECM
-        run: python extractor.py
+        run: ~/venv-liga/bin/python extractor.py
 
       - name: Guardar cambios en GitHub
         run: |
