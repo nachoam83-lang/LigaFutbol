@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: "URL del Worker (https://ecm-probe.xxx.workers.dev)"
+        description: "https://ecm-probe.nachoam83.workers.dev/"
         required: true
 
 jobs:
