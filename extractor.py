@@ -9,12 +9,16 @@ from extractor_canal import extraer_canal
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 def test_ecm_connection():
-    """Prueba rápida de 5 segundos para ver si ECM nos deja entrar."""
+    """Prueba rápida para ver si ECM nos deja entrar (directo o por el Worker). Imprime el motivo si falla."""
+    via = "Worker" if os.getenv("ECM_WORKER") else ("proxy" if os.getenv("ECM_PROXY") else "directo")
+    print(f"   Ruta a ECM: {via}" + (f" · clave definida: {'sí' if os.getenv('ECM_WORKER_KEY') else 'NO'}" if via == "Worker" else ""))
     try:
         url_test = "https://juegosdeportivos.ecmadrid.org/api/CompeticionesPorDeporte?action=ObtenerCompeticionesDeporteListado&IdDeporte=1&IdTemporada=12&elementoTodas=false&soloActivas=true"
-        res = SESSION.get(url_test, timeout=15, verify=False)
+        res = SESSION.get(url_test, timeout=25, verify=False)
+        print(f"   Respuesta: HTTP {res.status_code} · {len(res.content)} bytes · {res.text[:80]!r}")
         return res.status_code == 200
-    except Exception:
+    except Exception as e:
+        print(f"   Error de conexión: {type(e).__name__}: {str(e)[:150]}")
         return False
 
 from datetime import datetime
