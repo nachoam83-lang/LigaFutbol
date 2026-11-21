@@ -4,8 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       url:
-        description: "https://ecm-probe.nachoam83.workers.dev/"
+        description: "URL del Worker"
         required: true
+        default: "https://ecm-probe.nachoam83.workers.dev/"
 
 jobs:
   probar:
@@ -15,5 +16,11 @@ jobs:
         env:
           URL: ${{ inputs.url }}
         run: |
-          echo "IP de GitHub:"; curl -s https://api.country.is; echo
-          for i in 1 2 3; do echo "--- intento $i"; curl -s -m 30 "$URL"; echo; sleep 3; done
+          URL="$(echo "$URL" | tr -d '[:space:]')"
+          echo "URL usada: [$URL]"
+          echo "IP de GitHub:"; curl -sS -m 20 https://api.country.is || true; echo
+          for i in 1 2 3; do
+            echo "--- intento $i"
+            curl -sS -m 30 -w '\nHTTP %{http_code}\n' "$URL" || echo "curl fallo con codigo $?"
+            sleep 3
+          done
