@@ -1,0 +1,19 @@
+name: Probar Worker de Cloudflare
+
+on:
+  workflow_dispatch:
+    inputs:
+      url:
+        description: "URL del Worker (https://ecm-probe.xxx.workers.dev)"
+        required: true
+
+jobs:
+  probar:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Llamar al Worker desde GitHub (IP de EEUU)
+        env:
+          URL: ${{ inputs.url }}
+        run: |
+          echo "IP de GitHub:"; curl -s https://api.country.is; echo
+          for i in 1 2 3; do echo "--- intento $i"; curl -s -m 30 "$URL"; echo; sleep 3; done
