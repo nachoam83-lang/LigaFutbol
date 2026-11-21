@@ -2,8 +2,8 @@ name: Extracción Automática de Datos
 
 on:
   schedule:
-    # Se ejecuta cada 15 minutos
-    - cron: '*/15 * * * *'
+    # Cada 30 min: ~1.230 peticiones/pasada x 48 = ~59.000/día (límite gratis del Worker: 100.000)
+    - cron: '*/30 * * * *'
   workflow_dispatch: # <--- BOTÓN PARA LANZARLO A MANO
 
 jobs:

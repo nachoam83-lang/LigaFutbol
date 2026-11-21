@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.24                                           -->
+    <!--  Versión actual: v1.04.25                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -844,7 +844,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.24</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.25</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">21/11/2026 · Agenda renovada, transporte por partido</p>
             </div>
         </div>
@@ -989,8 +989,11 @@
                     <tbody id="tabla-clasificacion" class="divide-y text-[13px]" style="border-color: var(--border-color);"></tbody>
                 </table>
             </div>
-            <div class="flex items-center justify-center gap-2 mt-3" aria-label="Leyenda de resultados">
-                <span class="streak-dot streak-v"></span><span class="streak-dot streak-e"></span><span class="streak-dot streak-d"></span>
+            <div class="flex items-center justify-center flex-wrap gap-x-3 gap-y-1 mt-3" style="font-size: 11px; font-weight: 700; color: var(--text-sec);" aria-label="Leyenda de resultados">
+                <span>Últimos 5 partidos:</span>
+                <span class="inline-flex items-center gap-1"><span class="streak-dot streak-v"></span>Ganado</span>
+                <span class="inline-flex items-center gap-1"><span class="streak-dot streak-e"></span>Empate</span>
+                <span class="inline-flex items-center gap-1"><span class="streak-dot streak-d"></span>Perdido</span>
             </div>
         </div>
 
