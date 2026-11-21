@@ -3,7 +3,7 @@ import subprocess
 import shutil
 import requests
 import urllib3
-from extractor_ecm import extraer_ecm
+from extractor_ecm import extraer_ecm, SESSION
 from extractor_canal import extraer_canal
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -12,7 +12,7 @@ def test_ecm_connection():
     """Prueba rápida de 5 segundos para ver si ECM nos deja entrar."""
     try:
         url_test = "https://juegosdeportivos.ecmadrid.org/api/CompeticionesPorDeporte?action=ObtenerCompeticionesDeporteListado&IdDeporte=1&IdTemporada=12&elementoTodas=false&soloActivas=true"
-        res = requests.get(url_test, timeout=5, verify=False)
+        res = SESSION.get(url_test, timeout=15, verify=False)
         return res.status_code == 200
     except Exception:
         return False

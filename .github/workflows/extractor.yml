@@ -2,7 +2,7 @@ name: Extracción Automática de Datos
 
 on:
   schedule:
-    # Se ejecuta cada 3 horas
+    # Se ejecuta cada 15 minutos
     - cron: '*/15 * * * *'
   workflow_dispatch: # <--- BOTÓN PARA LANZARLO A MANO
 
@@ -32,6 +32,8 @@ jobs:
           pip install requests beautifulsoup4 pdfplumber
 
       - name: Ejecutar el extractor
+        env:
+          ECM_PROXY: ${{ secrets.ECM_PROXY }}   # opcional: proxy con IP española solo para ECM
         run: python extractor.py
 
       - name: Guardar cambios en GitHub

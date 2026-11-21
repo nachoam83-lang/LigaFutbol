@@ -7,6 +7,12 @@ import datetime
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+# Sesión HTTP solo para ECM. Si existe ECM_PROXY (proxy con IP española), todo el tráfico de ECM sale por él.
+# El extractor de Canal NO usa esta sesión.
+SESSION = requests.Session()
+if os.getenv("ECM_PROXY"):
+    SESSION.proxies = {"http": os.environ["ECM_PROXY"], "https": os.environ["ECM_PROXY"]}
+
 HEADERS = {"User-Agent": "Mozilla/5.0", "Accept": "application/json", "X-Requested-With": "XMLHttpRequest"}
 os.makedirs("static/escudos", exist_ok=True)
 ARCHIVO_METADATA = "metadata_escudos.json"
@@ -39,7 +45,7 @@ def descargar_escudo(url_escudo, metadata):
             return ruta_local
 
     try:
-        r = requests.get(url_completa, headers=HEADERS, verify=False, timeout=10)
+        r = SESSION.get(url_completa, headers=HEADERS, verify=False, timeout=10)
         if r.status_code == 200:
             with open(ruta_fisica, "wb") as f:
                 f.write(r.content)
@@ -51,7 +57,7 @@ def descargar_escudo(url_escudo, metadata):
 
 def get_json(url):
     try:
-        r = requests.get(url, headers=HEADERS, timeout=15, verify=False)
+        r = SESSION.get(url, headers=HEADERS, timeout=15, verify=False)
         data = r.json()
         # Si devuelve un string, intentamos parsearlo a JSON
         if isinstance(data, str): 

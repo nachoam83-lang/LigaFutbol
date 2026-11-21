@@ -1,0 +1,22 @@
+name: Probar acceso a ECM
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probar:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: IP de salida y acceso a ECM (sin proxy)
+        run: |
+          echo "IP/pais directo:"; curl -s https://ipinfo.io/json | head -12
+          echo "ECM directo:"
+          curl -s -o /dev/null -w "HTTP %{http_code}\n" -m 20 "https://juegosdeportivos.ecmadrid.org/api/CompeticionesPorDeporte?action=ObtenerCompeticionesDeporteListado&IdDeporte=1&IdTemporada=12&elementoTodas=false&soloActivas=true" || true
+      - name: IP de salida y acceso a ECM (con proxy ECM_PROXY)
+        env:
+          ECM_PROXY: ${{ secrets.ECM_PROXY }}
+        run: |
+          if [ -z "$ECM_PROXY" ]; then echo "Sin secreto ECM_PROXY: se omite"; exit 0; fi
+          echo "IP/pais con proxy:"; curl -s -x "$ECM_PROXY" https://ipinfo.io/json | head -12
+          echo "ECM con proxy:"
+          curl -s -x "$ECM_PROXY" -o /dev/null -w "HTTP %{http_code}\n" -m 30 "https://juegosdeportivos.ecmadrid.org/api/CompeticionesPorDeporte?action=ObtenerCompeticionesDeporteListado&IdDeporte=1&IdTemporada=12&elementoTodas=false&soloActivas=true" || true
