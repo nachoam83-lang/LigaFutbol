@@ -6,12 +6,30 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.23                                           -->
+    <!--  Versión actual: v1.04.24                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <link rel="apple-touch-icon" href="/static/logo.png">
     <link rel="manifest" href="/static/manifest.json">
+    <script>
+        /* Tema: 'auto' (sigue al móvil), 'claro' u 'oscuro'. Se aplica antes de pintar para evitar el destello. */
+        (function () {
+            function pref() { try { return localStorage.getItem('tema') || 'auto'; } catch (e) { return 'auto'; } }
+            window.aplicarTema = function (t) {
+                if (t) { try { localStorage.setItem('tema', t); } catch (e) {} }
+                var p = t || pref();
+                var oscuro = p === 'oscuro' || (p === 'auto' && window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.setAttribute('data-theme', oscuro ? 'dark' : 'light');
+            };
+            aplicarTema();
+            if (window.matchMedia) {
+                var mq = matchMedia('(prefers-color-scheme: dark)');
+                var f = function () { if (pref() === 'auto') aplicarTema(); };
+                if (mq.addEventListener) mq.addEventListener('change', f); else if (mq.addListener) mq.addListener(f);
+            }
+        })();
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -429,6 +447,71 @@
         .ag-eq-ir-acciones button { width: 38px !important; min-height: 38px !important; height: 38px !important; border-radius: 10px !important; }
         .ag-eq-ir-acciones button span { display: none; }
         .ag-eq-ir-acciones button i { font-size: 15px !important; }
+
+        /* ═══ v1.04.24 · MODO NOCHE ═══ */
+        html[data-theme="dark"] { color-scheme: dark;
+            --bg-color: #0F151B; --card-bg: #18212A; --text-main: #E6ECF0; --text-sec: #9AA8B3;
+            --border-color: #2A3641; --line: #2A3641; --header-bg: #1B222A; --primary-color: #0E9496; --gold-text: #E0B84F;
+            --amber-bg: #3A2D0F; --amber-fg: #F4D58A; --rain-bg: #14304A; --rain-fg: #8FC2F2;
+            --red-bg: #3D1C1C; --red-fg: #F5A3A3; --green-bg: #15341F; --green-fg: #8EDCA3; }
+        html[data-theme="dark"] .theme-canal { --primary-color: #3B82C4; --secondary-color: #14304A; }
+        html[data-theme="dark"] body { background-color: var(--bg-color); color: var(--text-main); }
+        html[data-theme="dark"] .ag-chip, html[data-theme="dark"] .ag-ir button, html[data-theme="dark"] .ag-filter-sheet,
+        html[data-theme="dark"] .cf-caja, html[data-theme="dark"] .ag-resumen .r, html[data-theme="dark"] .mcard,
+        html[data-theme="dark"] .fi-nav button, html[data-theme="dark"] .fi-acc button, html[data-theme="dark"] .fi-acc a,
+        html[data-theme="dark"] .fi-panel, html[data-theme="dark"] .jn-btn, html[data-theme="dark"] .ag-eq-ir-acciones button,
+        html[data-theme="dark"] .ag-chip-deporte, html[data-theme="dark"] .fi-ir button { background: var(--card-bg) !important; border-color: var(--line) !important; color: var(--text-main) !important; }
+        html[data-theme="dark"] .mcard { border-left-color: var(--sport, var(--primary-color)) !important; box-shadow: 0 1px 3px rgba(0,0,0,.45); }
+        html[data-theme="dark"] .mc-team .esc, html[data-theme="dark"] .fi-esc, html[data-theme="dark"] .mc-hijo img { background: #fff; }
+        html[data-theme="dark"] .ag-seg { background: #222D37; }
+        html[data-theme="dark"] .ag-seg button { color: #B7C3CC; }
+        html[data-theme="dark"] .ag-seg button[aria-pressed="true"] { background: #68737D; color: #fff; }
+        html[data-theme="dark"] .ag-seg button .n { background: rgba(255,255,255,.14); }
+        html[data-theme="dark"] .fi-h { background: #222D37; color: var(--text-main); }
+        html[data-theme="dark"] .fi-h .pp { color: #B7C3CC; }
+        html[data-theme="dark"] .fi-h.ini { background: linear-gradient(160deg, #3F4D5C, #2B3642); color: #F4E4B8; }
+        html[data-theme="dark"] .fi-mapa { background: #222D37; border-color: var(--line); }
+        html[data-theme="dark"] .mc-clima, html[data-theme="dark"] .mc-clima-ficha { color: var(--text-main); }
+        html[data-theme="dark"] .mc-btn:not(.wa):not(.ruta) { color: var(--text-main); }
+        html[data-theme="dark"] #modal-confirmar .cf-bot button { background: #26323C; color: var(--text-main); }
+        html[data-theme="dark"] #modal-confirmar .cf-bot button#confirmar-si { background: #68737D; color: #fff; }
+        html[data-theme="dark"] #modal-ficha .fi-hoja { background: var(--bg-color); }
+        html[data-theme="dark"] .ag-controles { background: var(--bg-color); }
+        /* utilidades Tailwind usadas en la app */
+        html[data-theme="dark"] .bg-white { background-color: var(--card-bg) !important; }
+        html[data-theme="dark"] .bg-gray-50, html[data-theme="dark"] .bg-gray-100 { background-color: #1E2832 !important; }
+        html[data-theme="dark"] .bg-gray-200, html[data-theme="dark"] .bg-gray-300 { background-color: #2A3641 !important; }
+        html[data-theme="dark"] .text-gray-900, html[data-theme="dark"] .text-gray-800, html[data-theme="dark"] .text-gray-700 { color: var(--text-main) !important; }
+        html[data-theme="dark"] .text-gray-600, html[data-theme="dark"] .text-gray-500, html[data-theme="dark"] .text-gray-400 { color: var(--text-sec) !important; }
+        html[data-theme="dark"] .border-gray-100, html[data-theme="dark"] .border-gray-200, html[data-theme="dark"] .border-gray-300 { border-color: var(--line) !important; }
+        html[data-theme="dark"] .bg-red-100, html[data-theme="dark"] .bg-red-50 { background-color: var(--red-bg) !important; }
+        html[data-theme="dark"] .text-red-600, html[data-theme="dark"] .text-red-700, html[data-theme="dark"] .text-red-900 { color: var(--red-fg) !important; }
+        html[data-theme="dark"] .border-red-200 { border-color: #5A2A2A !important; }
+        html[data-theme="dark"] .card { background: var(--card-bg); border-color: var(--line); box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+        html[data-theme="dark"] input, html[data-theme="dark"] select, html[data-theme="dark"] textarea { background-color: #1E2832 !important; color: var(--text-main) !important; border-color: var(--line) !important; }
+        html[data-theme="dark"] input::placeholder { color: var(--text-sec); }
+        html[data-theme="dark"] label > input.peer + div::after { border-color: #cbd5db; }
+        /* botones y chips grises claros -> gris oscuro */
+        html[data-theme="dark"] .mc-ico, html[data-theme="dark"] .mc-btn:not(.wa):not(.ruta), html[data-theme="dark"] .mc-team .pos,
+        html[data-theme="dark"] .mc-lugar, html[data-theme="dark"] .mc-btns a, html[data-theme="dark"] .mc-btns button,
+        html[data-theme="dark"] .mc-modo, html[data-theme="dark"] .mc-ruta a, html[data-theme="dark"] .fi-x { background: #2A3641; color: var(--text-main); }
+        html[data-theme="dark"] .mc-acc a, html[data-theme="dark"] .mc-acc button, html[data-theme="dark"] .ag-eq-ir-acciones button { background: #2A3641 !important; color: var(--text-main) !important; }
+        html[data-theme="dark"] .ag-eq-ir-acciones button i, html[data-theme="dark"] .mc-acc .ruta, html[data-theme="dark"] .mc-btns .ruta { color: #fff !important; }
+        html[data-theme="dark"] .mc-acc .ruta, html[data-theme="dark"] .mc-btns .ruta { background: #4B5865 !important; }
+        html[data-theme="dark"] .mc-modo:active { background: #36444F; }
+        /* textos tenues */
+        html[data-theme="dark"] .mc-dir, html[data-theme="dark"] .mc-ruta, html[data-theme="dark"] .mc-ruta a,
+        html[data-theme="dark"] .ag-resumen, html[data-theme="dark"] .mc-clima-ficha, html[data-theme="dark"] .mc-team .pos { color: #B7C3CC; }
+        html[data-theme="dark"] .ag-ir button i, html[data-theme="dark"] .ag-chip .ico, html[data-theme="dark"] .mc-ruta > i,
+        html[data-theme="dark"] .fi-nav button i, html[data-theme="dark"] .fi-acc i, html[data-theme="dark"] .mc-comp .t i { color: #9AA8B3; }
+        html[data-theme="dark"] .fi-nav button { color: #B7C3CC !important; }
+        html[data-theme="dark"] .ag-chip[aria-pressed="true"], html[data-theme="dark"] .ag-chip-deporte[aria-pressed="true"] { color: #fff !important; }
+        html[data-theme="dark"] .fi-actions-sticky { background: rgba(15,21,27,.96); border-top-color: var(--line); }
+        html[data-theme="dark"] .fi-acc .prim { background: var(--primary-color) !important; color: #fff !important; }
+        html[data-theme="dark"] .fi-acc .wa, html[data-theme="dark"] .fi-grupo { color: #fff !important; }
+        html[data-theme="dark"] .detalle-tabs { background: var(--header-bg); }
+        html[data-theme="dark"] .mcard.fav { background: linear-gradient(0deg, rgba(14,148,150,.10), rgba(14,148,150,.10)), var(--card-bg) !important; }
+        html[data-theme="dark"] body.theme-canal .mcard.fav { background: linear-gradient(0deg, rgba(59,130,196,.12), rgba(59,130,196,.12)), var(--card-bg) !important; }
     </style>
 </head>
 <body class="pb-20">
@@ -680,6 +763,17 @@
                 </div>
             </div>
 
+            <h2 class="aj-sec"><i class="fas fa-circle-half-stroke"></i> Apariencia</h2>
+            <div class="card p-4">
+                <label class="block text-xs font-bold uppercase mb-1" style="color: var(--text-sec);">Tema</label>
+                <select id="select-tema" onchange="aplicarTema(this.value)" class="w-full p-3 rounded-lg text-sm font-medium mt-1" style="background-color: var(--bg-color); border: 1px solid var(--border-color); color: var(--text-main);">
+                    <option value="auto">🌓 Automático (como tu móvil)</option>
+                    <option value="claro">☀️ Claro</option>
+                    <option value="oscuro">🌙 Oscuro</option>
+                </select>
+                <p class="text-[11px] text-gray-400 mt-1">Se aplica al momento.</p>
+            </div>
+
             <h2 class="aj-sec"><i class="fas fa-bell"></i> Avisos</h2>
             <!-- TARJETA 2: AVISOS DE CAMBIO DE PARTIDOS (INDEPENDIENTE) -->
             <div class="card p-4 space-y-4">
@@ -750,7 +844,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.23</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.24</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">21/11/2026 · Agenda renovada, transporte por partido</p>
             </div>
         </div>
@@ -1562,6 +1656,7 @@
             document.getElementById('toggle-ruta').checked = userSettings.showRoute === true;
             document.getElementById('select-transporte-fuera').value = userSettings.transportModeAway || 'driving';
             document.getElementById('select-transporte-casa').value = userSettings.transportModeHome || 'foot';
+            try { document.getElementById('select-tema').value = localStorage.getItem('tema') || 'auto'; } catch (e) {}
             document.getElementById('toggle-avisos').checked = userSettings.showChangeAlerts !== false;
             document.getElementById('input-tiempo-aviso').value = userSettings.alertDurationMinutes || 60;
             document.getElementById('toggle-alarmas').checked = userSettings.alarmEnabled === true;
