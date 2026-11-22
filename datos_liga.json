@@ -100721,8 +100721,8 @@
             "IdCategoria": 403,
             "IdJornada": 2983,
             "IdGrupo": 214,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 473,
             "Campo": "CALLE DE LOS PADRES DOMINICOS, 1 - CAMPO VOLEIBOL - TECHADO",
             "CampoJuego": {
@@ -100749,11 +100749,11 @@
             "URLEscudoEquipoVisitante": "/Documentos/Instituciones/55/Emblema_0055_VIRGE.PNG",
             "IdInstitucionVisitante": 55,
             "FechaHora": "2026-11-21T11:00:00",
-            "ResultadoEquipoLocal": null,
-            "ResultadoEquipoVisitante": null,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 0,
+            "IdEquipoGanador": 1116,
+            "ResultadoParcial1": "25 - 21",
+            "ResultadoParcial2": "25 - 19",
             "ResultadoParcial3": "",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
@@ -105233,8 +105233,8 @@
             "IdCategoria": 403,
             "IdJornada": 3010,
             "IdGrupo": 217,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 430,
             "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA 3 POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -105261,12 +105261,12 @@
             "URLEscudoEquipoVisitante": "/Documentos/Instituciones/66/Emblema_0066_LA SA.JPG",
             "IdInstitucionVisitante": 66,
             "FechaHora": "2026-11-22T09:00:00",
-            "ResultadoEquipoLocal": null,
-            "ResultadoEquipoVisitante": null,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
-            "ResultadoParcial3": "",
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 1,
+            "IdEquipoGanador": 302,
+            "ResultadoParcial1": "25 - 22",
+            "ResultadoParcial2": "12 - 25",
+            "ResultadoParcial3": "25 - 22",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
             "FechaJornada": "2026-11-21T00:00:00",
@@ -109778,8 +109778,8 @@
             "IdCategoria": 403,
             "IdJornada": 3037,
             "IdGrupo": 220,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 33,
             "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PABELLÓN - CUBIERTO",
             "CampoJuego": {
@@ -109806,12 +109806,12 @@
             "URLEscudoEquipoVisitante": "/Documentos/Instituciones/167/Emblema_0167_TORRE.PNG",
             "IdInstitucionVisitante": 167,
             "FechaHora": "2026-11-21T13:15:00",
-            "ResultadoEquipoLocal": null,
-            "ResultadoEquipoVisitante": null,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
-            "ResultadoParcial3": "",
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 1,
+            "IdEquipoGanador": 931,
+            "ResultadoParcial1": "22 - 25",
+            "ResultadoParcial2": "25 - 21",
+            "ResultadoParcial3": "25 - 21",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
             "FechaJornada": "2026-11-21T00:00:00",
@@ -112702,8 +112702,8 @@
             "IdCategoria": 406,
             "IdJornada": 3055,
             "IdGrupo": 222,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 429,
             "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA 1 POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -112730,12 +112730,12 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0056.jpg",
             "IdInstitucionVisitante": 56,
             "FechaHora": "2026-11-21T14:00:00",
-            "ResultadoEquipoLocal": null,
-            "ResultadoEquipoVisitante": null,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
-            "ResultadoParcial3": "",
+            "ResultadoEquipoLocal": 1,
+            "ResultadoEquipoVisitante": 2,
+            "IdEquipoGanador": 229,
+            "ResultadoParcial1": "24 - 26",
+            "ResultadoParcial2": "25 - 23",
+            "ResultadoParcial3": "22 - 25",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
             "FechaJornada": "2026-11-21T00:00:00",
@@ -115534,8 +115534,8 @@
             "IdCategoria": 406,
             "IdJornada": 3073,
             "IdGrupo": 224,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 241,
             "Campo": "CALLE DE GUATEMALA, 17 - PATIO PISTA 1 - EXTERIOR",
             "CampoJuego": {
@@ -115562,12 +115562,12 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0061.jpg",
             "IdInstitucionVisitante": 61,
             "FechaHora": "2026-11-21T16:00:00",
-            "ResultadoEquipoLocal": null,
-            "ResultadoEquipoVisitante": null,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
-            "ResultadoParcial3": "",
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 1,
+            "IdEquipoGanador": 1087,
+            "ResultadoParcial1": "25 - 19",
+            "ResultadoParcial2": "24 - 26",
+            "ResultadoParcial3": "25 - 8",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
             "FechaJornada": "2026-11-21T00:00:00",
@@ -121467,8 +121467,8 @@
             "IdCategoria": 406,
             "IdJornada": 3109,
             "IdGrupo": 228,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 4,
+            "EstadoPartido": "Pte. Comité Competición",
             "IdCampo": 270,
             "Campo": "CALLE DE NÚÑEZ DE BALBOA, 87 - PISTA 3 POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -123205,8 +123205,8 @@
             "IdCategoria": 406,
             "IdJornada": 3118,
             "IdGrupo": 229,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 331,
             "Campo": "CALLE DE LA BASÍLICA, 14 - PISTA FONDO - EXTERIOR",
             "CampoJuego": {
@@ -123233,11 +123233,11 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0024.jpg",
             "IdInstitucionVisitante": 24,
             "FechaHora": "2026-11-22T10:30:00",
-            "ResultadoEquipoLocal": null,
-            "ResultadoEquipoVisitante": null,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 0,
+            "IdEquipoGanador": 694,
+            "ResultadoParcial1": "25 - 12",
+            "ResultadoParcial2": "25 - 11",
             "ResultadoParcial3": "",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
@@ -124391,8 +124391,8 @@
             "IdCategoria": 412,
             "IdJornada": 3172,
             "IdGrupo": 235,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 128,
             "Campo": "CALLE DE LA BEGONIA, 275 - CUBIERTA - TECHADA",
             "CampoJuego": {
@@ -124419,11 +124419,11 @@
             "URLEscudoEquipoVisitante": "/Documentos/Instituciones/118/Emblema_0118_ASUNC.PNG",
             "IdInstitucionVisitante": 118,
             "FechaHora": "2026-11-21T13:30:00",
-            "ResultadoEquipoLocal": null,
-            "ResultadoEquipoVisitante": null,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
+            "ResultadoEquipoLocal": 0,
+            "ResultadoEquipoVisitante": 2,
+            "IdEquipoGanador": 1115,
+            "ResultadoParcial1": "11 - 25",
+            "ResultadoParcial2": "12 - 25",
             "ResultadoParcial3": "",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
@@ -127257,8 +127257,8 @@
             "IdCategoria": 412,
             "IdJornada": 3190,
             "IdGrupo": 237,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 170,
             "Campo": "AVENIDA DE SAN LUIS, 29 - CAMPO VOLEIBOL - EXTERIOR",
             "CampoJuego": {
@@ -127285,11 +127285,11 @@
             "URLEscudoEquipoVisitante": "/Documentos/Instituciones/76/Emblema_0076_NUEST.PNG",
             "IdInstitucionVisitante": 76,
             "FechaHora": "2026-11-20T18:00:00",
-            "ResultadoEquipoLocal": null,
-            "ResultadoEquipoVisitante": null,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 0,
+            "IdEquipoGanador": 893,
+            "ResultadoParcial1": "25 - 21",
+            "ResultadoParcial2": "25 - 22",
             "ResultadoParcial3": "",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
@@ -133630,7 +133630,7 @@
             "ResultadoEquipoLocal": 2,
             "ResultadoEquipoVisitante": 1,
             "IdEquipoGanador": 877,
-            "ResultadoParcial1": "25 - 10",
+            "ResultadoParcial1": "25 - 11",
             "ResultadoParcial2": "20 - 25",
             "ResultadoParcial3": "25 - 16",
             "ResultadoParcial4": "",
@@ -133691,8 +133691,8 @@
             "IdCategoria": 418,
             "IdJornada": 3237,
             "IdGrupo": 242,
-            "IdEstadoPartido": 10,
-            "EstadoPartido": "Disputado con Incidencias",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 33,
             "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PABELLÓN - CUBIERTO",
             "CampoJuego": {
@@ -133719,11 +133719,11 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0010.jpg",
             "IdInstitucionVisitante": 10,
             "FechaHora": "2026-11-21T10:30:00",
-            "ResultadoEquipoLocal": null,
-            "ResultadoEquipoVisitante": null,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 0,
+            "IdEquipoGanador": 220,
+            "ResultadoParcial1": "25 - 10",
+            "ResultadoParcial2": "25 - 13",
             "ResultadoParcial3": "",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
@@ -427185,8 +427185,8 @@
         "IdCategoria": 403,
         "IdJornada": 2983,
         "IdGrupo": 214,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 473,
         "Campo": "CALLE DE LOS PADRES DOMINICOS, 1 - CAMPO VOLEIBOL - TECHADO",
         "CampoJuego": {
@@ -427213,11 +427213,11 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0055_VIRGE.PNG",
         "IdInstitucionVisitante": 55,
         "FechaHora": "2026-11-21T11:00:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 0,
+        "IdEquipoGanador": 1116,
+        "ResultadoParcial1": "25 - 21",
+        "ResultadoParcial2": "25 - 19",
         "ResultadoParcial3": "",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
@@ -439145,8 +439145,8 @@
         "IdCategoria": 403,
         "IdJornada": 3010,
         "IdGrupo": 217,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 430,
         "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA 3 POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -439173,12 +439173,12 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0066_LA SA.JPG",
         "IdInstitucionVisitante": 66,
         "FechaHora": "2026-11-22T09:00:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
-        "ResultadoParcial3": "",
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 1,
+        "IdEquipoGanador": 302,
+        "ResultadoParcial1": "25 - 22",
+        "ResultadoParcial2": "12 - 25",
+        "ResultadoParcial3": "25 - 22",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
         "FechaJornada": "2026-11-21T00:00:00",
@@ -451070,8 +451070,8 @@
         "IdCategoria": 403,
         "IdJornada": 3037,
         "IdGrupo": 220,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 33,
         "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PABELLÓN - CUBIERTO",
         "CampoJuego": {
@@ -451098,12 +451098,12 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0167_TORRE.PNG",
         "IdInstitucionVisitante": 167,
         "FechaHora": "2026-11-21T13:15:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
-        "ResultadoParcial3": "",
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 1,
+        "IdEquipoGanador": 931,
+        "ResultadoParcial1": "22 - 25",
+        "ResultadoParcial2": "25 - 21",
+        "ResultadoParcial3": "25 - 21",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
         "FechaJornada": "2026-11-21T00:00:00",
@@ -458948,8 +458948,8 @@
         "IdCategoria": 406,
         "IdJornada": 3055,
         "IdGrupo": 222,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 429,
         "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA 1 POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -458976,12 +458976,12 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0056.jpg",
         "IdInstitucionVisitante": 56,
         "FechaHora": "2026-11-21T14:00:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
-        "ResultadoParcial3": "",
+        "ResultadoEquipoLocal": 1,
+        "ResultadoEquipoVisitante": 2,
+        "IdEquipoGanador": 229,
+        "ResultadoParcial1": "24 - 26",
+        "ResultadoParcial2": "25 - 23",
+        "ResultadoParcial3": "22 - 25",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
         "FechaJornada": "2026-11-21T00:00:00",
@@ -466734,8 +466734,8 @@
         "IdCategoria": 406,
         "IdJornada": 3073,
         "IdGrupo": 224,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 241,
         "Campo": "CALLE DE GUATEMALA, 17 - PATIO PISTA 1 - EXTERIOR",
         "CampoJuego": {
@@ -466762,12 +466762,12 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0061.jpg",
         "IdInstitucionVisitante": 61,
         "FechaHora": "2026-11-21T16:00:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
-        "ResultadoParcial3": "",
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 1,
+        "IdEquipoGanador": 1087,
+        "ResultadoParcial1": "25 - 19",
+        "ResultadoParcial2": "24 - 26",
+        "ResultadoParcial3": "25 - 8",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
         "FechaJornada": "2026-11-21T00:00:00",
@@ -482507,8 +482507,8 @@
         "IdCategoria": 406,
         "IdJornada": 3109,
         "IdGrupo": 228,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 4,
+        "EstadoPartido": "Pte. Comité Competición",
         "IdCampo": 270,
         "Campo": "CALLE DE NÚÑEZ DE BALBOA, 87 - PISTA 3 POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -486739,8 +486739,8 @@
         "IdCategoria": 406,
         "IdJornada": 3118,
         "IdGrupo": 229,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 331,
         "Campo": "CALLE DE LA BASÍLICA, 14 - PISTA FONDO - EXTERIOR",
         "CampoJuego": {
@@ -486767,11 +486767,11 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0024.jpg",
         "IdInstitucionVisitante": 24,
         "FechaHora": "2026-11-22T10:30:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 0,
+        "IdEquipoGanador": 694,
+        "ResultadoParcial1": "25 - 12",
+        "ResultadoParcial2": "25 - 11",
         "ResultadoParcial3": "",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
@@ -490419,8 +490419,8 @@
         "IdCategoria": 412,
         "IdJornada": 3172,
         "IdGrupo": 235,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 128,
         "Campo": "CALLE DE LA BEGONIA, 275 - CUBIERTA - TECHADA",
         "CampoJuego": {
@@ -490447,11 +490447,11 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0118_ASUNC.PNG",
         "IdInstitucionVisitante": 118,
         "FechaHora": "2026-11-21T13:30:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
+        "ResultadoEquipoLocal": 0,
+        "ResultadoEquipoVisitante": 2,
+        "IdEquipoGanador": 1115,
+        "ResultadoParcial1": "11 - 25",
+        "ResultadoParcial2": "12 - 25",
         "ResultadoParcial3": "",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
@@ -498273,8 +498273,8 @@
         "IdCategoria": 412,
         "IdJornada": 3190,
         "IdGrupo": 237,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 170,
         "Campo": "AVENIDA DE SAN LUIS, 29 - CAMPO VOLEIBOL - EXTERIOR",
         "CampoJuego": {
@@ -498301,11 +498301,11 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0076_NUEST.PNG",
         "IdInstitucionVisitante": 76,
         "FechaHora": "2026-11-20T18:00:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 0,
+        "IdEquipoGanador": 893,
+        "ResultadoParcial1": "25 - 21",
+        "ResultadoParcial2": "25 - 22",
         "ResultadoParcial3": "",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
@@ -515274,7 +515274,7 @@
         "ResultadoEquipoLocal": 2,
         "ResultadoEquipoVisitante": 1,
         "IdEquipoGanador": 877,
-        "ResultadoParcial1": "25 - 10",
+        "ResultadoParcial1": "25 - 11",
         "ResultadoParcial2": "20 - 25",
         "ResultadoParcial3": "25 - 16",
         "ResultadoParcial4": "",
@@ -515335,8 +515335,8 @@
         "IdCategoria": 418,
         "IdJornada": 3237,
         "IdGrupo": 242,
-        "IdEstadoPartido": 10,
-        "EstadoPartido": "Disputado con Incidencias",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 33,
         "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PABELLÓN - CUBIERTO",
         "CampoJuego": {
@@ -515363,11 +515363,11 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0010.jpg",
         "IdInstitucionVisitante": 10,
         "FechaHora": "2026-11-21T10:30:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 0,
+        "IdEquipoGanador": 220,
+        "ResultadoParcial1": "25 - 10",
+        "ResultadoParcial2": "25 - 13",
         "ResultadoParcial3": "",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
@@ -528386,31 +528386,22 @@
         "Posicion": 5
       },
       {
+        "NombreEquipo": "ST. GEORGE MADRID",
+        "URLEscudo": "/static/escudos/Emblema_0161_ST. G.JPG",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 2,
+        "GC": 2,
+        "Posicion": 6
+      },
+      {
         "NombreEquipo": "VALDEFUENTES \"D\"",
         "URLEscudo": "/static/escudos/Emblema_0068.jpg",
         "Puntos": 3,
         "Jugados": 2,
         "GF": 2,
         "GC": 3,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "ST. GEORGE MADRID",
-        "URLEscudo": "/static/escudos/Emblema_0161_ST. G.JPG",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 0,
-        "GC": 2,
         "Posicion": 7
-      },
-      {
-        "NombreEquipo": "VIRGEN DE MIRASIERRA \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0055_VIRGE.PNG",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 0,
-        "GC": 2,
-        "Posicion": 8
       },
       {
         "NombreEquipo": "ASUNCIÓN CUESTABLANCA \"B\"",
@@ -528419,6 +528410,15 @@
         "Jugados": 1,
         "GF": 0,
         "GC": 2,
+        "Posicion": 8
+      },
+      {
+        "NombreEquipo": "VIRGEN DE MIRASIERRA \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0055_VIRGE.PNG",
+        "Puntos": 0,
+        "Jugados": 2,
+        "GF": 0,
+        "GC": 4,
         "Posicion": 9
       },
       {
@@ -528671,13 +528671,22 @@
         "Posicion": 6
       },
       {
+        "NombreEquipo": "VALDEFUENTES \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 2,
+        "GC": 3,
+        "Posicion": 7
+      },
+      {
         "NombreEquipo": "CRISTO REY \"A\" - CV MADRID",
         "URLEscudo": "/static/escudos/Emblema_0092.jpg",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 1,
         "GC": 2,
-        "Posicion": 7
+        "Posicion": 8
       },
       {
         "NombreEquipo": "NUESTRA SEÑORA DE LA CONSOLACIÓN \"B\"",
@@ -528686,24 +528695,15 @@
         "Jugados": 1,
         "GF": 0,
         "GC": 2,
-        "Posicion": 8
+        "Posicion": 9
       },
       {
         "NombreEquipo": "LA SALLE MARAVILLAS",
         "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
         "Puntos": 0,
-        "Jugados": 1,
-        "GF": 0,
-        "GC": 2,
-        "Posicion": 9
-      },
-      {
-        "NombreEquipo": "VALDEFUENTES \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 0,
-        "GC": 2,
+        "Jugados": 2,
+        "GF": 1,
+        "GC": 4,
         "Posicion": 10
       }
     ],
@@ -528920,13 +528920,22 @@
         "Posicion": 4
       },
       {
+        "NombreEquipo": "CLARET \"F\"",
+        "URLEscudo": "/static/escudos/Emblema_0048.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 2,
+        "GC": 3,
+        "Posicion": 5
+      },
+      {
         "NombreEquipo": "SAGRADA FAMILIA JORGE JUAN",
         "URLEscudo": "/static/escudos/Emblema_0058.jpg",
         "Puntos": 0,
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "SALESIANOS ATOCHA \"A\"",
@@ -528935,25 +528944,7 @@
         "Jugados": 1,
         "GF": 0,
         "GC": 2,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "CLARET \"F\"",
-        "URLEscudo": "/static/escudos/Emblema_0048.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 0,
-        "GC": 2,
         "Posicion": 7
-      },
-      {
-        "NombreEquipo": "TORREVILANO",
-        "URLEscudo": "/static/escudos/Emblema_0167_TORRE.PNG",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 0,
-        "GC": 2,
-        "Posicion": 8
       },
       {
         "NombreEquipo": "INMACULADA CONCEPCIÓN \"B\"",
@@ -528962,7 +528953,7 @@
         "Jugados": 1,
         "GF": 0,
         "GC": 2,
-        "Posicion": 9
+        "Posicion": 8
       },
       {
         "NombreEquipo": "JESÚS MARÍA",
@@ -528971,6 +528962,15 @@
         "Jugados": 1,
         "GF": 0,
         "GC": 2,
+        "Posicion": 9
+      },
+      {
+        "NombreEquipo": "TORREVILANO",
+        "URLEscudo": "/static/escudos/Emblema_0167_TORRE.PNG",
+        "Puntos": 0,
+        "Jugados": 2,
+        "GF": 1,
+        "GC": 4,
         "Posicion": 10
       }
     ],
@@ -529079,10 +529079,10 @@
       {
         "NombreEquipo": "NUESTRA SEÑORA DE LA MERCED TRES CANTOS \"B\"",
         "URLEscudo": "/static/escudos/Emblema_0056.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 2,
-        "GC": 0,
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 4,
+        "GC": 1,
         "Posicion": 2
       },
       {
@@ -529143,9 +529143,9 @@
         "NombreEquipo": "VALDEFUENTES \"C\"",
         "URLEscudo": "/static/escudos/Emblema_0068.jpg",
         "Puntos": 0,
-        "Jugados": 1,
-        "GF": 0,
-        "GC": 2,
+        "Jugados": 2,
+        "GF": 1,
+        "GC": 4,
         "Posicion": 9
       },
       {
@@ -529279,13 +529279,22 @@
         "Posicion": 3
       },
       {
+        "NombreEquipo": "CORAZONISTAS",
+        "URLEscudo": "/static/escudos/Emblema_0099.jpg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 2,
+        "GC": 1,
+        "Posicion": 4
+      },
+      {
         "NombreEquipo": "ASUNCIÓN CUESTABLANCA \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0118_ASUNC.PNG",
         "Puntos": 3,
         "Jugados": 2,
         "GF": 2,
         "GC": 2,
-        "Posicion": 4
+        "Posicion": 5
       },
       {
         "NombreEquipo": "VALDEFUENTES \"B\"",
@@ -529294,25 +529303,7 @@
         "Jugados": 2,
         "GF": 2,
         "GC": 2,
-        "Posicion": 5
-      },
-      {
-        "NombreEquipo": "CORAZONISTAS",
-        "URLEscudo": "/static/escudos/Emblema_0099.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
         "Posicion": 6
-      },
-      {
-        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"C\"",
-        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 1,
-        "GC": 2,
-        "Posicion": 7
       },
       {
         "NombreEquipo": "NUESTRA SEÑORA DE LA CONSOLACIÓN \"A\"",
@@ -529321,6 +529312,15 @@
         "Jugados": 1,
         "GF": 1,
         "GC": 2,
+        "Posicion": 7
+      },
+      {
+        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"C\"",
+        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
+        "Puntos": 0,
+        "Jugados": 2,
+        "GF": 2,
+        "GC": 4,
         "Posicion": 8
       },
       {
@@ -529705,9 +529705,9 @@
       {
         "NombreEquipo": "PATROCINIO SAN JOSÉ \"ROJO\"",
         "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 2,
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 4,
         "GC": 0,
         "Posicion": 1
       },
@@ -529748,17 +529748,17 @@
         "Posicion": 5
       },
       {
-        "NombreEquipo": "DECROLY \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0024.jpg",
+        "NombreEquipo": "SAGRADO CORAZÓN ROSALES",
+        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
         "Puntos": 0,
-        "Jugados": 0,
+        "Jugados": 1,
         "GF": 0,
-        "GC": 0,
+        "GC": 2,
         "Posicion": 6
       },
       {
-        "NombreEquipo": "SAGRADO CORAZÓN ROSALES",
-        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
+        "NombreEquipo": "LA SALLE SAN RAFAEL",
+        "URLEscudo": "/static/escudos/Emblema_0041.jpg",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 0,
@@ -529766,8 +529766,8 @@
         "Posicion": 7
       },
       {
-        "NombreEquipo": "LA SALLE SAN RAFAEL",
-        "URLEscudo": "/static/escudos/Emblema_0041.jpg",
+        "NombreEquipo": "DECROLY \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0024.jpg",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 0,
@@ -529813,13 +529813,22 @@
         "Posicion": 3
       },
       {
+        "NombreEquipo": "ASUNCIÓN CUESTABLANCA \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0118_ASUNC.PNG",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 3,
+        "GC": 2,
+        "Posicion": 4
+      },
+      {
         "NombreEquipo": "SAN PATRICIO SOTO",
         "URLEscudo": "/static/escudos/Emblema_0089.jpg",
         "Puntos": 3,
         "Jugados": 2,
         "GF": 2,
         "GC": 2,
-        "Posicion": 4
+        "Posicion": 5
       },
       {
         "NombreEquipo": "SANTA MARÍA LA BLANCA \"A\"",
@@ -529828,7 +529837,7 @@
         "Jugados": 2,
         "GF": 2,
         "GC": 2,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "VALDEFUENTES \"A\"",
@@ -529837,15 +529846,6 @@
         "Jugados": 2,
         "GF": 2,
         "GC": 3,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "ASUNCIÓN CUESTABLANCA \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0118_ASUNC.PNG",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 1,
-        "GC": 2,
         "Posicion": 7
       },
       {
@@ -529858,17 +529858,17 @@
         "Posicion": 8
       },
       {
-        "NombreEquipo": "IRLANDESAS EL SOTO \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0039.jpg",
+        "NombreEquipo": "VIRGEN DE MIRASIERRA \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0055_VIRGE.PNG",
         "Puntos": 0,
-        "Jugados": 1,
+        "Jugados": 2,
         "GF": 0,
-        "GC": 2,
+        "GC": 4,
         "Posicion": 9
       },
       {
-        "NombreEquipo": "VIRGEN DE MIRASIERRA \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0055_VIRGE.PNG",
+        "NombreEquipo": "IRLANDESAS EL SOTO \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0039.jpg",
         "Puntos": 0,
         "Jugados": 2,
         "GF": 0,
@@ -529979,13 +529979,22 @@
         "Posicion": 1
       },
       {
+        "NombreEquipo": "CRISTO REY - CV MADRID",
+        "URLEscudo": "/static/escudos/Emblema_0092.jpg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 2,
+        "GC": 0,
+        "Posicion": 2
+      },
+      {
         "NombreEquipo": "CORAZONISTAS \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0099.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 2,
         "GC": 1,
-        "Posicion": 2
+        "Posicion": 3
       },
       {
         "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"A\"",
@@ -529994,7 +530003,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 3
+        "Posicion": 4
       },
       {
         "NombreEquipo": "OBISPO PERELLÓ \"A\"",
@@ -530003,7 +530012,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 4
+        "Posicion": 5
       },
       {
         "NombreEquipo": "VALDEFUENTES \"B\"",
@@ -530012,7 +530021,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "NUESTRA SEÑORA DE LA MERCED CHAMARTÍN",
@@ -530021,25 +530030,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "CRISTO REY - CV MADRID",
-        "URLEscudo": "/static/escudos/Emblema_0092.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
         "Posicion": 7
-      },
-      {
-        "NombreEquipo": "NUESTRA SEÑORA DE LA CONSOLACIÓN",
-        "URLEscudo": "/static/escudos/Emblema_0076_NUEST.PNG",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 1,
-        "GC": 2,
-        "Posicion": 8
       },
       {
         "NombreEquipo": "MATER IMMACULATA \"B\"",
@@ -530048,6 +530039,15 @@
         "Jugados": 1,
         "GF": 0,
         "GC": 2,
+        "Posicion": 8
+      },
+      {
+        "NombreEquipo": "NUESTRA SEÑORA DE LA CONSOLACIÓN",
+        "URLEscudo": "/static/escudos/Emblema_0076_NUEST.PNG",
+        "Puntos": 0,
+        "Jugados": 2,
+        "GF": 1,
+        "GC": 4,
         "Posicion": 9
       }
     ],
@@ -530324,9 +530324,9 @@
       {
         "NombreEquipo": "CLARET",
         "URLEscudo": "/static/escudos/Emblema_0048.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 2,
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 4,
         "GC": 0,
         "Posicion": 1
       },
@@ -530340,8 +530340,8 @@
         "Posicion": 2
       },
       {
-        "NombreEquipo": "MIRAMADRID \"ROJO\"",
-        "URLEscudo": "/static/escudos/Emblema_0010.jpg",
+        "NombreEquipo": "LA SALLE MARAVILLAS",
+        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
         "Puntos": 0,
         "Jugados": 0,
         "GF": 0,
@@ -530349,12 +530349,12 @@
         "Posicion": 3
       },
       {
-        "NombreEquipo": "LA SALLE MARAVILLAS",
-        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
+        "NombreEquipo": "MIRAMADRID \"ROJO\"",
+        "URLEscudo": "/static/escudos/Emblema_0010.jpg",
         "Puntos": 0,
-        "Jugados": 0,
+        "Jugados": 1,
         "GF": 0,
-        "GC": 0,
+        "GC": 2,
         "Posicion": 4
       },
       {
