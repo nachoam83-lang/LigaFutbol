@@ -93266,8 +93266,8 @@
             "IdCategoria": 400,
             "IdJornada": 2903,
             "IdGrupo": 206,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 429,
             "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA 1 POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -93295,10 +93295,10 @@
             "IdInstitucionVisitante": 61,
             "FechaHora": "2026-11-22T09:00:00",
             "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
+            "ResultadoEquipoVisitante": 2,
+            "IdEquipoGanador": 796,
+            "ResultadoParcial1": "4 - 25",
+            "ResultadoParcial2": "8 - 25",
             "ResultadoParcial3": "",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
@@ -406022,8 +406022,8 @@
         "IdCategoria": 400,
         "IdJornada": 2903,
         "IdGrupo": 206,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 429,
         "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA 1 POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -406051,10 +406051,10 @@
         "IdInstitucionVisitante": 61,
         "FechaHora": "2026-11-22T09:00:00",
         "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
+        "ResultadoEquipoVisitante": 2,
+        "IdEquipoGanador": 796,
+        "ResultadoParcial1": "4 - 25",
+        "ResultadoParcial2": "8 - 25",
         "ResultadoParcial3": "",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
@@ -527897,13 +527897,22 @@
         "Posicion": 1
       },
       {
+        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 3,
+        "GC": 2,
+        "Posicion": 2
+      },
+      {
         "NombreEquipo": "RICHMOND PARK SCHOOL \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0149.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 2,
         "GC": 1,
-        "Posicion": 2
+        "Posicion": 3
       },
       {
         "NombreEquipo": "CRISTO REY \"A\" - CV MADRID",
@@ -527912,25 +527921,7 @@
         "Jugados": 2,
         "GF": 3,
         "GC": 3,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 1,
-        "GC": 2,
         "Posicion": 4
-      },
-      {
-        "NombreEquipo": "VALDEFUENTES \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 1,
-        "GC": 2,
-        "Posicion": 5
       },
       {
         "NombreEquipo": "SAGRADO CORAZÓN CHAMARTÍN \"D\"",
@@ -527939,6 +527930,15 @@
         "Jugados": 1,
         "GF": 0,
         "GC": 2,
+        "Posicion": 5
+      },
+      {
+        "NombreEquipo": "VALDEFUENTES \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
+        "Puntos": 0,
+        "Jugados": 2,
+        "GF": 1,
+        "GC": 4,
         "Posicion": 6
       }
     ],
