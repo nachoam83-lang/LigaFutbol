@@ -18588,8 +18588,8 @@
             "IdCategoria": 209,
             "IdJornada": 2204,
             "IdGrupo": 137,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 7,
             "Campo": "CALLE DEL GUADALQUIVIR, 9 - PATIO MAYORES 1 - EXTERIOR",
             "CampoJuego": {
@@ -18616,9 +18616,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0004.jpg",
             "IdInstitucionVisitante": 4,
             "FechaHora": "2026-11-22T11:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 11,
+            "ResultadoEquipoVisitante": 52,
+            "IdEquipoGanador": 899,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -32288,8 +32288,8 @@
             "IdCategoria": 215,
             "IdJornada": 2396,
             "IdGrupo": 154,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 7,
             "Campo": "CALLE DEL GUADALQUIVIR, 9 - PATIO MAYORES 1 - EXTERIOR",
             "CampoJuego": {
@@ -32316,9 +32316,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0075.jpg",
             "IdInstitucionVisitante": 75,
             "FechaHora": "2026-11-22T12:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 28,
+            "ResultadoEquipoVisitante": 31,
+            "IdEquipoGanador": 1128,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -190841,8 +190841,8 @@
         "IdCategoria": 209,
         "IdJornada": 2204,
         "IdGrupo": 137,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 7,
         "Campo": "CALLE DEL GUADALQUIVIR, 9 - PATIO MAYORES 1 - EXTERIOR",
         "CampoJuego": {
@@ -190869,9 +190869,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0004.jpg",
         "IdInstitucionVisitante": 4,
         "FechaHora": "2026-11-22T11:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 11,
+        "ResultadoEquipoVisitante": 52,
+        "IdEquipoGanador": 899,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -237557,8 +237557,8 @@
         "IdCategoria": 215,
         "IdJornada": 2396,
         "IdGrupo": 154,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 7,
         "Campo": "CALLE DEL GUADALQUIVIR, 9 - PATIO MAYORES 1 - EXTERIOR",
         "CampoJuego": {
@@ -237585,9 +237585,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0075.jpg",
         "IdInstitucionVisitante": 75,
         "FechaHora": "2026-11-22T12:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 28,
+        "ResultadoEquipoVisitante": 31,
+        "IdEquipoGanador": 1128,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -523748,13 +523748,22 @@
     ],
     "1_102_0_137": [
       {
+        "NombreEquipo": "PUREZA DE MARÍA \"C\"",
+        "URLEscudo": "/static/escudos/Emblema_0004.jpg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 52,
+        "GC": 11,
+        "Posicion": 1
+      },
+      {
         "NombreEquipo": "JESÚS MARÍA \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0029.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 51,
         "GC": 11,
-        "Posicion": 1
+        "Posicion": 2
       },
       {
         "NombreEquipo": "SAN PATRICIO SERRANO \"B\"",
@@ -523763,7 +523772,7 @@
         "Jugados": 1,
         "GF": 40,
         "GC": 0,
-        "Posicion": 2
+        "Posicion": 3
       },
       {
         "NombreEquipo": "SAGRADA FAMILIA JORGE JUAN",
@@ -523772,15 +523781,6 @@
         "Jugados": 1,
         "GF": 34,
         "GC": 24,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "PUREZA DE MARÍA \"C\"",
-        "URLEscudo": "/static/escudos/Emblema_0004.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
         "Posicion": 4
       },
       {
@@ -523802,21 +523802,21 @@
         "Posicion": 6
       },
       {
-        "NombreEquipo": "LA SALLE MARAVILLAS \"AZUL\"",
-        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 7
-      },
-      {
         "NombreEquipo": "MARISTAS CHAMBERÍ",
         "URLEscudo": "/static/escudos/Emblema_0031.jpg",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 24,
         "GC": 34,
+        "Posicion": 7
+      },
+      {
+        "NombreEquipo": "LA SALLE MARAVILLAS \"AZUL\"",
+        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 11,
+        "GC": 52,
         "Posicion": 8
       },
       {
@@ -524528,17 +524528,17 @@
         "Posicion": 1
       },
       {
-        "NombreEquipo": "JESÚS MAESTRO FET \"BLANCO\"",
-        "URLEscudo": "/static/escudos/Emblema_0072.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "NombreEquipo": "SAGRADO CORAZÓN ROSALES \"BLANCO\"",
+        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 31,
+        "GC": 28,
         "Posicion": 2
       },
       {
-        "NombreEquipo": "SAGRADO CORAZÓN ROSALES \"BLANCO\"",
-        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
+        "NombreEquipo": "JESÚS MAESTRO FET \"BLANCO\"",
+        "URLEscudo": "/static/escudos/Emblema_0072.jpg",
         "Puntos": 0,
         "Jugados": 0,
         "GF": 0,
@@ -524549,9 +524549,9 @@
         "NombreEquipo": "LA SALLE MARAVILLAS \"VERDE\"",
         "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
         "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "Jugados": 1,
+        "GF": 28,
+        "GC": 31,
         "Posicion": 4
       },
       {
