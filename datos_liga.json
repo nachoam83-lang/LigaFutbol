@@ -46607,8 +46607,8 @@
             "IdCategoria": 300,
             "IdJornada": 2493,
             "IdGrupo": 165,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 6,
+            "EstadoPartido": "No Celebrado/Incompleto",
             "IdCampo": 155,
             "Campo": "CALLE DEL PICO DE ALMANZOR, 9 - CAMPO A - EXTERIOR",
             "CampoJuego": {
@@ -96020,8 +96020,8 @@
             "IdCategoria": 400,
             "IdJornada": 2933,
             "IdGrupo": 209,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 4,
+            "EstadoPartido": "Pte. Comité Competición",
             "IdCampo": 524,
             "Campo": "CALLE DEL MARQUÉS DE TORROJA, 81 - GIMNASIO POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -276064,8 +276064,8 @@
         "IdCategoria": 300,
         "IdJornada": 2493,
         "IdGrupo": 165,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 6,
+        "EstadoPartido": "No Celebrado/Incompleto",
         "IdCampo": 155,
         "Campo": "CALLE DEL PICO DE ALMANZOR, 9 - CAMPO A - EXTERIOR",
         "CampoJuego": {
@@ -413890,8 +413890,8 @@
         "IdCategoria": 400,
         "IdJornada": 2933,
         "IdGrupo": 209,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 4,
+        "EstadoPartido": "Pte. Comité Competición",
         "IdCampo": 524,
         "Campo": "CALLE DEL MARQUÉS DE TORROJA, 81 - GIMNASIO POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
