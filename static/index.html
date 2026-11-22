@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.27                                           -->
+    <!--  Versión actual: v1.05.00                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -652,6 +652,21 @@
             <ul id="banner-agenda-lista" class="mt-2 space-y-2"></ul>
         </div>
 
+        <!-- OFERTA DE AVISOS PUSH (un toque activa el permiso del sistema) -->
+        <div id="banner-push" class="hide mx-4 mt-4 card p-3 text-sm" role="region" aria-label="Activar notificaciones">
+            <div class="flex items-start gap-3">
+                <i class="fas fa-bell-concierge text-xl mt-0.5" style="color: var(--primary-color);"></i>
+                <div class="flex-1">
+                    <div class="font-black" style="color: var(--text-main);">Activa los avisos</div>
+                    <p class="text-xs mt-0.5" style="color: var(--text-sec);">Te avisamos al momento si cambia la hora o el campo, si se aplaza un partido o hay resultado, aunque la app esté cerrada.</p>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="activarPushDesdeBanner()" class="px-3 py-2 rounded-lg font-bold text-white text-xs" style="background-color: #68737D;">Activar avisos</button>
+                        <button onclick="posponerPush()" class="px-3 py-2 rounded-lg font-bold text-xs" style="background-color: var(--bg-color); color: var(--text-sec); border: 1px solid var(--border-color);">Ahora no</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="lista-agenda" class="px-4 pb-6 pt-2"></div>
     </div>
 
@@ -859,8 +874,8 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.27</p>
-                <p class="text-[11px] text-gray-400 mt-0.5">21/11/2026 · Agenda renovada, transporte por partido</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.05.00</p>
+                <p class="text-[11px] text-gray-400 mt-0.5">22/11/2026 · Notificaciones push, modo noche, agenda en mes y transporte por partido</p>
             </div>
         </div>
     </div>
@@ -1727,7 +1742,7 @@
             }
             let sub = await suscripcionActual();
             if (!sub && localStorage.getItem('push_activo') === '1' && Notification.permission === 'granted') { await repararPush(); sub = await suscripcionActual(); }
-            tg.checked = !!sub && Notification.permission === 'granted';
+            tg.checked = Notification.permission === 'granted' && (!!sub || localStorage.getItem('push_activo') === '1');
             if (!tg.checked) { tx.textContent = ''; return; }
             tx.textContent = 'Activadas en este móvil. Comprobando conexión…';
             const r = await syncPush(true);
@@ -1746,6 +1761,7 @@
                     let sub = await reg.pushManager.getSubscription();
                     if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(VAPID_PUBLIC) });
                     localStorage.setItem('push_activo', '1');
+                    localStorage.removeItem('push_off');
                     const r = await syncPush(true);
                     if (r !== 'ok') { tx.textContent = 'Permiso concedido, pero no se pudo registrar en el servidor (' + r + '). Vuelve a intentarlo en unos segundos.'; return; }
                     mostrarToast('Notificaciones activadas');
@@ -1757,6 +1773,7 @@
                     }
                     localStorage.removeItem('push_sync_h');
                     localStorage.removeItem('push_activo');
+                    localStorage.setItem('push_off', '1');   // apagado a propósito: no se vuelve a ofrecer solo
                     mostrarToast('Notificaciones desactivadas');
                 }
             } catch (e) {
@@ -1765,8 +1782,37 @@
                 return;
             }
             estadoPush();
+            ofrecerPush();
         }
-        window.addEventListener('load', () => setTimeout(() => { repararPush().then(() => syncPush(false)); }, 3000));
+        /* Activadas por defecto: si el permiso ya está concedido se activan solas; si no, se ofrece un aviso de un toque
+           (iOS y Chrome exigen que el permiso lo pulse la persona). */
+        async function ofrecerPush() {
+            const bn = document.getElementById('banner-push');
+            if (!bn) return;
+            try {
+                bn.classList.add('hide');
+                if (!pushSoportado() || (esIOS() && !esAppInstalada()) || !equipos || equipos.length === 0) return;
+                if (localStorage.getItem('push_off') === '1') return;
+                if (Notification.permission === 'granted') {
+                    if (localStorage.getItem('push_activo') !== '1') { localStorage.setItem('push_activo', '1'); }
+                    await repararPush();
+                    return;
+                }
+                if (Notification.permission !== 'default') return;
+                if (Number(localStorage.getItem('push_ofrecer_hasta') || 0) > Date.now()) return;
+                bn.classList.remove('hide');
+            } catch (e) { /* sin oferta */ }
+        }
+        async function activarPushDesdeBanner() {
+            document.getElementById('banner-push').classList.add('hide');
+            await alternarPush(true);
+            ofrecerPush();
+        }
+        function posponerPush() {
+            try { localStorage.setItem('push_ofrecer_hasta', String(Date.now() + 7 * 24 * 3600 * 1000)); } catch (e) {}
+            document.getElementById('banner-push').classList.add('hide');
+        }
+        window.addEventListener('load', () => setTimeout(() => { repararPush().then(() => syncPush(false)).then(ofrecerPush); }, 3000));
         document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncPush(false); });
 
         function abrirAjustes() {
@@ -3354,6 +3400,7 @@
             vibrar(50);
             syncPush(false);
             volverInicio();
+            setTimeout(ofrecerPush, 800);
         }
 
         function irAEquipo(id, tab) { const i = equipos.findIndex(e => e.id === id); if (i !== -1) abrirEquipo(i, tab); }
