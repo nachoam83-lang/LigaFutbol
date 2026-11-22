@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.29                                           -->
+    <!--  Versión actual: v1.05.00                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -823,7 +823,7 @@
                     </label>
                 </div>
                 <p id="push-estado" class="text-[11px] text-gray-400"></p>
-                <div class="flex gap-2 pt-1">
+                <div id="push-diag-botones" class="hide flex gap-2 pt-1">
                     <button onclick="mostrarDiagnosticoPush()" class="text-[11px] font-bold px-2 py-1 rounded" style="background: var(--bg-color); color: var(--text-sec); border: 1px solid var(--border-color);">Diagnóstico</button>
                     <button onclick="copiarDiagnosticoPush()" class="text-[11px] font-bold px-2 py-1 rounded" style="background: var(--bg-color); color: var(--text-sec); border: 1px solid var(--border-color);">Copiar</button>
                 </div>
@@ -879,7 +879,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.29</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.05.00</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">22/11/2026 · Notificaciones push, modo noche, agenda en mes y transporte por partido</p>
             </div>
         </div>
@@ -1753,6 +1753,7 @@
             const tg = document.getElementById('toggle-push'), tx = document.getElementById('push-estado');
             if (!tg || !tx) return;
             tg.disabled = false;
+            document.getElementById('push-diag-botones')?.classList.toggle('hide', localStorage.getItem('es_admin_liga') !== 'true');
             if (!pushSoportado() || (esIOS() && !esAppInstalada())) {
                 tg.checked = false; tg.disabled = true;
                 tx.textContent = esIOS() && !esAppInstalada()
