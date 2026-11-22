@@ -132684,8 +132684,8 @@
             "IdCategoria": 418,
             "IdJornada": 3227,
             "IdGrupo": 241,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 171,
             "Campo": "CALLE DEL MONASTERIO DE GUADALUPE, 7 - PISTA 1 PABELLÓN - CUBIERTO",
             "CampoJuego": {
@@ -132713,10 +132713,10 @@
             "IdInstitucionVisitante": 143,
             "FechaHora": "2026-11-21T09:15:00",
             "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
+            "ResultadoEquipoVisitante": 2,
+            "IdEquipoGanador": 1052,
+            "ResultadoParcial1": "16 - 25",
+            "ResultadoParcial2": "10 - 25",
             "ResultadoParcial3": "",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
@@ -512646,8 +512646,8 @@
         "IdCategoria": 418,
         "IdJornada": 3227,
         "IdGrupo": 241,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 171,
         "Campo": "CALLE DEL MONASTERIO DE GUADALUPE, 7 - PISTA 1 PABELLÓN - CUBIERTO",
         "CampoJuego": {
@@ -512675,10 +512675,10 @@
         "IdInstitucionVisitante": 143,
         "FechaHora": "2026-11-21T09:15:00",
         "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
+        "ResultadoEquipoVisitante": 2,
+        "IdEquipoGanador": 1052,
+        "ResultadoParcial1": "16 - 25",
+        "ResultadoParcial2": "10 - 25",
         "ResultadoParcial3": "",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
@@ -530275,31 +530275,22 @@
     ],
     "3_123_0_241": [
       {
+        "NombreEquipo": "SANTA MARÍA LA BLANCA",
+        "URLEscudo": "/static/escudos/Emblema_0143.jpg",
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 4,
+        "GC": 0,
+        "Posicion": 1
+      },
+      {
         "NombreEquipo": "VALDEFUENTES \"C\"",
         "URLEscudo": "/static/escudos/Emblema_0068.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 2,
         "GC": 0,
-        "Posicion": 1
-      },
-      {
-        "NombreEquipo": "SANTA MARÍA LA BLANCA",
-        "URLEscudo": "/static/escudos/Emblema_0143.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 2,
-        "GC": 0,
         "Posicion": 2
-      },
-      {
-        "NombreEquipo": "COLEGIO ALEMÁN DE MADRID",
-        "URLEscudo": "/static/escudos/Emblema_0128.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 3
       },
       {
         "NombreEquipo": "ASUNCIÓN CUESTABLANCA",
@@ -530308,11 +530299,20 @@
         "Jugados": 1,
         "GF": 0,
         "GC": 2,
-        "Posicion": 4
+        "Posicion": 3
       },
       {
         "NombreEquipo": "CORAZONISTAS",
         "URLEscudo": "/static/escudos/Emblema_0099.jpg",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 0,
+        "GC": 2,
+        "Posicion": 4
+      },
+      {
+        "NombreEquipo": "COLEGIO ALEMÁN DE MADRID",
+        "URLEscudo": "/static/escudos/Emblema_0128.jpg",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 0,
