@@ -2788,7 +2788,7 @@
                     </div>
                 </div>
                 ${lineasAviso.length ? `<div class="fi-aviso"><i class="fas fa-exclamation-triangle"></i> Cambio en este partido<div style="font-weight:600;margin-top:4px">${lineasAviso.join('<br>')}</div></div>` : ''}
-                ${coordMapa ? `<div class="fi-mapa"><button type="button" class="fi-mapa-boton" data-mapa="${escHtml(coordMapa)}" onclick="cargarMapaFicha(this)"><i class="fas fa-map-location-dot" aria-hidden="true"></i>Ver mapa del campo</button></div>` : ''}
+                ${coordMapa ? `<div class="fi-mapa"><iframe title="Mapa del campo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(coordMapa)}&z=16&output=embed"></iframe></div>` : ''}
                 <div class="fi-panel">${filas.join('')}</div>
                 ${(urlGrupo || acciones) ? `<div class="fi-actions-sticky">
                     ${urlGrupo ? `<a class="fi-grupo" href="${escHtml(urlGrupo)}"><i class="fab fa-whatsapp"></i> Grupo del equipo</a>` : ''}
