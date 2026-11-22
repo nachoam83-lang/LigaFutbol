@@ -45615,8 +45615,8 @@
             "IdCategoria": 300,
             "IdJornada": 2486,
             "IdGrupo": 164,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 148,
             "Campo": "CALLE DE LAS SICÉLIDAS, S/N - CAMPO ROJO - TECHADO",
             "CampoJuego": {
@@ -45643,9 +45643,9 @@
             "URLEscudoEquipoVisitante": "/Documentos/Instituciones/26/Emblema_0026_OBISP.PNG",
             "IdInstitucionVisitante": 26,
             "FechaHora": "2026-11-22T10:15:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 11,
+            "ResultadoEquipoVisitante": 1,
+            "IdEquipoGanador": 771,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -56613,8 +56613,8 @@
             "IdCategoria": 303,
             "IdJornada": 2552,
             "IdGrupo": 172,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 148,
             "Campo": "CALLE DE LAS SICÉLIDAS, S/N - CAMPO ROJO - TECHADO",
             "CampoJuego": {
@@ -56641,9 +56641,9 @@
             "URLEscudoEquipoVisitante": "/Documentos/Instituciones/83/Emblema_0083_INMAC.PNG",
             "IdInstitucionVisitante": 83,
             "FechaHora": "2026-11-22T09:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 8,
+            "ResultadoEquipoVisitante": 3,
+            "IdEquipoGanador": 774,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -66799,8 +66799,8 @@
             "IdCategoria": 306,
             "IdJornada": 2615,
             "IdGrupo": 179,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 148,
             "Campo": "CALLE DE LAS SICÉLIDAS, S/N - CAMPO ROJO - TECHADO",
             "CampoJuego": {
@@ -66827,9 +66827,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0079.jpg",
             "IdInstitucionVisitante": 79,
             "FechaHora": "2026-11-22T11:30:00",
-            "ResultadoEquipoLocal": 0,
+            "ResultadoEquipoLocal": 10,
             "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "IdEquipoGanador": 1159,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -273657,8 +273657,8 @@
         "IdCategoria": 300,
         "IdJornada": 2486,
         "IdGrupo": 164,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 148,
         "Campo": "CALLE DE LAS SICÉLIDAS, S/N - CAMPO ROJO - TECHADO",
         "CampoJuego": {
@@ -273685,9 +273685,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0026_OBISP.PNG",
         "IdInstitucionVisitante": 26,
         "FechaHora": "2026-11-22T10:15:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 11,
+        "ResultadoEquipoVisitante": 1,
+        "IdEquipoGanador": 771,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -301430,8 +301430,8 @@
         "IdCategoria": 303,
         "IdJornada": 2552,
         "IdGrupo": 172,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 148,
         "Campo": "CALLE DE LAS SICÉLIDAS, S/N - CAMPO ROJO - TECHADO",
         "CampoJuego": {
@@ -301458,9 +301458,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0083_INMAC.PNG",
         "IdInstitucionVisitante": 83,
         "FechaHora": "2026-11-22T09:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 8,
+        "ResultadoEquipoVisitante": 3,
+        "IdEquipoGanador": 774,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -328904,8 +328904,8 @@
         "IdCategoria": 306,
         "IdJornada": 2615,
         "IdGrupo": 179,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 148,
         "Campo": "CALLE DE LAS SICÉLIDAS, S/N - CAMPO ROJO - TECHADO",
         "CampoJuego": {
@@ -328932,9 +328932,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0079.jpg",
         "IdInstitucionVisitante": 79,
         "FechaHora": "2026-11-22T11:30:00",
-        "ResultadoEquipoLocal": 0,
+        "ResultadoEquipoLocal": 10,
         "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "IdEquipoGanador": 1159,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -525297,10 +525297,10 @@
       {
         "NombreEquipo": "SANTA FRANCISCA JAVIER CABRINI \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0005.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 11,
-        "GC": 1,
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 22,
+        "GC": 2,
         "Posicion": 1
       },
       {
@@ -525331,22 +525331,13 @@
         "Posicion": 4
       },
       {
-        "NombreEquipo": "OBISPO PERELLÓ \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0026_OBISP.PNG",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 5
-      },
-      {
         "NombreEquipo": "MADRE DE DIOS",
         "URLEscudo": "/static/escudos/Emblema_0081.jpg",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 3,
         "GC": 5,
-        "Posicion": 6
+        "Posicion": 5
       },
       {
         "NombreEquipo": "MATER IMMACULATA",
@@ -525355,11 +525346,20 @@
         "Jugados": 1,
         "GF": 1,
         "GC": 4,
-        "Posicion": 7
+        "Posicion": 6
       },
       {
         "NombreEquipo": "STELLA MARIS FESD",
         "URLEscudo": "/static/escudos/Emblema_0078.jpg",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 1,
+        "GC": 11,
+        "Posicion": 7
+      },
+      {
+        "NombreEquipo": "OBISPO PERELLÓ \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0026_OBISP.PNG",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 1,
@@ -525932,22 +525932,31 @@
     ],
     "2_112_0_172": [
       {
-        "NombreEquipo": "INMACULADA CONCEPCIÓN \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0083_INMAC.PNG",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 7,
-        "GC": 3,
-        "Posicion": 1
-      },
-      {
         "NombreEquipo": "JESÚS MARÍA \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0029.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 6,
         "GC": 2,
+        "Posicion": 1
+      },
+      {
+        "NombreEquipo": "SANTA FRANCISCA JAVIER CABRINI \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0005.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 9,
+        "GC": 7,
         "Posicion": 2
+      },
+      {
+        "NombreEquipo": "INMACULADA CONCEPCIÓN \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0083_INMAC.PNG",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 10,
+        "GC": 11,
+        "Posicion": 3
       },
       {
         "NombreEquipo": "AMOR DE DIOS MADRID \"B\"",
@@ -525956,7 +525965,7 @@
         "Jugados": 2,
         "GF": 6,
         "GC": 7,
-        "Posicion": 3
+        "Posicion": 4
       },
       {
         "NombreEquipo": "OBISPO PERELLÓ \"A\"",
@@ -525965,7 +525974,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 4
+        "Posicion": 5
       },
       {
         "NombreEquipo": "CALASANCIO \"B\"",
@@ -525974,7 +525983,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "SANTA ANA Y SAN RAFAEL \"B\"",
@@ -525983,7 +525992,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 6
+        "Posicion": 7
       },
       {
         "NombreEquipo": "NUESTRA SEÑORA DEL LORETO FESD \"B\"",
@@ -525992,15 +526001,6 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 7
-      },
-      {
-        "NombreEquipo": "SANTA FRANCISCA JAVIER CABRINI \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0005.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 1,
-        "GC": 4,
         "Posicion": 8
       },
       {
@@ -526540,13 +526540,22 @@
     ],
     "2_113_0_179": [
       {
+        "NombreEquipo": "SANTA FRANCISCA JAVIER CABRINI \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0005.jpg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 10,
+        "GC": 0,
+        "Posicion": 1
+      },
+      {
         "NombreEquipo": "JESÚS MARÍA \"C\"",
         "URLEscudo": "/static/escudos/Emblema_0029.jpg",
         "Puntos": 3,
         "Jugados": 2,
         "GF": 11,
         "GC": 3,
-        "Posicion": 1
+        "Posicion": 2
       },
       {
         "NombreEquipo": "OBISPO PERELLÓ \"A\"",
@@ -526555,7 +526564,7 @@
         "Jugados": 1,
         "GF": 3,
         "GC": 1,
-        "Posicion": 2
+        "Posicion": 3
       },
       {
         "NombreEquipo": "SANTA ANA Y SAN RAFAEL \"B\"",
@@ -526564,7 +526573,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 3
+        "Posicion": 4
       },
       {
         "NombreEquipo": "NUESTRA SEÑORA DEL PILAR \"C\"",
@@ -526573,20 +526582,11 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 4
+        "Posicion": 5
       },
       {
         "NombreEquipo": "STELLA MARIS FESD \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0078.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 5
-      },
-      {
-        "NombreEquipo": "SANTA FRANCISCA JAVIER CABRINI \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0005.jpg",
         "Puntos": 0,
         "Jugados": 0,
         "GF": 0,
@@ -526615,9 +526615,9 @@
         "NombreEquipo": "NUESTRA SEÑORA DEL LORETO FESD \"B\"",
         "URLEscudo": "/static/escudos/Emblema_0079.jpg",
         "Puntos": 0,
-        "Jugados": 1,
+        "Jugados": 2,
         "GF": 0,
-        "GC": 10,
+        "GC": 20,
         "Posicion": 9
       }
     ],
