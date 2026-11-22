@@ -6129,8 +6129,8 @@
             "IdCategoria": 203,
             "IdJornada": 2005,
             "IdGrupo": 121,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 7,
             "Campo": "CALLE DEL GUADALQUIVIR, 9 - PATIO MAYORES 1 - EXTERIOR",
             "CampoJuego": {
@@ -6157,9 +6157,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0051.jpg",
             "IdInstitucionVisitante": 51,
             "FechaHora": "2026-11-22T11:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 24,
+            "ResultadoEquipoVisitante": 18,
+            "IdEquipoGanador": 633,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -14033,8 +14033,8 @@
             "IdCategoria": 209,
             "IdJornada": 2177,
             "IdGrupo": 134,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 7,
             "Campo": "CALLE DEL GUADALQUIVIR, 9 - PATIO MAYORES 1 - EXTERIOR",
             "CampoJuego": {
@@ -14061,9 +14061,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0151.jpg",
             "IdInstitucionVisitante": 151,
             "FechaHora": "2026-11-22T12:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 22,
+            "ResultadoEquipoVisitante": 38,
+            "IdEquipoGanador": 1072,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -151588,8 +151588,8 @@
         "IdCategoria": 203,
         "IdJornada": 2005,
         "IdGrupo": 121,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 7,
         "Campo": "CALLE DEL GUADALQUIVIR, 9 - PATIO MAYORES 1 - EXTERIOR",
         "CampoJuego": {
@@ -151616,9 +151616,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0051.jpg",
         "IdInstitucionVisitante": 51,
         "FechaHora": "2026-11-22T11:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 24,
+        "ResultadoEquipoVisitante": 18,
+        "IdEquipoGanador": 633,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -178804,8 +178804,8 @@
         "IdCategoria": 209,
         "IdJornada": 2177,
         "IdGrupo": 134,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 7,
         "Campo": "CALLE DEL GUADALQUIVIR, 9 - PATIO MAYORES 1 - EXTERIOR",
         "CampoJuego": {
@@ -178832,9 +178832,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0151.jpg",
         "IdInstitucionVisitante": 151,
         "FechaHora": "2026-11-22T12:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 22,
+        "ResultadoEquipoVisitante": 38,
+        "IdEquipoGanador": 1072,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -263135,8 +263135,8 @@
         "IdCategoria": 300,
         "IdJornada": 2457,
         "IdGrupo": 160,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 10,
+        "EstadoPartido": "Disputado con Incidencias",
         "IdCampo": 424,
         "Campo": "CALLE DE MARCENADO, 50 - CAMPO FÚTBOL SALA - EXTERIOR",
         "CampoJuego": {
@@ -523037,31 +523037,22 @@
     ],
     "1_101_0_121": [
       {
+        "NombreEquipo": "LA SALLE MARAVILLAS \"AZUL\"",
+        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 59,
+        "GC": 24,
+        "Posicion": 1
+      },
+      {
         "NombreEquipo": "SAGRADA FAMILIA JORGE JUAN",
         "URLEscudo": "/static/escudos/Emblema_0058.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 40,
         "GC": 0,
-        "Posicion": 1
-      },
-      {
-        "NombreEquipo": "LA SALLE MARAVILLAS \"AZUL\"",
-        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 35,
-        "GC": 6,
         "Posicion": 2
-      },
-      {
-        "NombreEquipo": "SANTA MARÍA DEL PILAR",
-        "URLEscudo": "/static/escudos/Emblema_0051.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 3
       },
       {
         "NombreEquipo": "PUREZA DE MARÍA",
@@ -523070,7 +523061,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 4
+        "Posicion": 3
       },
       {
         "NombreEquipo": "JESÚS MAESTRO FET",
@@ -523079,7 +523070,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 5
+        "Posicion": 4
       },
       {
         "NombreEquipo": "SAGRADO CORAZÓN ROSALES",
@@ -523088,7 +523079,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 6
+        "Posicion": 5
       },
       {
         "NombreEquipo": "SAN PATRICIO SERRANO \"A\"",
@@ -523097,6 +523088,15 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
+        "Posicion": 6
+      },
+      {
+        "NombreEquipo": "SANTA MARÍA DEL PILAR",
+        "URLEscudo": "/static/escudos/Emblema_0051.jpg",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 18,
+        "GC": 24,
         "Posicion": 7
       },
       {
@@ -523526,21 +523526,21 @@
         "Posicion": 4
       },
       {
-        "NombreEquipo": "LA SALLE MARAVILLAS \"VERDE\"",
-        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "NombreEquipo": "EL VALLE SANCHINARRO",
+        "URLEscudo": "/static/escudos/Emblema_0151.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 71,
+        "GC": 59,
         "Posicion": 5
       },
       {
-        "NombreEquipo": "EL VALLE SANCHINARRO",
-        "URLEscudo": "/static/escudos/Emblema_0151.jpg",
+        "NombreEquipo": "LA SALLE MARAVILLAS \"VERDE\"",
+        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
         "Puntos": 0,
         "Jugados": 1,
-        "GF": 33,
-        "GC": 37,
+        "GF": 22,
+        "GC": 38,
         "Posicion": 6
       },
       {
