@@ -31373,8 +31373,8 @@
             "IdCategoria": 215,
             "IdJornada": 2386,
             "IdGrupo": 153,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 33,
             "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PABELLÓN - CUBIERTO",
             "CampoJuego": {
@@ -31401,9 +31401,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0023.jpg",
             "IdInstitucionVisitante": 23,
             "FechaHora": "2026-11-22T09:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 43,
+            "IdEquipoGanador": 491,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -52193,8 +52193,8 @@
             "IdCategoria": 303,
             "IdJornada": 2525,
             "IdGrupo": 169,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 104,
             "Campo": "CALLE DE LA BASÍLICA, 14 - PISTA CENTRAL - EXTERIOR",
             "CampoJuego": {
@@ -52221,9 +52221,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0114.jpg",
             "IdInstitucionVisitante": 114,
             "FechaHora": "2026-11-22T09:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 4,
+            "ResultadoEquipoVisitante": 1,
+            "IdEquipoGanador": 682,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -53471,8 +53471,8 @@
             "IdCategoria": 303,
             "IdJornada": 2534,
             "IdGrupo": 170,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 49,
             "Campo": "CALLE DEL PEZ AUSTRAL, 13 BIS - PISTA ROJA - EXTERIOR",
             "CampoJuego": {
@@ -53499,9 +53499,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0051.jpg",
             "IdInstitucionVisitante": 51,
             "FechaHora": "2026-11-22T09:00:00",
-            "ResultadoEquipoLocal": 0,
+            "ResultadoEquipoLocal": 10,
             "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "IdEquipoGanador": 522,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -234892,8 +234892,8 @@
         "IdCategoria": 215,
         "IdJornada": 2386,
         "IdGrupo": 153,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 33,
         "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PABELLÓN - CUBIERTO",
         "CampoJuego": {
@@ -234920,9 +234920,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0023.jpg",
         "IdInstitucionVisitante": 23,
         "FechaHora": "2026-11-22T09:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 43,
+        "IdEquipoGanador": 491,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -289494,8 +289494,8 @@
         "IdCategoria": 303,
         "IdJornada": 2525,
         "IdGrupo": 169,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 104,
         "Campo": "CALLE DE LA BASÍLICA, 14 - PISTA CENTRAL - EXTERIOR",
         "CampoJuego": {
@@ -289522,9 +289522,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0114.jpg",
         "IdInstitucionVisitante": 114,
         "FechaHora": "2026-11-22T09:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 4,
+        "ResultadoEquipoVisitante": 1,
+        "IdEquipoGanador": 682,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -293300,8 +293300,8 @@
         "IdCategoria": 303,
         "IdJornada": 2534,
         "IdGrupo": 170,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 49,
         "Campo": "CALLE DEL PEZ AUSTRAL, 13 BIS - PISTA ROJA - EXTERIOR",
         "CampoJuego": {
@@ -293328,9 +293328,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0051.jpg",
         "IdInstitucionVisitante": 51,
         "FechaHora": "2026-11-22T09:00:00",
-        "ResultadoEquipoLocal": 0,
+        "ResultadoEquipoLocal": 10,
         "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "IdEquipoGanador": 522,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -524395,21 +524395,21 @@
     ],
     "1_103_0_153": [
       {
+        "NombreEquipo": "CALASANCIO \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0023.jpg",
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 91,
+        "GC": 9,
+        "Posicion": 1
+      },
+      {
         "NombreEquipo": "JESÚS MARÍA \"B\"",
         "URLEscudo": "/static/escudos/Emblema_0029.jpg",
         "Puntos": 6,
         "Jugados": 2,
         "GF": 74,
         "GC": 44,
-        "Posicion": 1
-      },
-      {
-        "NombreEquipo": "CALASANCIO \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0023.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 48,
-        "GC": 7,
         "Posicion": 2
       },
       {
@@ -524431,21 +524431,21 @@
         "Posicion": 4
       },
       {
-        "NombreEquipo": "CLARET",
-        "URLEscudo": "/static/escudos/Emblema_0048.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 19,
-        "GC": 42,
-        "Posicion": 5
-      },
-      {
         "NombreEquipo": "NUESTRA SEÑORA DEL PILAR",
         "URLEscudo": "/static/escudos/Emblema_0012_NUEST.JPEG",
         "Puntos": 0,
         "Jugados": 2,
         "GF": 32,
         "GC": 77,
+        "Posicion": 5
+      },
+      {
+        "NombreEquipo": "CLARET",
+        "URLEscudo": "/static/escudos/Emblema_0048.jpg",
+        "Puntos": 0,
+        "Jugados": 2,
+        "GF": 21,
+        "GC": 85,
         "Posicion": 6
       }
     ],
@@ -525606,22 +525606,13 @@
     ],
     "2_112_0_169": [
       {
-        "NombreEquipo": "SANTAMARCA INTERNACIONAL",
-        "URLEscudo": "/static/escudos/Emblema_0114.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 13,
-        "GC": 3,
-        "Posicion": 1
-      },
-      {
         "NombreEquipo": "NUESTRA SEÑORA DE LA CONSOLACIÓN",
         "URLEscudo": "/static/escudos/Emblema_0076_NUEST.PNG",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 11,
         "GC": 1,
-        "Posicion": 2
+        "Posicion": 1
       },
       {
         "NombreEquipo": "EL VALLE SANCHINARRO \"F\"",
@@ -525630,7 +525621,25 @@
         "Jugados": 1,
         "GF": 9,
         "GC": 1,
+        "Posicion": 2
+      },
+      {
+        "NombreEquipo": "SANTAMARCA INTERNACIONAL",
+        "URLEscudo": "/static/escudos/Emblema_0114.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 14,
+        "GC": 7,
         "Posicion": 3
+      },
+      {
+        "NombreEquipo": "PATROCINIO SAN JOSÉ \"AZUL\"",
+        "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 4,
+        "GC": 1,
+        "Posicion": 4
       },
       {
         "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"B\"",
@@ -525639,7 +525648,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 4
+        "Posicion": 5
       },
       {
         "NombreEquipo": "TRILEMA EL PILAR",
@@ -525648,7 +525657,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "CALASANCIO \"A\"",
@@ -525657,20 +525666,11 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 6
+        "Posicion": 7
       },
       {
         "NombreEquipo": "SANTA MARÍA DEL PILAR \"F\"",
         "URLEscudo": "/static/escudos/Emblema_0051.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 7
-      },
-      {
-        "NombreEquipo": "PATROCINIO SAN JOSÉ \"AZUL\"",
-        "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
         "Puntos": 0,
         "Jugados": 0,
         "GF": 0,
@@ -525707,13 +525707,22 @@
         "Posicion": 1
       },
       {
+        "NombreEquipo": "AGUSTINIANO \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0006_AGUST.jpg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 10,
+        "GC": 0,
+        "Posicion": 2
+      },
+      {
         "NombreEquipo": "PATROCINIO SAN JOSÉ \"BLANCO\"",
         "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
         "Puntos": 0,
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 2
+        "Posicion": 3
       },
       {
         "NombreEquipo": "PUREZA DE MARÍA \"A\"",
@@ -525722,7 +525731,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 3
+        "Posicion": 4
       },
       {
         "NombreEquipo": "JESÚS MARÍA \"B\"",
@@ -525731,7 +525740,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 4
+        "Posicion": 5
       },
       {
         "NombreEquipo": "SAGRADO CORAZÓN CHAMARTÍN \"D\"",
@@ -525740,20 +525749,11 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "CALASANCIO \"E\"",
         "URLEscudo": "/static/escudos/Emblema_0023.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "AGUSTINIANO \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0006_AGUST.jpg",
         "Puntos": 0,
         "Jugados": 0,
         "GF": 0,
@@ -525773,9 +525773,9 @@
         "NombreEquipo": "SANTA MARÍA DEL PILAR \"E\"",
         "URLEscudo": "/static/escudos/Emblema_0051.jpg",
         "Puntos": 0,
-        "Jugados": 1,
+        "Jugados": 2,
         "GF": 2,
-        "GC": 12,
+        "GC": 22,
         "Posicion": 9
       }
     ],
