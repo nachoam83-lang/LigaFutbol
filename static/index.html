@@ -2790,7 +2790,7 @@
                     </div>
                 </div>
                 ${lineasAviso.length ? `<div class="fi-aviso"><i class="fas fa-exclamation-triangle"></i> Cambio en este partido<div style="font-weight:600;margin-top:4px">${lineasAviso.join('<br>')}</div></div>` : ''}
-                ${coordMapa ? `<div class="fi-mapa"><iframe title="Mapa del campo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(coordMapa)}&z=16&output=embed" tabindex="-1"></iframe><button type="button" class="fi-mapa-tap" aria-label="Abrir ruta al campo" onclick="abrirModalMapa(${dirJs}, '${modo}')"></button></div>` : ''}
+                ${coordMapa ? `<div class="fi-mapa"><iframe title="Mapa del campo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(coordMapa)}&z=16&output=embed" tabindex="-1"></iframe><button type="button" class="fi-mapa-tap" aria-label="Abrir el campo en Google Maps" onclick="abrirCampoGoogle(${escHtml(JSON.stringify(coordMapa))})"></button></div>` : ''}
                 <div class="fi-panel">${filas.join('')}</div>
                 ${(urlGrupo || acciones) ? `<div class="fi-actions-sticky">
                     ${urlGrupo ? `<a class="fi-grupo" href="${escHtml(urlGrupo)}"><i class="fab fa-whatsapp"></i> Grupo del equipo</a>` : ''}
@@ -3158,6 +3158,11 @@
                 window.location.href = `maps://?daddr=${d}&dirflg=${modo === 'transit' ? 'r' : (modo === 'foot' ? 'w' : 'd')}`; return;
             }
             window.location.href = esquema;
+        }
+        /* Toque en el mapa de la ficha: abre el campo en la app de Google Maps (en iPhone, directamente y sin páginas en blanco). */
+        function abrirCampoGoogle(q) {
+            if (esIOS()) { window.location.href = `comgooglemaps://?q=${encodeURIComponent(q)}&zoom=16`; return; }
+            abrirExterno(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`);
         }
         function appTransito() { return userSettings.defaultMap === 'google' ? 'google' : 'apple'; }
         function abrirTransitoEl(el) { abrirRutaApp(appTransito(), el.getAttribute('data-dir') || '', 'transit'); }
