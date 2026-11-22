@@ -3534,8 +3534,8 @@
             "IdCategoria": 200,
             "IdJornada": 1986,
             "IdGrupo": 119,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 67,
             "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA BASKET - EXTERIOR",
             "CampoJuego": {
@@ -3562,9 +3562,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0051.jpg",
             "IdInstitucionVisitante": 51,
             "FechaHora": "2026-11-22T12:15:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 4,
+            "ResultadoEquipoVisitante": 10,
+            "IdEquipoGanador": 1017,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -4541,8 +4541,8 @@
             "IdCategoria": 203,
             "IdJornada": 1996,
             "IdGrupo": 120,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 67,
             "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA BASKET - EXTERIOR",
             "CampoJuego": {
@@ -4569,9 +4569,9 @@
             "URLEscudoEquipoVisitante": "/Documentos/Instituciones/66/Emblema_0066_LA SA.JPG",
             "IdInstitucionVisitante": 66,
             "FechaHora": "2026-11-22T11:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 50,
+            "ResultadoEquipoVisitante": 42,
+            "IdEquipoGanador": 1031,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -106787,8 +106787,8 @@
             "IdCategoria": 403,
             "IdJornada": 3019,
             "IdGrupo": 218,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 331,
             "Campo": "CALLE DE LA BASÍLICA, 14 - PISTA FONDO - EXTERIOR",
             "CampoJuego": {
@@ -106815,12 +106815,12 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0024.jpg",
             "IdInstitucionVisitante": 24,
             "FechaHora": "2026-11-22T12:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
-            "ResultadoParcial3": "",
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 1,
+            "IdEquipoGanador": 1047,
+            "ResultadoParcial1": "16 - 25",
+            "ResultadoParcial2": "25 - 18",
+            "ResultadoParcial3": "25 - 23",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
             "FechaJornada": "2026-11-21T00:00:00",
@@ -144599,8 +144599,8 @@
         "IdCategoria": 200,
         "IdJornada": 1986,
         "IdGrupo": 119,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 67,
         "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA BASKET - EXTERIOR",
         "CampoJuego": {
@@ -144627,9 +144627,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0051.jpg",
         "IdInstitucionVisitante": 51,
         "FechaHora": "2026-11-22T12:15:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 4,
+        "ResultadoEquipoVisitante": 10,
+        "IdEquipoGanador": 1017,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -147506,8 +147506,8 @@
         "IdCategoria": 203,
         "IdJornada": 1996,
         "IdGrupo": 120,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 67,
         "Campo": "CALLE DE LA INFANTA MARÍA, S/N - PISTA BASKET - EXTERIOR",
         "CampoJuego": {
@@ -147534,9 +147534,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0066_LA SA.JPG",
         "IdInstitucionVisitante": 66,
         "FechaHora": "2026-11-22T11:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 50,
+        "ResultadoEquipoVisitante": 42,
+        "IdEquipoGanador": 1031,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -273197,8 +273197,8 @@
         "IdCategoria": 300,
         "IdJornada": 2485,
         "IdGrupo": 164,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 36,
         "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - CAMPO C - EXTERIOR",
         "CampoJuego": {
@@ -273225,8 +273225,8 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0022_NUEST.PNG",
         "IdInstitucionVisitante": 22,
         "FechaHora": "2026-11-22T13:00:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
+        "ResultadoEquipoLocal": 3,
+        "ResultadoEquipoVisitante": 3,
         "IdEquipoGanador": 0,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
@@ -443159,8 +443159,8 @@
         "IdCategoria": 403,
         "IdJornada": 3019,
         "IdGrupo": 218,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 331,
         "Campo": "CALLE DE LA BASÍLICA, 14 - PISTA FONDO - EXTERIOR",
         "CampoJuego": {
@@ -443187,12 +443187,12 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0024.jpg",
         "IdInstitucionVisitante": 24,
         "FechaHora": "2026-11-22T12:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
-        "ResultadoParcial3": "",
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 1,
+        "IdEquipoGanador": 1047,
+        "ResultadoParcial1": "16 - 25",
+        "ResultadoParcial2": "25 - 18",
+        "ResultadoParcial3": "25 - 23",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
         "FechaJornada": "2026-11-21T00:00:00",
@@ -522909,10 +522909,10 @@
       {
         "NombreEquipo": "SANTA MARÍA DEL PILAR \"C\"",
         "URLEscudo": "/static/escudos/Emblema_0051.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 19,
-        "GC": 2,
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 29,
+        "GC": 6,
         "Posicion": 1
       },
       {
@@ -522934,25 +522934,34 @@
         "Posicion": 3
       },
       {
-        "NombreEquipo": "VALDEFUENTES \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 4
-      },
-      {
         "NombreEquipo": "OBISPO PERELLÓ",
         "URLEscudo": "/static/escudos/Emblema_0026_OBISP.PNG",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 14,
         "GC": 18,
+        "Posicion": 4
+      },
+      {
+        "NombreEquipo": "VALDEFUENTES \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 4,
+        "GC": 10,
         "Posicion": 5
       }
     ],
     "1_101_0_120": [
+      {
+        "NombreEquipo": "VALDEFUENTES",
+        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 75,
+        "GC": 50,
+        "Posicion": 1
+      },
       {
         "NombreEquipo": "SAN AGUSTÍN",
         "URLEscudo": "/static/escudos/Emblema_0085_SAN A.PNG",
@@ -522960,7 +522969,7 @@
         "Jugados": 1,
         "GF": 40,
         "GC": 0,
-        "Posicion": 1
+        "Posicion": 2
       },
       {
         "NombreEquipo": "SAN PATRICIO SERRANO \"B\"",
@@ -522969,15 +522978,6 @@
         "Jugados": 1,
         "GF": 30,
         "GC": 7,
-        "Posicion": 2
-      },
-      {
-        "NombreEquipo": "VALDEFUENTES",
-        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 25,
-        "GC": 8,
         "Posicion": 3
       },
       {
@@ -522999,8 +522999,8 @@
         "Posicion": 5
       },
       {
-        "NombreEquipo": "LA SALLE MARAVILLAS \"VERDE\"",
-        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
+        "NombreEquipo": "CORAZONISTAS \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0099.jpg",
         "Puntos": 0,
         "Jugados": 0,
         "GF": 0,
@@ -523008,12 +523008,12 @@
         "Posicion": 6
       },
       {
-        "NombreEquipo": "CORAZONISTAS \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0099.jpg",
+        "NombreEquipo": "LA SALLE MARAVILLAS \"VERDE\"",
+        "URLEscudo": "/static/escudos/Emblema_0066_LA SA.JPG",
         "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "Jugados": 1,
+        "GF": 42,
+        "GC": 50,
         "Posicion": 7
       },
       {
@@ -525306,19 +525306,19 @@
       {
         "NombreEquipo": "NUESTRA SEÑORA DE LAS NIEVES",
         "URLEscudo": "/static/escudos/Emblema_0022_NUEST.PNG",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 9,
-        "GC": 5,
+        "Puntos": 4,
+        "Jugados": 2,
+        "GF": 12,
+        "GC": 8,
         "Posicion": 2
       },
       {
         "NombreEquipo": "CLARET \"B\"",
         "URLEscudo": "/static/escudos/Emblema_0048.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 4,
-        "GC": 1,
+        "Puntos": 4,
+        "Jugados": 2,
+        "GF": 7,
+        "GC": 4,
         "Posicion": 3
       },
       {
@@ -528709,31 +528709,22 @@
     ],
     "3_120_0_218": [
       {
+        "NombreEquipo": "PATROCINIO SAN JOSÉ \"BLANCO\"",
+        "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 4,
+        "GC": 1,
+        "Posicion": 1
+      },
+      {
         "NombreEquipo": "CLARET \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0048.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 3,
         "GC": 0,
-        "Posicion": 1
-      },
-      {
-        "NombreEquipo": "PATROCINIO SAN JOSÉ \"BLANCO\"",
-        "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 2,
-        "GC": 0,
         "Posicion": 2
-      },
-      {
-        "NombreEquipo": "DECROLY \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0024.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 2,
-        "GC": 0,
-        "Posicion": 3
       },
       {
         "NombreEquipo": "LA SALLE SAN RAFAEL \"A\"",
@@ -528742,6 +528733,15 @@
         "Jugados": 1,
         "GF": 2,
         "GC": 0,
+        "Posicion": 3
+      },
+      {
+        "NombreEquipo": "DECROLY \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0024.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 3,
+        "GC": 2,
         "Posicion": 4
       },
       {
