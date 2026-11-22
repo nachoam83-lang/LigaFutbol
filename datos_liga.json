@@ -38490,8 +38490,8 @@
             "IdCategoria": 224,
             "IdJornada": 2437,
             "IdGrupo": 158,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 32,
             "Campo": "CALLE DE LA COSTA BRAVA, 4 - GIMNASIO - CUBIERTO",
             "CampoJuego": {
@@ -38518,9 +38518,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0089.jpg",
             "IdInstitucionVisitante": 89,
             "FechaHora": "2026-11-22T12:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 47,
+            "ResultadoEquipoVisitante": 7,
+            "IdEquipoGanador": 168,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -66891,8 +66891,8 @@
             "IdCategoria": 306,
             "IdJornada": 2615,
             "IdGrupo": 179,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 308,
             "Campo": "CALLE DE CASTELLÓ, 56 - PATIO NORTE - EXTERIOR",
             "CampoJuego": {
@@ -66919,9 +66919,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0078.jpg",
             "IdInstitucionVisitante": 78,
             "FechaHora": "2026-11-22T12:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 3,
+            "ResultadoEquipoVisitante": 7,
+            "IdEquipoGanador": 726,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -83483,8 +83483,8 @@
             "IdCategoria": 318,
             "IdJornada": 2795,
             "IdGrupo": 196,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 104,
             "Campo": "CALLE DE LA BASÍLICA, 14 - PISTA CENTRAL - EXTERIOR",
             "CampoJuego": {
@@ -83511,9 +83511,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0023.jpg",
             "IdInstitucionVisitante": 23,
             "FechaHora": "2026-11-22T11:20:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 3,
+            "ResultadoEquipoVisitante": 4,
+            "IdEquipoGanador": 512,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -256347,8 +256347,8 @@
         "IdCategoria": 224,
         "IdJornada": 2437,
         "IdGrupo": 158,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 32,
         "Campo": "CALLE DE LA COSTA BRAVA, 4 - GIMNASIO - CUBIERTO",
         "CampoJuego": {
@@ -256375,9 +256375,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0089.jpg",
         "IdInstitucionVisitante": 89,
         "FechaHora": "2026-11-22T12:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 47,
+        "ResultadoEquipoVisitante": 7,
+        "IdEquipoGanador": 168,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -328996,8 +328996,8 @@
         "IdCategoria": 306,
         "IdJornada": 2615,
         "IdGrupo": 179,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 308,
         "Campo": "CALLE DE CASTELLÓ, 56 - PATIO NORTE - EXTERIOR",
         "CampoJuego": {
@@ -329024,9 +329024,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0078.jpg",
         "IdInstitucionVisitante": 78,
         "FechaHora": "2026-11-22T12:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 3,
+        "ResultadoEquipoVisitante": 7,
+        "IdEquipoGanador": 726,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -375747,8 +375747,8 @@
         "IdCategoria": 318,
         "IdJornada": 2795,
         "IdGrupo": 196,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 104,
         "Campo": "CALLE DE LA BASÍLICA, 14 - PISTA CENTRAL - EXTERIOR",
         "CampoJuego": {
@@ -375775,9 +375775,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0023.jpg",
         "IdInstitucionVisitante": 23,
         "FechaHora": "2026-11-22T11:20:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 3,
+        "ResultadoEquipoVisitante": 4,
+        "IdEquipoGanador": 512,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -524869,12 +524869,12 @@
         "Posicion": 1
       },
       {
-        "NombreEquipo": "SAN PATRICIO SOTO",
-        "URLEscudo": "/static/escudos/Emblema_0089.jpg",
+        "NombreEquipo": "EL PRADO",
+        "URLEscudo": "/static/escudos/Emblema_0104_EL PR.JPG",
         "Puntos": 3,
         "Jugados": 1,
-        "GF": 55,
-        "GC": 19,
+        "GF": 47,
+        "GC": 7,
         "Posicion": 2
       },
       {
@@ -524887,21 +524887,21 @@
         "Posicion": 3
       },
       {
+        "NombreEquipo": "SAN PATRICIO SOTO",
+        "URLEscudo": "/static/escudos/Emblema_0089.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 62,
+        "GC": 66,
+        "Posicion": 4
+      },
+      {
         "NombreEquipo": "INTERNACIONAL J. H. NEWMAN",
         "URLEscudo": "/static/escudos/Emblema_0008_INTER.PNG",
         "Puntos": 3,
         "Jugados": 2,
         "GF": 61,
         "GC": 95,
-        "Posicion": 4
-      },
-      {
-        "NombreEquipo": "EL PRADO",
-        "URLEscudo": "/static/escudos/Emblema_0104_EL PR.JPG",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
         "Posicion": 5
       },
       {
@@ -526558,13 +526558,22 @@
         "Posicion": 2
       },
       {
+        "NombreEquipo": "STELLA MARIS FESD \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0078.jpg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 7,
+        "GC": 3,
+        "Posicion": 3
+      },
+      {
         "NombreEquipo": "OBISPO PERELLÓ \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0026_OBISP.PNG",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 3,
         "GC": 1,
-        "Posicion": 3
+        "Posicion": 4
       },
       {
         "NombreEquipo": "SANTA ANA Y SAN RAFAEL \"B\"",
@@ -526573,25 +526582,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 4
-      },
-      {
-        "NombreEquipo": "NUESTRA SEÑORA DEL PILAR \"C\"",
-        "URLEscudo": "/static/escudos/Emblema_0012_NUEST.JPEG",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
         "Posicion": 5
-      },
-      {
-        "NombreEquipo": "STELLA MARIS FESD \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0078.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 6
       },
       {
         "NombreEquipo": "AGUSTINIANO \"A\"",
@@ -526600,7 +526591,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 7
+        "Posicion": 6
       },
       {
         "NombreEquipo": "INMACULADA CONCEPCIÓN \"A\"",
@@ -526609,6 +526600,15 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
+        "Posicion": 7
+      },
+      {
+        "NombreEquipo": "NUESTRA SEÑORA DEL PILAR \"C\"",
+        "URLEscudo": "/static/escudos/Emblema_0012_NUEST.JPEG",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 3,
+        "GC": 7,
         "Posicion": 8
       },
       {
@@ -527452,10 +527452,10 @@
       {
         "NombreEquipo": "CALASANCIO \"B\"",
         "URLEscudo": "/static/escudos/Emblema_0023.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 4,
+        "GC": 3,
         "Posicion": 3
       },
       {
@@ -527471,9 +527471,9 @@
         "NombreEquipo": "PATROCINIO SAN JOSÉ",
         "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
         "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "Jugados": 1,
+        "GF": 3,
+        "GC": 4,
         "Posicion": 5
       },
       {
