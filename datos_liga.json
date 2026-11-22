@@ -34883,8 +34883,8 @@
             "IdCategoria": 218,
             "IdJornada": 2415,
             "IdGrupo": 156,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 14,
             "Campo": "CALLE DE LOS CONDES DE TORREANAZ, 2 - CAMPO MINIBASKET - EXTERIOR",
             "CampoJuego": {
@@ -34911,9 +34911,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0061.jpg",
             "IdInstitucionVisitante": 61,
             "FechaHora": "2026-11-22T11:15:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 6,
+            "ResultadoEquipoVisitante": 46,
+            "IdEquipoGanador": 782,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -244580,8 +244580,8 @@
         "IdCategoria": 218,
         "IdJornada": 2415,
         "IdGrupo": 156,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 14,
         "Campo": "CALLE DE LOS CONDES DE TORREANAZ, 2 - CAMPO MINIBASKET - EXTERIOR",
         "CampoJuego": {
@@ -244608,9 +244608,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0061.jpg",
         "IdInstitucionVisitante": 61,
         "FechaHora": "2026-11-22T11:15:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 6,
+        "ResultadoEquipoVisitante": 46,
+        "IdEquipoGanador": 782,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -524667,13 +524667,22 @@
         "Posicion": 2
       },
       {
+        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 46,
+        "GC": 6,
+        "Posicion": 3
+      },
+      {
         "NombreEquipo": "NUESTRA SEÑORA DEL LORETO FESD",
         "URLEscudo": "/static/escudos/Emblema_0079.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 54,
         "GC": 24,
-        "Posicion": 3
+        "Posicion": 4
       },
       {
         "NombreEquipo": "JESÚS MARÍA",
@@ -524682,25 +524691,7 @@
         "Jugados": 2,
         "GF": 46,
         "GC": 46,
-        "Posicion": 4
-      },
-      {
-        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
         "Posicion": 5
-      },
-      {
-        "NombreEquipo": "SANTA ANA Y SAN RAFAEL",
-        "URLEscudo": "/static/escudos/Emblema_0001.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 6
       },
       {
         "NombreEquipo": "MATER IMMACULATA",
@@ -524709,6 +524700,15 @@
         "Jugados": 1,
         "GF": 24,
         "GC": 54,
+        "Posicion": 6
+      },
+      {
+        "NombreEquipo": "SANTA ANA Y SAN RAFAEL",
+        "URLEscudo": "/static/escudos/Emblema_0001.jpg",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 6,
+        "GC": 46,
         "Posicion": 7
       },
       {
