@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.05.00                                           -->
+    <!--  Versión actual: v1.04.28                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -823,6 +823,11 @@
                     </label>
                 </div>
                 <p id="push-estado" class="text-[11px] text-gray-400"></p>
+                <div class="flex gap-2 pt-1">
+                    <button onclick="mostrarDiagnosticoPush()" class="text-[11px] font-bold px-2 py-1 rounded" style="background: var(--bg-color); color: var(--text-sec); border: 1px solid var(--border-color);">Diagnóstico</button>
+                    <button onclick="copiarDiagnosticoPush()" class="text-[11px] font-bold px-2 py-1 rounded" style="background: var(--bg-color); color: var(--text-sec); border: 1px solid var(--border-color);">Copiar</button>
+                </div>
+                <pre id="push-diag" class="hide text-[10px] whitespace-pre-wrap break-all p-2 rounded" style="background: var(--bg-color); color: var(--text-sec); border: 1px solid var(--border-color); max-height: 260px; overflow:auto;"></pre>
             </div>
 
             <div class="aj-guardar"><button id="btn-guardar-ajustes" type="button" onclick="guardarAjustes()" class="w-full btn-primary font-bold py-3.5 rounded-xl text-sm" style="background-color: #68737D;">Guardar cambios</button></div>
@@ -874,7 +879,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.05.00</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.28</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">22/11/2026 · Notificaciones push, modo noche, agenda en mes y transporte por partido</p>
             </div>
         </div>
@@ -1695,11 +1700,26 @@
         function equiposParaPush() {
             return (equipos || []).map(e => ({ d: String(e.idDeporte ?? ''), c: String(e.idCompeticion ?? ''), k: String(e.idCategoria ?? ''), g: String(e.idGrupo ?? ''), n: String(e.equipoFavorito ?? '') }));
         }
+        /* Registro de eventos para el diagnóstico (Ajustes → Notificaciones → Diagnóstico). */
+        function logPush(msg) {
+            try {
+                const l = JSON.parse(localStorage.getItem('push_log') || '[]');
+                l.push(new Date().toTimeString().slice(0, 8) + ' ' + msg);
+                localStorage.setItem('push_log', JSON.stringify(l.slice(-25)));
+            } catch (e) {}
+        }
+        function conTimeout(promesa, ms, nombre) {
+            return Promise.race([promesa, new Promise((_, rej) => setTimeout(() => rej(new Error('tiempo agotado: ' + nombre)), ms))]);
+        }
+        async function registroSW() {
+            return conTimeout(navigator.serviceWorker.ready, 8000, 'service worker');
+        }
         async function suscripcionActual() {
             if (!pushSoportado()) return null;
-            try { const reg = await navigator.serviceWorker.ready; return await reg.pushManager.getSubscription(); } catch (e) { return null; }
+            try { const reg = await registroSW(); return await reg.pushManager.getSubscription(); }
+            catch (e) { logPush('getSubscription: ' + (e.message || e)); return null; }
         }
-        /* Registra/renueva la suscripción en el servidor. Devuelve 'ok', 'omitido', 'sin-permiso', 'sin-suscripcion', 'http NNN' o 'red'. */
+        /* Registra/renueva la suscripción en el servidor. Devuelve 'ok', 'omitido', 'sin-permiso', 'sin-suscripcion', 'http NNN' o 'red: …'. */
         async function syncPush(forzar) {
             try {
                 if (!pushSoportado() || Notification.permission !== 'granted') return 'sin-permiso';
@@ -1709,20 +1729,24 @@
                 const hash = JSON.stringify(eq);
                 const ultimo = Number(localStorage.getItem('push_sync_ts') || 0);
                 if (!forzar && hash === localStorage.getItem('push_sync_h') && Date.now() - ultimo < 6 * 3600 * 1000) return 'omitido';
-                const r = await fetch(PUSH_API + '/push/sub', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sub: sub.toJSON(), equipos: eq }) });
-                if (r.ok) { localStorage.setItem('push_sync_ts', String(Date.now())); localStorage.setItem('push_sync_h', hash); return 'ok'; }
+                const r = await conTimeout(fetch(PUSH_API + '/push/sub', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sub: sub.toJSON(), equipos: eq }) }), 15000, 'servidor');
+                if (r.ok) { localStorage.setItem('push_sync_ts', String(Date.now())); localStorage.setItem('push_sync_h', hash); logPush('registro en servidor OK'); return 'ok'; }
+                logPush('servidor respondió ' + r.status);
                 return 'http ' + r.status;
-            } catch (e) { return 'red'; }
+            } catch (e) { logPush('registro falló: ' + (e.message || e)); return 'red: ' + (e.message || e); }
         }
-        /* Si el usuario las activó pero la suscripción desapareció (p. ej. el sistema la invalidó), se recrea sola. */
+        /* Si el usuario las activó pero la suscripción desapareció, se recrea sola. */
         async function repararPush() {
             try {
                 if (!pushSoportado() || localStorage.getItem('push_activo') !== '1' || Notification.permission !== 'granted') return;
-                const reg = await navigator.serviceWorker.ready;
+                const reg = await registroSW();
                 let sub = await reg.pushManager.getSubscription();
-                if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(VAPID_PUBLIC) });
+                if (!sub) {
+                    logPush('suscripción perdida: se recrea');
+                    sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(VAPID_PUBLIC) });
+                }
                 if (sub) await syncPush(true);
-            } catch (e) { /* se reintentará */ }
+            } catch (e) { logPush('reparar falló: ' + (e.message || e)); }
         }
         async function estadoPush() {
             const tg = document.getElementById('toggle-push'), tx = document.getElementById('push-estado');
@@ -1733,33 +1757,43 @@
                 tx.textContent = esIOS() && !esAppInstalada()
                     ? 'En iPhone/iPad: pulsa Compartir → "Añadir a pantalla de inicio", abre la app desde ahí y vuelve aquí.'
                     : 'Este navegador no admite notificaciones.';
+                logPush('estado: no disponible (soportado=' + pushSoportado() + ', instalada=' + esAppInstalada() + ')');
                 return;
             }
             if (Notification.permission === 'denied') {
                 tg.checked = false; tg.disabled = true;
                 tx.textContent = 'Las notificaciones están bloqueadas en los ajustes del navegador o del móvil. Permítelas y vuelve.';
+                logPush('estado: permiso denegado');
                 return;
             }
+            // El interruptor refleja lo que la persona pidió; lo demás se repara por detrás y se explica en el texto.
+            tg.checked = Notification.permission === 'granted' && localStorage.getItem('push_activo') === '1';
             let sub = await suscripcionActual();
-            if (!sub && localStorage.getItem('push_activo') === '1' && Notification.permission === 'granted') { await repararPush(); sub = await suscripcionActual(); }
-            tg.checked = Notification.permission === 'granted' && (!!sub || localStorage.getItem('push_activo') === '1');
+            if (Notification.permission === 'granted' && !sub && localStorage.getItem('push_activo') === '1') { await repararPush(); sub = await suscripcionActual(); }
+            if (sub && Notification.permission === 'granted') tg.checked = true;
+            logPush('estado: permiso=' + Notification.permission + ' suscripción=' + (sub ? 'sí' : 'no') + ' interruptor=' + (tg.checked ? 'sí' : 'no'));
             if (!tg.checked) { tx.textContent = ''; return; }
             tx.textContent = 'Activadas en este móvil. Comprobando conexión…';
             const r = await syncPush(true);
             tx.textContent = r === 'ok'
                 ? 'Activadas en este móvil ✓ Avisan de los equipos que sigues.'
-                : 'Activadas en el móvil, pero no se pudo registrar en el servidor (' + r + '). Revisa la conexión y vuelve a abrir Ajustes.';
+                : 'Activadas en el móvil, pero no se pudo registrar en el servidor (' + r + '). Revisa el diagnóstico de abajo.';
         }
         async function alternarPush(activar) {
             const tg = document.getElementById('toggle-push'), tx = document.getElementById('push-estado');
             try {
                 if (activar) {
                     if (equipos.length === 0) { tg.checked = false; tx.textContent = 'Primero añade algún equipo para recibir avisos.'; return; }
+                    logPush('activar: pidiendo permiso');
                     const perm = await Notification.requestPermission();
+                    logPush('permiso = ' + perm);
                     if (perm !== 'granted') { tg.checked = false; await estadoPush(); return; }
-                    const reg = await navigator.serviceWorker.ready;
+                    const reg = await registroSW();
                     let sub = await reg.pushManager.getSubscription();
-                    if (!sub) sub = await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(VAPID_PUBLIC) });
+                    if (!sub) {
+                        sub = await conTimeout(reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: b64aBytes(VAPID_PUBLIC) }), 20000, 'suscripción');
+                        logPush('suscripción creada en ' + (new URL(sub.endpoint)).host);
+                    }
                     localStorage.setItem('push_activo', '1');
                     localStorage.removeItem('push_off');
                     const r = await syncPush(true);
@@ -1774,15 +1808,53 @@
                     localStorage.removeItem('push_sync_h');
                     localStorage.removeItem('push_activo');
                     localStorage.setItem('push_off', '1');   // apagado a propósito: no se vuelve a ofrecer solo
+                    logPush('desactivadas por la persona');
                     mostrarToast('Notificaciones desactivadas');
                 }
             } catch (e) {
                 tg.checked = false;
+                logPush('error al activar: ' + (e && e.message ? e.message : e));
                 tx.textContent = 'No se pudo activar: ' + (e && e.message ? e.message : e);
                 return;
             }
             estadoPush();
             ofrecerPush();
+        }
+        /* Texto de diagnóstico para ver qué pasa en este móvil (se puede copiar y enviar). */
+        async function textoDiagnosticoPush() {
+            const L = [];
+            L.push('Hora: ' + new Date().toLocaleString('es-ES'));
+            L.push('App: ' + (document.querySelector('[onclick*="activarHuevodePascuaAdmin"]')?.textContent || '?'));
+            L.push('Dispositivo: ' + navigator.userAgent.slice(0, 120));
+            L.push('iOS/iPadOS: ' + esIOS() + ' · instalada: ' + esAppInstalada() + ' · soportado: ' + pushSoportado());
+            L.push('Permiso: ' + (('Notification' in window) ? Notification.permission : 'n/d'));
+            L.push('Marcas: push_activo=' + localStorage.getItem('push_activo') + ' push_off=' + localStorage.getItem('push_off') + ' equipos=' + (equipos || []).length);
+            try {
+                const reg = await conTimeout(navigator.serviceWorker.getRegistration(), 5000, 'getRegistration');
+                L.push('Service worker: ' + (reg ? ('registrado, activo=' + !!reg.active + ', ámbito ' + reg.scope) : 'NO registrado'));
+                if (reg) {
+                    const sub = await reg.pushManager.getSubscription();
+                    L.push('Suscripción: ' + (sub ? ('sí (' + (new URL(sub.endpoint)).host + ')') : 'NO'));
+                }
+            } catch (e) { L.push('Service worker/suscripción: error ' + (e.message || e)); }
+            const ts = Number(localStorage.getItem('push_sync_ts') || 0);
+            L.push('Último registro en servidor: ' + (ts ? new Date(ts).toLocaleString('es-ES') : 'nunca'));
+            try { const r = await conTimeout(fetch(PUSH_API + '/push/sub', { method: 'OPTIONS' }), 8000, 'servidor'); L.push('Servidor de avisos: responde (' + r.status + ')'); }
+            catch (e) { L.push('Servidor de avisos: NO responde (' + (e.message || e) + ')'); }
+            L.push('— Eventos —');
+            try { L.push(...JSON.parse(localStorage.getItem('push_log') || '[]')); } catch (e) {}
+            return L.join('\n');
+        }
+        async function mostrarDiagnosticoPush() {
+            const pre = document.getElementById('push-diag');
+            pre.classList.remove('hide');
+            pre.textContent = 'Recopilando…';
+            pre.textContent = await textoDiagnosticoPush();
+        }
+        async function copiarDiagnosticoPush() {
+            await mostrarDiagnosticoPush();
+            const t = document.getElementById('push-diag').textContent;
+            try { await navigator.clipboard.writeText(t); mostrarToast('Diagnóstico copiado'); } catch (e) { mostrarToast('Selecciona el texto y cópialo a mano'); }
         }
         /* Activadas por defecto: si el permiso ya está concedido se activan solas; si no, se ofrece un aviso de un toque
            (iOS y Chrome exigen que el permiso lo pulse la persona). */
@@ -1794,7 +1866,7 @@
                 if (!pushSoportado() || (esIOS() && !esAppInstalada()) || !equipos || equipos.length === 0) return;
                 if (localStorage.getItem('push_off') === '1') return;
                 if (Notification.permission === 'granted') {
-                    if (localStorage.getItem('push_activo') !== '1') { localStorage.setItem('push_activo', '1'); }
+                    if (localStorage.getItem('push_activo') !== '1') { localStorage.setItem('push_activo', '1'); logPush('permiso ya concedido: se activan por defecto'); }
                     await repararPush();
                     return;
                 }
@@ -1812,7 +1884,7 @@
             try { localStorage.setItem('push_ofrecer_hasta', String(Date.now() + 7 * 24 * 3600 * 1000)); } catch (e) {}
             document.getElementById('banner-push').classList.add('hide');
         }
-        window.addEventListener('load', () => setTimeout(() => { repararPush().then(() => syncPush(false)).then(ofrecerPush); }, 3000));
+        window.addEventListener('load', () => setTimeout(() => { logPush('app abierta'); repararPush().then(() => syncPush(false)).then(ofrecerPush); }, 3000));
         document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') syncPush(false); });
 
         function abrirAjustes() {
