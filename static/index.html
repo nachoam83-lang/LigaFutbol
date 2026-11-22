@@ -6,7 +6,7 @@
     <title>Ligas Infantiles</title>
     <!-- ═══════════════════════════════════════════════════════════════════ -->
     <!--  #Indice_de_version                                                -->
-    <!--  Versión actual: v1.04.28                                           -->
+    <!--  Versión actual: v1.04.29                                           -->
     <!--  Fecha: 20/11/2026                                                 -->
     <!--  Cambios: Nueva interfaz       -->
     <!-- ═══════════════════════════════════════════════════════════════════ -->
@@ -879,7 +879,7 @@
             </div>
 
             <div class="text-center pt-6 pb-4">
-                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.28</p>
+                <p onclick="activarHuevodePascuaAdmin()" class="text-[11px] font-bold text-gray-400 uppercase tracking-widest cursor-pointer select-none">v1.04.29</p>
                 <p class="text-[11px] text-gray-400 mt-0.5">22/11/2026 · Notificaciones push, modo noche, agenda en mes y transporte por partido</p>
             </div>
         </div>
@@ -1037,7 +1037,8 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/static/sw.js').catch(err => console.log('SW fallo:', err));
+                navigator.serviceWorker.getRegistrations().then(rs => rs.forEach(r => { if (r.scope.endsWith('/static/')) r.unregister(); })).catch(() => {});
+                navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch(err => console.log('SW fallo:', err));
             });
         }
 

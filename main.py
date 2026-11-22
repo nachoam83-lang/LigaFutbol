@@ -315,6 +315,12 @@ def setup_webhook(request: Request):
 def ping():
     return Response(content="OK", media_type="text/plain")
 
+@app.get("/sw.js")
+def service_worker():
+    # Se sirve desde la raíz para que su ámbito cubra toda la app (necesario para las notificaciones push)
+    return FileResponse("static/sw.js", media_type="application/javascript", headers={"Cache-Control": "no-cache", "Service-Worker-Allowed": "/"})
+
+
 @app.get("/")
 def read_index():
     return FileResponse("static/index.html")

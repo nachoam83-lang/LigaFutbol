@@ -1,4 +1,4 @@
-const CACHE_NAME = 'liga-futbol-v1.04.28'; // <-- CAMBIA ESTO CADA VEZ QUE ACTUALICES (ej: v1.02.01)
+const CACHE_NAME = 'liga-futbol-v1.04.29'; // <-- CAMBIA ESTO CADA VEZ QUE ACTUALICES (ej: v1.02.01)
 const urlsToCache = [
     '/',
     '/static/index.html',
