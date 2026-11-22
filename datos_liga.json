@@ -88599,8 +88599,8 @@
             "IdCategoria": 330,
             "IdJornada": 2853,
             "IdGrupo": 201,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 146,
             "Campo": "CALLE DE CABELLO LAPIEDRA, 4 (COLEGIO SALESIANOS PASEO) - POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -88627,9 +88627,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0053.jpg",
             "IdInstitucionVisitante": 53,
             "FechaHora": "2026-11-21T18:45:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 8,
+            "ResultadoEquipoVisitante": 4,
+            "IdEquipoGanador": 776,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -89606,8 +89606,8 @@
             "IdCategoria": 330,
             "IdJornada": 2863,
             "IdGrupo": 202,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 146,
             "Campo": "CALLE DE CABELLO LAPIEDRA, 4 (COLEGIO SALESIANOS PASEO) - POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -89634,9 +89634,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0058.jpg",
             "IdInstitucionVisitante": 58,
             "FechaHora": "2026-11-21T20:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 5,
+            "ResultadoEquipoVisitante": 3,
+            "IdEquipoGanador": 561,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -90429,8 +90429,8 @@
             "IdCategoria": 330,
             "IdJornada": 2873,
             "IdGrupo": 203,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 146,
             "Campo": "CALLE DE CABELLO LAPIEDRA, 4 (COLEGIO SALESIANOS PASEO) - POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -90457,9 +90457,9 @@
             "URLEscudoEquipoVisitante": "/documentos/wallimages/imagepath/Emblema_0075.jpg",
             "IdInstitucionVisitante": 75,
             "FechaHora": "2026-11-21T17:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 1,
+            "ResultadoEquipoVisitante": 6,
+            "IdEquipoGanador": 833,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -392945,8 +392945,8 @@
         "IdCategoria": 330,
         "IdJornada": 2853,
         "IdGrupo": 201,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 146,
         "Campo": "CALLE DE CABELLO LAPIEDRA, 4 (COLEGIO SALESIANOS PASEO) - POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -392973,9 +392973,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0053.jpg",
         "IdInstitucionVisitante": 53,
         "FechaHora": "2026-11-21T18:45:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 8,
+        "ResultadoEquipoVisitante": 4,
+        "IdEquipoGanador": 776,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -395634,8 +395634,8 @@
         "IdCategoria": 330,
         "IdJornada": 2863,
         "IdGrupo": 202,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 146,
         "Campo": "CALLE DE CABELLO LAPIEDRA, 4 (COLEGIO SALESIANOS PASEO) - POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -395662,9 +395662,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0058.jpg",
         "IdInstitucionVisitante": 58,
         "FechaHora": "2026-11-21T20:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 5,
+        "ResultadoEquipoVisitante": 3,
+        "IdEquipoGanador": 561,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -398139,8 +398139,8 @@
         "IdCategoria": 330,
         "IdJornada": 2873,
         "IdGrupo": 203,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 146,
         "Campo": "CALLE DE CABELLO LAPIEDRA, 4 (COLEGIO SALESIANOS PASEO) - POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -398167,9 +398167,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0075.jpg",
         "IdInstitucionVisitante": 75,
         "FechaHora": "2026-11-21T17:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 1,
+        "ResultadoEquipoVisitante": 6,
+        "IdEquipoGanador": 833,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -527653,21 +527653,21 @@
         "Posicion": 2
       },
       {
+        "NombreEquipo": "SANTA FRANCISCA JAVIER CABRINI",
+        "URLEscudo": "/static/escudos/Emblema_0005.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 9,
+        "GC": 6,
+        "Posicion": 3
+      },
+      {
         "NombreEquipo": "CALASANCIO",
         "URLEscudo": "/static/escudos/Emblema_0023.jpg",
         "Puntos": 3,
         "Jugados": 2,
         "GF": 5,
         "GC": 7,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "SANTA FRANCISCA JAVIER CABRINI",
-        "URLEscudo": "/static/escudos/Emblema_0005.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 1,
-        "GC": 2,
         "Posicion": 4
       },
       {
@@ -527683,13 +527683,22 @@
         "NombreEquipo": "SAGRADOS CORAZONES",
         "URLEscudo": "/static/escudos/Emblema_0053.jpg",
         "Puntos": 0,
-        "Jugados": 1,
-        "GF": 3,
-        "GC": 7,
+        "Jugados": 2,
+        "GF": 7,
+        "GC": 15,
         "Posicion": 6
       }
     ],
     "2_118_0_202": [
+      {
+        "NombreEquipo": "MATER IMMACULATA \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0025.jpg",
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 8,
+        "GC": 4,
+        "Posicion": 1
+      },
       {
         "NombreEquipo": "JESÚS MARÍA",
         "URLEscudo": "/static/escudos/Emblema_0029.jpg",
@@ -527697,7 +527706,7 @@
         "Jugados": 2,
         "GF": 9,
         "GC": 5,
-        "Posicion": 1
+        "Posicion": 2
       },
       {
         "NombreEquipo": "SAGRADO CORAZÓN DE JESÚS SALESIANAS",
@@ -527706,7 +527715,7 @@
         "Jugados": 2,
         "GF": 6,
         "GC": 2,
-        "Posicion": 2
+        "Posicion": 3
       },
       {
         "NombreEquipo": "LA INMACULADA DE HORTALEZA",
@@ -527715,24 +527724,15 @@
         "Jugados": 2,
         "GF": 8,
         "GC": 6,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "MATER IMMACULATA \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0025.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 3,
-        "GC": 1,
         "Posicion": 4
       },
       {
         "NombreEquipo": "SAGRADA FAMILIA JORGE JUAN",
         "URLEscudo": "/static/escudos/Emblema_0058.jpg",
         "Puntos": 0,
-        "Jugados": 1,
-        "GF": 3,
-        "GC": 7,
+        "Jugados": 2,
+        "GF": 6,
+        "GC": 12,
         "Posicion": 5
       },
       {
@@ -527758,20 +527758,11 @@
       {
         "NombreEquipo": "SAGRADO CORAZÓN ROSALES",
         "URLEscudo": "/static/escudos/Emblema_0075.jpg",
-        "Puntos": 3,
-        "Jugados": 1,
-        "GF": 4,
-        "GC": 2,
+        "Puntos": 6,
+        "Jugados": 2,
+        "GF": 10,
+        "GC": 3,
         "Posicion": 2
-      },
-      {
-        "NombreEquipo": "PATROCINIO SAN JOSÉ",
-        "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 3
       },
       {
         "NombreEquipo": "MATER IMMACULATA \"B\"",
@@ -527780,6 +527771,15 @@
         "Jugados": 1,
         "GF": 3,
         "GC": 4,
+        "Posicion": 3
+      },
+      {
+        "NombreEquipo": "PATROCINIO SAN JOSÉ",
+        "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 1,
+        "GC": 6,
         "Posicion": 4
       },
       {
