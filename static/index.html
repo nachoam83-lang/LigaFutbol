@@ -547,9 +547,9 @@
             <div class="w-12 h-1.5 bg-gray-300 rounded-full mx-auto mb-4"></div>
             <h3 class="text-center font-bold text-gray-800 mb-4">Abrir ruta en...</h3>
             <div class="space-y-3">
-                <a id="ruta-waze" href="#" target="_blank" rel="noopener" onclick="cerrarModalMapa()" class="w-full bg-[#00d2ff] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fab fa-waze text-xl"></i> Waze</a>
-                <a id="ruta-google" href="#" target="_blank" rel="noopener" onclick="cerrarModalMapa()" class="w-full bg-white border border-gray-300 text-gray-800 font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fab fa-google text-red-500 text-xl"></i> Google Maps</a>
-                <a id="ruta-apple" href="#" target="_blank" rel="noopener" onclick="cerrarModalMapa()" class="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fab fa-apple text-xl"></i> Apple Maps</a>
+                <a id="ruta-waze" href="#" onclick="abrirRuta('waze'); return false;" class="w-full bg-[#00d2ff] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fab fa-waze text-xl"></i> Waze</a>
+                <a id="ruta-google" href="#" onclick="abrirRuta('google'); return false;" class="w-full bg-white border border-gray-300 text-gray-800 font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fab fa-google text-red-500 text-xl"></i> Google Maps</a>
+                <a id="ruta-apple" href="#" onclick="abrirRuta('apple'); return false;" class="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded-xl flex items-center justify-center gap-2"><i class="fab fa-apple text-xl"></i> Apple Maps</a>
             </div>
         </div>
     </div>
@@ -1264,7 +1264,7 @@
         let cacheProximoPartido = JSON.parse(localStorage.getItem('cache_proximo_partido')) || {}; 
         let cacheEquipoAbiertoId = null; 
         let cacheCanal = {}; 
-        let rutaActualMapa = "";
+        let rutaActualMapa = ""; let rutaActualModo = 'driving';
         let cacheClima = JSON.parse(localStorage.getItem('cache_clima')) || {};
         let cacheRuta = JSON.parse(localStorage.getItem('cache_ruta') || '{}');
 
@@ -2749,7 +2749,7 @@
             if (futuro) {
                 filas.push(`<div class="fi-fila" id="fi-clima-fila" style="display:none"><i class="fas fa-cloud-sun"></i><div style="flex:1;min-width:0"><b>Tiempo previsto</b><span id="fi-clima-txt"></span><div id="fi-clima-horas"></div></div></div>`);
                 if (userSettings.showRoute === true) {
-                    if (modo === 'transit') filas.push(`<div class="fi-fila"><i class="fas fa-bus"></i><div><b>Transporte público</b><a href="${escHtml(urlRutaTransito(dir))}" target="_blank" rel="noopener" style="font-weight:800;color:#34414B;text-decoration:underline">Consultar ruta y horarios</a></div></div>`);
+                    if (modo === 'transit') filas.push(`<div class="fi-fila"><i class="fas fa-bus"></i><div><b>Transporte público</b><a href="${escHtml(urlRutaTransito(dir))}" data-dir="${escHtml(dir)}" onclick="abrirTransitoEl(this); return false;" style="font-weight:800;color:#34414B;text-decoration:underline">Consultar ruta y horarios</a></div></div>`);
                     else filas.push(`<div class="fi-fila" id="fi-salida-fila" style="display:none"><i class="fas ${iconoModo(modo)}"></i><div><b>Cuándo salir</b><span id="fi-salida-txt"></span></div></div>`);
                 }
             }
@@ -2905,7 +2905,7 @@
                 const v = await calcularViaje(f.p, f.eq);
                 if (!v) { el.classList.add('hide'); return; }
                 s.innerHTML = v.modo === 'transit'
-                    ? `<a href="${escHtml(urlRutaTransito(v.dir))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Ver ruta y horarios en transporte público</a>`
+                    ? `<a href="${escHtml(urlRutaTransito(v.dir))}" data-dir="${escHtml(v.dir)}" onclick="event.stopPropagation(); abrirTransitoEl(this); return false;">Ver ruta y horarios en transporte público</a>`
                     : `Salir a las ${hhmm(v.salida)} de casa`;
             }));
         }
@@ -3063,7 +3063,7 @@
                                         const modoActual = modoViaje(p, eq);
                                         let durationSec = 0;
                                         if (modoActual === 'transit') {
-                                            if (elRuta) elRuta.innerHTML = `<a href="${escHtml(urlRutaTransito(dirCompleta))}" target="_blank" rel="noopener" onclick="event.stopPropagation()">Ver ruta y horarios en transporte público</a>`;
+                                            if (elRuta) elRuta.innerHTML = `<a href="${escHtml(urlRutaTransito(dirCompleta))}" data-dir="${escHtml(dirCompleta)}" onclick="event.stopPropagation(); abrirTransitoEl(this); return false;">Ver ruta y horarios en transporte público</a>`;
                                             return;
                                         }
 
@@ -3138,17 +3138,43 @@
             if (app === 'apple') return `https://maps.apple.com/?daddr=${destino}`;
             return `https://www.google.com/maps/dir/?api=1&destination=${destino}`;
         }
+        /* Abre la app de mapas directamente (en iPhone con su esquema propio): así la app no navega a ninguna página
+           en blanco y al volver sigues exactamente donde estabas. Si la app no está instalada, abre el enlace web. */
+        function abrirRutaApp(app, dir, modo) {
+            modo = modo || 'driving';
+            if (!esIOS()) { abrirExterno(modo === 'transit' ? urlRutaTransito(dir) : urlRuta(app, dir)); return; }
+            const d = encodeURIComponent(dir);
+            const origen = userSettings.homeAddress || (userSettings.homeLat && userSettings.homeLon ? `${userSettings.homeLat},${userSettings.homeLon}` : '');
+            const so = origen ? `&saddr=${encodeURIComponent(origen)}` : '';
+            let esquema, web;
+            if (modo === 'transit' || app === 'google') {
+                const gm = modo === 'transit' ? 'transit' : (modo === 'foot' ? 'walking' : 'driving');
+                esquema = `comgooglemaps://?daddr=${d}${modo === 'transit' ? so : ''}&directionsmode=${gm}`;
+                web = modo === 'transit' ? urlRutaTransito(dir) : urlRuta('google', dir);
+            } else if (app === 'waze') {
+                esquema = `waze://?q=${d}&navigate=yes`; web = urlRuta('waze', dir);
+            } else {
+                window.location.href = `maps://?daddr=${d}&dirflg=${modo === 'foot' ? 'w' : 'd'}`; return;
+            }
+            let salio = false;
+            const marca = () => { salio = true; };
+            window.addEventListener('blur', marca, { once: true });
+            window.addEventListener('pagehide', marca, { once: true });
+            document.addEventListener('visibilitychange', marca, { once: true });
+            window.location.href = esquema;
+            setTimeout(() => { if (!salio && document.visibilityState === 'visible') abrirExterno(web); }, 2200);
+        }
+        function abrirTransitoEl(el) { abrirRutaApp('google', el.getAttribute('data-dir') || '', 'transit'); }
         function abrirModalMapa(dir, modo = 'driving') {
             if (modo === 'transit') {
-                abrirExterno(urlRutaTransito(dir));
+                abrirRutaApp('google', dir, 'transit');
                 return;
             }
             if (userSettings.defaultMap && userSettings.defaultMap !== 'ask') {
-                abrirExterno(urlRuta(userSettings.defaultMap, dir));
+                abrirRutaApp(userSettings.defaultMap, dir, modo);
                 return;
             }
-            rutaActualMapa = dir;
-            ['waze', 'google', 'apple'].forEach(a => { const el = document.getElementById('ruta-' + a); if (el) el.href = urlRuta(a, dir); });
+            rutaActualMapa = dir; rutaActualModo = modo;
             const modal = document.getElementById('modal-mapa');
             modal.classList.remove('hide');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
@@ -3161,8 +3187,8 @@
         }
 
         function abrirRuta(app) {
-            abrirExterno(urlRuta(app, rutaActualMapa));
             cerrarModalMapa();
+            abrirRutaApp(app, rutaActualMapa, rutaActualModo);
         }
 
         function prepararNuevoEquipo() {
