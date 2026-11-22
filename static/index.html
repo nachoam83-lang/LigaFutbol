@@ -122,7 +122,9 @@
         .cf-bot button#confirmar-si { background: #68737D; color: #fff; }
         .mc-lluvia { display: inline-flex; align-items: center; gap: 3px; color: var(--rain-fg); background: var(--rain-bg); border-radius: 6px; padding: 1px 6px; font-size: 12px; font-weight: 800; }
         .fi-mapa { margin: 12px 16px 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); background: #E4E8EB; height: 180px; }
-        .fi-mapa iframe { width: 100%; height: 100%; border: 0; display: block; }
+        .fi-mapa { position: relative; }
+        .fi-mapa iframe { width: 100%; height: 100%; border: 0; display: block; pointer-events: none; }
+        .fi-mapa-tap { position: absolute; inset: 0; width: 100%; height: 100%; background: transparent; border: 0; padding: 0; }
         .fi-horas { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; margin-top: 10px; }
         .fi-h { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 0; border-radius: 10px; background: #F3F5F6; font-size: 12px; font-weight: 700; }
         .fi-h.ini { background: linear-gradient(160deg, #3F4D5C, #2B3642); color: #F4E4B8; box-shadow: 0 2px 6px rgba(43,54,66,.35), inset 0 0 0 1px rgba(214,177,92,.55); }
@@ -2788,7 +2790,7 @@
                     </div>
                 </div>
                 ${lineasAviso.length ? `<div class="fi-aviso"><i class="fas fa-exclamation-triangle"></i> Cambio en este partido<div style="font-weight:600;margin-top:4px">${lineasAviso.join('<br>')}</div></div>` : ''}
-                ${coordMapa ? `<div class="fi-mapa"><iframe title="Mapa del campo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(coordMapa)}&z=16&output=embed"></iframe></div>` : ''}
+                ${coordMapa ? `<div class="fi-mapa"><iframe title="Mapa del campo" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://maps.google.com/maps?q=${encodeURIComponent(coordMapa)}&z=16&output=embed" tabindex="-1"></iframe><button type="button" class="fi-mapa-tap" aria-label="Abrir ruta al campo" onclick="abrirModalMapa(${dirJs}, '${modo}')"></button></div>` : ''}
                 <div class="fi-panel">${filas.join('')}</div>
                 ${(urlGrupo || acciones) ? `<div class="fi-actions-sticky">
                     ${urlGrupo ? `<a class="fi-grupo" href="${escHtml(urlGrupo)}"><i class="fab fa-whatsapp"></i> Grupo del equipo</a>` : ''}
@@ -3139,35 +3141,29 @@
             return `https://www.google.com/maps/dir/?api=1&destination=${destino}`;
         }
         /* Abre la app de mapas directamente (en iPhone con su esquema propio): así la app no navega a ninguna página
-           en blanco y al volver sigues exactamente donde estabas. Si la app no está instalada, abre el enlace web. */
+           en blanco y al volver sigues exactamente donde estabas.  */
         function abrirRutaApp(app, dir, modo) {
             modo = modo || 'driving';
             if (!esIOS()) { abrirExterno(modo === 'transit' ? urlRutaTransito(dir) : urlRuta(app, dir)); return; }
             const d = encodeURIComponent(dir);
             const origen = userSettings.homeAddress || (userSettings.homeLat && userSettings.homeLon ? `${userSettings.homeLat},${userSettings.homeLon}` : '');
             const so = origen ? `&saddr=${encodeURIComponent(origen)}` : '';
-            let esquema, web;
-            if (modo === 'transit' || app === 'google') {
+            let esquema;
+            if (app === 'google') {
                 const gm = modo === 'transit' ? 'transit' : (modo === 'foot' ? 'walking' : 'driving');
                 esquema = `comgooglemaps://?daddr=${d}${modo === 'transit' ? so : ''}&directionsmode=${gm}`;
-                web = modo === 'transit' ? urlRutaTransito(dir) : urlRuta('google', dir);
             } else if (app === 'waze') {
-                esquema = `waze://?q=${d}&navigate=yes`; web = urlRuta('waze', dir);
+                esquema = `waze://?q=${d}&navigate=yes`;
             } else {
-                window.location.href = `maps://?daddr=${d}&dirflg=${modo === 'foot' ? 'w' : 'd'}`; return;
+                window.location.href = `maps://?daddr=${d}&dirflg=${modo === 'transit' ? 'r' : (modo === 'foot' ? 'w' : 'd')}`; return;
             }
-            let salio = false;
-            const marca = () => { salio = true; };
-            window.addEventListener('blur', marca, { once: true });
-            window.addEventListener('pagehide', marca, { once: true });
-            document.addEventListener('visibilitychange', marca, { once: true });
             window.location.href = esquema;
-            setTimeout(() => { if (!salio && document.visibilityState === 'visible') abrirExterno(web); }, 2200);
         }
-        function abrirTransitoEl(el) { abrirRutaApp('google', el.getAttribute('data-dir') || '', 'transit'); }
+        function appTransito() { return userSettings.defaultMap === 'google' ? 'google' : 'apple'; }
+        function abrirTransitoEl(el) { abrirRutaApp(appTransito(), el.getAttribute('data-dir') || '', 'transit'); }
         function abrirModalMapa(dir, modo = 'driving') {
             if (modo === 'transit') {
-                abrirRutaApp('google', dir, 'transit');
+                abrirRutaApp(appTransito(), dir, 'transit');
                 return;
             }
             if (userSettings.defaultMap && userSettings.defaultMap !== 'ask') {
