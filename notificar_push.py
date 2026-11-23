@@ -65,7 +65,8 @@ def cambios_partido(ant, nue):
         out.append(("campo", f"Cambio de campo: {cn}"))
     ea, en = ant.get("EstadoPartido"), nue.get("EstadoPartido")
     if ea != en:
-        if es_aplazado(en) and not es_aplazado(ea):
+        reprogramado = "no celebra" in (en or "").lower() and fn and fn > datetime.now()
+        if es_aplazado(en) and not es_aplazado(ea) and not reprogramado:
             out.append(("aplazado", "Partido aplazado o desprogramado"))
         elif es_jugado(en) and not es_jugado(ea):
             out.append(("resultado", f"Resultado: {nue.get('ResultadoEquipoLocal')}-{nue.get('ResultadoEquipoVisitante')}"))

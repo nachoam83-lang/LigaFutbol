@@ -1664,6 +1664,11 @@
 
             const est = String(p.EstadoPartido || '').toLowerCase().trim();
 
+            // ECM deja "No Celebrado/Incompleto" aunque ya se haya fijado nueva fecha: si la fecha es futura, está reprogramado.
+            if (/no celebra|incomplet/.test(est) && !/aplaz|suspend|cancel|anulad|retirad|desprogram/.test(est)) {
+                const f = new Date(p.FechaHora);
+                if (!isNaN(f) && f.getTime() > Date.now()) return 'pendiente';
+            }
             if (/aplaz|suspend|cancel|anulad|retirad|desprogram|no celebra|no disp|no se jug/.test(est)) return 'aplazado';
             if (/jugad|finaliz|cerrad|disputad|celebrad|acab|conclu|termin/.test(est)) return 'jugado';
             if (/pendiente|por jugar|programad|previst/.test(est)) return 'pendiente';
