@@ -46,8 +46,8 @@ def actualizar_backups_nocturnos():
         tiempo_mod_backup = os.path.getmtime(backup)
         fecha_backup = datetime.fromtimestamp(tiempo_mod_backup)
 
-        # Si ya estamos en un día posterior y son las 23:00 o más tarde, actualizamos el backup
-        if ahora.date() > fecha_backup.date() and ahora.hour >= 23:
+        # Si ya estamos en un día posterior y son las 19:00 o más tarde, actualizamos el backup
+        if ahora.date() > fecha_backup.date() and ahora.hour >= 19:
             shutil.copy(principal, backup)
             print(f"🌙 Backup nocturno actualizado para {principal} ({ahora.strftime('%Y-%m-%d %H:%M')}).")
         else:
