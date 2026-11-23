@@ -47,12 +47,32 @@ def test_ecm_connection() -> bool:
         return False
 
 
-def actualizar_backups_diarios(hora_minima: int = 14) -> None:
-    """Actualiza el backup una vez al día si es de un día anterior y ya pasó hora_minima (Madrid)."""
+def _obtener_fecha_backup(ruta_backup: str) -> datetime | None:
+    """Devuelve la fecha del último commit del backup en Git; si no hay commit, usa mtime."""
+    try:
+        res = subprocess.run(
+            ["git", "log", "-1", "--format=%cI", "--", ruta_backup],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        iso_str = res.stdout.strip()
+        if res.returncode == 0 and iso_str:
+            return datetime.fromisoformat(iso_str).astimezone(ZONA_MADRID)
+    except Exception:
+        pass
+
+    if os.path.exists(ruta_backup):
+        return datetime.fromtimestamp(os.path.getmtime(ruta_backup), tz=ZONA_MADRID)
+    return None
+
+
+def actualizar_backups_diarios(hora_minima: int = 19) -> None:
+    """Actualiza el backup una vez al día si su último commit es de un día anterior y ya pasó hora_minima (Madrid)."""
     ahora = datetime.now(ZONA_MADRID)
     print(
         f"🌙 Verificando condición de backup diario "
-        f"(desde las {hora_minima:02d}:00 hora Madrid)..."
+        f"(desde las {hora_minima:02d}:00 hora Madrid · hora actual: {ahora.strftime('%H:%M')})..."
     )
 
     for principal, backup in ARCHIVOS_BACKUP:
@@ -64,18 +84,24 @@ def actualizar_backups_diarios(hora_minima: int = 14) -> None:
             print(f"📦 Backup inicial creado para {backup}.")
             continue
 
-        fecha_backup = datetime.fromtimestamp(
-            os.path.getmtime(backup), tz=ZONA_MADRID
-        ).date()
+        fecha_dt = _obtener_fecha_backup(backup)
+        if fecha_dt is None:
+            shutil.copy2(principal, backup)
+            print(f"📦 Backup creado para {backup} (sin fecha previa).")
+            continue
 
+        fecha_backup = fecha_dt.date()
         if ahora.date() > fecha_backup and ahora.hour >= hora_minima:
             shutil.copy2(principal, backup)
             print(
                 f"🌙 Backup actualizado para {backup} "
-                f"({ahora.strftime('%Y-%m-%d %H:%M')})."
+                f"(último commit: {fecha_backup} · ahora: {ahora.strftime('%Y-%m-%d %H:%M')})."
             )
         else:
-            print(f"ℹ️ El backup {backup} se mantiene estable.")
+            print(
+                f"ℹ️ El backup {backup} se mantiene estable "
+                f"(último commit: {fecha_backup} · hora >= {hora_minima:02d}: {ahora.hour >= hora_minima})."
+            )
 
 
 def _run_git(args: list[str], check: bool = True) -> subprocess.CompletedProcess:
@@ -165,10 +191,10 @@ def ejecutar_todo() -> None:
     except Exception as e:
         print(f"❌ Error crítico en Canal: {e}")
 
-    # 1. Actualiza los backups tras extraer (si son de un día anterior y >= 14:00 hora Madrid)
+    # Prueba con 14:00; cuando compruebes que funciona, cámbialo a 19
     actualizar_backups_diarios(hora_minima=14)
 
-    # 2. Sube los JSON, los backups y static/ a GitHub
+    # Sube los JSON, los backups y static/ a GitHub
     subir_cambios_git()
 
 
