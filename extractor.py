@@ -1,73 +1,145 @@
+from datetime import datetime
 import os
-import subprocess
 import shutil
-import requests
+import subprocess
+from zoneinfo import ZoneInfo
 import urllib3
-from extractor_ecm import extraer_ecm, SESSION
 from extractor_canal import extraer_canal
+from extractor_ecm import SESSION, extraer_ecm
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-def test_ecm_connection():
-    """Prueba rápida para ver si ECM nos deja entrar (directo o por el Worker). Imprime el motivo si falla."""
-    via = "Worker" if os.getenv("ECM_WORKER") else ("proxy" if os.getenv("ECM_PROXY") else "directo")
-    print(f"   Ruta a ECM: {via}" + (f" · clave definida: {'sí' if os.getenv('ECM_WORKER_KEY') else 'NO'}" if via == "Worker" else ""))
+ZONA_MADRID = ZoneInfo("Europe/Madrid")
+ARCHIVOS_BACKUP = [
+    ("datos_canal.json", "datos_canal_backup.json"),
+    ("datos_liga.json", "datos_liga_backup.json"),
+]
+
+
+def test_ecm_connection() -> bool:
+    """Prueba rápida para ver si ECM nos deja entrar (directo, proxy o Worker)."""
+    via = (
+        "Worker"
+        if os.getenv("ECM_WORKER")
+        else ("proxy" if os.getenv("ECM_PROXY") else "directo")
+    )
+    clave_info = (
+        f" · clave definida: {'sí' if os.getenv('ECM_WORKER_KEY') else 'NO'}"
+        if via == "Worker"
+        else ""
+    )
+    print(f"   Ruta a ECM: {via}{clave_info}")
+
+    url_test = (
+        "https://juegosdeportivos.ecmadrid.org/api/CompeticionesPorDeporte"
+        "?action=ObtenerCompeticionesDeporteListado&IdDeporte=1&IdTemporada=12"
+        "&elementoTodas=false&soloActivas=true"
+    )
     try:
-        url_test = "https://juegosdeportivos.ecmadrid.org/api/CompeticionesPorDeporte?action=ObtenerCompeticionesDeporteListado&IdDeporte=1&IdTemporada=12&elementoTodas=false&soloActivas=true"
         res = SESSION.get(url_test, timeout=25, verify=False)
-        print(f"   Respuesta: HTTP {res.status_code} · {len(res.content)} bytes · {res.text[:80]!r}")
+        print(
+            f"   Respuesta: HTTP {res.status_code} · "
+            f"{len(res.content)} bytes · {res.text[:80]!r}"
+        )
         return res.status_code == 200
     except Exception as e:
         print(f"   Error de conexión: {type(e).__name__}: {str(e)[:150]}")
         return False
 
-from datetime import datetime
 
-def actualizar_backups_nocturnos():
-    archivos = [
-        ("datos_canal.json", "datos_canal_backup.json"),
-        ("datos_liga.json", "datos_liga_backup.json")
-    ]
-    
-    ahora = datetime.now()
-    print("🌙 Verificando condición de backup nocturno (23:59)...")
-    
-    for principal, backup in archivos:
+def actualizar_backups_diarios(hora_minima: int = 14) -> None:
+    """Actualiza el backup una vez al día si es de un día anterior y ya pasó hora_minima (Madrid)."""
+    ahora = datetime.now(ZONA_MADRID)
+    print(
+        f"🌙 Verificando condición de backup diario "
+        f"(desde las {hora_minima:02d}:00 hora Madrid)..."
+    )
+
+    for principal, backup in ARCHIVOS_BACKUP:
         if not os.path.exists(principal):
             continue
 
-        # Si el backup no existe, lo creamos directamente
         if not os.path.exists(backup):
-            shutil.copy(principal, backup)
-            print(f"📦 Backup inicial creado para {principal}.")
+            shutil.copy2(principal, backup)
+            print(f"📦 Backup inicial creado para {backup}.")
             continue
 
-        # Comprobamos la fecha del archivo de backup actual
-        tiempo_mod_backup = os.path.getmtime(backup)
-        fecha_backup = datetime.fromtimestamp(tiempo_mod_backup)
+        fecha_backup = datetime.fromtimestamp(
+            os.path.getmtime(backup), tz=ZONA_MADRID
+        ).date()
 
-        # Si ya estamos en un día posterior y son las 19:00 o más tarde, actualizamos el backup
-        if ahora.date() > fecha_backup.date() and ahora.hour >= 14:
-            shutil.copy(principal, backup)
-            print(f"🌙 Backup nocturno actualizado para {principal} ({ahora.strftime('%Y-%m-%d %H:%M')}).")
+        if ahora.date() > fecha_backup and ahora.hour >= hora_minima:
+            shutil.copy2(principal, backup)
+            print(
+                f"🌙 Backup actualizado para {backup} "
+                f"({ahora.strftime('%Y-%m-%d %H:%M')})."
+            )
         else:
-            print(f"ℹ️ El backup de {principal} se mantiene estable.")
+            print(f"ℹ️ El backup {backup} se mantiene estable.")
 
-def generar_backups():
-    print("📦 Generando archivos de backup...")
+
+def _run_git(args: list[str], check: bool = True) -> subprocess.CompletedProcess:
+    return subprocess.run(
+        ["git", *args],
+        capture_output=True,
+        text=True,
+        check=check,
+    )
+
+
+def subir_cambios_git() -> None:
+    """Añade los JSON, backups y static/, hace commit y sube a origin/main."""
+    print("\n🚀 Comprobando cambios para subir a GitHub...")
+    en_rebase = False
     try:
-        if os.path.exists("datos_liga.json"):
-            shutil.copy("datos_liga.json", "datos_liga_backup.json")
-        if os.path.exists("datos_canal.json"):
-            shutil.copy("datos_canal.json", "datos_canal_backup.json")
-    except Exception as e:
-        print(f"⚠️ Error generando backups: {e}")
+        _run_git(["config", "user.email", "bot@ligafutbol.com"])
+        _run_git(["config", "user.name", "LigaFutbol Bot"])
 
-def ejecutar_todo():
+        rutas = [
+            "datos_canal.json",
+            "datos_liga.json",
+            "datos_canal_backup.json",
+            "datos_liga_backup.json",
+            "static/",
+        ]
+        rutas_existentes = [r for r in rutas if os.path.exists(r)]
+        if rutas_existentes:
+            _run_git(["add", *rutas_existentes], check=False)
+
+        status = _run_git(["status", "--porcelain"], check=False)
+        if not status.stdout.strip():
+            print("ℹ️ No hay cambios nuevos en los JSON o backups para subir.")
+            return
+
+        _run_git(
+            ["commit", "-m", "Actualización automática de datos y horarios"]
+        )
+
+        pull_result = _run_git(
+            ["pull", "origin", "main", "--rebase", "--autostash"], check=False
+        )
+        if pull_result.returncode != 0:
+            en_rebase = True
+            print("⚠️ No se pudo hacer pull --rebase:", pull_result.stderr.strip())
+            _run_git(["rebase", "--abort"], check=False)
+            return
+
+        push_result = _run_git(["push", "origin", "main"], check=False)
+        if push_result.returncode == 0:
+            print("✅ ¡Todo actualizado y subido a GitHub con éxito!")
+        else:
+            print("❌ Error al hacer push:", push_result.stderr.strip())
+
+    except Exception as e:
+        print(f"❌ Error inesperado en Git: {e}")
+        if en_rebase:
+            _run_git(["rebase", "--abort"], check=False)
+
+
+def ejecutar_todo() -> None:
     print("=== INICIANDO EXTRACCIÓN ===")
-    
     es_github_action = os.environ.get("GITHUB_ACTIONS") == "true"
-    
+
     if es_github_action:
         print("🤖 Entorno GitHub Actions detectado. Verificando conexión con ECM...")
         if test_ecm_connection():
@@ -77,51 +149,28 @@ def ejecutar_todo():
             except Exception as e:
                 print(f"❌ Error crítico en ECM: {e}")
         else:
-            print("⚠️ ECM sigue bloqueando las IPs de la nube (Timeout). Saltando ECM para no ensuciar el log.")
+            print(
+                "⚠️ ECM bloquea o no responde desde la nube. "
+                "Saltando ECM para no ensuciar el log."
+            )
     else:
-        print("🏠 Entorno local detectado. Generando backups y extrayendo ECM...")
-        generar_backups()
+        print("🏠 Entorno local detectado. Extrayendo ECM...")
         try:
             extraer_ecm()
         except Exception as e:
             print(f"❌ Error crítico en ECM: {e}")
-    
-    # Extraer Canal (ahora con el buscador dinámico de PDF reparado)
+
     try:
         extraer_canal()
     except Exception as e:
         print(f"❌ Error crítico en Canal: {e}")
-    
-    # Subir a GitHub
-    print("\n🚀 Comprobando cambios para subir a GitHub...")
-    try:
-        subprocess.run(["git", "config", "user.email", "bot@ligafutbol.com"], check=True)
-        subprocess.run(["git", "config", "user.name", "LigaFutbol Bot"], check=True)
-        
-        # Añadimos específicamente los json generados y la carpeta static por si hay escudos nuevos
-        subprocess.run(["git", "add", "datos_canal.json", "datos_liga.json", "static/"], check=False)
-        
-        status = subprocess.run(["git", "status", "--porcelain"], capture_output=True, text=True)
-        
-        if status.stdout.strip():
-            subprocess.run(["git", "commit", "-m", "Actualización automática de datos y horarios"], check=True)
-            
-            pull_result = subprocess.run(["git", "pull", "origin", "main", "--rebase", "--autostash"], capture_output=True, text=True, check=False)
-            
-            if pull_result.returncode == 0:
-                push_result = subprocess.run(["git", "push", "origin", "main"], capture_output=True, text=True, check=False)
-                if push_result.returncode == 0:
-                    print("✅ ¡Todo actualizado y subido a GitHub con éxito!")
-                else:
-                    print("❌ Error al hacer push:", push_result.stderr)
-            else:
-                print("⚠️ No se pudo hacer pull.", pull_result.stderr)
-                subprocess.run(["git", "rebase", "--abort"], check=False)
-        else:
-            print("ℹ️ No hay cambios nuevos en los JSON para subir.")
-    except Exception as e:
-        print(f"❌ Error inesperado en Git: {e}")
-        subprocess.run(["git", "rebase", "--abort"], check=False)
+
+    # 1. Actualiza los backups tras extraer (si son de un día anterior y >= 14:00 hora Madrid)
+    actualizar_backups_diarios(hora_minima=14)
+
+    # 2. Sube los JSON, los backups y static/ a GitHub
+    subir_cambios_git()
+
 
 if __name__ == "__main__":
     ejecutar_todo()
