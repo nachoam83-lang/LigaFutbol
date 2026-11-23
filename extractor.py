@@ -192,7 +192,7 @@ def ejecutar_todo() -> None:
         print(f"❌ Error crítico en Canal: {e}")
 
     # Prueba con 14:00; cuando compruebes que funciona, cámbialo a 19
-    actualizar_backups_diarios(hora_minima=14)
+    actualizar_backups_diarios(hora_minima=19)
 
     # Sube los JSON, los backups y static/ a GitHub
     subir_cambios_git()
