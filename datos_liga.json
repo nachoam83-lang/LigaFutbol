@@ -1779,7 +1779,41 @@
             "Grupo": "Grupo 2",
             "Categoria": "PREBENJAMÍN MIXTO",
             "Deporte": "Baloncesto",
-            "SolicitudesModificaciones": [],
+            "SolicitudesModificaciones": [
+              {
+                "Id": 136,
+                "IdSolicitud": 0,
+                "IdInstitucion": 0,
+                "IdPersona": 0,
+                "IdEnfrentamiento": 0,
+                "IdEquipo": 0,
+                "Equipo": null,
+                "IdInstitucionRival": 0,
+                "IdEquipoRival": 0,
+                "EquipoRival": null,
+                "IdTipoSolicitud": 0,
+                "TipoSolicitud": null,
+                "FechaCreacion": "0001-01-01T00:00:00",
+                "FechaHoraEnfrentamiento": "0001-01-01T00:00:00",
+                "FechaHoraSolicitudEnfrentamiento": "2026-12-01T18:15:00",
+                "FechaHoraPlazoGestion": "2026-11-26T19:00:00",
+                "IdCampoEnfrentamiento": 0,
+                "CampoEnfrentamiento": null,
+                "IdCampoSolicitudEnfrentamiento": 0,
+                "CampoSolicitudEnfrentamiento": null,
+                "MotivoSolicitud": null,
+                "IdEstadoSolicitud": 1,
+                "EstadoSolicitud": null,
+                "IdPersonaEstadoSolicitud": 0,
+                "MotivoEstadoSolicitud": null,
+                "FechaModificacionSolicitud": null,
+                "TipoSolicitudModificacionEnfrentamiento": 0,
+                "DeporteCategoria": null,
+                "Enfrentamiento": null,
+                "Grupo": null,
+                "NumeroJornada": 0
+              }
+            ],
             "ConsignaJornada": {
               "Id": 1,
               "NumeroJornadaInicio": 1,
@@ -140024,7 +140058,41 @@
         "Grupo": "Grupo 2",
         "Categoria": "PREBENJAMÍN MIXTO",
         "Deporte": "Baloncesto",
-        "SolicitudesModificaciones": [],
+        "SolicitudesModificaciones": [
+          {
+            "Id": 136,
+            "IdSolicitud": 0,
+            "IdInstitucion": 0,
+            "IdPersona": 0,
+            "IdEnfrentamiento": 0,
+            "IdEquipo": 0,
+            "Equipo": null,
+            "IdInstitucionRival": 0,
+            "IdEquipoRival": 0,
+            "EquipoRival": null,
+            "IdTipoSolicitud": 0,
+            "TipoSolicitud": null,
+            "FechaCreacion": "0001-01-01T00:00:00",
+            "FechaHoraEnfrentamiento": "0001-01-01T00:00:00",
+            "FechaHoraSolicitudEnfrentamiento": "2026-12-01T18:15:00",
+            "FechaHoraPlazoGestion": "2026-11-26T19:00:00",
+            "IdCampoEnfrentamiento": 0,
+            "CampoEnfrentamiento": null,
+            "IdCampoSolicitudEnfrentamiento": 0,
+            "CampoSolicitudEnfrentamiento": null,
+            "MotivoSolicitud": null,
+            "IdEstadoSolicitud": 1,
+            "EstadoSolicitud": null,
+            "IdPersonaEstadoSolicitud": 0,
+            "MotivoEstadoSolicitud": null,
+            "FechaModificacionSolicitud": null,
+            "TipoSolicitudModificacionEnfrentamiento": 0,
+            "DeporteCategoria": null,
+            "Enfrentamiento": null,
+            "Grupo": null,
+            "NumeroJornada": 0
+          }
+        ],
         "ConsignaJornada": {
           "Id": 1,
           "NumeroJornadaInicio": 1,
@@ -182762,8 +182830,8 @@
         "IdCategoria": 209,
         "IdJornada": 2185,
         "IdGrupo": 135,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 6,
+        "EstadoPartido": "No Celebrado/Incompleto",
         "IdCampo": 141,
         "Campo": "PASEO DEL PINTOR ROSALES, 62 - PISTA 1 BASKET - EXTERIOR",
         "CampoJuego": {
@@ -289733,8 +289801,8 @@
         "IdCategoria": 303,
         "IdJornada": 2524,
         "IdGrupo": 169,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 167,
         "Campo": "TRAVESÍA DE COSTA BRAVA, 3 - POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -289761,9 +289829,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0145.jpg",
         "IdInstitucionVisitante": 145,
         "FechaHora": "2026-11-24T17:45:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 10,
+        "ResultadoEquipoVisitante": 1,
+        "IdEquipoGanador": 788,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -317493,8 +317561,8 @@
         "IdCategoria": 303,
         "IdJornada": 2587,
         "IdGrupo": 176,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 6,
+        "EstadoPartido": "No Celebrado/Incompleto",
         "IdCampo": 268,
         "Campo": "CALLE DE MELQUÍADES ÁLVAREZ, 8 - CAMPO PATIO VERDE - EXTERIOR",
         "CampoJuego": {
@@ -518913,8 +518981,8 @@
         "IdCategoria": 418,
         "IdJornada": 3246,
         "IdGrupo": 243,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 6,
+        "EstadoPartido": "No Celebrado/Incompleto",
         "IdCampo": 357,
         "Campo": "PASEO DEL PINTOR ROSALES, 62 - PISTA 1 - EXTERIOR",
         "CampoJuego": {
@@ -526906,13 +526974,22 @@
         "Posicion": 1
       },
       {
+        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
+        "Puntos": 3,
+        "Jugados": 1,
+        "GF": 10,
+        "GC": 1,
+        "Posicion": 2
+      },
+      {
         "NombreEquipo": "EL VALLE SANCHINARRO \"F\"",
         "URLEscudo": "/static/escudos/Emblema_0151.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 9,
         "GC": 1,
-        "Posicion": 2
+        "Posicion": 3
       },
       {
         "NombreEquipo": "SANTAMARCA INTERNACIONAL",
@@ -526921,7 +526998,7 @@
         "Jugados": 2,
         "GF": 14,
         "GC": 8,
-        "Posicion": 3
+        "Posicion": 4
       },
       {
         "NombreEquipo": "PATROCINIO SAN JOSÉ \"AZUL\"",
@@ -526930,25 +527007,7 @@
         "Jugados": 1,
         "GF": 5,
         "GC": 1,
-        "Posicion": 4
-      },
-      {
-        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
         "Posicion": 5
-      },
-      {
-        "NombreEquipo": "TRILEMA EL PILAR",
-        "URLEscudo": "/static/escudos/Emblema_0145.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 6
       },
       {
         "NombreEquipo": "CALASANCIO \"A\"",
@@ -526957,7 +527016,7 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 7
+        "Posicion": 6
       },
       {
         "NombreEquipo": "SANTA MARÍA DEL PILAR \"F\"",
@@ -526966,6 +527025,15 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
+        "Posicion": 7
+      },
+      {
+        "NombreEquipo": "TRILEMA EL PILAR",
+        "URLEscudo": "/static/escudos/Emblema_0145.jpg",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 1,
+        "GC": 10,
         "Posicion": 8
       },
       {
