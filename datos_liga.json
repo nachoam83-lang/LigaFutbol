@@ -81128,7 +81128,7 @@
                 "IdCampoSolicitudEnfrentamiento": 0,
                 "CampoSolicitudEnfrentamiento": null,
                 "MotivoSolicitud": null,
-                "IdEstadoSolicitud": 1,
+                "IdEstadoSolicitud": 4,
                 "EstadoSolicitud": null,
                 "IdPersonaEstadoSolicitud": 0,
                 "MotivoEstadoSolicitud": null,
@@ -318336,9 +318336,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0075.jpg",
         "IdInstitucionVisitante": 75,
         "FechaHora": "2026-11-25T17:45:00",
-        "ResultadoEquipoLocal": null,
-        "ResultadoEquipoVisitante": null,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 1,
+        "ResultadoEquipoVisitante": 8,
+        "IdEquipoGanador": 825,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -367509,7 +367509,7 @@
             "IdCampoSolicitudEnfrentamiento": 0,
             "CampoSolicitudEnfrentamiento": null,
             "MotivoSolicitud": null,
-            "IdEstadoSolicitud": 1,
+            "IdEstadoSolicitud": 4,
             "EstadoSolicitud": null,
             "IdPersonaEstadoSolicitud": 0,
             "MotivoEstadoSolicitud": null,
@@ -528440,12 +528440,12 @@
         "Posicion": 2
       },
       {
-        "NombreEquipo": "SAN BUENAVENTURA",
-        "URLEscudo": "/static/escudos/Emblema_0132.jpg",
+        "NombreEquipo": "SAGRADO CORAZÓN ROSALES \"ROJO\"",
+        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
         "Puntos": 3,
         "Jugados": 1,
         "GF": 8,
-        "GC": 4,
+        "GC": 1,
         "Posicion": 3
       },
       {
@@ -528458,12 +528458,12 @@
         "Posicion": 4
       },
       {
-        "NombreEquipo": "SAGRADO CORAZÓN ROSALES \"ROJO\"",
-        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "NombreEquipo": "SAN BUENAVENTURA",
+        "URLEscudo": "/static/escudos/Emblema_0132.jpg",
+        "Puntos": 3,
+        "Jugados": 2,
+        "GF": 9,
+        "GC": 12,
         "Posicion": 5
       },
       {
