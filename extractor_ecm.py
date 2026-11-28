@@ -37,6 +37,10 @@ if not os.path.exists(ARCHIVO_METADATA):
     with open(ARCHIVO_METADATA, "w", encoding="utf-8") as f:
         json.dump({}, f)
 
+# Puntuación de ECM (deporte escolar): victoria 2, empate 1, derrota 0
+PUNTOS_VICTORIA = 2
+PUNTOS_EMPATE = 1
+
 def cargar_metadata():
     with open(ARCHIVO_METADATA, "r", encoding="utf-8") as f:
         return json.load(f)
@@ -184,12 +188,12 @@ def extraer_ecm():
                                     tabla[visitante]["GF"] += rv
                                     tabla[visitante]["GC"] += rl
                                     if rl > rv:
-                                        tabla[local]["Puntos"] += 3
+                                        tabla[local]["Puntos"] += PUNTOS_VICTORIA
                                     elif rl < rv:
-                                        tabla[visitante]["Puntos"] += 3
+                                        tabla[visitante]["Puntos"] += PUNTOS_VICTORIA
                                     else:
-                                        tabla[local]["Puntos"] += 1
-                                        tabla[visitante]["Puntos"] += 1
+                                        tabla[local]["Puntos"] += PUNTOS_EMPATE
+                                        tabla[visitante]["Puntos"] += PUNTOS_EMPATE
                                         
                             lista_tabla = list(tabla.values())
                             lista_tabla.sort(key=lambda x: (x["Puntos"], x["GF"] - x["GC"], x["GF"]), reverse=True)
