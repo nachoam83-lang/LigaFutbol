@@ -2916,8 +2916,8 @@
             "IdCategoria": 200,
             "IdJornada": 1977,
             "IdGrupo": 118,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 10,
+            "EstadoPartido": "Disputado con Incidencias",
             "IdCampo": 187,
             "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PISTA 1 - CUBIERTA",
             "CampoJuego": {
@@ -2944,8 +2944,8 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0051.jpg",
             "IdInstitucionVisitante": 51,
             "FechaHora": "2026-11-28T09:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
+            "ResultadoEquipoLocal": null,
+            "ResultadoEquipoVisitante": null,
             "IdEquipoGanador": 0,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
@@ -6770,8 +6770,8 @@
             "IdCategoria": 203,
             "IdJornada": 2006,
             "IdGrupo": 121,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 91,
             "Campo": "CALLE DE MELQUÍADES ÁLVAREZ, 8 - CAMPO PATIO ROJO - EXTERIOR",
             "CampoJuego": {
@@ -6798,9 +6798,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0003_SAN P.JPG",
             "IdInstitucionVisitante": 3,
             "FechaHora": "2026-11-28T13:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 31,
+            "ResultadoEquipoVisitante": 24,
+            "IdEquipoGanador": 340,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -10639,8 +10639,8 @@
             "IdCategoria": 206,
             "IdJornada": 2136,
             "IdGrupo": 131,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 14,
             "Campo": "CALLE DE LOS CONDES DE TORREANAZ, 2 - CAMPO MINIBASKET - EXTERIOR",
             "CampoJuego": {
@@ -10667,9 +10667,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0010.jpg",
             "IdInstitucionVisitante": 10,
             "FechaHora": "2026-11-28T10:15:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 12,
+            "ResultadoEquipoVisitante": 43,
+            "IdEquipoGanador": 122,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -24537,8 +24537,8 @@
             "IdCategoria": 212,
             "IdJornada": 2251,
             "IdGrupo": 141,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 14,
             "Campo": "CALLE DE LOS CONDES DE TORREANAZ, 2 - CAMPO MINIBASKET - EXTERIOR",
             "CampoJuego": {
@@ -24565,9 +24565,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0012_NUEST.JPEG",
             "IdInstitucionVisitante": 12,
             "FechaHora": "2026-11-28T11:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 62,
+            "ResultadoEquipoVisitante": 20,
+            "IdEquipoGanador": 94,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -26959,8 +26959,8 @@
             "IdCategoria": 212,
             "IdJornada": 2279,
             "IdGrupo": 143,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 10,
+            "EstadoPartido": "Disputado con Incidencias",
             "IdCampo": 187,
             "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PISTA 1 - CUBIERTA",
             "CampoJuego": {
@@ -26987,8 +26987,8 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0010.jpg",
             "IdInstitucionVisitante": 10,
             "FechaHora": "2026-11-28T11:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
+            "ResultadoEquipoLocal": null,
+            "ResultadoEquipoVisitante": null,
             "IdEquipoGanador": 0,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
@@ -48958,8 +48958,8 @@
             "IdCategoria": 300,
             "IdJornada": 2501,
             "IdGrupo": 166,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 8,
             "Campo": "CALLE DE ROMERO ROBLEDO, 15 - POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -48986,9 +48986,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0016.jpg",
             "IdInstitucionVisitante": 16,
             "FechaHora": "2026-11-28T11:20:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 5,
+            "ResultadoEquipoVisitante": 1,
+            "IdEquipoGanador": 907,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -63438,8 +63438,8 @@
             "IdCategoria": 303,
             "IdJornada": 2589,
             "IdGrupo": 176,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 363,
             "Campo": "CALLE DE ROMERO ROBLEDO, 15 - PATIO - EXTERIOR",
             "CampoJuego": {
@@ -63467,8 +63467,8 @@
             "IdInstitucionVisitante": 75,
             "FechaHora": "2026-11-28T09:00:00",
             "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoVisitante": 10,
+            "IdEquipoGanador": 825,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -65210,8 +65210,8 @@
             "IdCategoria": 306,
             "IdJornada": 2598,
             "IdGrupo": 177,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 233,
             "Campo": "CALLE DEL MONASTERIO DE GUADALUPE, 7 - PABELLÓN - CUBIERTO",
             "CampoJuego": {
@@ -65238,9 +65238,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0068.jpg",
             "IdInstitucionVisitante": 68,
             "FechaHora": "2026-11-28T12:45:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 4,
+            "ResultadoEquipoVisitante": 2,
+            "IdEquipoGanador": 653,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -66614,8 +66614,8 @@
             "IdCategoria": 306,
             "IdJornada": 2607,
             "IdGrupo": 178,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 233,
             "Campo": "CALLE DEL MONASTERIO DE GUADALUPE, 7 - PABELLÓN - CUBIERTO",
             "CampoJuego": {
@@ -66642,9 +66642,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0114.jpg",
             "IdInstitucionVisitante": 114,
             "FechaHora": "2026-11-28T11:35:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 3,
+            "ResultadoEquipoVisitante": 6,
+            "IdEquipoGanador": 592,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -72414,8 +72414,8 @@
             "IdCategoria": 306,
             "IdJornada": 2643,
             "IdGrupo": 182,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 8,
             "Campo": "CALLE DE ROMERO ROBLEDO, 15 - POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -72442,9 +72442,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0072.jpg",
             "IdInstitucionVisitante": 72,
             "FechaHora": "2026-11-28T10:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 3,
+            "ResultadoEquipoVisitante": 4,
+            "IdEquipoGanador": 352,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -75648,8 +75648,8 @@
             "IdCategoria": 306,
             "IdJornada": 2661,
             "IdGrupo": 184,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 55,
             "Campo": "AVENIDA DE MADRID, 55 - PISTA 1 PABELLÓN - CUBIERTO",
             "CampoJuego": {
@@ -75676,9 +75676,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0002.jpg",
             "IdInstitucionVisitante": 2,
             "FechaHora": "2026-11-28T13:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 5,
+            "ResultadoEquipoVisitante": 11,
+            "IdEquipoGanador": 289,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -82310,8 +82310,8 @@
             "IdCategoria": 312,
             "IdJornada": 2730,
             "IdGrupo": 191,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 8,
             "Campo": "CALLE DE ROMERO ROBLEDO, 15 - POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -82338,9 +82338,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0002.jpg",
             "IdInstitucionVisitante": 2,
             "FechaHora": "2026-11-28T12:30:00",
-            "ResultadoEquipoLocal": 0,
+            "ResultadoEquipoLocal": 10,
             "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "IdEquipoGanador": 46,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -84562,8 +84562,8 @@
             "IdCategoria": 318,
             "IdJornada": 2796,
             "IdGrupo": 196,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 363,
             "Campo": "CALLE DE ROMERO ROBLEDO, 15 - PATIO - EXTERIOR",
             "CampoJuego": {
@@ -84590,9 +84590,9 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0075.jpg",
             "IdInstitucionVisitante": 75,
             "FechaHora": "2026-11-28T10:10:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoLocal": 1,
+            "ResultadoEquipoVisitante": 4,
+            "IdEquipoGanador": 1131,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -84654,8 +84654,8 @@
             "IdCategoria": 318,
             "IdJornada": 2796,
             "IdGrupo": 196,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 55,
             "Campo": "AVENIDA DE MADRID, 55 - PISTA 1 PABELLÓN - CUBIERTO",
             "CampoJuego": {
@@ -84683,8 +84683,8 @@
             "IdInstitucionVisitante": 15,
             "FechaHora": "2026-11-28T12:30:00",
             "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
+            "ResultadoEquipoVisitante": 4,
+            "IdEquipoGanador": 1045,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
             "ResultadoParcial3": "",
@@ -102270,8 +102270,8 @@
             "IdCategoria": 403,
             "IdJornada": 2984,
             "IdGrupo": 214,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 26,
             "Campo": "AVENIDA DE CARDENAL HERRERA ORIA, 242 - PISTA 1 POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -102298,11 +102298,11 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0056.jpg",
             "IdInstitucionVisitante": 56,
             "FechaHora": "2026-11-28T13:30:00",
-            "ResultadoEquipoLocal": 0,
+            "ResultadoEquipoLocal": 2,
             "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
+            "IdEquipoGanador": 922,
+            "ResultadoParcial1": "25 - 15",
+            "ResultadoParcial2": "25 - 19",
             "ResultadoParcial3": "",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
@@ -103824,8 +103824,8 @@
             "IdCategoria": 403,
             "IdJornada": 2993,
             "IdGrupo": 215,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 259,
             "Campo": "TRAVESÍA DE COSTA BRAVA, 3 - CAMPO 1 POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -103852,12 +103852,12 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0055_VIRGE.PNG",
             "IdInstitucionVisitante": 55,
             "FechaHora": "2026-11-28T13:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
-            "ResultadoParcial3": "",
+            "ResultadoEquipoLocal": 2,
+            "ResultadoEquipoVisitante": 1,
+            "IdEquipoGanador": 803,
+            "ResultadoParcial1": "25 - 17",
+            "ResultadoParcial2": "20 - 25",
+            "ResultadoParcial3": "25 - 22",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
             "FechaJornada": "2026-11-28T00:00:00",
@@ -115379,8 +115379,8 @@
             "IdCategoria": 406,
             "IdJornada": 3065,
             "IdGrupo": 223,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 10,
+            "EstadoPartido": "Disputado con Incidencias",
             "IdCampo": 26,
             "Campo": "AVENIDA DE CARDENAL HERRERA ORIA, 242 - PISTA 1 POLIDEPORTIVO - CUBIERTO",
             "CampoJuego": {
@@ -115407,8 +115407,8 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0059.jpg",
             "IdInstitucionVisitante": 59,
             "FechaHora": "2026-11-28T09:00:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
+            "ResultadoEquipoLocal": null,
+            "ResultadoEquipoVisitante": null,
             "IdEquipoGanador": 0,
             "ResultadoParcial1": "",
             "ResultadoParcial2": "",
@@ -124730,8 +124730,8 @@
             "IdCategoria": 406,
             "IdJornada": 3119,
             "IdGrupo": 229,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 180,
             "Campo": "AVENIDA DE MADRID, 55 - PISTA 2 PABELLÓN - CUBIERTO",
             "CampoJuego": {
@@ -124758,12 +124758,12 @@
             "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0050.jpg",
             "IdInstitucionVisitante": 50,
             "FechaHora": "2026-11-28T13:30:00",
-            "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
-            "ResultadoParcial3": "",
+            "ResultadoEquipoLocal": 1,
+            "ResultadoEquipoVisitante": 2,
+            "IdEquipoGanador": 1120,
+            "ResultadoParcial1": "22 - 25",
+            "ResultadoParcial2": "25 - 21",
+            "ResultadoParcial3": "21 - 25",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
             "FechaJornada": "2026-11-28T00:00:00",
@@ -125950,8 +125950,8 @@
             "IdCategoria": 412,
             "IdJornada": 3173,
             "IdGrupo": 235,
-            "IdEstadoPartido": 0,
-            "EstadoPartido": "Pendiente de Jugar",
+            "IdEstadoPartido": 11,
+            "EstadoPartido": "Disputado sin Incidencias",
             "IdCampo": 440,
             "Campo": "CALLE DE LA PEÑA DORADA, 2 - CAMPO ROJO - TECHADO",
             "CampoJuego": {
@@ -125979,10 +125979,10 @@
             "IdInstitucionVisitante": 68,
             "FechaHora": "2026-11-28T12:00:00",
             "ResultadoEquipoLocal": 0,
-            "ResultadoEquipoVisitante": 0,
-            "IdEquipoGanador": 0,
-            "ResultadoParcial1": "",
-            "ResultadoParcial2": "",
+            "ResultadoEquipoVisitante": 2,
+            "IdEquipoGanador": 308,
+            "ResultadoParcial1": "11 - 25",
+            "ResultadoParcial2": "14 - 25",
             "ResultadoParcial3": "",
             "ResultadoParcial4": "",
             "ResultadoParcial5": "",
@@ -143376,8 +143376,8 @@
         "IdCategoria": 200,
         "IdJornada": 1977,
         "IdGrupo": 118,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 10,
+        "EstadoPartido": "Disputado con Incidencias",
         "IdCampo": 187,
         "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PISTA 1 - CUBIERTA",
         "CampoJuego": {
@@ -143404,8 +143404,8 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0051.jpg",
         "IdInstitucionVisitante": 51,
         "FechaHora": "2026-11-28T09:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
+        "ResultadoEquipoLocal": null,
+        "ResultadoEquipoVisitante": null,
         "IdEquipoGanador": 0,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
@@ -153340,8 +153340,8 @@
         "IdCategoria": 203,
         "IdJornada": 2006,
         "IdGrupo": 121,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 91,
         "Campo": "CALLE DE MELQUÍADES ÁLVAREZ, 8 - CAMPO PATIO ROJO - EXTERIOR",
         "CampoJuego": {
@@ -153368,9 +153368,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0003_SAN P.JPG",
         "IdInstitucionVisitante": 3,
         "FechaHora": "2026-11-28T13:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 31,
+        "ResultadoEquipoVisitante": 24,
+        "IdEquipoGanador": 340,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -165652,8 +165652,8 @@
         "IdCategoria": 206,
         "IdJornada": 2136,
         "IdGrupo": 131,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 14,
         "Campo": "CALLE DE LOS CONDES DE TORREANAZ, 2 - CAMPO MINIBASKET - EXTERIOR",
         "CampoJuego": {
@@ -165680,9 +165680,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0010.jpg",
         "IdInstitucionVisitante": 10,
         "FechaHora": "2026-11-28T10:15:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 12,
+        "ResultadoEquipoVisitante": 43,
+        "IdEquipoGanador": 122,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -209889,8 +209889,8 @@
         "IdCategoria": 212,
         "IdJornada": 2251,
         "IdGrupo": 141,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 14,
         "Campo": "CALLE DE LOS CONDES DE TORREANAZ, 2 - CAMPO MINIBASKET - EXTERIOR",
         "CampoJuego": {
@@ -209917,9 +209917,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0012_NUEST.JPEG",
         "IdInstitucionVisitante": 12,
         "FechaHora": "2026-11-28T11:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 62,
+        "ResultadoEquipoVisitante": 20,
+        "IdEquipoGanador": 94,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -219473,8 +219473,8 @@
         "IdCategoria": 212,
         "IdJornada": 2279,
         "IdGrupo": 143,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 10,
+        "EstadoPartido": "Disputado con Incidencias",
         "IdCampo": 187,
         "Campo": "CALLE DEL CORAZÓN DE MARÍA, 1B - PISTA 1 - CUBIERTA",
         "CampoJuego": {
@@ -219501,8 +219501,8 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0010.jpg",
         "IdInstitucionVisitante": 10,
         "FechaHora": "2026-11-28T11:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
+        "ResultadoEquipoLocal": null,
+        "ResultadoEquipoVisitante": null,
         "IdEquipoGanador": 0,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
@@ -281008,8 +281008,8 @@
         "IdCategoria": 300,
         "IdJornada": 2501,
         "IdGrupo": 166,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 8,
         "Campo": "CALLE DE ROMERO ROBLEDO, 15 - POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -281036,9 +281036,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0016.jpg",
         "IdInstitucionVisitante": 16,
         "FechaHora": "2026-11-28T11:20:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 5,
+        "ResultadoEquipoVisitante": 1,
+        "IdEquipoGanador": 907,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -319408,8 +319408,8 @@
         "IdCategoria": 303,
         "IdJornada": 2589,
         "IdGrupo": 176,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 363,
         "Campo": "CALLE DE ROMERO ROBLEDO, 15 - PATIO - EXTERIOR",
         "CampoJuego": {
@@ -319437,8 +319437,8 @@
         "IdInstitucionVisitante": 75,
         "FechaHora": "2026-11-28T09:00:00",
         "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoVisitante": 10,
+        "IdEquipoGanador": 825,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -323640,8 +323640,8 @@
         "IdCategoria": 306,
         "IdJornada": 2598,
         "IdGrupo": 177,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 233,
         "Campo": "CALLE DEL MONASTERIO DE GUADALUPE, 7 - PABELLÓN - CUBIERTO",
         "CampoJuego": {
@@ -323668,9 +323668,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0068.jpg",
         "IdInstitucionVisitante": 68,
         "FechaHora": "2026-11-28T12:45:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 4,
+        "ResultadoEquipoVisitante": 2,
+        "IdEquipoGanador": 653,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -327504,8 +327504,8 @@
         "IdCategoria": 306,
         "IdJornada": 2607,
         "IdGrupo": 178,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 233,
         "Campo": "CALLE DEL MONASTERIO DE GUADALUPE, 7 - PABELLÓN - CUBIERTO",
         "CampoJuego": {
@@ -327532,9 +327532,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0114.jpg",
         "IdInstitucionVisitante": 114,
         "FechaHora": "2026-11-28T11:35:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 3,
+        "ResultadoEquipoVisitante": 6,
+        "IdEquipoGanador": 592,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -343178,8 +343178,8 @@
         "IdCategoria": 306,
         "IdJornada": 2643,
         "IdGrupo": 182,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 8,
         "Campo": "CALLE DE ROMERO ROBLEDO, 15 - POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -343206,9 +343206,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0072.jpg",
         "IdInstitucionVisitante": 72,
         "FechaHora": "2026-11-28T10:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 3,
+        "ResultadoEquipoVisitante": 4,
+        "IdEquipoGanador": 352,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -351400,8 +351400,8 @@
         "IdCategoria": 306,
         "IdJornada": 2661,
         "IdGrupo": 184,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 55,
         "Campo": "AVENIDA DE MADRID, 55 - PISTA 1 PABELLÓN - CUBIERTO",
         "CampoJuego": {
@@ -351428,9 +351428,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0002.jpg",
         "IdInstitucionVisitante": 2,
         "FechaHora": "2026-11-28T13:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 5,
+        "ResultadoEquipoVisitante": 11,
+        "IdEquipoGanador": 289,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -370532,8 +370532,8 @@
         "IdCategoria": 312,
         "IdJornada": 2730,
         "IdGrupo": 191,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 8,
         "Campo": "CALLE DE ROMERO ROBLEDO, 15 - POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -370560,9 +370560,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0002.jpg",
         "IdInstitucionVisitante": 2,
         "FechaHora": "2026-11-28T12:30:00",
-        "ResultadoEquipoLocal": 0,
+        "ResultadoEquipoLocal": 10,
         "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "IdEquipoGanador": 46,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -378105,8 +378105,8 @@
         "IdCategoria": 318,
         "IdJornada": 2796,
         "IdGrupo": 196,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 363,
         "Campo": "CALLE DE ROMERO ROBLEDO, 15 - PATIO - EXTERIOR",
         "CampoJuego": {
@@ -378133,9 +378133,9 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0075.jpg",
         "IdInstitucionVisitante": 75,
         "FechaHora": "2026-11-28T10:10:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoLocal": 1,
+        "ResultadoEquipoVisitante": 4,
+        "IdEquipoGanador": 1131,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -378197,8 +378197,8 @@
         "IdCategoria": 318,
         "IdJornada": 2796,
         "IdGrupo": 196,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 55,
         "Campo": "AVENIDA DE MADRID, 55 - PISTA 1 PABELLÓN - CUBIERTO",
         "CampoJuego": {
@@ -378226,8 +378226,8 @@
         "IdInstitucionVisitante": 15,
         "FechaHora": "2026-11-28T12:30:00",
         "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
+        "ResultadoEquipoVisitante": 4,
+        "IdEquipoGanador": 1045,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
         "ResultadoParcial3": "",
@@ -430013,8 +430013,8 @@
         "IdCategoria": 403,
         "IdJornada": 2984,
         "IdGrupo": 214,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 26,
         "Campo": "AVENIDA DE CARDENAL HERRERA ORIA, 242 - PISTA 1 POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -430041,11 +430041,11 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0056.jpg",
         "IdInstitucionVisitante": 56,
         "FechaHora": "2026-11-28T13:30:00",
-        "ResultadoEquipoLocal": 0,
+        "ResultadoEquipoLocal": 2,
         "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
+        "IdEquipoGanador": 922,
+        "ResultadoParcial1": "25 - 15",
+        "ResultadoParcial2": "25 - 19",
         "ResultadoParcial3": "",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
@@ -434061,8 +434061,8 @@
         "IdCategoria": 403,
         "IdJornada": 2993,
         "IdGrupo": 215,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 259,
         "Campo": "TRAVESÍA DE COSTA BRAVA, 3 - CAMPO 1 POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -434089,12 +434089,12 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0055_VIRGE.PNG",
         "IdInstitucionVisitante": 55,
         "FechaHora": "2026-11-28T13:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
-        "ResultadoParcial3": "",
+        "ResultadoEquipoLocal": 2,
+        "ResultadoEquipoVisitante": 1,
+        "IdEquipoGanador": 803,
+        "ResultadoParcial1": "25 - 17",
+        "ResultadoParcial2": "20 - 25",
+        "ResultadoParcial3": "25 - 22",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
         "FechaJornada": "2026-11-28T00:00:00",
@@ -465398,8 +465398,8 @@
         "IdCategoria": 406,
         "IdJornada": 3065,
         "IdGrupo": 223,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 10,
+        "EstadoPartido": "Disputado con Incidencias",
         "IdCampo": 26,
         "Campo": "AVENIDA DE CARDENAL HERRERA ORIA, 242 - PISTA 1 POLIDEPORTIVO - CUBIERTO",
         "CampoJuego": {
@@ -465426,8 +465426,8 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0059.jpg",
         "IdInstitucionVisitante": 59,
         "FechaHora": "2026-11-28T09:00:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
+        "ResultadoEquipoLocal": null,
+        "ResultadoEquipoVisitante": null,
         "IdEquipoGanador": 0,
         "ResultadoParcial1": "",
         "ResultadoParcial2": "",
@@ -489543,8 +489543,8 @@
         "IdCategoria": 406,
         "IdJornada": 3119,
         "IdGrupo": 229,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 180,
         "Campo": "AVENIDA DE MADRID, 55 - PISTA 2 PABELLÓN - CUBIERTO",
         "CampoJuego": {
@@ -489571,12 +489571,12 @@
         "URLEscudoEquipoVisitante": "/static/escudos/Emblema_0050.jpg",
         "IdInstitucionVisitante": 50,
         "FechaHora": "2026-11-28T13:30:00",
-        "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
-        "ResultadoParcial3": "",
+        "ResultadoEquipoLocal": 1,
+        "ResultadoEquipoVisitante": 2,
+        "IdEquipoGanador": 1120,
+        "ResultadoParcial1": "22 - 25",
+        "ResultadoParcial2": "25 - 21",
+        "ResultadoParcial3": "21 - 25",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
         "FechaJornada": "2026-11-28T00:00:00",
@@ -493257,8 +493257,8 @@
         "IdCategoria": 412,
         "IdJornada": 3173,
         "IdGrupo": 235,
-        "IdEstadoPartido": 0,
-        "EstadoPartido": "Pendiente de Jugar",
+        "IdEstadoPartido": 11,
+        "EstadoPartido": "Disputado sin Incidencias",
         "IdCampo": 440,
         "Campo": "CALLE DE LA PEÑA DORADA, 2 - CAMPO ROJO - TECHADO",
         "CampoJuego": {
@@ -493286,10 +493286,10 @@
         "IdInstitucionVisitante": 68,
         "FechaHora": "2026-11-28T12:00:00",
         "ResultadoEquipoLocal": 0,
-        "ResultadoEquipoVisitante": 0,
-        "IdEquipoGanador": 0,
-        "ResultadoParcial1": "",
-        "ResultadoParcial2": "",
+        "ResultadoEquipoVisitante": 2,
+        "IdEquipoGanador": 308,
+        "ResultadoParcial1": "11 - 25",
+        "ResultadoParcial2": "14 - 25",
         "ResultadoParcial3": "",
         "ResultadoParcial4": "",
         "ResultadoParcial5": "",
@@ -525467,26 +525467,26 @@
         "Posicion": 2
       },
       {
+        "NombreEquipo": "JESÚS MAESTRO FET",
+        "URLEscudo": "/static/escudos/Emblema_0072.jpg",
+        "Puntos": 2,
+        "Jugados": 1,
+        "GF": 31,
+        "GC": 24,
+        "Posicion": 3
+      },
+      {
         "NombreEquipo": "SANTA MARÍA DEL PILAR",
         "URLEscudo": "/static/escudos/Emblema_0051.jpg",
         "Puntos": 2,
         "Jugados": 1,
         "GF": 24,
         "GC": 18,
-        "Posicion": 3
+        "Posicion": 4
       },
       {
         "NombreEquipo": "PUREZA DE MARÍA",
         "URLEscudo": "/static/escudos/Emblema_0004.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 4
-      },
-      {
-        "NombreEquipo": "JESÚS MAESTRO FET",
-        "URLEscudo": "/static/escudos/Emblema_0072.jpg",
         "Puntos": 0,
         "Jugados": 0,
         "GF": 0,
@@ -525506,9 +525506,9 @@
         "NombreEquipo": "SAN PATRICIO SERRANO \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0003_SAN P.JPG",
         "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "Jugados": 1,
+        "GF": 24,
+        "GC": 31,
         "Posicion": 7
       },
       {
@@ -525691,10 +525691,10 @@
       {
         "NombreEquipo": "MIRAMADRID",
         "URLEscudo": "/static/escudos/Emblema_0010.jpg",
-        "Puntos": 4,
-        "Jugados": 2,
-        "GF": 88,
-        "GC": 8,
+        "Puntos": 6,
+        "Jugados": 3,
+        "GF": 131,
+        "GC": 20,
         "Posicion": 1
       },
       {
@@ -525737,9 +525737,9 @@
         "NombreEquipo": "SANTA ANA Y SAN RAFAEL \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0001.jpg",
         "Puntos": 0,
-        "Jugados": 1,
-        "GF": 14,
-        "GC": 55,
+        "Jugados": 2,
+        "GF": 26,
+        "GC": 98,
         "Posicion": 6
       },
       {
@@ -526492,21 +526492,21 @@
         "Posicion": 2
       },
       {
+        "NombreEquipo": "SANTA ANA Y SAN RAFAEL",
+        "URLEscudo": "/static/escudos/Emblema_0001.jpg",
+        "Puntos": 2,
+        "Jugados": 3,
+        "GF": 118,
+        "GC": 96,
+        "Posicion": 3
+      },
+      {
         "NombreEquipo": "SANTA MARÍA DEL PILAR \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0051.jpg",
         "Puntos": 2,
         "Jugados": 1,
         "GF": 38,
         "GC": 20,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "SANTA ANA Y SAN RAFAEL",
-        "URLEscudo": "/static/escudos/Emblema_0001.jpg",
-        "Puntos": 0,
-        "Jugados": 2,
-        "GF": 56,
-        "GC": 76,
         "Posicion": 4
       },
       {
@@ -526531,9 +526531,9 @@
         "NombreEquipo": "NUESTRA SEÑORA DEL PILAR",
         "URLEscudo": "/static/escudos/Emblema_0012_NUEST.JPEG",
         "Puntos": 0,
-        "Jugados": 1,
-        "GF": 21,
-        "GC": 63,
+        "Jugados": 2,
+        "GF": 41,
+        "GC": 125,
         "Posicion": 7
       }
     ],
@@ -527882,20 +527882,20 @@
         "Posicion": 3
       },
       {
-        "NombreEquipo": "CIUDAD DE LOS MUCHACHOS \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0016.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "NombreEquipo": "SAGRADOS CORAZONES \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0053.jpg",
+        "Puntos": 2,
+        "Jugados": 2,
+        "GF": 7,
+        "GC": 6,
         "Posicion": 4
       },
       {
-        "NombreEquipo": "SAGRADOS CORAZONES \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0053.jpg",
+        "NombreEquipo": "CIUDAD DE LOS MUCHACHOS \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0016.jpg",
         "Puntos": 0,
         "Jugados": 1,
-        "GF": 2,
+        "GF": 1,
         "GC": 5,
         "Posicion": 5
       },
@@ -528694,13 +528694,22 @@
     ],
     "2_112_0_176": [
       {
+        "NombreEquipo": "SAGRADO CORAZÓN ROSALES \"ROJO\"",
+        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
+        "Puntos": 4,
+        "Jugados": 2,
+        "GF": 18,
+        "GC": 1,
+        "Posicion": 1
+      },
+      {
         "NombreEquipo": "SAN BUENAVENTURA",
         "URLEscudo": "/static/escudos/Emblema_0132.jpg",
         "Puntos": 4,
         "Jugados": 3,
         "GF": 17,
         "GC": 17,
-        "Posicion": 1
+        "Posicion": 2
       },
       {
         "NombreEquipo": "JESÚS MAESTRO FET \"AZUL\"",
@@ -528709,7 +528718,7 @@
         "Jugados": 1,
         "GF": 13,
         "GC": 4,
-        "Posicion": 2
+        "Posicion": 3
       },
       {
         "NombreEquipo": "SALESIANOS ATOCHA \"A\"",
@@ -528718,15 +528727,6 @@
         "Jugados": 1,
         "GF": 10,
         "GC": 2,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "SAGRADO CORAZÓN ROSALES \"ROJO\"",
-        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
-        "Puntos": 2,
-        "Jugados": 1,
-        "GF": 8,
-        "GC": 1,
         "Posicion": 4
       },
       {
@@ -528748,21 +528748,21 @@
         "Posicion": 6
       },
       {
-        "NombreEquipo": "SAGRADOS CORAZONES \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0053.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 7
-      },
-      {
         "NombreEquipo": "FRAY LUIS DE LEÓN \"B\"",
         "URLEscudo": "/static/escudos/Emblema_0002.jpg",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 4,
         "GC": 8,
+        "Posicion": 7
+      },
+      {
+        "NombreEquipo": "SAGRADOS CORAZONES \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0053.jpg",
+        "Puntos": 0,
+        "Jugados": 1,
+        "GF": 0,
+        "GC": 10,
         "Posicion": 8
       },
       {
@@ -528831,30 +528831,30 @@
         "Posicion": 6
       },
       {
+        "NombreEquipo": "COLEGIO ALEMÁN DE MADRID \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0128.jpg",
+        "Puntos": 2,
+        "Jugados": 3,
+        "GF": 7,
+        "GC": 16,
+        "Posicion": 7
+      },
+      {
         "NombreEquipo": "EL VALLE LAS TABLAS \"F\"",
         "URLEscudo": "/static/escudos/Emblema_0150.jpg",
         "Puntos": 0,
         "Jugados": 1,
         "GF": 0,
         "GC": 5,
-        "Posicion": 7
+        "Posicion": 8
       },
       {
         "NombreEquipo": "VALDEFUENTES \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0068.jpg",
         "Puntos": 0,
-        "Jugados": 1,
-        "GF": 0,
-        "GC": 8,
-        "Posicion": 8
-      },
-      {
-        "NombreEquipo": "COLEGIO ALEMÁN DE MADRID \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0128.jpg",
-        "Puntos": 0,
         "Jugados": 2,
-        "GF": 3,
-        "GC": 14,
+        "GF": 2,
+        "GC": 12,
         "Posicion": 9
       },
       {
@@ -528896,22 +528896,31 @@
         "Posicion": 3
       },
       {
-        "NombreEquipo": "COLEGIO ALEMÁN DE MADRID \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0128.jpg",
-        "Puntos": 2,
-        "Jugados": 1,
-        "GF": 3,
-        "GC": 0,
-        "Posicion": 4
-      },
-      {
         "NombreEquipo": "NUESTRA SEÑORA DE LA CONSOLACIÓN \"B\"",
         "URLEscudo": "/static/escudos/Emblema_0076_NUEST.PNG",
         "Puntos": 2,
         "Jugados": 1,
         "GF": 3,
         "GC": 1,
+        "Posicion": 4
+      },
+      {
+        "NombreEquipo": "SANTAMARCA INTERNACIONAL",
+        "URLEscudo": "/static/escudos/Emblema_0114.jpg",
+        "Puntos": 2,
+        "Jugados": 2,
+        "GF": 8,
+        "GC": 8,
         "Posicion": 5
+      },
+      {
+        "NombreEquipo": "COLEGIO ALEMÁN DE MADRID \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0128.jpg",
+        "Puntos": 2,
+        "Jugados": 2,
+        "GF": 6,
+        "GC": 6,
+        "Posicion": 6
       },
       {
         "NombreEquipo": "MARISTAS CHAMBERÍ \"B\"",
@@ -528920,15 +528929,6 @@
         "Jugados": 0,
         "GF": 0,
         "GC": 0,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "SANTAMARCA INTERNACIONAL",
-        "URLEscudo": "/static/escudos/Emblema_0114.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 2,
-        "GC": 5,
         "Posicion": 7
       },
       {
@@ -529210,13 +529210,22 @@
         "Posicion": 1
       },
       {
+        "NombreEquipo": "JESÚS MAESTRO FET \"BLANCO\"",
+        "URLEscudo": "/static/escudos/Emblema_0072.jpg",
+        "Puntos": 4,
+        "Jugados": 3,
+        "GF": 8,
+        "GC": 9,
+        "Posicion": 2
+      },
+      {
         "NombreEquipo": "MARISTAS CHAMBERÍ \"C\"",
         "URLEscudo": "/static/escudos/Emblema_0031.jpg",
         "Puntos": 2,
         "Jugados": 1,
         "GF": 5,
         "GC": 2,
-        "Posicion": 2
+        "Posicion": 3
       },
       {
         "NombreEquipo": "JESÚS MARÍA \"B\"",
@@ -529225,15 +529234,6 @@
         "Jugados": 1,
         "GF": 4,
         "GC": 1,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "JESÚS MAESTRO FET \"BLANCO\"",
-        "URLEscudo": "/static/escudos/Emblema_0072.jpg",
-        "Puntos": 2,
-        "Jugados": 2,
-        "GF": 4,
-        "GC": 6,
         "Posicion": 4
       },
       {
@@ -529249,9 +529249,9 @@
         "NombreEquipo": "SAGRADOS CORAZONES \"B\"",
         "URLEscudo": "/static/escudos/Emblema_0053.jpg",
         "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
+        "Jugados": 1,
+        "GF": 3,
+        "GC": 4,
         "Posicion": 6
       },
       {
@@ -529394,13 +529394,22 @@
         "Posicion": 3
       },
       {
+        "NombreEquipo": "FRAY LUIS DE LEÓN",
+        "URLEscudo": "/static/escudos/Emblema_0002.jpg",
+        "Puntos": 2,
+        "Jugados": 2,
+        "GF": 11,
+        "GC": 15,
+        "Posicion": 4
+      },
+      {
         "NombreEquipo": "AMOR DE DIOS ALCORCÓN",
         "URLEscudo": "/static/escudos/Emblema_0148.jpg",
         "Puntos": 2,
         "Jugados": 2,
         "GF": 7,
         "GC": 11,
-        "Posicion": 4
+        "Posicion": 5
       },
       {
         "NombreEquipo": "SAGRADOS CORAZONES \"A\"",
@@ -529409,7 +529418,7 @@
         "Jugados": 2,
         "GF": 11,
         "GC": 16,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "SAGRADO CORAZÓN ROSALES \"ROJO\"",
@@ -529418,25 +529427,7 @@
         "Jugados": 1,
         "GF": 1,
         "GC": 2,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "LA INMACULADA ESCOLAPIAS PUERTA DE HIERRO",
-        "URLEscudo": "/static/escudos/Emblema_0144_LA IN.PNG",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 1,
-        "GC": 11,
         "Posicion": 7
-      },
-      {
-        "NombreEquipo": "FRAY LUIS DE LEÓN",
-        "URLEscudo": "/static/escudos/Emblema_0002.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 0,
-        "GC": 10,
-        "Posicion": 8
       },
       {
         "NombreEquipo": "CLARET \"A\"",
@@ -529445,6 +529436,15 @@
         "Jugados": 2,
         "GF": 1,
         "GC": 14,
+        "Posicion": 8
+      },
+      {
+        "NombreEquipo": "LA INMACULADA ESCOLAPIAS PUERTA DE HIERRO",
+        "URLEscudo": "/static/escudos/Emblema_0144_LA IN.PNG",
+        "Puntos": 0,
+        "Jugados": 2,
+        "GF": 6,
+        "GC": 22,
         "Posicion": 9
       }
     ],
@@ -529732,13 +529732,22 @@
     ],
     "2_115_0_191": [
       {
+        "NombreEquipo": "SAGRADOS CORAZONES",
+        "URLEscudo": "/static/escudos/Emblema_0053.jpg",
+        "Puntos": 4,
+        "Jugados": 2,
+        "GF": 17,
+        "GC": 4,
+        "Posicion": 1
+      },
+      {
         "NombreEquipo": "SAGRADO CORAZÓN ROSALES \"BLANCO\"",
         "URLEscudo": "/static/escudos/Emblema_0075.jpg",
         "Puntos": 2,
         "Jugados": 1,
         "GF": 11,
         "GC": 1,
-        "Posicion": 1
+        "Posicion": 2
       },
       {
         "NombreEquipo": "JESÚS MAESTRO FET",
@@ -529747,25 +529756,7 @@
         "Jugados": 2,
         "GF": 15,
         "GC": 8,
-        "Posicion": 2
-      },
-      {
-        "NombreEquipo": "SAGRADOS CORAZONES",
-        "URLEscudo": "/static/escudos/Emblema_0053.jpg",
-        "Puntos": 2,
-        "Jugados": 1,
-        "GF": 7,
-        "GC": 4,
         "Posicion": 3
-      },
-      {
-        "NombreEquipo": "FRAY LUIS DE LEÓN",
-        "URLEscudo": "/static/escudos/Emblema_0002.jpg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 1,
-        "GC": 11,
-        "Posicion": 4
       },
       {
         "NombreEquipo": "DECROLY \"B\"",
@@ -529774,6 +529765,15 @@
         "Jugados": 1,
         "GF": 1,
         "GC": 11,
+        "Posicion": 4
+      },
+      {
+        "NombreEquipo": "FRAY LUIS DE LEÓN",
+        "URLEscudo": "/static/escudos/Emblema_0002.jpg",
+        "Puntos": 0,
+        "Jugados": 2,
+        "GF": 1,
+        "GC": 21,
         "Posicion": 5
       }
     ],
@@ -529853,39 +529853,39 @@
         "Posicion": 1
       },
       {
+        "NombreEquipo": "PATROCINIO SAN JOSÉ",
+        "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
+        "Puntos": 2,
+        "Jugados": 2,
+        "GF": 7,
+        "GC": 4,
+        "Posicion": 2
+      },
+      {
+        "NombreEquipo": "SAGRADO CORAZÓN ROSALES",
+        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
+        "Puntos": 2,
+        "Jugados": 1,
+        "GF": 4,
+        "GC": 1,
+        "Posicion": 3
+      },
+      {
         "NombreEquipo": "CALASANCIO \"B\"",
         "URLEscudo": "/static/escudos/Emblema_0023.jpg",
         "Puntos": 2,
         "Jugados": 1,
         "GF": 4,
         "GC": 3,
-        "Posicion": 2
+        "Posicion": 4
       },
       {
         "NombreEquipo": "SAGRADOS CORAZONES",
         "URLEscudo": "/static/escudos/Emblema_0053.jpg",
         "Puntos": 2,
-        "Jugados": 2,
-        "GF": 6,
-        "GC": 8,
-        "Posicion": 3
-      },
-      {
-        "NombreEquipo": "SAGRADO CORAZÓN ROSALES",
-        "URLEscudo": "/static/escudos/Emblema_0075.jpg",
-        "Puntos": 0,
-        "Jugados": 0,
-        "GF": 0,
-        "GC": 0,
-        "Posicion": 4
-      },
-      {
-        "NombreEquipo": "PATROCINIO SAN JOSÉ",
-        "URLEscudo": "/static/escudos/Emblema_0015_PATRO.jpeg",
-        "Puntos": 0,
-        "Jugados": 1,
-        "GF": 3,
-        "GC": 4,
+        "Jugados": 3,
+        "GF": 7,
+        "GC": 12,
         "Posicion": 5
       },
       {
@@ -529901,9 +529901,9 @@
         "NombreEquipo": "FRAY LUIS DE LEÓN",
         "URLEscudo": "/static/escudos/Emblema_0002.jpg",
         "Puntos": 0,
-        "Jugados": 1,
+        "Jugados": 2,
         "GF": 1,
-        "GC": 11,
+        "GC": 15,
         "Posicion": 7
       }
     ],
@@ -530762,12 +530762,12 @@
         "Posicion": 1
       },
       {
-        "NombreEquipo": "NUESTRA SEÑORA DE LA MERCED TRES CANTOS \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0056.jpg",
+        "NombreEquipo": "LA SALLE SAGRADO CORAZÓN \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0059.jpg",
         "Puntos": 4,
-        "Jugados": 2,
-        "GF": 4,
-        "GC": 0,
+        "Jugados": 3,
+        "GF": 5,
+        "GC": 2,
         "Posicion": 2
       },
       {
@@ -530780,11 +530780,11 @@
         "Posicion": 3
       },
       {
-        "NombreEquipo": "LA SALLE SAGRADO CORAZÓN \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0059.jpg",
-        "Puntos": 2,
-        "Jugados": 2,
-        "GF": 3,
+        "NombreEquipo": "NUESTRA SEÑORA DE LA MERCED TRES CANTOS \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0056.jpg",
+        "Puntos": 4,
+        "Jugados": 3,
+        "GF": 4,
         "GC": 2,
         "Posicion": 4
       },
@@ -530872,13 +530872,22 @@
         "Posicion": 3
       },
       {
+        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"D\"",
+        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
+        "Puntos": 4,
+        "Jugados": 3,
+        "GF": 4,
+        "GC": 3,
+        "Posicion": 4
+      },
+      {
         "NombreEquipo": "NUESTRA SEÑORA DE LA MERCED TRES CANTOS \"C\"",
         "URLEscudo": "/static/escudos/Emblema_0056.jpg",
         "Puntos": 2,
         "Jugados": 2,
         "GF": 3,
         "GC": 2,
-        "Posicion": 4
+        "Posicion": 5
       },
       {
         "NombreEquipo": "CLARET \"C\"",
@@ -530887,24 +530896,15 @@
         "Jugados": 2,
         "GF": 3,
         "GC": 2,
-        "Posicion": 5
-      },
-      {
-        "NombreEquipo": "FEC SANTA JOAQUINA DE VEDRUNA \"D\"",
-        "URLEscudo": "/static/escudos/Emblema_0061.jpg",
-        "Puntos": 2,
-        "Jugados": 2,
-        "GF": 2,
-        "GC": 2,
         "Posicion": 6
       },
       {
         "NombreEquipo": "VIRGEN DE MIRASIERRA \"A\"",
         "URLEscudo": "/static/escudos/Emblema_0055_VIRGE.PNG",
         "Puntos": 2,
-        "Jugados": 2,
-        "GF": 2,
-        "GC": 3,
+        "Jugados": 3,
+        "GF": 3,
+        "GC": 5,
         "Posicion": 7
       },
       {
@@ -532133,13 +532133,22 @@
         "Posicion": 2
       },
       {
+        "NombreEquipo": "SALESIANOS ATOCHA",
+        "URLEscudo": "/static/escudos/Emblema_0050.jpg",
+        "Puntos": 4,
+        "Jugados": 2,
+        "GF": 4,
+        "GC": 1,
+        "Posicion": 3
+      },
+      {
         "NombreEquipo": "SANTA MARÍA DEL PILAR \"D\"",
         "URLEscudo": "/static/escudos/Emblema_0051.jpg",
         "Puntos": 2,
         "Jugados": 1,
         "GF": 2,
         "GC": 0,
-        "Posicion": 3
+        "Posicion": 4
       },
       {
         "NombreEquipo": "SAGRADOS CORAZONES \"B\"",
@@ -532148,25 +532157,7 @@
         "Jugados": 1,
         "GF": 2,
         "GC": 0,
-        "Posicion": 4
-      },
-      {
-        "NombreEquipo": "SALESIANOS ATOCHA",
-        "URLEscudo": "/static/escudos/Emblema_0050.jpg",
-        "Puntos": 2,
-        "Jugados": 1,
-        "GF": 2,
-        "GC": 0,
         "Posicion": 5
-      },
-      {
-        "NombreEquipo": "FRAY LUIS DE LEÓN",
-        "URLEscudo": "/static/escudos/Emblema_0002.jpg",
-        "Puntos": 0,
-        "Jugados": 2,
-        "GF": 0,
-        "GC": 4,
-        "Posicion": 6
       },
       {
         "NombreEquipo": "SAGRADO CORAZÓN ROSALES",
@@ -532175,7 +532166,7 @@
         "Jugados": 2,
         "GF": 0,
         "GC": 4,
-        "Posicion": 7
+        "Posicion": 6
       },
       {
         "NombreEquipo": "LA SALLE SAN RAFAEL",
@@ -532184,7 +532175,7 @@
         "Jugados": 2,
         "GF": 0,
         "GC": 4,
-        "Posicion": 8
+        "Posicion": 7
       },
       {
         "NombreEquipo": "DECROLY \"B\"",
@@ -532193,6 +532184,15 @@
         "Jugados": 2,
         "GF": 0,
         "GC": 4,
+        "Posicion": 8
+      },
+      {
+        "NombreEquipo": "FRAY LUIS DE LEÓN",
+        "URLEscudo": "/static/escudos/Emblema_0002.jpg",
+        "Puntos": 0,
+        "Jugados": 3,
+        "GF": 1,
+        "GC": 6,
         "Posicion": 9
       }
     ],
@@ -532234,13 +532234,22 @@
         "Posicion": 4
       },
       {
+        "NombreEquipo": "VALDEFUENTES \"A\"",
+        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
+        "Puntos": 4,
+        "Jugados": 3,
+        "GF": 4,
+        "GC": 3,
+        "Posicion": 5
+      },
+      {
         "NombreEquipo": "SAN PATRICIO SOTO",
         "URLEscudo": "/static/escudos/Emblema_0089.jpg",
         "Puntos": 2,
         "Jugados": 2,
         "GF": 2,
         "GC": 2,
-        "Posicion": 5
+        "Posicion": 6
       },
       {
         "NombreEquipo": "SANTA MARÍA LA BLANCA \"A\"",
@@ -532249,15 +532258,6 @@
         "Jugados": 2,
         "GF": 2,
         "GC": 2,
-        "Posicion": 6
-      },
-      {
-        "NombreEquipo": "VALDEFUENTES \"A\"",
-        "URLEscudo": "/static/escudos/Emblema_0068.jpg",
-        "Puntos": 2,
-        "Jugados": 2,
-        "GF": 2,
-        "GC": 3,
         "Posicion": 7
       },
       {
@@ -532270,8 +532270,8 @@
         "Posicion": 8
       },
       {
-        "NombreEquipo": "VIRGEN DE MIRASIERRA \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0055_VIRGE.PNG",
+        "NombreEquipo": "IRLANDESAS EL SOTO \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0039.jpg",
         "Puntos": 0,
         "Jugados": 2,
         "GF": 0,
@@ -532279,12 +532279,12 @@
         "Posicion": 9
       },
       {
-        "NombreEquipo": "IRLANDESAS EL SOTO \"B\"",
-        "URLEscudo": "/static/escudos/Emblema_0039.jpg",
+        "NombreEquipo": "VIRGEN DE MIRASIERRA \"B\"",
+        "URLEscudo": "/static/escudos/Emblema_0055_VIRGE.PNG",
         "Puntos": 0,
-        "Jugados": 2,
+        "Jugados": 3,
         "GF": 0,
-        "GC": 4,
+        "GC": 6,
         "Posicion": 10
       }
     ],
